@@ -248,7 +248,10 @@ export function isStandardValueBuiltin(ref) {
     if(name==='TryParse')return p[0]==='System.String'&&((n===2&&p[1]===DECIMAL)||(n===3&&p[1]==='System.IFormatProvider'&&p[2]===DECIMAL)||(n===4&&p[1]==='System.Globalization.NumberStyles'&&p[2]==='System.IFormatProvider'&&p[3]===DECIMAL));
     return false;
   }
-  if(r===NULLABLE)return name==='.ctor'&&n===1||['get_HasValue','get_Value','ToString','GetHashCode'].includes(name)&&n===0||name==='GetValueOrDefault'&&n<=1||name==='Equals'&&n===1&&p[0]==='System.Object';
+  if(r===NULLABLE){
+    if(name==='GetHashCode')return n===0&&(integerTypes.has(splitTypeArguments(type)[0])||['System.Boolean',DECIMAL].includes(splitTypeArguments(type)[0]));
+    return name==='.ctor'&&n===1||['get_HasValue','get_Value','ToString'].includes(name)&&n===0||name==='GetValueOrDefault'&&n<=1||name==='Equals'&&n===1&&p[0]==='System.Object';
+  }
   if(type==='System.Nullable')return ['Compare','Equals'].includes(name)&&n===2||name==='GetUnderlyingType'&&n===1&&p[0]==='System.Type';
   if(tuple(type))return name==='.ctor'&&n===splitTypeArguments(type).length||name==='ToString'&&n===0||['Equals','CompareTo'].includes(name)&&n===1||name==='Create'&&ref.isStatic&&n<=8;
   return false;
@@ -270,7 +273,7 @@ function valueEqual(rt,a,b,type) {
 function compareValues(rt,a,b,type) {
   a=unwrap(a);b=unwrap(b);if(a?.$decimal&&b?.$decimal)return decimalCompare(a,b);if(a==null)return b==null?0:-1;if(b==null)return 1;
   if(a?.$tuple&&b?.$tuple){for(const[t,i]of splitTypeArguments(a.$type).map((t,i)=>[t,i])){const n=i===7?'Rest':'Item'+(i+1),c=compareValues(rt,a.fields[a.$type+'::'+n],b.fields[b.$type+'::'+n],t);if(c)return c;}return 0;}
-  if(a instanceof Numeric||typeof a==='string'){a=raw(a);b=raw(b);if(type==='System.UInt64'){a=BigInt.asUintN(64,a);b=BigInt.asUintN(64,b);}if(type==='System.UInt32'){a>>>=0;b>>>=0;}return a<b?-1:a>b?1:0;}
+  if(a instanceof Numeric||typeof a==='string'){a=raw(a);b=raw(b);if(type==='System.UInt64'){a=BigInt.asUintN(64,a);b=BigInt.asUintN(64,b);}if(type==='System.UInt32'){a>>>=0;b>>>=0;}if(Number.isNaN(a))return Number.isNaN(b)?0:-1;if(Number.isNaN(b))return 1;return a<b?-1:a>b?1:0;}
   const method=rt.resolveMethod({declaringType:rt.typeName(a),name:'CompareTo',parameters:[{type:type??rt.typeName(b)}],returnType:'System.Int32',isStatic:false});
   if(method)return Number(raw(rt.invokeManaged(method,[b],a)));
   fail('ArgumentException','At least one object must implement IComparable.');
@@ -328,7 +331,7 @@ export function invokeStandardValueBuiltin(rt,ref,args,self,kind) {
     const has=()=>!!raw(self.fields[type+'::hasValue']),get=()=>copyValue(self.fields[type+'::value']);
     if(name==='.ctor'){const value=defaultStandardValue(rt,type);value.fields[type+'::hasValue']=i4(1);value.fields[type+'::value']=rt.coerce(args[0],splitTypeArguments(type)[0]);if(target){target.set(value);return done();}return{handled:true,constructed:value};}
     if(name==='get_HasValue')return done(i4(has()));if(name==='get_Value'){if(!has())fail('InvalidOperationException','Nullable object must have a value.');return done(get());}if(name==='GetValueOrDefault')return done(has()?get():args.length?copyValue(args[0]):get());
-    if(name==='ToString')return done(formatStandardValue(rt,self));if(name==='Equals')return done(i4(has()?args[0]!=null&&valueEqual(rt,get(),args[0],splitTypeArguments(type)[0]):args[0]==null));
+    if(name==='ToString')return done(formatStandardValue(rt,self));if(name==='Equals'){const inner=splitTypeArguments(type)[0],other=args[0];return done(i4(has()?other!=null&&(!other.$box||other.$type===inner)&&valueEqual(rt,get(),other,inner):other==null));}
     if(name==='GetHashCode'){if(!has())return done(i4(0));const value=get();if(value?.$decimal)return invokeStandardValueBuiltin(rt,{declaringType:DECIMAL,name:'GetHashCode',parameters:[]},[],value);if(value instanceof Numeric){const n=raw(value);return done(i4(typeof n==='bigint'?Number(n&0xffffffffn)^Number(n>>32n):n));}unsupported('Nullable.GetHashCode currently supports integral and Decimal underlying values only.');}
   }
   if(type==='System.Nullable'){
