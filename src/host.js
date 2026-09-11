@@ -15,10 +15,12 @@ export async function bootManaged(options = {}, onEvent = () => {}) {
   let builder = dotnet.withDiagnosticTracing(false)
     .withModuleConfig({
       print: text => onEvent({ type: 'stdout', text }),
-      printErr: text => onEvent({ type: 'stderr', text })
+      printErr: text => onEvent({ type: 'stderr', text }),
+      onDownloadResourceProgress: (loaded, total) => onEvent({ type: 'progress', stage: 'download', loaded, total, message: `Downloading compiler runtime: ${loaded} of ${total} resources` })
     });
   if (options.config) builder = builder.withConfig(options.config);
   const runtime = await builder.create();
+  onEvent({ type: 'progress', stage: 'bridge', message: 'Initializing Roslyn and framework references' });
   const config = runtime.getConfig();
   const exports = await runtime.getAssemblyExports(config.mainAssemblyName || 'RoslynBrowser.dll');
   const bridge = bridgeIn(exports);

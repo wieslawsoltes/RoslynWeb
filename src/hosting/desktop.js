@@ -128,7 +128,7 @@ export class BrowserDesktopHost {
     el.hidden = p.visible === false; el.setAttribute('aria-disabled', String(p.enabled === false));
     (node.input || el).disabled = p.enabled === false;
     el.title = String(p.tooltip ?? '');
-    el.setAttribute('aria-label', String(p.ariaLabel ?? p.label ?? p.title ?? node.id));
+    el.setAttribute('aria-label', String(p.ariaLabel ?? p.label ?? p.title ?? p.text ?? node.id));
     if (p.tabIndex !== undefined) el.tabIndex = Number(p.tabIndex);
     const styles = {};
     for (const property of ['width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight', 'margin']) if (p[property] !== undefined) styles[property] = length(p[property]);

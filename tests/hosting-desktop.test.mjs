@@ -38,6 +38,7 @@ test('desktop host creates DOM widgets with safe text, accessible controls, and 
   assert.equal(host.nodes.get('form').element.style.gridTemplateColumns,'1fr 2fr');
   assert.equal(host.nodes.get('save').element.tagName,'BUTTON');
   assert.equal(host.nodes.get('window').close.attributes['aria-label'],'Close window');
+  assert.equal(host.nodes.get('go').element.attributes['aria-label'],'Run');
   assert.equal(host.nodes.get('progress').element.value,30);
 });
 

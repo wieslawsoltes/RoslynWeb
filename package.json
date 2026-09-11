@@ -21,6 +21,10 @@
     "./hosting": {
       "types": "./src/hosting/index.d.ts",
       "import": "./src/hosting/index.js"
+    },
+    "./browser": {
+      "types": "./src/browser.d.ts",
+      "import": "./src/browser.js"
     }
   },
   "files": [

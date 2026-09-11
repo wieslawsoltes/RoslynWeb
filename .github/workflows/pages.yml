@@ -7,11 +7,12 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: roslynweb-pages
+  group: roslynweb-pages-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,6 +39,21 @@ jobs:
         run: npm run test:compat
       - name: Stage browser application
         run: node scripts/stage-pages.mjs
+      - name: Install Chromium browser test runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.1
+          npx playwright install --with-deps chromium
+      - name: Real Chromium demo and browser integration at the Pages subpath
+        run: npm run test:browser
+        env:
+          BROWSER_ENGINE: chromium
+      - name: Upload browser verification and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-verification
+          path: artifacts/browser-*
+          if-no-files-found: ignore
       - name: Upload complete runnable project artifact
         uses: actions/upload-artifact@v4
         with:
@@ -80,3 +96,23 @@ jobs:
       - name: Deploy Pages
         id: deployment
         uses: actions/deploy-pages@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install deployed-site browser verification runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.55.1
+          npx playwright install --with-deps chromium
+      - name: Verify the deployed Pages application in Chromium
+        run: npm run test:browser
+        env:
+          BROWSER_ENGINE: chromium
+          BROWSER_BASE_URL: ${{ steps.deployment.outputs.page_url }}
+      - name: Upload deployed-site browser verification
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployed-browser-verification
+          path: artifacts/browser-*
+          if-no-files-found: ignore

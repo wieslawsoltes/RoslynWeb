@@ -30,4 +30,4 @@ try {
  detail.textContent += '\n' + JSON.stringify(failures, null, 2);
  document.documentElement.dataset.complete = 'true';
  document.documentElement.dataset.failures = failures.length;
-} catch(e) {status.textContent='BOOT FAILED'; detail.textContent=e.stack || e.message;}
+} catch(e) {status.textContent='BOOT FAILED'; detail.textContent=e.stack || e.message;document.documentElement.dataset.complete='true';document.documentElement.dataset.failures=String(failures.length+1);}
