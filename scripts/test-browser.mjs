@@ -118,6 +118,40 @@ try {
   });
   await test('Demo compiles emitted MSIL to JavaScript and executes it', () => runExample(page, 'Algorithms → JavaScript', 'javascript', ['Array total:\n30', 'Fibonacci(12):\n144', 'Process exited with code 0 · javascript']));
 
+  await test('Demo exposes working reference, basic-block and numeric JavaScript optimization modes',async()=>{
+    await page.locator('#example').selectOption({label:'Algorithms → JavaScript'});
+    await page.locator('#backend').selectOption('javascript');
+    const results=[];
+    for(const [selected,expectedMode] of [['reference','reference'],['blocks','blocks'],['optimized','numeric']]){
+      await page.locator('#optimization').selectOption(selected);
+      await page.locator('#run').click();
+      await waitFor(page,()=>['Finished','Compilation failed','Execution failed','Error'].includes(document.querySelector('#status')?.textContent),'Optimization example did not finish');
+      assert.equal(await page.locator('#status').innerText(),'Finished',await page.locator('#console').innerText());
+      const result=await page.evaluate(()=>({optimization:window.lab.javascriptArtifact?.optimization,output:document.querySelector('#console').textContent}));
+      assert.equal(result.optimization.mode,expectedMode);assert(result.output.includes('Fibonacci(12):\n144'));
+      results.push({selected,optimization:result.optimization});
+    }
+    await page.locator('#backend').selectOption('native-wasm');
+    assert.equal(await page.locator('#optimization option[value="blocks"]').isDisabled(),true);
+    report.demoOptimizationModes=results;
+  });
+
+  await test('Demo runs exact Decimal, nullable and tuple examples on both compiled backends',async()=>{
+    for(const backend of ['javascript','native-wasm'])await runExample(page,'Decimal, nullable and tuples',backend,[
+      'Exact decimal sum: 0.3','96-bit decimal: 79228162514264337593543950335','Round to even: 2.34',
+      'Nullable fallback: 42','Original tuple: (3, value, 0.1)','Copied tuple: (99, value, 0.1)'
+    ]);
+  });
+
+  await test('Demo shows exception-filter search before finally execution on both compiled backends',async()=>{
+    for(const backend of ['javascript','native-wasm']){
+      await runExample(page,'Exception filters → WebAssembly',backend,['Filter searched before finally','Callee finally executed','Filtered handler: 42']);
+      const output=await page.locator('#console').innerText();
+      assert(output.indexOf('Filter searched before finally')<output.indexOf('Callee finally executed'));
+      assert(output.indexOf('Callee finally executed')<output.indexOf('Filtered handler: 42'));
+    }
+  });
+
 
   await test('Demo compiles C# through real MSIL to native WebAssembly and executes catch/finally', async () => {
     await runExample(page, 'C# → native WebAssembly', 'native-wasm', [
@@ -193,6 +227,65 @@ try {
     report.nativeUnsupported=result;
   });
 
+  await test('Browser compiles reusable optimized JavaScript with real PE and a repeated emission cache hit',async()=>{
+    const result=await page.evaluate(async()=>{
+      const source='public static class BrowserJavaScriptV6 { static int state; public static int Next() => ++state; public static int Sum(int n) { int result=0; for(int i=0;i<n;i++) result+=i*(i+1); return result; } }';
+      const runtimeImport=new URL('../src/il/runtime.mjs',location.href).href;
+      const options={outputKind:'library',assemblyName:'BrowserJavaScriptV6',javascript:{runtimeImport}};
+      const first=await window.lab.compiler.compileToJavaScript(source,options);
+      const second=await window.lab.compiler.compileToJavaScript(source,options);
+      if(!first.success||!second.success)throw new Error(JSON.stringify(first.success?second:first));
+      window.v6PortableJavaScriptSource=second.source;
+      const url=URL.createObjectURL(new Blob([second.source],{type:'text/javascript'}));
+      try{
+        const module=await import(url),one=module.createAssembly(),two=module.createAssembly();
+        return{success:second.success,format:second.format,pe:[...second.assembly.pe.slice(0,2)],cache:second.cache,
+          optimization:second.optimization,sum:one.invoke('BrowserJavaScriptV6::Sum',[100]),
+          state:[one.invoke('BrowserJavaScriptV6::Next'),one.invoke('BrowserJavaScriptV6::Next'),two.invoke('BrowserJavaScriptV6::Next')],
+          sameSource:first.source===second.source};
+      }finally{URL.revokeObjectURL(url);}
+    });
+    assert.equal(result.success,true);assert.equal(result.format,'javascript');assert.deepEqual(result.pe,[77,90]);
+    assert.equal(result.sum,333300);assert.deepEqual(result.state,[1,2,1]);assert.equal(result.sameSource,true);
+    assert.equal(result.cache.emitHit,true);assert(result.optimization.numericMethods>=1);
+    report.javascriptV6=result;
+  });
+
+  await test('Browser optimized and reference compilers preserve Decimal, nullable and tuple values',async()=>{
+    const results=await page.evaluate(async()=>{
+      const source='using System; public static class BrowserValuesV6 { public static void Main(){decimal a=0.1m,b=0.2m; Console.WriteLine(a+b); int? value=42; Console.WriteLine(value.Value); var original=(3,7); var copy=original; copy.Item1=99; Console.WriteLine(original.ToString());}}';
+      const results=[];
+      for(const backend of ['javascript','native-wasm'])for(const optimize of [false,true]){
+        const options={assemblyName:'BrowserValuesV6_'+backend.replace('-','_')+'_'+optimize};
+        const artifact=backend==='javascript'
+          ?await window.lab.compiler.compileToJavaScript(source,{...options,javascript:{optimize}})
+          :await window.lab.compiler.compileToWasm(source,{...options,wasm:{optimize}});
+        if(!artifact.success)throw new Error(JSON.stringify(artifact));
+        const result=await window.lab.compiler.run(artifact);
+        results.push({backend,optimize,success:result.success,stdout:result.stdout,actualBackend:result.backend,error:result.error});
+      }
+      return results;
+    });
+    for(const result of results){assert.equal(result.success,true,JSON.stringify(result));assert.equal(result.actualBackend,result.backend);assert.equal(result.stdout,'0.3\n42\n(3, 7)\n');}
+    report.compilerValueParity=results;
+  });
+
+  await test('Browser JavaScript and native Wasm search exception filters before unwinding a callee finally',async()=>{
+    const results=await page.evaluate(async()=>{
+      const source='using System; public static class BrowserFiltersV6 { static int state; static bool Match(){state=state*10+1;return true;} static void Throw(){try{throw new InvalidOperationException();}finally{state=state*10+3;}} public static void Main(){try{Throw();}catch(InvalidOperationException)when(Match()){Console.WriteLine(state*10+4);}}}';
+      const results=[];
+      for(const backend of ['javascript','native-wasm']){
+        const options={assemblyName:'BrowserFiltersV6_'+backend.replace('-','_')};
+        const artifact=backend==='javascript'?await window.lab.compiler.compileToJavaScript(source,options):await window.lab.compiler.compileToWasm(source,options);
+        if(!artifact.success)throw new Error(JSON.stringify(artifact));
+        results.push({backend,...await window.lab.compiler.run(artifact)});
+      }
+      return results;
+    });
+    for(const result of results){assert.equal(result.success,true,JSON.stringify(result));assert.equal(result.stdout,'134\n');}
+    report.compilerFilterParity=results;
+  });
+
   if (!external || process.env.BROWSER_FULL_DEMO === '1') {
     await test('Demo executes real source generators and analyzers', async () => {
       await runExample(page, 'Source generator & analyzer', 'wasm', ['Hello from a real Roslyn source generator!', 'Analyzer inspected this method.']);
@@ -248,6 +341,15 @@ try {
       assert.equal(result.module,true);assert.equal(result.instance,true);assert.deepEqual(result.imports,[]);
       assert.equal(result.result,'333833500');assert.equal(result.twice,42);
       report.nativePortable=result;
+    });
+    await test('Saved JavaScript module executes after the Roslyn Worker is disposed',async()=>{
+      const result=await page.evaluate(async()=>{
+        if(!window.lab.compiler.disposed)throw new Error('Roslyn must be disposed for this check');
+        const url=URL.createObjectURL(new Blob([window.v6PortableJavaScriptSource],{type:'text/javascript'}));
+        try{const module=await import(url);const runtime=module.createAssembly();return{sum:runtime.invoke('BrowserJavaScriptV6::Sum',[100]),next:runtime.invoke('BrowserJavaScriptV6::Next')};}
+        finally{URL.revokeObjectURL(url);}
+      });
+      assert.deepEqual(result,{sum:333300,next:1});report.javascriptPortable=result;
     });
     await test('Restart compiler creates a working replacement Worker', async () => {
       await page.locator('#restart').click();

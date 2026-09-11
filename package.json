@@ -1,6 +1,6 @@
 {
   "name": "@roslynweb/core",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "type": "module",
   "description": "Roslyn C# compilation in WebAssembly, direct MSIL-to-WebAssembly compilation and managed assembly execution",
   "license": "MIT",
@@ -9,7 +9,10 @@
       "types": "./src/index.d.ts",
       "import": "./src/index.js"
     },
-    "./il": "./src/il/index.js",
+    "./il": {
+      "types": "./src/il/index.d.ts",
+      "import": "./src/il/index.js"
+    },
     "./packages": {
       "types": "./src/packages/index.d.ts",
       "import": "./src/packages/index.js"
@@ -60,7 +63,9 @@
     "test:desktop": "node tests/desktop/wasm.mjs",
     "test:performance": "node managed/runtime-performance-tests.mjs",
     "benchmark:wasm": "node scripts/benchmark-wasm.mjs",
-    "test:wasm-native": "node tests/wasm-native-integration.mjs"
+    "test:wasm-native": "node tests/wasm-native-integration.mjs",
+    "test:compilers": "node tests/compiler-v6-integration.mjs",
+    "benchmark:compilers": "node scripts/benchmark-compilers.mjs"
   },
   "engines": {
     "node": ">=22"

@@ -1,12 +1,16 @@
 # Verification report
 
-RoslynWeb version: 0.5.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`.
+RoslynWeb version: 0.6.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`.
 
 ## Results
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **792 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| JavaScript unit and real-IL fixture tests | **3,912 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| Optimized JavaScript/native public compiler APIs | **15 passed, 0 failed** | `npm run test:compilers`; `docs/compiler-v6-worker-verification.json` |
+| Five-mode C# compiler conformance | **1,193 checks passed** | 238 native-.NET oracle cases, three JS modes and two Wasm modes; included in unit tests |
+| Exact standard-value native CLR oracle | **1,783 cases passed** | Decimal operations, scale/sign, formatting/parsing and binary conversions; included in unit tests |
+| TypeScript public API contract | **Passed with TypeScript 5.9.3** | Strict NodeNext package-consumer compilation, including rejected invalid calls |
 | Direct C# → MSIL → native Wasm through Worker | **12 passed, 0 failed** | `npm run test:wasm-native`; `docs/direct-wasm-verification.json` |
 | Actual WASM Roslyn cache semantics and timing | **10 passed, 0 failed** | `npm run test:performance`; `docs/wasm-compilation-performance.json` |
 | Native compiler differential execution | **438 real .NET cases passed** | Included in `npm test`; `tests/wasm-native-baseline.json` and real Roslyn PE/IL fixtures |
@@ -100,3 +104,13 @@ Public Worker integration compiles C#, emits native Wasm from images and assembl
 The final local baseline suites retain all 146 existing managed-WASM/Worker checks, plus 12 direct-native checks and 10 Roslyn cache checks. Native managed assertions total 90, including 17 cache semantics tests. Generated reports record the actual pinned .NET 10.0.0 runtime and Roslyn 5.0.0.0. The timing suites distinguish source compilation, inspection, IL→Wasm emission, engine compilation, module-cache reuse and repeated native execution. Their measured results are in `docs/direct-wasm-performance.json` and `docs/wasm-compilation-performance.json`.
 
 The browser runner adds five checks to the existing staged/deployed suite: native demo output and handler execution, exact downloaded Wasm bytes, actual browser Worker native APIs, unsupported native-import diagnostics, and standalone execution after compiler disposal. The expected totals are 25 staged / 24 live checks when all pass; GitHub Actions reports actual results for the PR and deployed commit. Browser screenshots and JSON evidence are uploaded with the corresponding workflow run.
+
+## Added version 0.6 coverage
+
+Both compilers now run the 238-case native .NET fixture in their optimized and reference modes; JavaScript also runs its block-only mode. The tests compare result values, exact floating argument bit patterns, CLR exception types, constrained interface dispatch, copied standard values, and filter search/unwind order. An additional 1,783 native Decimal cases verify coefficient, scale, sign, parsing/formatting and floating conversions. Optimizer regressions retain exact instruction-limit positions and cancellation behavior.
+
+The new public suite validates both one-call pipelines against actual Roslyn/.NET WebAssembly in Workers. It exercises cached compilation, independently initialized static state, registered DLL linkage, exact values, filters, changed options, virtual-file isolation, diagnostic recovery, standalone artifacts after Worker disposal and termination of runaway generated JavaScript. Cache/facade regressions cover mutation isolation, complete artifact identity, sparse-array rejection, dependency preservation with caller callbacks, cancellation, raw inspection models, and matching default options. A fresh-process test copies only the documented JavaScript runtime directory and imports a saved module with dynamic function construction disabled.
+
+The comparative benchmark records startup, C# emission, inspection, JavaScript function construction, native binary emission, engine compilation/instantiation, cached public pipelines and execution separately. See [the measured results and limitations](COMPILATION-PERFORMANCE.md#recorded-060-measurements). Browser verification adds optimizer selection, both new examples in JavaScript and native Wasm, artifact/cache isolation, exact values, cross-call filters, and standalone JavaScript after Worker disposal. GitHub Actions runs these checks against both the staged Pages subpath and the deployed site. Reports and screenshots belong to the associated workflow run.
+
+Floating-literal coverage adds **69 checks** against the same real PE executed by native .NET. The fixture covers signed zero, infinities, quiet NaNs with custom sign/payload, signaling NaNs and Single array transfers across all five compiler modes. The raw operand bits survive inspection; Single signaling loads reproduce CLR quieting. Both rebuilt public Worker pipelines also match .NET for NaN literal bit reinterpretation.

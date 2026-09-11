@@ -1,3 +1,4 @@
+import {parseFloatBits, floatLiteralExecutionBits} from '../il/float-bits.mjs';
 import { Writer, valueTypes, op } from './binary.mjs';
 import { analyzeWasmAssembly, nativeFrameworkEnums } from './analysis.mjs';
 import { prepareNativeExceptionFilters } from './filter-companions.mjs';
@@ -139,7 +140,7 @@ function emitMethod(ctx, analyzed) {
     if(['nop','break','readonly.','volatile.','tail.','constrained.','unaligned.'].includes(code))return;
     if(code==='ldnull'){zero('externref');push();return;}
     if(code==='ldstr'){service('ldstr',operand,[],'externref');push();return;}
-    if(code.startsWith('ldc.')){const kind=code.split('.')[1],type=kind==='i4'?'i32':kind==='i8'?'i64':kind==='r4'?'f32':'f64',suffix=code.split('.')[2];constant(type,suffix==='m1'?-1:/^[0-8]$/.test(suffix)?Number(suffix):operand);push();return;}
+    if(code.startsWith('ldc.')){const kind=code.split('.')[1],type=kind==='i4'?'i32':kind==='i8'?'i64':kind==='r4'?'f32':'f64',suffix=code.split('.')[2];if(type.startsWith('f')&&i.operandBits!==undefined){let bits=floatLiteralExecutionBits(type,parseFloatBits(type,i.operandBits));w.byte(op[`${type}_const`]);for(let n=0;n<(type==='f32'?4:8);n++){w.byte(Number(bits&255n));bits>>=8n;}}else constant(type,suffix==='m1'?-1:/^[0-8]$/.test(suffix)?Number(suffix):operand);push();return;}
     if(code==='dup'){last();copy(top);push();return;}
     if(code==='pop')return;
     if(/^(ldarg|starg|ldarga|ldloc|stloc|ldloca)(\.|$)/.test(code)){

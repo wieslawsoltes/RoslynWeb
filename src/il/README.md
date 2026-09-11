@@ -1,21 +1,23 @@
 # JavaScript IL execution tier
 
 This directory compiles normalized ECMA-335 method bodies, produced by the managed
-Roslyn bridge, into executable JavaScript functions. Each method becomes a generated
-`switch` over IL instruction offsets. Branches change the instruction offset,
-method calls invoke other generated functions, and managed values live in an
-explicit operand stack, local storage, and object heap. This is execution of the
+Roslyn bridge, into executable JavaScript functions. The default compiler groups instructions into basic blocks and emits unboxed
+Int32 code for proven static numeric leaf methods. Other methods use generated
+block dispatch with explicit operand stacks, locals and managed values. Branches
+change compiled continuations and calls invoke generated JavaScript functions.
+`optimize:false` retains per-instruction reference dispatch; `optimize:'blocks'`
+selects block grouping without numeric specialization. This is execution of the
 emitted IL; it does not translate C# source with regular expressions.
 
-The companion .NET WebAssembly tier is the compatibility path for the complete
-framework and supported NuGet assemblies. The JavaScript tier supplies a useful,
+The companion .NET WebAssembly tier provides the broader managed framework
+implementation and supports browser-compatible NuGet assemblies. The JavaScript tier supplies a useful,
 independently reusable execution subset and reports unresolved dependencies.
 
 ## API
 
 ```js
 import {
-  compileAssembly, analyzeAssembly, generateModule
+  compileAssembly, compileJavaScriptModule, analyzeAssembly, generateModule
 } from './src/il/index.js';
 
 const analysis = analyzeAssembly(inspectedAssembly, {
@@ -25,6 +27,7 @@ const analysis = analyzeAssembly(inspectedAssembly, {
 
 const runtime = compileAssembly(inspectedAssembly, {
   strict: true,
+  optimize: true,
   assemblies: [inspectedDependency],
   externals: { 'Host.Clock::GetTicks': () => 123n },
   output: (text, { newline }) => appendOutput(text + (newline ? '\n' : '')),
@@ -43,6 +46,8 @@ const source = generateModule(inspectedAssembly, {
 });
 // Save source as an ES module and import its createAssembly() export.
 ```
+
+The public `compiler.compileToJavaScript(source,{javascript:{optimize:true}})` API performs real C# compilation and JavaScript generation within the Worker. `emitJavaScript` accepts an existing managed DLL. For low-level reuse, `compileJavaScriptModule(model,options)` returns compiled functions, lazy ES-module source, diagnostics, optimization statistics and `createRuntime(options)`; each runtime has independent managed state. See [the compiler API, modes and shared value contracts](../../docs/JAVASCRIPT-COMPILER.md).
 
 `invoke` also accepts a metadata token, full `Type::Method(ParameterType,...)`
 signature, or method-reference object. A bare method name is accepted only when
@@ -84,7 +89,7 @@ a security sandbox. The embedding app can use a Worker for termination/isolation
 | Control flow | All standard branch forms, switch, returns, generated managed calls, virtual dispatch, constructors, direct method transfers |
 | Objects | Declared instance/static fields, one-time static constructors, value-type copies, boxing/unboxing, casts, class inheritance, basic array covariance |
 | Arrays | One-dimensional and rectangular multidimensional allocation, rank/length/bounds, nonzero lower bounds through Array.CreateInstance, typed element loads/stores and addresses, primitive RVA initialization |
-| Exceptions | Typed catch, filters, finally/fault, leave, rethrow, nested protected regions inside finally, preserved exceptional unwinds |
+| Exceptions | Typed catch, two-pass filters before finally unwinding across calls, finally/fault, leave, rethrow, nested protected regions inside finally, preserved exception identity |
 | Functions | Static/instance function pointers, managed calli with signature checks, and standard Action/Func/Predicate/Comparison delegate invocation |
 | Generics | Closed managed type/method substitution of !n/!!n signatures, separate closed-type static fields and initialization |
 | Local memory | Bounded invocation-owned localloc, primitive pointer loads/stores, pointer arithmetic within allocation, cpblk/initblk, deterministic pointer expiry |
@@ -97,8 +102,7 @@ Numbers on the evaluation stack carry numeric kinds. `int32` multiplication uses
 through nested generated calls. Instruction, call-depth and array-size limits
 are configurable host resource limits, not .NET framework guarantees.
 
-The `constrained.`, `readonly.`, `tail.`, `volatile.` and `unaligned.` prefixes are
-recognized for this single-threaded managed-address implementation. Tail-call
+Closed `constrained.` calls preserve value-type mutation through managed addresses, explicit interface MethodImpl mappings, reference null checks and supported boxed fallback calls. The `readonly.`, `tail.`, `volatile.` and `unaligned.` prefixes are recognized for this single-threaded managed-address implementation. Tail-call
 stack elimination and shared-memory barrier behavior are not implemented.
 
 ## Framework bridge and boundaries
@@ -110,10 +114,12 @@ initializers, and DefaultInterpolatedStringHandler. Unsupported overload signatu
 are diagnosed before execution; for example, `new string(char, int)` and
 `Math.Round(double, int)` currently require the .NET tier.
 
+Shared standard-value services provide exact Decimal arithmetic/conversion and invariant G/F/N/E/P formats, Nullable default/value/boxing behavior, and ValueTuple fields/copies/byrefs/boxing/equality/ordering/string formatting. Decimal stores a signed 96-bit coefficient and scale 0–28. Public values use exact Decimal strings, null/underlying Nullable values, and tuple arrays. Currency/custom-provider/custom-format APIs, span/UTF-8 Decimal overloads, general struct hashing, ITuple indexing and structural tuple comparers remain outside that service. The [shared value-type contract](../../docs/JAVASCRIPT-COMPILER.md#shared-framework-values) lists the implemented overload families and boundaries.
+
 This bridge does not reproduce the entire behavior of every implemented framework
 type. Its formatting supports the common decimal/hexadecimal/fixed-point forms
 (`D`, `X`, `F`) used by its examples, plus basic composite formatting and alignment.
-Other numeric/custom formats and culture-provider behavior require the .NET tier.
+Decimal additionally supports its documented invariant G/F/N/E/P formats. Other unsupported numeric/custom formats and culture-provider behavior require the .NET tier.
 JavaScript string operations use JavaScript Unicode behavior; culture-specific
 collation and globalization are not a compatibility claim. Equality/hashing of
 complex framework objects, array rank/covariance combinations, and interface

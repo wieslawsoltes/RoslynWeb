@@ -1,4 +1,6 @@
 import type {WasmCompilation, WasmCompileOptions, WasmDiagnostic} from './wasm/index.js';
+import type {JavaScriptCompileOptions, JavaScriptOptimization, JavaScriptOptimizationStats, ILAnalysis, ILDiagnostic} from './il/index.js';
+export type {JavaScriptCompileOptions, JavaScriptOptimization, JavaScriptOptimizationStats, JavaScriptCompiledModule, JavaScriptRuntimeOptions, ILAnalysis, ILDiagnostic} from './il/index.js';
 export type * from './wasm/index.js';
 export { NuGetResolver, importNupkg } from './packages/index.js';
 import type { PackageResolution, ImportedPackage, NuGetResolverOptions, PackageRequest, PackageImportOptions } from './packages/index.js';
@@ -79,6 +81,8 @@ export interface ExecutionFileOptions {
 export interface ExecutionOptions extends ExecutionFileOptions {
   backend?: 'wasm'|'javascript'|'auto'|'native-wasm';
   wasm?: WasmCompileOptions;
+  javascript?: JavaScriptEmitOptions;
+  optimize?: JavaScriptOptimization;
   entryPoint?: string|number;
   args?: string[];
   timeoutMs?: number;
@@ -91,6 +95,7 @@ export interface ExecutionResult {
   success: boolean; backend?: 'wasm'|'javascript'|'native-wasm'; result?: unknown; exitCode: number;
   stdout: string; stderr: string; error?: ManagedError; elapsedMs?: number;
   timings?: Record<string,number|boolean>; cache?: {emitHit?:boolean;moduleHit?:boolean};
+  optimization?: JavaScriptOptimizationStats;
   analysis?: unknown; fallback?: unknown; virtualFiles?: Record<string,Uint8Array>;
   files?: Record<string,Uint8Array>; changedFiles?: Record<string,Uint8Array>; removedFiles?: string[]; workspaceId?:string; fileBytes?:number;
 }
@@ -126,6 +131,20 @@ export interface NativeWasmCompilationFailure {
   diagnostics?:Array<Diagnostic|WasmDiagnostic>; error?:{type:string;code?:string;message:string}; timings:Record<string,number>;
 }
 export interface CompileToWasmOptions extends CompileOptions { wasm?:WasmCompileOptions }
+/** Worker emission options must be serializable; supply JavaScript externals to run(). */
+export interface JavaScriptEmitOptions {
+  optimize?:JavaScriptOptimization;strict?:boolean;runtimeImport?:string;assemblies?:AssemblyModel[];
+}
+export interface CompileToJavaScriptOptions extends CompileOptions {javascript?:JavaScriptEmitOptions}
+export interface JavaScriptArtifact {
+  format:'javascript';success:true;source:string;model:AssemblyModel;assemblies:AssemblyModel[];
+  assembly?:CompilationResult;analysis:ILAnalysis;optimization:JavaScriptOptimizationStats;
+  javascriptOptions:JavaScriptEmitOptions;cache:{emitHit:boolean};timings:Record<string,number>;
+}
+export interface JavaScriptCompilationFailure {
+  success:false;stage:'csharp'|'javascript';assembly:CompilationResult;
+  diagnostics?:Array<Diagnostic|ILDiagnostic>;error?:{type:string;code?:string;message:string};timings:Record<string,number>;
+}
 export interface RoslynCompiler {
   readonly info: CompilerInfo;
   readonly disposed: boolean;
@@ -133,8 +152,10 @@ export interface RoslynCompiler {
   compile(source: string|SourceFile[]|CompileRequest, options?: CompileOptions): Promise<CompilationResult>;
   /** C# → real PE/MSIL → native Wasm, inside the compiler Worker. Defaults to release/no PDB. */
   compileToWasm(source:string|SourceFile[]|CompileRequest, options?:CompileToWasmOptions):Promise<NativeWasmArtifact|NativeWasmCompilationFailure>;
+  /** C# → real PE/MSIL → reusable JavaScript ES module inside the compiler Worker. Defaults to release/no PDB. */
+  compileToJavaScript(source:string|SourceFile[]|CompileRequest,options?:CompileToJavaScriptOptions):Promise<JavaScriptArtifact|JavaScriptCompilationFailure>;
   /** Compile an existing PE/MSIL image. Unsupported instructions produce explicit diagnostics. */
-  emitWasm(assembly:AssemblyInput, options?:WasmCompileOptions):Promise<NativeWasmArtifact>;
+  emitWasm(assembly:AssemblyInput|AssemblyModel, options?:WasmCompileOptions):Promise<NativeWasmArtifact>;
   addReference(name: string, bytes: Bytes): Promise<Registration>;
   addAssembly(name: string, bytes: Bytes): Promise<Registration>;
   addDll(name: string, bytes: Bytes): Promise<{reference: Registration; assembly: Registration}>;
@@ -162,7 +183,7 @@ export interface RoslynCompiler {
   restore(packages: PackageRequest[], options?: NuGetResolverOptions & {resolver?: unknown}): Promise<PackageResolution>;
   importPackage(bytes: Bytes, options?: PackageImportOptions): Promise<ImportedPackage>;
   loadPackages(packages: PackageResolution|ImportedPackage): Promise<PackageResolution|ImportedPackage>;
-  run(assembly: AssemblyInput|NativeWasmArtifact, options?: ExecutionOptions): Promise<ExecutionResult>;
+  run(assembly: AssemblyInput|NativeWasmArtifact|JavaScriptArtifact, options?: ExecutionOptions): Promise<ExecutionResult>;
   invoke(assemblyIdOrBase64: string, typeName: string, methodName: string, args?: unknown[], options?: ManagedInvocationOptions): Promise<ExecutionResult>;
   createObject(assemblyIdOrBase64:string,typeName:string,args?:unknown[],options?:InvocationOptions):Promise<ObjectHandle>;
   invokeObject(handle:ObjectHandle|string,methodName:string,args?:unknown[],options?:InvocationOptions):Promise<ExecutionResult>;
@@ -171,12 +192,10 @@ export interface RoslynCompiler {
   releaseObject(handle:ObjectHandle|string):Promise<{success:boolean}>;
   compileFunction(spec:FunctionSpec):Promise<CompiledFunction|CompilationResult>;
   evaluate(expression:string,options?:FunctionSpec & {arguments?:unknown[]}):Promise<ExecutionResult|CompilationResult>;
-  emitJavaScript(assembly: AssemblyInput, options?: Record<string,unknown>): Promise<{model:AssemblyModel;analysis:unknown;source:string}>;
+  emitJavaScript(assembly: AssemblyInput|AssemblyModel, options?: JavaScriptEmitOptions): Promise<JavaScriptArtifact>;
   dispose(): void;
 }
-export class RoslynError extends Error { diagnostics?: Array<Diagnostic|WasmDiagnostic>; code: string; details?: unknown }
+export class RoslynError extends Error { diagnostics?: Array<Diagnostic|WasmDiagnostic|ILDiagnostic>; code: string; details?: unknown }
 export function createRoslyn(options?: RoslynOptions): Promise<RoslynCompiler>;
-export function compileAssembly(model: AssemblyModel, options?: Record<string,unknown>): any;
-export function analyzeAssembly(model: AssemblyModel, options?: Record<string,unknown>): any;
-export function generateModule(model: AssemblyModel, options?: Record<string,unknown>): string;
+export { compileAssembly, analyzeAssembly, generateModule } from './il/index.js';
 export default createRoslyn;

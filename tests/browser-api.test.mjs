@@ -3,14 +3,16 @@ import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 import {createRoslyn} from '../src/browser.js';
 import {executeJavaScript} from '../src/execution.js';
+import {JavaScriptCompilerHost} from '../src/javascript-host.mjs';
 
 const model = (body = [{offset:0,opcode:'ldc.i4',operand:42},{offset:1,opcode:'ret'}]) => ({name:'FacadeFixture',entryPoint:1,types:[{name:'Program',fields:[],methods:[{token:1,name:'Main',declaringType:'Program',isStatic:true,returnType:'System.Int32',parameters:[],locals:[],exceptionHandlers:[],body}]}]});
 const assembly = body => ({success:true,pe:new Uint8Array([77,90]),inspection:model(body)});
 class ProtocolWorker {
   static calls=[]; static requests=[];
+  javascript=new JavaScriptCompilerHost(()=>{throw new Error('Unexpected inspection in fixture');});
   postMessage(request) {
     ProtocolWorker.calls.push(request.method); ProtocolWorker.requests.push(request);
-    queueMicrotask(() => { if (!this.closed) this.onmessage?.({data:{id:request.id,result:request.method==='$init'?{referenceCount:167}:{success:true,exitCode:0,stdout:'',stderr:''}}}); });
+    queueMicrotask(async () => { if (!this.closed) this.onmessage?.({data:{id:request.id,result:request.method==='$init'?{referenceCount:167}:request.method==='$javascript'?await this.javascript.call(...request.args):{success:true,exitCode:0,stdout:'',stderr:''}}}); });
   }
   terminate(){this.closed=true;}
 }
@@ -50,7 +52,7 @@ test('automatic compatibility fallback forwards relative files before WASM execu
   await withCompiler({},async compiler=>{
     const result=await compiler.run(unsupported,{backend:'auto',virtualFiles:{'input.txt':'seed'}});
     assert.equal(result.backend,'wasm');assert.equal(result.fallback.supported,false);
-    assert.deepEqual(ProtocolWorker.calls,['$init','RunWithFiles']);
+    assert.deepEqual(ProtocolWorker.calls,['$init','$javascript','RunWithFiles']);
   });
 });
 test('absolute managed input paths are rejected before execution and persistent auto mode selects WASM',async()=>{

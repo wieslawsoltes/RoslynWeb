@@ -1,8 +1,8 @@
 {
-  "testedAt": "2026-09-11T14:24:21.159Z",
+  "testedAt": "2026-09-11T15:27:30.499Z",
   "environment": "Actual .NET browser-wasm runtime hosted by Node; no browser rendering claim",
   "runtime": {
-    "bridgeVersion": "0.5.0",
+    "bridgeVersion": "0.6.0",
     "roslynVersion": "5.0.0.0",
     "runtimeVersion": "10.0.0",
     "referenceCount": 167,
@@ -19,87 +19,87 @@
     {
       "name": "Emit PE DLL and portable PDB from real C#",
       "status": "passed",
-      "ms": 1622
+      "ms": 2859
     },
     {
       "name": "Precise Roslyn diagnostics",
       "status": "passed",
-      "ms": 85
+      "ms": 79
     },
     {
       "name": "Multiple source files, library output and JSON static invocation",
       "status": "passed",
-      "ms": 234
+      "ms": 82
     },
     {
       "name": "Compile referenced DLL and execute consumer",
       "status": "passed",
-      "ms": 171
+      "ms": 128
     },
     {
       "name": "Records, generics and LINQ",
       "status": "passed",
-      "ms": 576
+      "ms": 642
     },
     {
       "name": "Async Task Main and exception/finally",
       "status": "passed",
-      "ms": 208
+      "ms": 243
     },
     {
       "name": "System.Text.Json and reflection",
       "status": "passed",
-      "ms": 134
+      "ms": 140
     },
     {
       "name": "Portable DLL binary metadata inspection",
       "status": "passed",
-      "ms": 107
+      "ms": 103
     },
     {
       "name": "Run generated JavaScript from actual C# MSIL",
       "status": "passed",
-      "ms": 75
+      "ms": 76
     },
     {
       "name": "JavaScript Console.Write preserves newline behavior",
       "status": "passed",
-      "ms": 42
+      "ms": 49
     },
     {
       "name": "JavaScript preserves Int64 precision and checked overflow",
       "status": "passed",
-      "ms": 53
+      "ms": 65
     },
     {
       "name": "Auto backend selects managed runtime for async code",
       "status": "passed",
-      "ms": 73
+      "ms": 216
     },
     {
       "name": "Generated ES module is executable independently of Roslyn",
       "status": "passed",
-      "ms": 25
+      "ms": 37
     },
     {
       "name": "Runtime exception preserves output and structured error",
       "status": "passed",
-      "ms": 41
+      "ms": 55
     },
     {
       "name": "Invalid DLL is rejected as an API error",
       "status": "passed",
-      "ms": 5
+      "ms": 4
     },
     {
       "name": "Load official NuGet archive and execute Newtonsoft.Json",
       "status": "passed",
-      "ms": 441
+      "ms": 517
     },
     {
       "name": "Arguments and integer exit code",
       "status": "passed",
-      "ms": 37
+      "ms": 41
     },
     {
       "name": "Int64/UInt64 JSON invocation is lossless",
@@ -109,7 +109,7 @@
     {
       "name": "Auto chooses WASM for unvalidated builtin overloads",
       "status": "passed",
-      "ms": 43
+      "ms": 35
     },
     {
       "name": "Dispose rejects further work",

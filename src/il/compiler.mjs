@@ -1,3 +1,4 @@
+import {parseFloatBits, floatNumberFromBits, floatLiteralExecutionBits} from './float-bits.mjs';
 import { ILCompilationError, capabilities } from './capabilities.mjs';
 import { createRuntime, methodKey } from './runtime.mjs';
 import { buildBasicBlocks, analyzeInt32Method, generateInt32Method } from './optimizer.mjs';
@@ -199,6 +200,10 @@ function instructionSource(instruction, next, method, inline = false, filterEntr
   if (constants.test(op)) {
     if (op.startsWith('ldc.i4')) { const suffix = op.slice(7); const value = suffix === 'm1' ? -1 : /^[0-8]$/.test(suffix) ? Number(suffix) : Number(operand); return emit(`$s.push($rt.i4(${value}));`); }
     const kind = op.split('.')[1];
+    if (['r4','r8'].includes(kind) && instruction.operandBits !== undefined) {
+      const bits=floatLiteralExecutionBits(kind,parseFloatBits(kind,instruction.operandBits)),value=floatNumberFromBits(kind,bits);
+      return emit(Number.isNaN(value)?`$s.push($rt.floatLiteral(${literal(kind)},${bits}n));`:`$s.push($rt.${kind}(${literal(value)}));`);
+    }
     return emit(`$s.push($rt.${kind}(${lit}));`);
   }
   if (locals.test(op)) {

@@ -41,6 +41,7 @@ jobs:
           DOTNET=dotnet node tests/wasm-native-verify-native.mjs
           DOTNET=dotnet node tests/compiler-v6-verify-native.mjs
           DOTNET=dotnet node tests/standard-values-verify-native.mjs
+          DOTNET=dotnet node tests/float-literals-verify-native.mjs
       - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
         run: bash scripts/prepare-desktop-fixtures.sh --check
       - name: JavaScript and project tests
@@ -67,10 +68,16 @@ jobs:
         run: node tests/desktop/wasm.mjs
       - name: Direct C# to native WebAssembly integration
         run: npm run test:wasm-native
+      - name: Optimized JavaScript and native Wasm public compiler APIs
+        run: npm run test:compilers
+      - name: TypeScript public API contract
+        run: npx --yes --package typescript@5.9.3 tsc --strict --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 tests/compiler-types.test.ts
       - name: Roslyn cache semantics and actual WebAssembly compilation latency
         run: npm run test:performance
       - name: Direct WebAssembly pipeline and execution benchmarks
         run: npm run benchmark:wasm
+      - name: Compare compiler modes and compilation caches
+        run: npm run benchmark:compilers
       - name: Upload compiler verification and performance reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -79,6 +86,7 @@ jobs:
           path: |
             docs/*verification.json
             docs/*performance.json
+            docs/compiler-performance-v6.json
           if-no-files-found: ignore
       - name: Stage browser application
         run: node scripts/stage-pages.mjs

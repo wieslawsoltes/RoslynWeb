@@ -1,6 +1,6 @@
 // Both backends admit exactly the same signatures. This metadata-only module
 // does not load the native compiler or instantiate WebAssembly.
-import {nativeIntrinsic} from '../wasm/intrinsics.mjs';
+import {nativeIntrinsic} from './intrinsic-signatures.mjs';
 export const isJavaScriptIntrinsic = ref => nativeIntrinsic(ref) !== null;
 const scratch = new DataView(new ArrayBuffer(8));
 const leading32 = value => Math.clz32(value >>> 0);
@@ -38,17 +38,18 @@ export function invokeJavaScriptIntrinsic(runtime, ref, args) {
     return done(wide ? runtime.i8(result) : runtime.i4(result));
   }
   if (descriptor.kind === 'reinterpret') {
+    if (descriptor.from === 'f64' && typeof args[0]?.floatBits === 'bigint') return done(runtime.i8(args[0].floatBits));
+    if (descriptor.from === 'f32' && typeof args[0]?.floatBits === 'bigint') return done(runtime.i4(Number(BigInt.asIntN(32,args[0].floatBits))));
     if (descriptor.from === 'f64') {scratch.setFloat64(0, values[0], true); return done(runtime.i8(scratch.getBigInt64(0, true)));}
     if (descriptor.from === 'f32') {scratch.setFloat32(0, values[0], true); return done(runtime.i4(scratch.getInt32(0, true)));}
-    if (descriptor.from === 'i64') {scratch.setBigInt64(0, BigInt(values[0]), true); return done(runtime.r8(scratch.getFloat64(0, true)));}
-    scratch.setInt32(0, Number(values[0]), true); return done(runtime.r4(scratch.getFloat32(0, true)));
+    if (descriptor.from === 'i64') return done(runtime.floatLiteral('r8',BigInt(values[0])));
+    return done(runtime.floatLiteral('r4',BigInt(Number(values[0]))));
   }
-  if (descriptor.type === 'f64') {
-    scratch.setFloat64(0, values[0], true); const magnitude = scratch.getBigUint64(0, true) & 0x7fffffffffffffffn;
-    scratch.setFloat64(0, values[1], true); const sign = scratch.getBigUint64(0, true) & 0x8000000000000000n;
-    scratch.setBigUint64(0, magnitude | sign, true); return done(runtime.r8(scratch.getFloat64(0, true)));
-  }
-  scratch.setFloat32(0, values[0], true); const magnitude = scratch.getUint32(0, true) & 0x7fffffff;
-  scratch.setFloat32(0, values[1], true); const sign = scratch.getUint32(0, true) & 0x80000000;
-  scratch.setUint32(0, magnitude | sign, true); return done(runtime.r4(scratch.getFloat32(0, true)));
+  const wide=descriptor.type==='f64', mask=wide?0x8000000000000000n:0x80000000n;
+  const bitsAt=index=>{
+    if(typeof args[index]?.floatBits==='bigint')return args[index].floatBits;
+    if(wide){scratch.setFloat64(0,values[index],true);return scratch.getBigUint64(0,true);}
+    scratch.setFloat32(0,values[index],true);return BigInt(scratch.getUint32(0,true));
+  };
+  return done(runtime.floatLiteral(wide?'r8':'r4',(bitsAt(0)&(mask-1n))|(bitsAt(1)&mask)));
 }

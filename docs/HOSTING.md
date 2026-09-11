@@ -1,7 +1,7 @@
 # Browser hosts and explicit native adapters
 
-`src/hosting/index.js` exports three independent components with no npm runtime
-dependencies: `NativeModuleRegistry`, `BrowserDesktopHost`, and
+`src/hosting/index.js` exports integration components with no npm runtime
+dependencies, including `NativeModuleRegistry`, `BrowserDesktopHost`, and
 `RemoteHostTransport`. `LinearMemory` is also available for explicit ABI work.
 The components do not start a server or contact any host when imported.
 
@@ -12,6 +12,16 @@ These are concrete integration mechanisms with different compatibility scopes:
 | Native module registry | Actual WebAssembly exports, with declared numeric/string/buffer ABI bindings | The library must already be compiled to WebAssembly for its imports and ABI. Windows PE DLLs, ELF libraries, machine code and C++/CLI assemblies cannot be loaded here. |
 | Desktop host | Real DOM controls created from a JSON widget model; managed code can supply models and process events | This is an application-facing web widget protocol. It does not implement WPF, WinForms, XAML loading, HWNDs, desktop framework assembly identities, or existing desktop binary compatibility. |
 | Remote transport | Correlated WebSocket calls to a host selected by the application | No external host server is supplied or launched. Native OS execution requires an independently installed host that implements the protocol and its own operations. |
+
+## Hosting generated C# code
+
+For managed DLL→Wasm compilation, use `compiler.compileToWasm`, `compiler.emitWasm` or `loadWasm` from `src/wasm/index.js`. `NativeModuleRegistry` remains the explicit ABI adapter for libraries already compiled to Wasm; it does not decode or compile managed DLLs. Generated numeric modules may have no imports, while managed services require the loader and the complete `src/il/` and `src/wasm/` support directories. Pure numeric-only execution requires neither Roslyn nor those support services.
+
+For generated JavaScript, use `compiler.compileToJavaScript` or `emitJavaScript`, save `artifact.source` as an ES module and deploy it with the complete `src/il/` directory at its configured `runtimeImport` path. The saved module's `createAssembly()` factory creates independent managed state. Runtime compilation with `compileAssembly`/`compileJavaScriptModule` uses `Function` and requires the corresponding CSP permission; importing a previously generated module uses static declarations. Explicit Reflection.Emit operations still require dynamic JavaScript code generation.
+
+The public compiler performs generation and ordinary execution in a Worker, preserving Stop/timeout termination for both generated backends. Repeated runs reuse compiled code and create fresh state; persistent standalone instances require explicit lifecycle management. Native Wasm uses an IL instruction budget, and generated JavaScript preserves instruction, call-depth and array limits. Synchronous standalone calls cannot be interrupted by a wall-clock timer on the same thread. Framework imports, callback code and the browser host retain their own execution privileges.
+
+Use [the native Wasm guide](NATIVE-WASM.md), [JavaScript compiler guide](JAVASCRIPT-COMPILER.md), and [compilation/performance controls](COMPILATION-PERFORMANCE.md) for their exact contracts. Windows/native DLLs, arbitrary C++/CLI binaries, desktop OS services and unrestricted native MSBuild tasks remain outside these browser compilers.
 
 ## WebAssembly library ABI
 

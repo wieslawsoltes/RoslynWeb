@@ -9,6 +9,7 @@
 <label class="section-label" for="example">EXAMPLES</label><select id="example"></select>
 <p id="example-description" class="muted"></p>
 <div class="section-label">EXECUTION</div><label class="field-label" for="backend">Backend</label><select id="backend"><option value="wasm">.NET WebAssembly</option><option value="native-wasm">MSIL → native WebAssembly</option><option value="javascript">MSIL → JavaScript</option><option value="auto">Auto (validated JS or .NET)</option></select>
+<label class="field-label" for="optimization">Compiler optimization</label><select id="optimization"><option value="optimized">Optimized</option><option value="blocks">JavaScript basic blocks</option><option value="reference">Reference (optimizations off)</option></select>
 <label class="field-label" for="arguments">Program arguments</label><input id="arguments" placeholder='["hello", "world"]' value="[]">
 <div class="section-label package-heading">ASSEMBLIES & PACKAGES</div><button id="upload" class="wide secondary">＋ Import DLL or .nupkg</button><input id="file" type="file" accept=".dll,.nupkg" multiple hidden>
 <div class="package-form"><input id="package-id" aria-label="NuGet package ID" placeholder="NuGet package ID"><input id="package-version" aria-label="NuGet package version" placeholder="Version (e.g. 13.0.3)"><button id="restore" class="secondary wide">Restore package</button></div>

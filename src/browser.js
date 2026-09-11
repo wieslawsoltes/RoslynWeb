@@ -42,7 +42,7 @@ class DirectHost {
 class WorkerHost {
   constructor(options, event) {
     this.worker = new Worker(options.workerUrl || new URL('./worker.js', import.meta.url), { type: 'module', name: 'roslyn-browser' });
-    this.pending = new Map(); this.nextId = 1; this.closed = false;
+    this.pending = new Map(); this.nextId = 1; this.closed = false; this.lifetime = new AbortController();
     this.signal = options.signal;
     this.abort = () => this.dispose(abortedError());
     this.signal?.addEventListener('abort', this.abort, { once: true });
@@ -73,7 +73,7 @@ class WorkerHost {
   }
   dispose(error = new RoslynError('Compiler worker terminated', 'DISPOSED')) {
     if (this.closed) return;
-    this.closed = true; this.error = error; this.signal?.removeEventListener('abort', this.abort); this.worker.terminate();
+    this.closed = true; this.error = error; this.signal?.removeEventListener('abort', this.abort); this.worker.terminate(); this.lifetime.abort();
     for (const entry of this.pending.values()) { clearTimeout(entry.timer); entry.reject(error); }
     this.pending.clear();
   }
@@ -91,15 +91,17 @@ function rememberAssembly(images, result, args) {
     name: result.assemblyName, version: result.version, culture: result.culture || '', publicKeyToken: result.publicKeyToken || '', base64: args[1]
   });
 }
-function sourceRequest(source, options, native = false) {
+function sourceRequest(source, options, backend = false) {
   const request = typeof source === 'string' ? {sources: [{path: 'Program.cs', text: source}], ...options}
     : Array.isArray(source) ? {sources: source, ...options} : {...source, ...options};
-  request.assemblyName ||= native ? 'BrowserWasmProgram' : `BrowserProgram_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-  request.outputKind ||= 'console'; request.emitPdb ??= !native;
-  if (native) request.optimization ||= 'release';
+  request.assemblyName ||= backend ? backend === 'javascript' ? 'BrowserJavaScriptProgram' : 'BrowserWasmProgram' : `BrowserProgram_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  request.outputKind ||= 'console'; request.emitPdb ??= !backend;
+  if (backend) request.optimization ||= 'release';
   return request;
 }
 function nativeInput(assembly) {
+  if (assembly?.name && Array.isArray(assembly.types)) return {model:assembly};
+  if (assembly?.format === 'javascript') return {format:'javascript',source:assembly.source,model:assembly.model,assemblies:assembly.assemblies,javascriptOptions:assembly.javascriptOptions};
   if (assembly?.format === 'wasm') return {bytes: asBytes(assembly.bytes), cache: assembly.cache, timings: assembly.timings};
   if (assembly instanceof ArrayBuffer || ArrayBuffer.isView(assembly)) {
     const bytes = asBytes(assembly);
@@ -156,7 +158,7 @@ export async function createRoslyn(options = {}) {
   const timeout = options.timeoutMs ?? 30000;
   const call = (method, args, ms = timeout) => host.call(method, args, ms);
   let disposed = false;
-  let nativeCommands, nativeWasm;
+  let nativeCommands, nativeWasm, javascript, javascriptExternal;
   // Serialize package/reference mutations and compiler calls, even in direct mode.
   let queue = Promise.resolve();
   const ensureActive = () => { if (disposed || host.closed) throw host.error?.code === 'ABORTED' ? host.error : new RoslynError('Compiler was disposed', 'DISPOSED'); };
@@ -173,6 +175,23 @@ export async function createRoslyn(options = {}) {
     if (!nativeWasm) { const {NativeWasmHost} = await import('./wasm/host.mjs'); nativeWasm = new NativeWasmHost((method, args) => call(method, args), host.images); }
     ensureActive();
     const result = await abortable(nativeWasm.call(operation, args), host.lifetime.signal, () => host.error);
+    ensureActive(); return result;
+  };
+  const javascriptCall = async (operation, args, ms = timeout) => {
+    if (inWorker) return call('$javascript', [operation, args], ms);
+    if (!javascript) { const {JavaScriptCompilerHost} = await import('./javascript-host.mjs'); javascript = new JavaScriptCompilerHost((method,args)=>call(method,args),host.images); }
+    ensureActive();
+    const result = await abortable(javascript.call(operation,args),host.lifetime.signal,()=>host.error);
+    ensureActive(); return result;
+  };
+  const javascriptExternalCall = async (input, runOptions) => {
+    ensureActive();
+    if (!javascriptExternal) {
+      const {JavaScriptCompilerHost} = await import('./javascript-host.mjs');
+      javascriptExternal = new JavaScriptCompilerHost((method,args)=>call(method,args),host.images);
+    }
+    ensureActive();
+    const result = await abortable(javascriptExternal.run(input,runOptions),host.lifetime.signal,()=>host.error);
     ensureActive(); return result;
   };
   const workspaceCall = request => serial(async () => decodeWorkspaceResult(requireSuccess(await call('WorkspaceFiles', [JSON.stringify(request)]))));
@@ -194,6 +213,13 @@ export async function createRoslyn(options = {}) {
         const request = sourceRequest(source, compileOptions, true), wasm = request.wasm;
         delete request.wasm;
         return wasmCall('compile', [request, wasm]);
+      });
+    },
+    compileToJavaScript(source, compileOptions = {}) {
+      return serial(() => {
+        const request = sourceRequest(source, compileOptions, 'javascript'), javascriptOptions = request.javascript;
+        delete request.javascript;
+        return javascriptCall('compile',[request,javascriptOptions]);
       });
     },
     emitWasm(assembly, emitOptions = {}) {
@@ -306,31 +332,35 @@ export async function createRoslyn(options = {}) {
       return serial(async () => {
         if (assembly?.success === false) throw new RoslynError('Compilation failed; fix the diagnostics before running', 'COMPILE_FAILED', assembly.diagnostics);
         const input = nativeInput(assembly);
-        const backend = runOptions.backend || (input.bytes ? 'native-wasm' : 'wasm');
+        const backend = runOptions.backend || (input.bytes ? 'native-wasm' : input.format === 'javascript' ? 'javascript' : 'wasm');
         if (!['wasm', 'javascript', 'auto', 'native-wasm'].includes(backend)) throw new TypeError(`Unknown execution backend: ${backend}`);
+        if (input.format === 'javascript' && backend !== 'javascript') throw new RoslynError('A JavaScript artifact requires backend:javascript.', 'JAVASCRIPT_BACKEND_MISMATCH');
         if (backend === 'native-wasm') {
           if (runOptions.workspaceId !== undefined || runOptions.removedFiles !== undefined || runOptions.maxVirtualFileCount !== undefined) throw new RoslynError('Persistent managed workspace options require backend:wasm. Native Wasm accepts virtualFiles.', 'WORKSPACE_REQUIRES_WASM');
           return wasmCall('run', [input, runOptions], runOptions.timeoutMs ?? timeout);
         }
         if (input.bytes) throw new RoslynError('A WebAssembly artifact requires backend:native-wasm.', 'WASM_BACKEND_MISMATCH');
-        const pe = peBase64(assembly);
         let analysis;
         const managedWorkspace = runOptions.workspaceId !== undefined || runOptions.removedFiles !== undefined || runOptions.maxVirtualFileCount !== undefined;
         if (managedWorkspace && backend === 'javascript') throw new RoslynError('Persistent workspace, removal, and file-count options require the WebAssembly backend.', 'WORKSPACE_REQUIRES_WASM');
-        if (backend !== 'wasm' && !managedWorkspace) {
-          const { analyzeAssembly } = await import('./il/index.js');
-          const model = assembly.inspection || requireSuccess(await call('InspectAssembly', [pe]));
-          analysis = analyzeAssembly(model, { externals: runOptions.externals, assemblies: runOptions.assemblies });
-          if (backend === 'javascript' || (analysis.supported && !analysis.dependencies?.some(dependency => dependency.overloadValidatedAtRuntime))) {
-            // Function-valued custom externals must stay in the caller's realm.
-            const jsOptions = { args: runOptions.args || [], maxInstructions: runOptions.maxInstructions ?? runOptions.maxSteps ?? 1e7, assemblies: runOptions.assemblies, virtualFiles: runOptions.virtualFiles, maxVirtualFileBytes: runOptions.maxVirtualFileBytes, captureVirtualFiles: runOptions.captureVirtualFiles, workingDirectory: runOptions.workingDirectory };
-            if (inWorker && !runOptions.externals) return call('$runJS', [model, jsOptions], runOptions.timeoutMs ?? timeout);
-            const { executeJavaScript } = await import('./execution.js');
+        if (input.format === 'javascript' && runOptions.externals) return javascriptExternalCall(input,runOptions);
+        if (!managedWorkspace && backend === 'javascript' && !runOptions.externals) return javascriptCall('run',[input,runOptions],runOptions.timeoutMs ?? timeout);
+        if (!managedWorkspace && backend === 'auto' && !runOptions.externals) {
+          const choice = await javascriptCall('tryRun',[input,runOptions],runOptions.timeoutMs ?? timeout);
+          if (choice.selected) return choice.result;
+          analysis = choice.analysis;
+        } else if (backend !== 'wasm' && !managedWorkspace) {
+          const {analyzeAssembly} = await import('./il/index.js');
+          const model = assembly.model || assembly.inspection || requireSuccess(await call('InspectAssembly',[peBase64(assembly)]));
+          analysis = analyzeAssembly(model,{externals:runOptions.externals,assemblies:runOptions.assemblies});
+          if (backend === 'javascript' || analysis.supported && !analysis.dependencies?.some(dependency=>dependency.overloadValidatedAtRuntime)) {
+            const {executeJavaScript} = await import('./execution.js');
             ensureActive();
-            const result = await executeJavaScript(model, { ...jsOptions, externals: runOptions.externals });
+            const result = await executeJavaScript(model,{...runOptions,maxInstructions:runOptions.maxInstructions ?? runOptions.maxSteps ?? 1e7});
             ensureActive(); return result;
           }
         }
+        const pe = peBase64(assembly);
         const files = hasExecutionFiles(runOptions);
         const result = decodeWorkspaceResult(await call(files ? 'RunWithFiles' : 'Run', [pe, JSON.stringify(runOptions.args || []), ...(files ? [JSON.stringify(executionFileRequest(runOptions))] : [])], runOptions.timeoutMs ?? timeout));
         return { ...result, ...(result.files ? { virtualFiles: result.files } : {}), backend: 'wasm', ...(analysis ? { fallback: analysis } : {}) };
@@ -366,12 +396,14 @@ export async function createRoslyn(options = {}) {
     },
     emitJavaScript(assembly, emitOptions = {}) {
       return serial(async () => {
-        const { analyzeAssembly, generateModule } = await import('./il/index.js');
-        const model = assembly.inspection || requireSuccess(await call('InspectAssembly', [peBase64(assembly)]));
-        return { model, analysis: analyzeAssembly(model, emitOptions), source: generateModule(model, { strict: true, ...emitOptions }) };
+        if (!emitOptions.externals) return javascriptCall('emit',[nativeInput(assembly),emitOptions]);
+        // Function-valued external callbacks stay in their originating realm.
+        const {analyzeAssembly,generateModule} = await import('./il/index.js');
+        const model = assembly.inspection || (assembly?.name && Array.isArray(assembly.types) ? assembly : requireSuccess(await call('InspectAssembly',[peBase64(assembly)])));
+        return {model,analysis:analyzeAssembly(model,emitOptions),source:generateModule(model,{strict:true,...emitOptions})};
       });
     },
-    dispose() { disposed = true; eventsClosed = true; host.dispose(); nativeCommands?.dispose(); nativeWasm?.dispose(); host.images?.clear(); listeners.clear(); }
+    dispose() { disposed = true; eventsClosed = true; host.dispose(); nativeCommands?.dispose(); nativeWasm?.dispose(); javascript?.dispose(); javascriptExternal?.dispose(); host.images?.clear(); listeners.clear(); }
   };
   return api;
 }

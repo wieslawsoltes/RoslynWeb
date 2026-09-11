@@ -1,6 +1,6 @@
 import { bootManaged } from './host.js';
 let host;
-let nativeCommands, nativeWasm;
+let nativeCommands, nativeWasm, javascript;
 const images = new Map();
 let queue = Promise.resolve();
 // Keep Worker.onmessage unset: .NET uses it to distinguish an application
@@ -15,6 +15,13 @@ const receive = ({ data }) => {
       } else if (method === '$runJS') {
         const { executeJavaScript } = await import('./execution.js');
         self.postMessage({ id, result: await executeJavaScript(args[0], args[1]) });
+      } else if (method === '$javascript') {
+        if (!host) throw new Error('Compiler worker is not initialized');
+        if (!javascript) {
+          const {JavaScriptCompilerHost} = await import('./javascript-host.mjs');
+          javascript = new JavaScriptCompilerHost((method,args)=>host.call(method,args),images);
+        }
+        self.postMessage({id,result:await javascript.call(args[0],args[1])});
       } else if (method === '$nativeWasm') {
         if (!host) throw new Error('Compiler worker is not initialized');
         if (!nativeWasm) {

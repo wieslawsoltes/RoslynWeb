@@ -1,6 +1,6 @@
 # Roslyn compilation reuse
 
-RoslynWeb reuses immutable Roslyn syntax trees and the previous compatible source compilation to accelerate repeated compilation and editor changes. It still performs C# semantic checking, runs the selected generators/analyzers, and emits a fresh PE image on every request. Unspecified assembly names and all assembly identifiers remain unique.
+RoslynWeb reuses immutable Roslyn syntax trees and the previous compatible source compilation to accelerate repeated compilation and editor changes. It still performs C# semantic checking, runs the selected generators/analyzers, and emits a fresh PE image on every request. Ordinary `compile()` calls generate unique unspecified assembly names. The one-call JavaScript and native Wasm pipelines use stable default names to permit code reuse; assembly identifiers remain unique.
 
 ```js
 const first = await compiler.compile({ source, emitPdb: false });
@@ -52,3 +52,56 @@ Every completed Roslyn emit response includes `performance`:
 Phase timings exclude request/result JSON transport and optional IL inspection. The benchmark also measures wall time around the whole exported compile call, including response serialization. Timing comparisons use release compilation without PDB, twelve source files with eighty methods each, five measured rounds per mode, and a fresh default assembly name on each request. They compare uncached compilation, identical warm sources, and one edited source with eleven unchanged sources.
 
 Run `node managed/runtime-performance-tests.mjs` after building the WASM runtime. It writes [the actual runtime measurements and semantic checks](wasm-compilation-performance.json). The suite asserts correct emitted-code execution and invalidation behavior; timing observations do not become flaky pass/fail thresholds or promises about other hardware, projects or browsers.
+
+## JavaScript and direct Wasm compilation
+
+C# compilation and generated-backend optimization are separate controls. `optimization:'release'` selects Roslyn's C# optimization level. `useCompilationCache` controls immutable Roslyn syntax/compilation reuse. The nested `javascript.optimize` and `wasm.optimize` options select the generated-code lowering:
+
+```js
+const js = await compiler.compileToJavaScript(source, {
+  assemblyName: 'EditorProgram', optimization: 'release', emitPdb: false,
+  javascript: {optimize: true}
+});
+const wasm = await compiler.compileToWasm(source, {
+  assemblyName: 'EditorProgram', optimization: 'release', emitPdb: false,
+  wasm: {optimize: true}
+});
+console.log(js.assembly.performance, js.cache, js.timings, js.optimization);
+console.log(wasm.assembly.performance, wasm.cache, wasm.timings, wasm.optimization);
+```
+
+| Control | Comparison modes |
+| --- | --- |
+| Roslyn | `useCompilationCache:false` compared with identical or edited sources using the default cache. Each request still emits fresh PE. |
+| JavaScript | `optimize:false` reference dispatch; `'blocks'` basic-block dispatch; `true` basic blocks plus proven unboxed Int32 leaf methods. |
+| Native Wasm | `optimize:false` dispatcher comparison; `true` structured reducible control flow, local-tee rewrites and conservative dispatcher fallback. Supported native intrinsics retain their native semantics. |
+| Native engine cache | `loadWasm(bytes,{cache:false})` bypasses the bounded WebAssembly.Module cache. Every load still instantiates fresh program state. |
+
+The shared assembly-host implementation keys inspection/linkage by exact input and verifies registered dependency identities. PE-backed keys use the actual PE bytes instead of repeatedly serializing the larger inspected IL tree. Caller-supplied models use their complete canonical contents, including distinct BigInt, signed-zero and nonfinite numeric values. Changed dependencies/options therefore cannot reuse another program's generated code.
+
+The JavaScript host keeps reusable compiled functions in its Worker and creates independent runtime state for each `compiler.run`. It reports `cache.emitHit` for emission and `cache.moduleHit` for execution preparation. Its 16-entry / 64-MiB accounting includes cache keys, model/source data and generated source; engine-compiled code and runtime heap overhead are additional. Each native host uses separately bounded inspection and emission caches, and `loadWasm` maintains its own exact-byte native module cache. Common host code does not mean the two backends share one execution instance or one engine-code cache.
+
+For repeated execution, create one standalone `compileJavaScriptModule(...).createRuntime()` or `loadWasm(...)` instance and invoke it repeatedly. High-level `compiler.run` deliberately creates fresh runtime state while reusing generated code. Keep a compiler alive across edits, retain stable source paths and assembly names, and omit PDBs when no debugging symbols are needed.
+
+## Cross-backend benchmark methodology
+
+[compiler-performance-v6.json](compiler-performance-v6.json) records JavaScript reference/basic-block/numeric modes and native Wasm dispatcher/optimized modes on the same real C# fixture. The report distinguishes code generation and size from instantiation and repeated execution. [direct-wasm-performance.json](direct-wasm-performance.json) remains the recorded source-to-PE-to-Wasm phase benchmark, and [wasm-compilation-performance.json](wasm-compilation-performance.json) records Roslyn cache behavior. Check each report's environment and fixture before comparing numbers from separate runs.
+
+Optimizations target different workloads: unboxed JavaScript leaf arithmetic reduces tagged-value allocation, native structured control flow removes dispatcher work from reducible methods, and intrinsic lowering replaces specific framework calls with Wasm operations. None implies every method becomes faster. Cold Roslyn startup, metadata inspection, dependency loading, framework services, generated-function compilation and native engine compilation remain distinct costs. Benchmarks do not promise latency or speedups across browsers, hardware, package sets or application workloads.
+
+## Recorded 0.6.0 measurements
+
+These local measurements used Node v24.19.0 on AMD EPYC 9V74 80-Core Processor. Each cell is the median of seven samples of 200 calls; the loop argument is 500 and Fibonacci uses 12. The same C# PE and independently checked results were used in every mode. This measures generated-code execution, excluding compilation.
+
+| Workload | Reference | Optimized |
+| --- | ---: | ---: |
+| JavaScript / Int32 loop | 146.115 ms | 17.093 ms |
+| JavaScript / Int64 loop | 240.007 ms | 236.411 ms |
+| JavaScript / Recursive Fibonacci | 317.119 ms | 315.306 ms |
+| Native Wasm / Int32 loop | 0.446 ms | 0.273 ms |
+| Native Wasm / Int64 loop | 0.486 ms | 0.421 ms |
+| Native Wasm / Recursive Fibonacci | 0.496 ms | 0.493 ms |
+
+For this three-method fixture, uncached JavaScript emission plus function construction took **0.289 ms**, and native Wasm emission took **1.016 ms**, at the median. Complete repeated C# compilation pipelines with warm caches took **27.35 ms** for JavaScript and **27.23 ms** for Wasm. The first C#→PE compilation took **1095 ms**, after **418 ms** of local runtime startup. Browser network loading is excluded. Native function-body bytes fell from 666 to 553; generated JavaScript increased in size because the specialized numeric path retains a guarded general path.
+
+These figures are observations for one small fixture and engine. Repeated measurements can change the relative performance of general JavaScript methods; select the reference or block mode when it performs better for the application. CI reruns the same benchmark and uploads its own report.
