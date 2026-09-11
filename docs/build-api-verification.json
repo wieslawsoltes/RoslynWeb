@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-11T13:34:59.563Z",
+  "testedAt": "2026-09-11T14:23:39.320Z",
   "environment": "Actual .NET browser WASM and Worker protocol under Node",
   "passed": 11,
   "failed": 0,

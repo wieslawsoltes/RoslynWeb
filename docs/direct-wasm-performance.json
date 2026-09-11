@@ -1,0 +1,246 @@
+{
+  "measuredAt": "2026-09-11T14:24:21.206Z",
+  "environment": {
+    "runtime": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalProcessors": 9
+  },
+  "methodology": "Real C# compilation in the bundled .NET WebAssembly runtime hosted by Node, followed by genuine IL-to-Wasm emission and native WebAssembly execution. Timings are sequential wall-clock measurements in this environment, with warm-up identified explicitly. Browser loading and other devices can differ. Cached work is reported separately from actual compilation.",
+  "source": "public static class NativeBenchmark {\n  public static int Add(int a, int b) => a + b;\n  public static long Sum(int count) { long total = 0; for (int i = 0; i < count; i++) total += (long)i * (i + 1); return total; }\n  public static int Fibonacci(int n) => n < 2 ? n : Fibonacci(n - 1) + Fibonacci(n - 2);\n}",
+  "sourceSha256": "1e750127e94f52d2fffb348d6154b155b8678f61cfe98a17a41271ee0912f2fc",
+  "phases": {
+    "roslynRuntimeStartup": {
+      "samples": 1,
+      "firstMs": 376.044554,
+      "minimumMs": 376.044554,
+      "medianMs": 376.044554,
+      "maximumMs": 376.044554,
+      "totalMs": 376.044554
+    },
+    "coldCSharpToPE": {
+      "samples": 1,
+      "firstMs": 1062.490585,
+      "minimumMs": 1062.490585,
+      "medianMs": 1062.490585,
+      "maximumMs": 1062.490585,
+      "totalMs": 1062.490585
+    },
+    "inspectPEToILModel": {
+      "samples": 5,
+      "firstMs": 118.6446820000001,
+      "minimumMs": 3.2370690000000195,
+      "medianMs": 3.538252000000057,
+      "maximumMs": 118.6446820000001,
+      "totalMs": 134.2269470000001
+    },
+    "uncachedILToWasmBinary": {
+      "samples": 10,
+      "firstMs": 7.608958999999913,
+      "minimumMs": 0.757385000000113,
+      "medianMs": 0.9925370000000839,
+      "maximumMs": 7.608958999999913,
+      "totalMs": 16.30463399999985
+    },
+    "webAssemblyCompileSameBytes": {
+      "samples": 10,
+      "firstMs": 3.9567689999998947,
+      "minimumMs": 0.05565200000000914,
+      "medianMs": 0.07449999999994361,
+      "maximumMs": 3.9567689999998947,
+      "totalMs": 4.695098000000144,
+      "firstCallIncluded": true
+    },
+    "portableModuleInstantiation": {
+      "samples": 1,
+      "firstMs": 0.9701290000000427,
+      "minimumMs": 0.9701290000000427,
+      "medianMs": 0.9701290000000427,
+      "maximumMs": 0.9701290000000427,
+      "totalMs": 0.9701290000000427
+    },
+    "warmCSharpToPEWithoutCompilationCache": {
+      "samples": 5,
+      "firstMs": 40.4142159999999,
+      "minimumMs": 31.160954000000174,
+      "medianMs": 36.61566600000015,
+      "maximumMs": 40.4142159999999,
+      "totalMs": 182.18695300000013
+    },
+    "exactRepeatedCSharpCompilationCache": {
+      "samples": 10,
+      "firstMs": 26.244061999999985,
+      "minimumMs": 17.42964699999993,
+      "medianMs": 19.95359399999984,
+      "maximumMs": 119.64222100000006,
+      "totalMs": 327.762123
+    },
+    "changedSourceCSharpToPE": {
+      "samples": 1,
+      "firstMs": 46.301528999999846,
+      "minimumMs": 46.301528999999846,
+      "medianMs": 46.301528999999846,
+      "maximumMs": 46.301528999999846,
+      "totalMs": 46.301528999999846
+    },
+    "publicRepeatedEmitWasmCache": {
+      "samples": 10,
+      "firstMs": 2.037250999999742,
+      "minimumMs": 0.7067010000000664,
+      "medianMs": 1.6004370000000563,
+      "maximumMs": 3.95321899999999,
+      "totalMs": 16.37054900000021
+    },
+    "publicCSharpToWasmPipelineFirst": {
+      "samples": 1,
+      "firstMs": 37.971864000000096,
+      "minimumMs": 37.971864000000096,
+      "medianMs": 37.971864000000096,
+      "maximumMs": 37.971864000000096,
+      "totalMs": 37.971864000000096
+    },
+    "publicCSharpToWasmPipelineCached": {
+      "samples": 10,
+      "firstMs": 25.76053899999988,
+      "minimumMs": 18.864070000000083,
+      "medianMs": 24.665606000000025,
+      "maximumMs": 31.48441099999991,
+      "totalMs": 250.3361300000006
+    },
+    "nativeExport1000CallsEach100Iterations": {
+      "samples": 5,
+      "firstMs": 0.7945999999997184,
+      "minimumMs": 0.45521099999996295,
+      "medianMs": 0.5134560000001329,
+      "maximumMs": 0.7945999999997184,
+      "totalMs": 2.8246399999998175
+    },
+    "managedFacade1000CallsEach100Iterations": {
+      "samples": 5,
+      "firstMs": 4.538575999999921,
+      "minimumMs": 1.4162160000000767,
+      "medianMs": 1.6119439999997667,
+      "maximumMs": 4.538575999999921,
+      "totalMs": 11.624263999999584
+    }
+  },
+  "managedRuntime": {
+    "bridgeVersion": "0.5.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 167,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "coldRoslynPerformance": {
+    "parseMs": 49.3747,
+    "compilationMs": 39.989,
+    "extensionsMs": 7.2992,
+    "emitMs": 849.4647,
+    "cache": {
+      "enabled": false,
+      "syntaxHits": 0,
+      "incrementalParses": 0,
+      "syntaxMisses": 1,
+      "compilationReused": false,
+      "retainedTrees": 0,
+      "retainedSourceBytes": 0,
+      "maxRetainedTrees": 64,
+      "maxRetainedSourceBytes": 16777216
+    }
+  },
+  "peBytes": 2560,
+  "wasmBytes": 3070,
+  "compilerTimings": {
+    "analysisMs": 0.3048989999999776,
+    "emissionMs": 0.6001940000001014,
+    "totalMs": 0.905093000000079
+  },
+  "noteOnEngineCache": "Repeated WebAssembly.compile receives identical bytes; V8 may reuse its internal code cache. The first call and repeated distribution are reported without claiming forced cold engine compilation.",
+  "warmRoslynPerformance": {
+    "parseMs": 0.9634,
+    "compilationMs": 2.6195,
+    "extensionsMs": 0.0648,
+    "emitMs": 33.2912,
+    "cache": {
+      "enabled": false,
+      "syntaxHits": 0,
+      "incrementalParses": 0,
+      "syntaxMisses": 1,
+      "compilationReused": false,
+      "retainedTrees": 0,
+      "retainedSourceBytes": 0,
+      "maxRetainedTrees": 64,
+      "maxRetainedSourceBytes": 16777216
+    }
+  },
+  "cachedRoslynPerformance": {
+    "parseMs": 0.3239,
+    "compilationMs": 1.0621,
+    "extensionsMs": 0.0749,
+    "emitMs": 44.5389,
+    "cache": {
+      "enabled": true,
+      "syntaxHits": 1,
+      "incrementalParses": 0,
+      "syntaxMisses": 0,
+      "compilationReused": true,
+      "retainedTrees": 1,
+      "retainedSourceBytes": 612,
+      "maxRetainedTrees": 64,
+      "maxRetainedSourceBytes": 16777216
+    }
+  },
+  "changedRoslynPerformance": {
+    "parseMs": 16.3082,
+    "compilationMs": 7.8189,
+    "extensionsMs": 0.0815,
+    "emitMs": 20.7063,
+    "cache": {
+      "enabled": true,
+      "syntaxHits": 0,
+      "incrementalParses": 1,
+      "syntaxMisses": 0,
+      "compilationReused": true,
+      "retainedTrees": 1,
+      "retainedSourceBytes": 620,
+      "maxRetainedTrees": 64,
+      "maxRetainedSourceBytes": 16777216
+    }
+  },
+  "publicEmissionPerformance": {
+    "analysisMs": 0,
+    "emissionMs": 0,
+    "totalMs": 1.9031730000001517,
+    "inspectionMs": 0.19645900000023175,
+    "linkMs": 0.00724099999979444,
+    "emitMs": 1.6994730000001255
+  },
+  "publicPipelinePerformance": {
+    "analysisMs": 0,
+    "emissionMs": 0,
+    "totalMs": 24.593870000000152,
+    "inspectionMs": 0.2691570000001775,
+    "linkMs": 0.014510999999856722,
+    "emitMs": 0.4099839999998949,
+    "csharpMs": 23.835433000000194
+  },
+  "publicPipelineFirstPerformance": {
+    "analysisMs": 0.6278549999997267,
+    "emissionMs": 0.9779699999999139,
+    "totalMs": 37.70191599999998,
+    "inspectionMs": 0.09920600000032209,
+    "linkMs": 0.014700999999604392,
+    "emitMs": 2.2131110000000263,
+    "csharpMs": 35.27430000000004
+  },
+  "executionWorkload": {
+    "callsPerSample": 1000,
+    "csharpLoopIterationsPerCall": 100,
+    "expectedAggregate": "333300000",
+    "resultType": "System.Int64",
+    "moduleImports": []
+  },
+  "passed": true
+}

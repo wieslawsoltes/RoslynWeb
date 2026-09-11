@@ -14,7 +14,7 @@ function abortable(promise, signal, error = abortedError) {
 
 class DirectHost {
   constructor(managed, signal) {
-    this.managed = managed; this.info = managed.info; this.closed = false;
+    this.managed = managed; this.info = managed.info; this.closed = false; this.images = new Map();
     this.lifetime = new AbortController(); this.signal = signal;
     this.abort = () => this.dispose(abortedError());
     signal?.addEventListener('abort', this.abort, { once: true });
@@ -24,7 +24,10 @@ class DirectHost {
     if (this.closed) return Promise.reject(this.error);
     const operation = Promise.resolve().then(() => {
       if (this.closed) throw this.error;
-      return this.managed.call(method, args);
+      return Promise.resolve(this.managed.call(method, args)).then(result => {
+        if (method === 'AddAssembly') rememberAssembly(this.images, result, args);
+        return result;
+      });
     });
     return abortable(operation, this.lifetime.signal, () => this.error);
   }
@@ -48,7 +51,11 @@ class WorkerHost {
       const pending = this.pending.get(data.id);
       if (!pending) return;
       this.pending.delete(data.id); clearTimeout(pending.timer);
-      if (data.error) pending.reject(new RoslynError(data.error.message, data.error.code || 'WORKER_ERROR', data.error));
+      if (data.error) {
+        const error = new RoslynError(data.error.message, data.error.code || 'WORKER_ERROR', data.error);
+        if (data.error.diagnostics) error.diagnostics = data.error.diagnostics;
+        pending.reject(error);
+      }
       else pending.resolve(data.result);
     };
     this.worker.onerror = event => this.dispose(new RoslynError(event.message || 'Compiler worker failed to load', 'WORKER_ERROR'));
@@ -77,6 +84,28 @@ function peBase64(input) {
   if (input?.peBase64) return input.peBase64;
   if (input?.pe) return toBase64(input.pe);
   return toBase64(input);
+}
+
+function rememberAssembly(images, result, args) {
+  if (result?.success && result.assemblyName) images.set(result.assemblyIdentity || `${result.assemblyName}:${result.version}:${result.culture}`, {
+    name: result.assemblyName, version: result.version, culture: result.culture || '', publicKeyToken: result.publicKeyToken || '', base64: args[1]
+  });
+}
+function sourceRequest(source, options, native = false) {
+  const request = typeof source === 'string' ? {sources: [{path: 'Program.cs', text: source}], ...options}
+    : Array.isArray(source) ? {sources: source, ...options} : {...source, ...options};
+  request.assemblyName ||= native ? 'BrowserWasmProgram' : `BrowserProgram_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+  request.outputKind ||= 'console'; request.emitPdb ??= !native;
+  if (native) request.optimization ||= 'release';
+  return request;
+}
+function nativeInput(assembly) {
+  if (assembly?.format === 'wasm') return {bytes: asBytes(assembly.bytes), cache: assembly.cache, timings: assembly.timings};
+  if (assembly instanceof ArrayBuffer || ArrayBuffer.isView(assembly)) {
+    const bytes = asBytes(assembly);
+    if (bytes[0] === 0 && bytes[1] === 97 && bytes[2] === 115 && bytes[3] === 109) return {bytes};
+  }
+  return {peBase64: peBase64(assembly), model: assembly?.inspection};
 }
 
 function workspacePath(path, directory = false) {
@@ -127,7 +156,7 @@ export async function createRoslyn(options = {}) {
   const timeout = options.timeoutMs ?? 30000;
   const call = (method, args, ms = timeout) => host.call(method, args, ms);
   let disposed = false;
-  let nativeCommands;
+  let nativeCommands, nativeWasm;
   // Serialize package/reference mutations and compiler calls, even in direct mode.
   let queue = Promise.resolve();
   const ensureActive = () => { if (disposed || host.closed) throw host.error?.code === 'ABORTED' ? host.error : new RoslynError('Compiler was disposed', 'DISPOSED'); };
@@ -139,6 +168,13 @@ export async function createRoslyn(options = {}) {
     const result = await abortable(nativeCommands.call(operation, args), options.signal);
     ensureActive(); return result;
   };
+  const wasmCall = async (operation, args, ms = timeout) => {
+    if (inWorker) return call('$nativeWasm', [operation, args], ms);
+    if (!nativeWasm) { const {NativeWasmHost} = await import('./wasm/host.mjs'); nativeWasm = new NativeWasmHost((method, args) => call(method, args), host.images); }
+    ensureActive();
+    const result = await abortable(nativeWasm.call(operation, args), host.lifetime.signal, () => host.error);
+    ensureActive(); return result;
+  };
   const workspaceCall = request => serial(async () => decodeWorkspaceResult(requireSuccess(await call('WorkspaceFiles', [JSON.stringify(request)]))));
   const api = {
     info,
@@ -146,17 +182,22 @@ export async function createRoslyn(options = {}) {
     onEvent(listener) { listeners.add(listener); return () => listeners.delete(listener); },
     compile(source, compileOptions = {}) {
       return serial(async () => {
-        const request = typeof source === 'string'
-          ? { sources: [{ path: 'Program.cs', text: source }], ...compileOptions }
-          : Array.isArray(source) ? { sources: source, ...compileOptions } : { ...source, ...compileOptions };
-        request.assemblyName ||= `BrowserProgram_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-        request.outputKind ||= 'console';
-        request.emitPdb ??= true;
+        const request = sourceRequest(source, compileOptions);
         const result = await call('Compile', [JSON.stringify(request)]);
         if (result.peBase64) result.pe = fromBase64(result.peBase64);
         if (result.pdbBase64) result.pdb = fromBase64(result.pdbBase64);
         return result;
       });
+    },
+    compileToWasm(source, compileOptions = {}) {
+      return serial(() => {
+        const request = sourceRequest(source, compileOptions, true), wasm = request.wasm;
+        delete request.wasm;
+        return wasmCall('compile', [request, wasm]);
+      });
+    },
+    emitWasm(assembly, emitOptions = {}) {
+      return serial(() => wasmCall('emit', [nativeInput(assembly), emitOptions]));
     },
     addReference(name, bytes) { return serial(async () => requireSuccess(await call('AddReference', [name, toBase64(bytes)]))); },
     addAssembly(name, bytes) { return serial(async () => requireSuccess(await call('AddAssembly', [name, toBase64(bytes)]))); },
@@ -263,9 +304,15 @@ export async function createRoslyn(options = {}) {
     },
     run(assembly, runOptions = {}) {
       return serial(async () => {
-        const backend = runOptions.backend || 'wasm';
-        if (!['wasm', 'javascript', 'auto'].includes(backend)) throw new TypeError(`Unknown execution backend: ${backend}`);
         if (assembly?.success === false) throw new RoslynError('Compilation failed; fix the diagnostics before running', 'COMPILE_FAILED', assembly.diagnostics);
+        const input = nativeInput(assembly);
+        const backend = runOptions.backend || (input.bytes ? 'native-wasm' : 'wasm');
+        if (!['wasm', 'javascript', 'auto', 'native-wasm'].includes(backend)) throw new TypeError(`Unknown execution backend: ${backend}`);
+        if (backend === 'native-wasm') {
+          if (runOptions.workspaceId !== undefined || runOptions.removedFiles !== undefined || runOptions.maxVirtualFileCount !== undefined) throw new RoslynError('Persistent managed workspace options require backend:wasm. Native Wasm accepts virtualFiles.', 'WORKSPACE_REQUIRES_WASM');
+          return wasmCall('run', [input, runOptions], runOptions.timeoutMs ?? timeout);
+        }
+        if (input.bytes) throw new RoslynError('A WebAssembly artifact requires backend:native-wasm.', 'WASM_BACKEND_MISMATCH');
         const pe = peBase64(assembly);
         let analysis;
         const managedWorkspace = runOptions.workspaceId !== undefined || runOptions.removedFiles !== undefined || runOptions.maxVirtualFileCount !== undefined;
@@ -324,7 +371,7 @@ export async function createRoslyn(options = {}) {
         return { model, analysis: analyzeAssembly(model, emitOptions), source: generateModule(model, { strict: true, ...emitOptions }) };
       });
     },
-    dispose() { disposed = true; eventsClosed = true; host.dispose(); nativeCommands?.dispose(); listeners.clear(); }
+    dispose() { disposed = true; eventsClosed = true; host.dispose(); nativeCommands?.dispose(); nativeWasm?.dispose(); host.images?.clear(); listeners.clear(); }
   };
   return api;
 }

@@ -1,0 +1,384 @@
+{
+  "testedAt": "2026-09-11T14:25:18.840Z",
+  "environment": "Actual .NET 10 browser-wasm runtime hosted by Node",
+  "runtime": {
+    "bridgeVersion": "0.5.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 170,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "passed": 10,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Unchanged source reuses Roslyn parsing and binding inputs with fresh emitted assembly identity",
+      "status": "passed",
+      "ms": 1212
+    },
+    {
+      "name": "Incremental source edit changes real WASM execution and retains semantic error checking",
+      "status": "passed",
+      "ms": 172
+    },
+    {
+      "name": "Explicit uncached compilation supplies a genuine full-parse baseline",
+      "status": "passed",
+      "ms": 22
+    },
+    {
+      "name": "Parse options and editorconfig changes alter compilation semantics",
+      "status": "passed",
+      "ms": 165
+    },
+    {
+      "name": "Reference replacement invalidates the same-identity DLL binding and assembly-ID inspection succeeds",
+      "status": "passed",
+      "ms": 264
+    },
+    {
+      "name": "Manifest-resource changes are emitted despite syntax/compilation reuse",
+      "status": "passed",
+      "ms": 153
+    },
+    {
+      "name": "Repeated cached source compilation reruns genuine stateful source generators",
+      "status": "passed",
+      "ms": 1491
+    },
+    {
+      "name": "Duplicate input paths retain separate trees and Roslyn duplicate-declaration diagnostics",
+      "status": "passed",
+      "ms": 147
+    },
+    {
+      "name": "Compiler cache source retention obeys published LRU bounds",
+      "status": "passed",
+      "ms": 81
+    },
+    {
+      "name": "Measure uncached, warm and edited real Roslyn compilation latency",
+      "status": "passed",
+      "ms": 12883
+    }
+  ],
+  "benchmark": {
+    "description": "Real Roslyn C# → emitted MSIL in .NET browser-wasm; no result caching, fresh default assembly identity; informational timing, no flaky speed threshold",
+    "rounds": 5,
+    "sourceFileCount": 12,
+    "methodsPerFile": 80,
+    "results": {
+      "uncached": {
+        "medianWallMs": 886.5748520000006,
+        "medianParseMs": 52.9696,
+        "medianCompilationMs": 0.3949,
+        "medianEmitMs": 826.3498,
+        "samples": [
+          {
+            "wallMs": 931.3351170000005,
+            "elapsedMs": 930.0144,
+            "parseMs": 52.9696,
+            "compilationMs": 0.3816,
+            "extensionsMs": 0.0766,
+            "emitMs": 874.5824,
+            "cache": {
+              "enabled": false,
+              "syntaxHits": 0,
+              "incrementalParses": 0,
+              "syntaxMisses": 12,
+              "compilationReused": false,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 886.5748520000006,
+            "elapsedMs": 885.285,
+            "parseMs": 56.8764,
+            "compilationMs": 0.4666,
+            "extensionsMs": 0.0766,
+            "emitMs": 826.3498,
+            "cache": {
+              "enabled": false,
+              "syntaxHits": 0,
+              "incrementalParses": 0,
+              "syntaxMisses": 12,
+              "compilationReused": false,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 867.5589659999996,
+            "elapsedMs": 866.1173,
+            "parseMs": 47.0664,
+            "compilationMs": 0.422,
+            "extensionsMs": 0.0733,
+            "emitMs": 817.0754,
+            "cache": {
+              "enabled": false,
+              "syntaxHits": 0,
+              "incrementalParses": 0,
+              "syntaxMisses": 12,
+              "compilationReused": false,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 723.9055379999991,
+            "elapsedMs": 721.8618,
+            "parseMs": 40.0925,
+            "compilationMs": 0.3949,
+            "extensionsMs": 0.0743,
+            "emitMs": 679.5347,
+            "cache": {
+              "enabled": false,
+              "syntaxHits": 0,
+              "incrementalParses": 0,
+              "syntaxMisses": 12,
+              "compilationReused": false,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 907.7716839999994,
+            "elapsedMs": 906.4305,
+            "parseMs": 57.4134,
+            "compilationMs": 0.3941,
+            "extensionsMs": 0.0754,
+            "emitMs": 846.4517,
+            "cache": {
+              "enabled": false,
+              "syntaxHits": 0,
+              "incrementalParses": 0,
+              "syntaxMisses": 12,
+              "compilationReused": false,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          }
+        ]
+      },
+      "warm": {
+        "medianWallMs": 739.8004179999989,
+        "medianParseMs": 0.2029,
+        "medianCompilationMs": 0.4613,
+        "medianEmitMs": 736.5856,
+        "samples": [
+          {
+            "wallMs": 979.9900949999992,
+            "elapsedMs": 978.7944,
+            "parseMs": 0.7931,
+            "compilationMs": 0.4613,
+            "extensionsMs": 0.0827,
+            "emitMs": 969.7012,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 12,
+              "incrementalParses": 0,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 739.8004179999989,
+            "elapsedMs": 738.5595,
+            "parseMs": 0.4284,
+            "compilationMs": 0.4364,
+            "extensionsMs": 0.0745,
+            "emitMs": 736.5856,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 12,
+              "incrementalParses": 0,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 702.6837850000011,
+            "elapsedMs": 701.0682,
+            "parseMs": 0.1783,
+            "compilationMs": 0.3287,
+            "extensionsMs": 0.0748,
+            "emitMs": 699.3463,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 12,
+              "incrementalParses": 0,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 750.973344,
+            "elapsedMs": 749.1492,
+            "parseMs": 0.2029,
+            "compilationMs": 0.5063,
+            "extensionsMs": 0.1011,
+            "emitMs": 745.1775,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 12,
+              "incrementalParses": 0,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 683.9835139999996,
+            "elapsedMs": 681.4347,
+            "parseMs": 0.1946,
+            "compilationMs": 0.6457,
+            "extensionsMs": 0.0836,
+            "emitMs": 678.6303,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 12,
+              "incrementalParses": 0,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          }
+        ]
+      },
+      "edited": {
+        "medianWallMs": 673.1661089999998,
+        "medianParseMs": 3.29,
+        "medianCompilationMs": 1.0239,
+        "medianEmitMs": 666.6807,
+        "samples": [
+          {
+            "wallMs": 703.9068719999996,
+            "elapsedMs": 702.5722,
+            "parseMs": 6.9592,
+            "compilationMs": 1.2013,
+            "extensionsMs": 0.0897,
+            "emitMs": 693.3456,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 11,
+              "incrementalParses": 1,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 675.096062999999,
+            "elapsedMs": 673.6778,
+            "parseMs": 4.0888,
+            "compilationMs": 0.809,
+            "extensionsMs": 0.0857,
+            "emitMs": 667.579,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 11,
+              "incrementalParses": 1,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 673.1661089999998,
+            "elapsedMs": 671.8368,
+            "parseMs": 3.29,
+            "compilationMs": 0.5935,
+            "extensionsMs": 0.0836,
+            "emitMs": 666.6807,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 11,
+              "incrementalParses": 1,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 638.3090759999995,
+            "elapsedMs": 637.0279,
+            "parseMs": 2.2435,
+            "compilationMs": 1.0239,
+            "extensionsMs": 0.0786,
+            "emitMs": 630.5217,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 11,
+              "incrementalParses": 1,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          },
+          {
+            "wallMs": 627.4735330000003,
+            "elapsedMs": 626.1399,
+            "parseMs": 2.5308,
+            "compilationMs": 1.0431,
+            "extensionsMs": 0.0766,
+            "emitMs": 621.4531,
+            "cache": {
+              "enabled": true,
+              "syntaxHits": 11,
+              "incrementalParses": 1,
+              "syntaxMisses": 0,
+              "compilationReused": true,
+              "retainedTrees": 64,
+              "retainedSourceBytes": 87564,
+              "maxRetainedTrees": 64,
+              "maxRetainedSourceBytes": 16777216
+            }
+          }
+        ]
+      }
+    },
+    "warmSpeedup": 1.1983973385643611,
+    "editedSpeedup": 1.317022411180241
+  }
+}

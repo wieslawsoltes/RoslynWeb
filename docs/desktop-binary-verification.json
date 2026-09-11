@@ -6,27 +6,27 @@
     {
       "name": "Unsigned clean-room desktop assemblies compile and install in actual WASM Worker",
       "status": "passed",
-      "ms": 3883
+      "ms": 4686
     },
     {
       "name": "forms: unchanged fixture provenance identifies original official desktop references",
       "status": "passed",
-      "ms": 1
+      "ms": 2
     },
     {
       "name": "forms: original-reference compiled DLL executes unchanged in browser WASM",
       "status": "passed",
-      "ms": 50
+      "ms": 58
     },
     {
       "name": "forms: DOM click dispatch invokes original compiled C# handler and updates state",
       "status": "passed",
-      "ms": 4
+      "ms": 5
     },
     {
       "name": "forms: text and check events invoke original compiled handlers",
       "status": "passed",
-      "ms": 7
+      "ms": 6
     },
     {
       "name": "forms: selection dispatch preserves original ObjectCollection and SelectedIndexChanged",
@@ -46,7 +46,7 @@
     {
       "name": "wpf: original-reference compiled DLL executes unchanged in browser WASM",
       "status": "passed",
-      "ms": 34
+      "ms": 37
     },
     {
       "name": "wpf: DOM click dispatch invokes original compiled C# handler and updates state",
@@ -61,22 +61,22 @@
     {
       "name": "wpf: close dispatch disposes original window and removes managed tree",
       "status": "passed",
-      "ms": 2
+      "ms": 3
     },
     {
       "name": "Native HWND access fails with an explicit capability error",
       "status": "passed",
-      "ms": 158
+      "ms": 207
     },
     {
       "name": "Synchronous native modal dialogs reject explicitly",
       "status": "passed",
-      "ms": 55
+      "ms": 64
     },
     {
       "name": "Desktop compatibility rejects JavaScript backend selection",
       "status": "passed",
-      "ms": 2
+      "ms": 1
     },
     {
       "name": "A compiler allows only one active desktop session",
@@ -86,22 +86,22 @@
     {
       "name": "WPF logical trees reject content, ancestor and multiple-parent cycles before serialization",
       "status": "passed",
-      "ms": 95
+      "ms": 105
     },
     {
       "name": "Read-only controls and disabled ancestors reject synthetic user edits",
       "status": "passed",
-      "ms": 107
+      "ms": 133
     },
     {
       "name": "Closed desktop windows cannot reopen with stale widget identifiers",
       "status": "passed",
-      "ms": 49
+      "ms": 58
     },
     {
       "name": "Disposed desktop sessions reject execution before user code can run",
       "status": "passed",
-      "ms": 42
+      "ms": 47
     }
   ]
 }

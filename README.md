@@ -1,10 +1,10 @@
 # RoslynWeb
 
-Compile C# to genuine MSIL DLLs in a browser, inspect the assembly, and execute it through .NET WebAssembly or an MSIL-to-JavaScript compiler. The library exposes a small asynchronous JavaScript API and a plain HTML/JavaScript sample editor. Compilation runs locally; no compiler server is used.
+Compile C# to genuine MSIL DLLs in a browser, inspect the assembly, and compile MSIL directly to executable WebAssembly, or execute it through the .NET runtime or the MSIL-to-JavaScript compiler. The library exposes a small asynchronous JavaScript API and a plain HTML/JavaScript sample editor. Compilation runs locally; no compiler server is used.
 
 The repository contains the complete bridge and JavaScript source, reproducible build scripts and tests. GitHub Actions builds **a runnable WebAssembly bundle**, publishes a source-and-WASM artifact, and deploys the static sample to GitHub Pages when Pages is enabled for the repository. Generated runtime binaries and downloaded test fixtures are reproduced by the build rather than committed to Git. It packages the C# compiler from **.NET SDK 10.0.100 / Roslyn 5.0**, the **.NET 10 browser runtime**, and **167 framework reference assemblies**. Roslyn receives one documented scheduling adaptation for single-thread WebAssembly, described below.
 
-The .NET backend supplies the managed type system, garbage collection, framework implementation, reflection and async execution. The JavaScript backend generates actual JavaScript method bodies from decoded MSIL and implements an explicit, tested execution subset. **This is not universal .NET, NuGet or MSIL-to-JavaScript compatibility.** DLLs must be compatible with the browser runtime; the capability matrix below explains the boundaries.
+The direct `native-wasm` backend emits actual WebAssembly method bodies and native method calls, with explicit imports for supported managed services. Numeric-only modules run with `WebAssembly.instantiate(bytes, {})`. The .NET backend supplies the managed type system, garbage collection, framework implementation, reflection and async execution. The JavaScript backend generates actual JavaScript method bodies from decoded MSIL and implements an explicit, tested execution subset. **This is not universal .NET, NuGet or MSIL-to-JavaScript compatibility.** DLLs must be compatible with the browser runtime; the capability matrix below explains the boundaries.
 
 ## Run the supplied build
 
@@ -16,7 +16,7 @@ npm run serve
 
 Open **http://localhost:8080**. Node 22 or later is sufficient to serve the supplied build. No npm packages, .NET installation, workload installation, or compiler server are required to run the included sample. Serve through HTTP or HTTPS; opening `demo/index.html` as a `file:` URL will not load browser modules correctly.
 
-The sample provides C# editing, compile/run/stop, selectable execution backends, DLL and generated-JavaScript downloads, MSIL inspection, source diagnostics, DLL and `.nupkg` import, NuGet restore, program arguments, and light/dark themes. Examples cover algorithms, LINQ and records, async and exceptions, JSON and reflection, a reusable library, Newtonsoft.Json, deliberate compiler errors, real source generators and analyzers, imported project targets, CLR objects, runtime-generated functions, browser UI controls, embedded RESX resources, managed custom build tasks, C# Reflection.Emit, dynamic type construction, managed filesystem workspaces, native WASI build tasks, original WinForms/WPF binaries, and virtual files with binary streams. Ctrl/Cmd+Enter runs the current program.
+The sample provides C# editing, compile/run/stop, selectable execution backends, DLL, native WebAssembly and generated-JavaScript downloads, MSIL inspection, source diagnostics, DLL and `.nupkg` import, NuGet restore, program arguments, and light/dark themes. Examples cover direct native compilation with catch/finally, algorithms, LINQ and records, async and exceptions, JSON and reflection, a reusable library, Newtonsoft.Json, deliberate compiler errors, real source generators and analyzers, imported project targets, CLR objects, runtime-generated functions, browser UI controls, embedded RESX resources, managed custom build tasks, C# Reflection.Emit, dynamic type construction, managed filesystem workspaces, native WASI build tasks, original WinForms/WPF binaries, and virtual files with binary streams. Ctrl/Cmd+Enter runs the current program.
 
 The sample is a static developer tool. Package restore contacts the selected package feed; source compilation and program execution stay within the runtime. It does not provide accounts, collaborative editing or a desktop IDE.
 
@@ -61,6 +61,26 @@ compiler.dispose();
 The default worker keeps compiler and execution work off the application thread. Each compiler has an independent runtime. `dispose()` terminates that worker; create a new compiler to restart. Assemblies and references stay registered for that instance's lifetime.
 
 TypeScript declarations are included for the core API, packages, projects and hosting modules.
+
+## Compile C# directly to native WebAssembly
+
+```js
+const artifact = await compiler.compileToWasm(`
+  using System;
+  public static class Program {
+    public static int Add(int a, int b) => a + b;
+    public static void Main() { Console.WriteLine(Add(20, 22)); }
+  }
+`, {assemblyName:'NativeProgram'});
+if (!artifact.success) throw new Error(artifact.error?.message || 'Compilation failed');
+const result = await compiler.run(artifact);
+console.log(result.stdout); // 42
+console.log(artifact.bytes); // Downloadable .wasm binary.
+```
+
+`compileToWasm` runs real Roslyn C#→PE/MSIL compilation and direct MSIL→Wasm emission inside the Worker. `emitWasm(assembly)` accepts an existing DLL, and `run(assembly,{backend:'native-wasm'})` compiles and executes it. For reusable libraries, load the saved binary with `loadWasm` from `@roslynweb/core/wasm` and invoke exported functions without loading Roslyn or .NET. Registered implementation DLLs are linked through their reachable methods.
+
+Native arithmetic, loops, calls, checked operations, arrays, objects, closed generics, byrefs and supported exception handlers are tested against real .NET execution. Unsupported native signatures or instructions produce explicit diagnostics. Roslyn syntax/compilation reuse, bounded Wasm emission caches and native module caching reduce repeated work. See the [direct WebAssembly API, compatibility and performance guide](docs/NATIVE-WASM.md) and its recorded phase benchmarks. Select **MSIL → native WebAssembly** in the sample and use **↓ .wasm** to save the binary.
 
 ## Compile and invoke a library
 

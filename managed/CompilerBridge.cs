@@ -79,7 +79,7 @@ public static partial class CompilerBridge
     public static string Version()
     {
         Initialize();
-        return Serialize(new { bridgeVersion = "0.4.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
+        return Serialize(new { bridgeVersion = "0.5.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
     }
 
     [JSExport]
@@ -102,6 +102,7 @@ public static partial class CompilerBridge
             var identity = metadata.GetString(metadata.GetAssemblyDefinition().Name);
             var fileName = string.IsNullOrWhiteSpace(name) ? identity + ".dll" : Path.GetFileName(name);
             References[identity] = MetadataReference.CreateFromImage(image, filePath: fileName);
+            InvalidateCachedCompilation();
             UserReferenceNames.Add(identity);
             return Serialize(new { success = true, name = fileName, assemblyName = identity, bytes = image.Length });
         }
@@ -126,7 +127,7 @@ public static partial class CompilerBridge
             if (!definition.PublicKey.IsNil) identity.SetPublicKey(metadata.GetBlobBytes(definition.PublicKey));
             DependencyImages[identity.FullName] = new(identity, image);
             return Serialize(new { success = true, name, assemblyName = identity.Name, assemblyIdentity = identity.FullName,
-                version = identity.Version?.ToString(), culture = identity.CultureName, bytes = image.Length });
+                version = identity.Version?.ToString(), culture = identity.CultureName, publicKeyToken = identity.GetPublicKeyToken() is { Length: > 0 } token ? Convert.ToHexString(token).ToLowerInvariant() : "null", bytes = image.Length });
         }
         catch (Exception error) { return Serialize(new { success = false, error = Error(error) }); }
     }
@@ -151,7 +152,12 @@ public static partial class CompilerBridge
             if (request.Sources.Count == 0) throw new ArgumentException("At least one source is required.");
             if (!LanguageVersionFacts.TryParse(request.LanguageVersion, out var language)) throw new ArgumentException($"Unknown C# language version '{request.LanguageVersion}'.");
             var parseOptions = new CSharpParseOptions(language, request.EmitXmlDocumentation ? DocumentationMode.Diagnose : DocumentationMode.Parse, SourceCodeKind.Regular, request.Defines);
-            var trees = request.Sources.Select((source, i) => CSharpSyntaxTree.ParseText(SourceText.From(source.Text, Encoding.UTF8), parseOptions, string.IsNullOrEmpty(source.Path) ? $"Source{i}.cs" : source.Path)).ToArray();
+            var cache = new CompileCacheReport { Enabled = request.UseCompilationCache };
+            var phase = Stopwatch.StartNew();
+            var sourcePaths = new HashSet<string>(StringComparer.Ordinal);
+            var trees = request.Sources.Select((source, i) => ParseSourceCached(source, i, parseOptions, cache, sourcePaths)).ToArray();
+            var parseMs = phase.Elapsed.TotalMilliseconds;
+            phase.Restart();
             var output = request.OutputKind.ToLowerInvariant() switch
             {
                 "library" or "dll" or "dynamicallylinkedlibrary" => OutputKind.DynamicallyLinkedLibrary,
@@ -177,10 +183,14 @@ public static partial class CompilerBridge
                 references = References.Where(pair => required.Contains(pair.Key) || !UserReferenceNames.Contains(pair.Key)).Select(pair => pair.Value);
             }
             var assemblyName = string.IsNullOrWhiteSpace(request.AssemblyName) ? "BrowserProgram_" + Guid.NewGuid().ToString("N") : request.AssemblyName;
-            var config = new BrowserAnalyzerConfigOptionsProvider(request);
+            var config = GetCompilerConfiguration(request);
             options = options.WithSyntaxTreeOptionsProvider(config.SyntaxOptions);
-            var compilation = CSharpCompilation.Create(assemblyName, trees, references, options);
+            var compilation = CreateCompilationCached(assemblyName, trees, references.ToArray(), options, cache);
+            var compilationMs = phase.Elapsed.TotalMilliseconds;
+            phase.Restart();
             var extensionResult = await RunCompilerExtensions(compilation, parseOptions, request, config);
+            var extensionsMs = phase.Elapsed.TotalMilliseconds;
+            phase.Restart();
             compilation = extensionResult.Compilation;
             var extensionFields = extensionResult.Report;
             using var pe = new MemoryStream();
@@ -188,16 +198,18 @@ public static partial class CompilerBridge
             using var xml = request.EmitXmlDocumentation ? new MemoryStream() : null;
             var resources = request.Resources.Select(CreateManifestResource).ToArray();
             var emitted = compilation.Emit(pe, pdb, xmlDocumentationStream: xml, manifestResources: resources, options: new EmitOptions(debugInformationFormat: DebugInformationFormat.PortablePdb, pdbFilePath: assemblyName + ".pdb"));
+            var emitMs = phase.Elapsed.TotalMilliseconds;
+            var performance = new { parseMs, compilationMs, extensionsMs, emitMs, cache };
             var diagnostics = emitted.Diagnostics.Concat(extensionResult.Diagnostics)
                 .Distinct(DiagnosticIdentityComparer.Instance).Select(DiagnosticInfo).ToArray();
             var success = emitted.Success && !extensionResult.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error && !d.IsSuppressed);
-            if (!success) return Serialize(new { success = false, diagnostics, elapsedMs = watch.Elapsed.TotalMilliseconds,
+            if (!success) return Serialize(new { success = false, diagnostics, performance, elapsedMs = watch.Elapsed.TotalMilliseconds,
                 generatedSources = extensionResult.GeneratedSources, generatorDiagnostics = extensionResult.GeneratorDiagnostics,
                 analyzerDiagnostics = extensionResult.AnalyzerDiagnostics, compilerExtensionsReport = extensionFields });
             var image = pe.ToArray();
             var id = Guid.NewGuid().ToString("N");
             CompilationImages[id] = image;
-            return Serialize(new { success = true, assemblyId = id, assemblyName, peBase64 = Convert.ToBase64String(image), pdbBase64 = pdb is null ? null : Convert.ToBase64String(pdb.ToArray()), xmlDocumentation = xml is null ? null : Encoding.UTF8.GetString(xml.ToArray()), diagnostics, generatedSources = extensionResult.GeneratedSources, generatorDiagnostics = extensionResult.GeneratorDiagnostics, analyzerDiagnostics = extensionResult.AnalyzerDiagnostics, compilerExtensionsReport = extensionFields, elapsedMs = watch.Elapsed.TotalMilliseconds, inspection = request.IncludeInspection ? IlInspector.Inspect(image) : null });
+            return Serialize(new { success = true, assemblyId = id, assemblyName, peBase64 = Convert.ToBase64String(image), pdbBase64 = pdb is null ? null : Convert.ToBase64String(pdb.ToArray()), xmlDocumentation = xml is null ? null : Encoding.UTF8.GetString(xml.ToArray()), diagnostics, generatedSources = extensionResult.GeneratedSources, generatorDiagnostics = extensionResult.GeneratorDiagnostics, analyzerDiagnostics = extensionResult.AnalyzerDiagnostics, compilerExtensionsReport = extensionFields, performance, elapsedMs = watch.Elapsed.TotalMilliseconds, inspection = request.IncludeInspection ? IlInspector.Inspect(image) : null });
         }
         catch (Exception error) { return Serialize(new { success = false, error = Error(error), elapsedMs = watch.Elapsed.TotalMilliseconds }); }
     }
@@ -205,7 +217,7 @@ public static partial class CompilerBridge
     [JSExport]
     public static string InspectAssembly(string base64)
     {
-        try { return Serialize(IlInspector.Inspect(Convert.FromBase64String(base64))); }
+        try { return Serialize(IlInspector.Inspect(CompilationImages.TryGetValue(base64, out var compiled) ? compiled : Convert.FromBase64String(base64))); }
         catch (Exception error) { return Serialize(new { success = false, error = Error(error) }); }
     }
 
@@ -381,6 +393,7 @@ public sealed class CompileRequest
     public bool EmitPdb { get; set; } = true;
     public bool EmitXmlDocumentation { get; set; }
     public bool IncludeInspection { get; set; }
+    public bool UseCompilationCache { get; set; } = true;
     public List<string> Defines { get; set; } = [];
     public List<string> Usings { get; set; } = [];
     public List<string>? ReferenceNames { get; set; }

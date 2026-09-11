@@ -4,7 +4,7 @@ import {join} from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const output=join(root,'artifacts','pages');
 await rm(output,{recursive:true,force:true});await mkdir(output,{recursive:true});
-for(const dir of ['demo','src','dist'])await cp(join(root,dir),join(output,dir),{recursive:true,filter:path=>!path.endsWith('.br')&&!path.endsWith('.gz')});
+for(const dir of ['demo','src','dist','docs'])await cp(join(root,dir),join(output,dir),{recursive:true,filter:path=>!path.endsWith('.br')&&!path.endsWith('.gz')});
 for(const file of ['README.md','LICENSE','THIRD-PARTY-NOTICES.md'])await cp(join(root,file),join(output,file));
 await cp(join(root,'licenses'),join(output,'licenses'),{recursive:true});
 await writeFile(join(output,'.nojekyll'),'');

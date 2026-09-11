@@ -52,3 +52,9 @@ Analyzer assets are dependency-registered before activation; actual Roslyn drive
 The artifact includes source and a prebuilt static runtime. Source rebuilds use SDK 10.0.100, pinned package versions and the adaptation tool. The pruning script reads .NET's embedded boot manifest and only removes obsolete generated fingerprint assets that are not referenced by the active build.
 
 Verification separates JavaScript unit tests, native managed assertions, the actual .NET WASM runtime hosted by Node, live official NuGet restore, and Worker protocol execution. Browser rendering and browser-host policy behavior are separate and were not validated in the restricted preview environment. A browser verification page and optional Playwright runner are included for the target host.
+
+## Direct native WebAssembly pipeline
+
+`src/wasm/analysis.mjs` resolves the reachable method graph and validates typed IL control flow. `compiler.mjs` and `binary.mjs` write an actual Wasm module with native method functions, typed stack slots, basic-block dispatch and native instruction-budget accounting. `exceptions.mjs` supplies metadata-only handler routing; catch and finally instructions execute in generated Wasm. `runtime.mjs` validates the embedded manifest, creates explicit CLR service imports when required and instantiates the native module. It never interprets user IL. Pure numeric modules need no imports.
+
+`host.mjs` integrates inspection, registered implementation DLL linkage and emission caches. The compiler Worker handles source→PE→inspection→Wasm in one request. `compileToWasm` uses real Roslyn output; `emitWasm` accepts existing managed images. The existing .NET `wasm` backend and direct `native-wasm` backend retain separate names and compatibility contracts. See [NATIVE-WASM.md](NATIVE-WASM.md) for the API, module ABI, runtime services, supported boundaries, caching and measured performance.
