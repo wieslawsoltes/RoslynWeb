@@ -16,7 +16,7 @@ const reportDir = resolve(root, 'artifacts', 'browser-' + engine);
 await mkdir(reportDir, { recursive: true });
 const report = { engine, testedAt: new Date().toISOString(), realBrowser: true, tests: [], console: [], pageErrors: [], failedRequests: [], httpErrors: [] };
 const pageFailures = new WeakMap();
-let server, browser, context, currentPage;
+let server, browser, context, currentPage, portableWasmBytes;
 const timeout = Number(process.env.BROWSER_TIMEOUT_MS || 180000);
 
 async function startServer() {
@@ -87,7 +87,7 @@ async function runExample(page, label, backend, expected) {
   await page.locator('#example').selectOption({ label });
   await page.locator('#backend').selectOption(backend);
   await page.locator('#run').click();
-  await waitFor(page, () => ['Finished', 'Compilation failed', 'Execution failed', 'Error', 'Runtime unavailable'].includes(document.querySelector('#status')?.textContent), `Example did not finish: ${label}`);
+  await waitFor(page, () => ['Finished', 'Compilation failed', 'Native compilation failed', 'Execution failed', 'Error', 'Runtime unavailable'].includes(document.querySelector('#status')?.textContent), `Example did not finish: ${label}`);
   const output = await page.locator('#console').innerText();
   assert.equal(await page.locator('#status').innerText(), 'Finished', `${label}: ${output}`);
   for (const text of expected) assert.ok(output.includes(text), `${label}: missing ${JSON.stringify(text)} in ${output}`);
@@ -117,6 +117,81 @@ try {
     assert.deepEqual(await page.evaluate(() => ({ pe: [...window.lab.artifact.pe.slice(0, 2)], pdb: [...window.lab.artifact.pdb.slice(0, 4)] })), { pe: [77, 90], pdb: [66, 83, 74, 66] });
   });
   await test('Demo compiles emitted MSIL to JavaScript and executes it', () => runExample(page, 'Algorithms → JavaScript', 'javascript', ['Array total:\n30', 'Fibonacci(12):\n144', 'Process exited with code 0 · javascript']));
+
+
+  await test('Demo compiles C# through real MSIL to native WebAssembly and executes catch/finally', async () => {
+    await runExample(page, 'C# → native WebAssembly', 'native-wasm', [
+      'Running directly compiled WebAssembly', '333833500', '6765',
+      'Native catch handler executed', 'Native finally handler executed', 'Process exited with code 0 · native-wasm'
+    ]);
+    const emitted = await page.evaluate(async () => {
+      const artifact = window.lab.wasmArtifact;
+      const module = await WebAssembly.compile(artifact.bytes);
+      return {success:artifact.success,format:artifact.format,header:[...artifact.bytes.slice(0,8)],
+        pe:[...window.lab.artifact.pe.slice(0,2)],module:module instanceof WebAssembly.Module,
+        valid:WebAssembly.validate(artifact.bytes),bytes:artifact.bytes.length,
+        exports:WebAssembly.Module.exports(module),imports:WebAssembly.Module.imports(module)};
+    });
+    assert.equal(emitted.success,true); assert.equal(emitted.format,'wasm');
+    assert.deepEqual(emitted.header,[0,97,115,109,1,0,0,0]); assert.deepEqual(emitted.pe,[77,90]);
+    assert.equal(emitted.module,true); assert.equal(emitted.valid,true);
+    assert(emitted.exports.some(item=>item.kind==='function'),'The emitted module must contain native function exports');
+    assert(emitted.imports.some(item=>item.kind==='function'),'The Console example must declare its runtime-service imports');
+    await page.locator('#tab-wasm').click();
+    assert.equal(await page.locator('#panel-wasm').isVisible(),true);
+    const displayed=JSON.parse(await page.locator('#panel-wasm').innerText());
+    assert.equal(displayed.format,'wasm'); assert.equal(displayed.bytes,emitted.bytes);
+    assert.equal(await page.locator('#download-wasm').isEnabled(),true);
+    report.nativeDemo=emitted;
+    await page.screenshot({path:resolve(reportDir,'native-wasm.png'),fullPage:true});
+  });
+  await test('Demo downloads the actual executable WebAssembly bytes', async () => {
+    const [download]=await Promise.all([page.waitForEvent('download'),page.locator('#download-wasm').click()]);
+    assert.equal(download.suggestedFilename(),'BrowserWasmProgram.wasm');
+    const target=resolve(reportDir,'BrowserWasmProgram.wasm'); await download.saveAs(target);
+    const bytes=new Uint8Array(await readFile(target));
+    assert.deepEqual([...bytes.slice(0,8)],[0,97,115,109,1,0,0,0]);
+    assert.equal(WebAssembly.validate(bytes),true);
+    assert.deepEqual([...bytes],await page.evaluate(()=>[...window.lab.wasmArtifact.bytes]));
+    report.nativeDownload={file:download.suggestedFilename(),bytes:bytes.length,valid:true};
+  });
+  await test('Browser Worker API emits a reusable native library with exact Int64 and real Wasm exports',async()=>{
+    const result=await page.evaluate(async()=>{
+      const {loadWasm}=await import('../src/wasm/index.js');
+      const source='public static class BrowserNativeApi { public static int Twice(int value) => value * 2; public static long SumSquares(int n) { long sum = 0; for (int i = 1; i <= n; i++) sum += (long)i * i; return sum; } }';
+      const options={outputKind:'library',assemblyName:'BrowserNativeApiVerification'};
+      const first=await window.lab.compiler.compileToWasm(source,options);
+      const second=await window.lab.compiler.compileToWasm(source,options);
+      if(!first.success||!second.success)throw new Error(JSON.stringify(first.success?second:first));
+      const emitted=await window.lab.compiler.emitWasm(first.assembly.assemblyId);
+      const program=await loadWasm(second.bytes);
+      try {
+        const method=program.manifest.methods.find(m=>m.type==='BrowserNativeApi'&&m.name==='Twice');
+        if(!method)throw new Error('Native Twice method export is missing');
+        return {bytes:[...second.bytes],reEmitted:[...emitted.bytes],pdb:first.assembly.pdbBase64,
+          module:program.module instanceof WebAssembly.Module,instance:program.instance instanceof WebAssembly.Instance,
+          imports:WebAssembly.Module.imports(program.module),nativeResult:program.instance.exports[method.exportName](21),
+          longResult:String(program.invoke('BrowserNativeApi::SumSquares',[1000])),
+          cache:second.assembly.performance.cache,emissionCache:second.cache};
+      } finally {program.dispose();}
+    });
+    assert.equal(result.module,true); assert.equal(result.instance,true); assert.deepEqual(result.imports,[]);
+    assert.equal(result.nativeResult,42); assert.equal(result.longResult,'333833500');
+    assert.equal(result.pdb,null); assert.equal(result.cache.syntaxHits,1); assert.equal(result.cache.compilationReused,true);
+    assert.deepEqual(result.reEmitted,result.bytes);
+    portableWasmBytes=result.bytes;
+    report.nativeApi={bytes:result.bytes.length,module:true,instance:true,imports:result.imports,nativeResult:result.nativeResult,longResult:result.longResult,cache:result.cache,emissionCache:result.emissionCache};
+  });
+  await test('Browser native compilation reports unsupported native DLL imports without execution fallback',async()=>{
+    const result=await page.evaluate(async()=>{
+      const source='public static class BrowserNativeImport { [System.Runtime.InteropServices.DllImport("unsupported-browser-native.dll")] public static extern int Native(); public static int Main() => Native(); }';
+      const output=await window.lab.compiler.compileToWasm(source,{assemblyName:'BrowserNativeImportVerification'});
+      return {success:output.success,stage:output.stage,csharpSucceeded:output.assembly?.success,diagnostics:output.diagnostics,error:output.error};
+    });
+    assert.equal(result.success,false,JSON.stringify(result)); assert.equal(result.stage,'wasm'); assert.equal(result.csharpSucceeded,true);
+    assert(result.diagnostics?.some(d=>d.severity==='error'),'Native imports need an explicit compile diagnostic');
+    report.nativeUnsupported=result;
+  });
 
   if (!external || process.env.BROWSER_FULL_DEMO === '1') {
     await test('Demo executes real source generators and analyzers', async () => {
@@ -156,6 +231,23 @@ try {
       await runExample(page,'Original WPF DLL','wasm',['Loaded the original DLL compiled against Microsoft desktop references; its bytes are unchanged.','Original managed event handlers are connected']);
       await page.locator('#panel-host').getByRole('button',{name:'Increment original WPF',exact:true}).click();
       await waitFor(page,()=>document.querySelector('#panel-host')?.textContent.includes('WPF count: 1'),'Original WPF Click handler did not update its TextBlock');
+    });
+    await test('Portable native module executes after the Roslyn Worker is disposed',async()=>{
+      assert(portableWasmBytes?.length,'The native browser API fixture must have been compiled');
+      const result=await page.evaluate(async bytes=>{
+        const compiler=window.lab.compiler; compiler.dispose();
+        let code;try{await compiler.compile('public class MustNotCompile {}',{outputKind:'library'});}catch(error){code=error.code;}
+        const {loadWasm}=await import('../src/wasm/index.js');
+        const program=await loadWasm(new Uint8Array(bytes));
+        try{return{disposed:compiler.disposed,rejectedCode:code,module:program.module instanceof WebAssembly.Module,
+          instance:program.instance instanceof WebAssembly.Instance,imports:WebAssembly.Module.imports(program.module),
+          result:String(program.invoke('BrowserNativeApi::SumSquares',[1000])),twice:program.invoke('BrowserNativeApi::Twice',[21])};}
+        finally{program.dispose();}
+      },portableWasmBytes);
+      assert.equal(result.disposed,true);assert.equal(result.rejectedCode,'DISPOSED');
+      assert.equal(result.module,true);assert.equal(result.instance,true);assert.deepEqual(result.imports,[]);
+      assert.equal(result.result,'333833500');assert.equal(result.twice,42);
+      report.nativePortable=result;
     });
     await test('Restart compiler creates a working replacement Worker', async () => {
       await page.locator('#restart').click();

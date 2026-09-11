@@ -1,15 +1,18 @@
 # Verification report
 
-RoslynWeb version: 0.4.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`.
+RoslynWeb version: 0.5.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`.
 
 ## Results
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **277 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| JavaScript unit and real-IL fixture tests | **792 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| Direct C# → MSIL → native Wasm through Worker | **12 passed, 0 failed** | `npm run test:wasm-native`; `docs/direct-wasm-verification.json` |
+| Actual WASM Roslyn cache semantics and timing | **10 passed, 0 failed** | `npm run test:performance`; `docs/wasm-compilation-performance.json` |
+| Native compiler differential execution | **438 real .NET cases passed** | Included in `npm test`; `tests/wasm-native-baseline.json` and real Roslyn PE/IL fixtures |
 | Actual .NET WebAssembly through the public JS API | **21 passed, 0 failed** | `npm run test:wasm`; `docs/wasm-verification.json` |
 | Actual WebAssembly and worker RPC in Node worker threads | **12 passed, 0 failed** | `npm run test:worker`; `docs/worker-verification.json` |
-| Native managed bridge assertions | **73 passed** | `managed/SelfTest` |
+| Native managed bridge assertions | **90 passed** | `managed/SelfTest` |
 | Actual WASM compiler extension/object tooling | **21 passed, 0 failed** | `node managed/runtime-tooling-tests.mjs`; `docs/wasm-tooling-verification.json` |
 | Extended public API through Worker | **9 passed, 0 failed** | `npm run test:compat`; `docs/compatibility-verification.json` |
 | Actual WASM custom task and resource ABI | **20 passed, 0 failed** | `node managed/runtime-build-tests.mjs`; `docs/wasm-build-verification.json` |
@@ -87,3 +90,13 @@ The JavaScript backend remains a documented CLR/BCL subset. Its Reflection.Emit 
 Compatible managed ITask implementations, bounded property functions and metadata batching, nested browser project builds, resource satellites and explicitly registered WASI Exec commands are supported. Arbitrary native OS processes, external SDK engines, inline task factories, unrestricted property functions and full MSBuild behavior remain unavailable. The native adapter requires WASM modules with supported imports; it does not execute machine-code DLLs. Optional remote transport requires an independently supplied server.
 
 The reproducible portable-PDB scheduling adaptation remains in use, with the original and patched hashes in `dist/browser-adaptation.json`.
+
+## Added version 0.5 coverage
+
+The direct backend compiles genuine Roslyn PE/MSIL fixtures to actual WebAssembly.Module/Instance objects. Its differential corpus checks numerical boundaries and float bit patterns, checked exceptions, control flow, virtual calls, closed generics, byrefs, delegates, reflection on explicitly compiled targets, struct copy/default/boxing/array semantics and nested exception handlers. Four genuine unsupported CLR shapes are explicitly rejected. Numeric modules are independently instantiated in a fresh process without Roslyn or the managed-service runtime. Dedicated unsigned enum ABI regressions preserve UInt32/UInt64 ranges even when the portable module omits type metadata.
+
+Public Worker integration compiles C#, emits native Wasm from images and assembly IDs, links a registered implementation DLL, invalidates changed caches, preserves native overflow types, catches exceptions from a compiled callee and executes a saved module after the compiler Worker is disposed. Host tests cover mutable inputs, bounded retained-data accounting, binary-content cache keys and transitive assembly identity conflicts. The compiler metadata inspector now preserves assembly identity and value-type information required by native lowering.
+
+The final local baseline suites retain all 146 existing managed-WASM/Worker checks, plus 12 direct-native checks and 10 Roslyn cache checks. Native managed assertions total 90, including 17 cache semantics tests. Generated reports record the actual pinned .NET 10.0.0 runtime and Roslyn 5.0.0.0. The timing suites distinguish source compilation, inspection, IL→Wasm emission, engine compilation, module-cache reuse and repeated native execution. Their measured results are in `docs/direct-wasm-performance.json` and `docs/wasm-compilation-performance.json`.
+
+The browser runner adds five checks to the existing staged/deployed suite: native demo output and handler execution, exact downloaded Wasm bytes, actual browser Worker native APIs, unsupported native-import diagnostics, and standalone execution after compiler disposal. The expected totals are 25 staged / 24 live checks when all pass; GitHub Actions reports actual results for the PR and deployed commit. Browser screenshots and JSON evidence are uploaded with the corresponding workflow run.

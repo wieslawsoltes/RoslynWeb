@@ -139,4 +139,5 @@ Check(resourceRun["success"]!.GetValue<bool>() && resourceRun["stdout"]!.GetValu
 Check(!Parse(CompilerBridge.ConvertResx("<root><data name=\"bad\" type=\"System.Drawing.Bitmap\"><value>anything</value></data></root>"))["success"]!.GetValue<bool>(), "unsupported serialized resource types are rejected explicitly");
 Check(!Parse(CompilerBridge.ConvertResx("<!DOCTYPE root [<!ENTITY value SYSTEM 'file:///etc/passwd'>]><root><data name=\"bad\"><value>&value;</value></data></root>"))["success"]!.GetValue<bool>(), "RESX DTD and external entity loading are disabled");
 assertions += await ExecutionFilesTests.Run();
+assertions += await CompilationCacheTests.Run();
 Console.WriteLine($"ALL {assertions} MANAGED ASSERTIONS PASSED");

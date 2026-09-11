@@ -1,8 +1,8 @@
 {
-  "testedAt": "2026-09-11T13:34:55.757Z",
+  "testedAt": "2026-09-11T14:23:37.512Z",
   "environment": "Actual .NET 10 browser-wasm runtime hosted by Node",
   "runtime": {
-    "bridgeVersion": "0.4.0",
+    "bridgeVersion": "0.5.0",
     "roslynVersion": "5.0.0.0",
     "runtimeVersion": "10.0.0",
     "referenceCount": 170,
@@ -14,22 +14,22 @@
     {
       "name": "PE property metadata preserves accessors, static flags and index signatures",
       "status": "passed",
-      "ms": 1426
+      "ms": 1378
     },
     {
       "name": "Register actual Microsoft.Build task compilation references",
       "status": "passed",
-      "ms": 37
+      "ms": 40
     },
     {
       "name": "Compile a genuine Microsoft.Build.Utilities.Task inside browser WASM",
       "status": "passed",
-      "ms": 499
+      "ms": 584
     },
     {
       "name": "Execute managed task with typed bool/int properties and virtual filesystem",
       "status": "passed",
-      "ms": 138
+      "ms": 131
     },
     {
       "name": "ITaskItem arrays, custom metadata and output path round-trip",
@@ -44,32 +44,32 @@
     {
       "name": "Task generated C# is transferred back, compiled and executed",
       "status": "passed",
-      "ms": 197
+      "ms": 179
     },
     {
       "name": "Registered dependency identity resolves a task DLL",
       "status": "passed",
-      "ms": 13
+      "ms": 11
     },
     {
       "name": "Adjacent task dependency DLLs resolve from hydrated project files",
       "status": "passed",
-      "ms": 114
+      "ms": 115
     },
     {
       "name": "Required attribute validates task input",
       "status": "passed",
-      "ms": 11
+      "ms": 9
     },
     {
       "name": "Unknown parameters are rejected before task execution",
       "status": "passed",
-      "ms": 4
+      "ms": 2
     },
     {
       "name": "Logging an error fails a task that returned true",
       "status": "passed",
-      "ms": 3
+      "ms": 1
     },
     {
       "name": "Task file deletions return removedFiles",
@@ -89,27 +89,27 @@
     {
       "name": "RESX conversion produces genuine managed resources",
       "status": "passed",
-      "ms": 532
+      "ms": 364
     },
     {
       "name": "Compile embeds raw resources, RESX and typed resource entries",
       "status": "passed",
-      "ms": 116
+      "ms": 110
     },
     {
       "name": "CreateResources exposes a standalone typed .resources writer",
       "status": "passed",
-      "ms": 2
+      "ms": 1
     },
     {
       "name": "Invalid duplicate manifest resource names produce compiler diagnostics",
       "status": "passed",
-      "ms": 47
+      "ms": 46
     },
     {
       "name": "Unsupported serialized resource values and external XML entities reject explicitly",
       "status": "passed",
-      "ms": 6
+      "ms": 4
     }
   ]
 }

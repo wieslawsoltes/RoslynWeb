@@ -1,8 +1,8 @@
 {
-  "testedAt": "2026-09-11T13:30:47.824Z",
+  "testedAt": "2026-09-11T14:23:42.846Z",
   "environment": "Actual .NET 10 browser-wasm runtime hosted by Node",
   "runtime": {
-    "bridgeVersion": "0.4.0",
+    "bridgeVersion": "0.5.0",
     "roslynVersion": "5.0.0.0",
     "runtimeVersion": "10.0.0",
     "referenceCount": 167,
@@ -14,12 +14,12 @@
     {
       "name": "Compile actual C# async System.IO program",
       "status": "passed",
-      "ms": 1789
+      "ms": 2375
     },
     {
       "name": "Seed actual .NET WASM files, run C# and capture binary snapshots",
       "status": "passed",
-      "ms": 179
+      "ms": 226
     },
     {
       "name": "Filesystem deltas report created, unchanged and deleted files accurately",
@@ -29,37 +29,37 @@
     {
       "name": "Ephemeral executions have separate filesystem workspaces",
       "status": "passed",
-      "ms": 13
+      "ms": 25
     },
     {
       "name": "Files are captured even when managed user code throws",
       "status": "passed",
-      "ms": 62
+      "ms": 79
     },
     {
       "name": "Persistent workspace seeds files and exposes configured quotas",
       "status": "passed",
-      "ms": 132
+      "ms": 139
     },
     {
       "name": "Invoke real managed methods with a persistent working filesystem",
       "status": "passed",
-      "ms": 8
+      "ms": 12
     },
     {
       "name": "File-aware invocation preserves generic and exact-signature options",
       "status": "passed",
-      "ms": 6
+      "ms": 8
     },
     {
       "name": "Persistent execution supports delta-only capture",
       "status": "passed",
-      "ms": 3
+      "ms": 5
     },
     {
       "name": "Workspace write, selected read, list and delete operate on runtime bytes",
       "status": "passed",
-      "ms": 16
+      "ms": 24
     },
     {
       "name": "Absolute paths and traversal are rejected without host file writes",
@@ -74,12 +74,12 @@
     {
       "name": "Per-execution file count and generated output byte limits are enforced",
       "status": "passed",
-      "ms": 50
+      "ms": 55
     },
     {
       "name": "Concurrent file-aware calls retain independent CWD, stdout and contents",
       "status": "passed",
-      "ms": 77
+      "ms": 81
     },
     {
       "name": "Disposing a workspace invalidates its identifier",

@@ -11,6 +11,30 @@ public static class Program
         return 0;
     }
 }` },
+  { name: 'C# → native WebAssembly', preferredBackend:'native-wasm', description:'Compile C# to MSIL and directly into a downloadable .wasm module. Loops, calls and arithmetic execute as native WebAssembly; Console uses a runtime import.', source:`using System;
+
+public static class Program
+{
+    public static long SumSquares(int n)
+    {
+        long sum = 0;
+        for (int i = 1; i <= n; i++) sum += (long)i * i;
+        return sum;
+    }
+    public static int Fibonacci(int n)
+        => n < 2 ? n : Fibonacci(n - 1) + Fibonacci(n - 2);
+    public static void Main()
+    {
+        Console.WriteLine("Running directly compiled WebAssembly");
+        Console.WriteLine("Sum of squares (1..1000):");
+        Console.WriteLine(SumSquares(1000));
+        Console.WriteLine("Fibonacci(20):");
+        Console.WriteLine(Fibonacci(20));
+        try { int zero = 0; Console.WriteLine(10 / zero); }
+        catch (DivideByZeroException) { Console.WriteLine("Native catch handler executed"); }
+        finally { Console.WriteLine("Native finally handler executed"); }
+    }
+}` },
   { name: 'Algorithms → JavaScript', preferredBackend:'javascript', description: 'Recursion, loops, arrays, integer arithmetic and method calls. Try the JavaScript backend.', source: `using System;
 
 public static class Program

@@ -6,29 +6,30 @@ import {compatibilityExamples,nativeTaskProject} from './compatibility-workflows
 const examples=[...baseExamples,...workflowExamples,...advancedExamples,...compatibilityExamples];
 const $ = id => document.getElementById(id);
 const source = $('source');
-let compiler, artifact, jsSource = '', busy = false, sourceVersion = 0, compiledVersion = -1;
+let compiler, artifact, wasmArtifact, jsSource = '', busy = false, sourceVersion = 0, compiledVersion = -1;
 let initializationController, initializationVersion = 0, desktopHost, desktopCompatibility;
-window.lab = { get compiler() { return compiler; }, get artifact() { return artifact; } };
+window.lab = { get compiler() { return compiler; }, get artifact() { return artifact; }, get wasmArtifact() { return wasmArtifact; } };
 function log(message, append = true) { $('console').textContent = (append ? $('console').textContent : '') + message + '\n'; }
 function status(text) { $('status').textContent = text; }
 function controls() {
   const ready = compiler && !compiler.disposed;
   $('compile').disabled = !ready || busy; $('run').disabled = !ready || busy;
   $('stop').disabled = !ready; $('restore').disabled = !ready || busy; $('upload').disabled = !ready || busy;
+  $('download-wasm').disabled = !wasmArtifact?.success || busy;
   $('download').disabled = !artifact?.success; $('download-js').disabled = !jsSource || !artifact?.success;
 }
-function dirty() { sourceVersion++; $('dirty').hidden = false; artifact = null; jsSource = ''; controls(); }
+function dirty() { sourceVersion++; $('dirty').hidden = false; artifact = null; wasmArtifact = null; jsSource = ''; controls(); }
 function lines() { $('line-numbers').textContent = Array.from({ length: source.value.split('\n').length }, (_, i) => i + 1).join('\n'); position(); }
 function position() { const prefix = source.value.slice(0, source.selectionStart).split('\n'); $('position').textContent = `Ln ${prefix.length}, Col ${prefix.at(-1).length + 1}`; }
 function tab(name) {
   for (const el of document.querySelectorAll('[data-tab]')) el.setAttribute('aria-selected', String(el.dataset.tab === name));
-  for (const n of ['source', 'il', 'js', 'generated', 'host']) $('panel-' + n).hidden = n !== name;
+  for (const n of ['source', 'il', 'js', 'wasm', 'generated', 'host']) $('panel-' + n).hidden = n !== name;
 }
 function diagnostics(items = []) {
   $('diagnostics').replaceChildren();
   for (const diagnostic of items) {
     const button = document.createElement('button'); button.className = 'diagnostic';
-    button.textContent = `${diagnostic.severity} ${diagnostic.id} · ${diagnostic.path || 'Program.cs'}:${diagnostic.startLine || 1}:${diagnostic.startColumn || 1} — ${diagnostic.message}`;
+    button.textContent = `${diagnostic.severity} ${diagnostic.id || diagnostic.code} · ${diagnostic.path || 'Program.cs'}:${diagnostic.startLine || 1}:${diagnostic.startColumn || 1} — ${diagnostic.message}`;
     button.onclick = () => {
       tab('source'); source.focus();
       const offset = source.value.split('\n').slice(0, Math.max(0, (diagnostic.startLine || 1) - 1)).reduce((n, s) => n + s.length + 1, 0) + Math.max(0, (diagnostic.startColumn || 1) - 1);
@@ -84,7 +85,8 @@ async function compile(context) {
   const started = performance.now(); status('Compiling'); diagnostics([]); log('Compiling Program.cs…', false);
   const example = examples[Number($('example').value)];
   const extensionOptions = await prepareExample(activeCompiler, example); context.check();
-  let compiled;
+  let compiled, nativeResult;
+  wasmArtifact = null;
   if (example?.kind === 'desktop-binary') {
     if (!desktopCompatibility) {
       desktopHost?.dispose(); desktopHost = null;
@@ -116,6 +118,9 @@ async function compile(context) {
   } else if (example?.kind === 'dynamic') {
     const fn = await activeCompiler.compileFunction({name:'Multiply',returnType:'long',parameters:[{name:'value',type:'long'},{name:'factor',type:'long'}],body:text}); context.check();
     compiled = fn.assembly || fn;
+  } else if ($('backend').value === 'native-wasm') {
+    nativeResult = await activeCompiler.compileToWasm(text,{assemblyName:'BrowserWasmProgram',nullable:'enable',includeInspection:true,...extensionOptions}); context.check();
+    compiled = nativeResult.assembly;
   } else {
     compiled = await activeCompiler.compile(text, {optimization:'release',nullable:'enable',emitPdb:true,includeInspection:true,...extensionOptions,outputKind:['objects','desktop'].includes(example?.kind) ? 'library' : 'console'}); context.check();
   }
@@ -129,6 +134,16 @@ async function compile(context) {
   log(`${compiled.originalReferenceFixture?'Loaded':'Emitted'} ${compiled.assemblyName}.dll · ${compiled.pe.length.toLocaleString()} bytes`);
   const model = compiled.inspection || await activeCompiler.inspect(compiled); context.check();
   $('panel-il').textContent = ilText(model);
+  if ($('backend').value === 'native-wasm') {
+    const result = nativeResult || await activeCompiler.emitWasm(compiled); context.check();
+    if (!result.success) {
+      diagnostics(result.diagnostics); log(result.error?.message || 'Native WebAssembly compilation failed.');
+      $('panel-wasm').textContent = JSON.stringify(result.diagnostics || result.error, null, 2);
+      status('Native compilation failed'); controls(); return false;
+    }
+    showWasm(result); jsSource = '';
+    $('panel-js').textContent = 'Select MSIL → JavaScript and compile to generate JavaScript.';
+  } else {
   try {
     const result = await activeCompiler.emitJavaScript(compiled, {runtimeImport:'../src/il/runtime.mjs'}); context.check();
     jsSource = result.source;
@@ -138,7 +153,15 @@ async function compile(context) {
     jsSource = '';
     $('panel-js').textContent = 'This assembly needs capabilities outside the JavaScript backend. Use .NET WebAssembly to execute it.\n\n' + error.message + '\n\n' + (error.diagnostics ? JSON.stringify(error.diagnostics, null, 2) : '');
   }
+  }
   status('Compiled'); controls(); return true;
+}
+function showWasm(result) {
+  wasmArtifact = result;
+  $('panel-wasm').textContent = JSON.stringify({format:result.format,bytes:result.bytes.length,exports:result.exports,imports:result.imports,cache:result.cache,timings:result.timings},null,2);
+  const t = result.timings;
+  log(`Emitted ${result.bytes.length.toLocaleString()} bytes of native WebAssembly · ${result.exports.length} exports · ${result.imports.length} runtime imports`);
+  log(`C# + inspection ${(t.csharpMs || 0).toFixed(1)} ms · MSIL → Wasm ${t.emitMs.toFixed(1)} ms${result.cache.emitHit ? ' (cached)' : ''}`);
 }
 async function operation(action) {
   if (busy) return;
@@ -162,7 +185,10 @@ $('run').onclick = () => operation(async context => {
   status('Running'); log(`Running on ${backendLabel}…`);
   const started = performance.now();
   let result;
-  if (example?.kind === 'objects') {
+  if (backend === 'native-wasm') {
+    if (!wasmArtifact) { const emitted = await activeCompiler.emitWasm(runningArtifact); context.check(); showWasm(emitted); }
+    result = await activeCompiler.run(wasmArtifact,{backend,args,timeoutMs:30000}); context.check();
+  } else if (example?.kind === 'objects') {
     const handle = await activeCompiler.createObject(runningArtifact.assemblyId, 'Counter', [10]); context.check();
     try {
       await activeCompiler.setProperty(handle, 'Value', 20); context.check();
@@ -192,11 +218,12 @@ $('run').onclick = () => operation(async context => {
   if (result.fallback) log('Auto selected .NET WebAssembly after checking JavaScript compatibility.');
   $('timing').textContent = `Execution ${(performance.now() - started).toFixed(0)} ms`;
 });
-$('restart').onclick = () => { busy = false; artifact = null; jsSource = ''; initialize(); };
-$('stop').onclick = () => { compiler?.dispose(); busy = false; artifact = null; jsSource = ''; controls(); log('Worker terminated. Starting a fresh compiler instance…'); initialize(); };
+$('restart').onclick = () => { busy = false; artifact = null; wasmArtifact = null; jsSource = ''; initialize(); };
+$('stop').onclick = () => { compiler?.dispose(); busy = false; artifact = null; wasmArtifact = null; jsSource = ''; controls(); log('Worker terminated. Starting a fresh compiler instance…'); initialize(); };
 $('clear').onclick = () => { log('', false); diagnostics([]); };
 function download(name, bytes, type = 'application/octet-stream') { const a = document.createElement('a'); const url = URL.createObjectURL(new Blob([bytes], { type })); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
 $('download').onclick = () => download(artifact.assemblyName + '.dll', artifact.pe);
+$('download-wasm').onclick = () => { if(wasmArtifact?.success) download((artifact.assemblyName || 'Program') + '.wasm',wasmArtifact.bytes,'application/wasm'); };
 $('download-js').onclick = () => { if (artifact?.success && jsSource) download(artifact.assemblyName + '.mjs', jsSource, 'text/javascript'); };
 $('upload').onclick = () => $('file').click();
 function recordPackage(label) { const li = document.createElement('li'); li.textContent = label; $('packages').append(li); }
@@ -208,7 +235,7 @@ $('file').onchange = () => operation(async context => {
     if (/\.nupkg$/i.test(file.name)) { const p = await activeCompiler.importPackage(bytes); context.check(); recordPackage(`${p.id} ${p.version}`); for (const warning of p.warnings || []) log(String(warning)); if (p.dependencies?.length) log('This local package declares dependencies. Restore those packages separately before running.'); }
     else { await activeCompiler.addDll(file.name, bytes); context.check(); recordPackage(file.name); }
   }
-  artifact = null; jsSource = ''; status('References loaded'); $('file').value = '';
+  artifact = null; wasmArtifact = null; jsSource = ''; status('References loaded'); $('file').value = '';
 });
 $('restore').onclick = () => operation(async context => {
   const id = $('package-id').value.trim(), version = $('package-version').value.trim();
@@ -217,7 +244,7 @@ $('restore').onclick = () => operation(async context => {
   const result = await context.compiler.restore([{ id, version: version.startsWith('[') || version.startsWith('(') ? version : `[${version}]` }], {signal:context.signal}); context.check();
   for (const p of result.packages) recordPackage(`${p.id} ${p.version}`);
   for (const warning of result.warnings || []) log(typeof warning === 'string' ? warning : JSON.stringify(warning));
-  artifact = null; jsSource = ''; status('Package restored'); log('Compile and run to use the restored package.');
+  artifact = null; wasmArtifact = null; jsSource = ''; status('Package restored'); log('Compile and run to use the restored package.');
 });
 for (const [index, example] of examples.entries()) { const option = document.createElement('option'); option.value = index; option.textContent = example.name; $('example').append(option); }
 function choose() { const e = examples[Number($('example').value)]; source.value = e.source; $('backend').value=e.preferredBackend || 'wasm'; $('example-description').textContent = e.description; dirty(); lines(); tab('source'); if (e.name.includes('NuGet:')) { $('package-id').value = 'Newtonsoft.Json'; $('package-version').value = '13.0.3'; } }

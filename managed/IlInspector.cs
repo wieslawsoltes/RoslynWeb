@@ -22,6 +22,7 @@ public static class IlInspector
         var reader = pe.GetMetadataReader();
         var provider = new TypeNames();
         var assemblyName = reader.IsAssembly ? reader.GetString(reader.GetAssemblyDefinition().Name) : reader.GetString(reader.GetModuleDefinition().Name);
+        var identity = reader.IsAssembly ? DescribeAssemblyIdentity(reader) : new AssemblyName(assemblyName);
         var types = reader.TypeDefinitions.Select(handle =>
         {
             var type = reader.GetTypeDefinition(handle);
@@ -32,6 +33,7 @@ public static class IlInspector
                 baseType = type.BaseType.IsNil ? null : provider.GetTypeName(reader, type.BaseType),
                 isValueType = !type.BaseType.IsNil && provider.GetTypeName(reader, type.BaseType) is "System.ValueType" or "System.Enum",
                 isEnum = !type.BaseType.IsNil && provider.GetTypeName(reader, type.BaseType) == "System.Enum",
+                isByRefLike = type.GetCustomAttributes().Any(h => CustomAttributeTypeName(reader, provider, h) == "System.Runtime.CompilerServices.IsByRefLikeAttribute"),
                 genericParameters = type.GetGenericParameters().Select(p => reader.GetString(reader.GetGenericParameter(p).Name)).ToArray(),
                 interfaces = type.GetInterfaceImplementations().Select(i => provider.GetTypeName(reader, reader.GetInterfaceImplementation(i).Interface)).ToArray(),
                 fields = type.GetFields().Select(fieldHandle => DescribeField(pe, reader, provider, fieldHandle)).ToArray(),
@@ -43,9 +45,46 @@ public static class IlInspector
         return new
         {
             success = true, schemaVersion = 1, name = assemblyName, entryPoint = entry == 0 ? (int?)null : entry,
+            assemblyIdentity = identity.FullName, version = identity.Version?.ToString(), culture = identity.CultureName ?? "", publicKeyToken = PublicKeyToken(identity),
             moduleVersionId = reader.GetGuid(reader.GetModuleDefinition().Mvid).ToString(),
-            references = reader.AssemblyReferences.Select(h => { var a = reader.GetAssemblyReference(h); return new { name = reader.GetString(a.Name), version = a.Version.ToString() }; }).ToArray(),
+            references = reader.AssemblyReferences.Select(h => { var a = DescribeAssemblyIdentity(reader, h); return new { name = a.Name, version = a.Version?.ToString(), culture = a.CultureName ?? "", publicKeyToken = PublicKeyToken(a), assemblyIdentity = a.FullName }; }).ToArray(),
+            valueTypes = provider.ValueTypeNames.OrderBy(name => name, StringComparer.Ordinal).ToArray(),
             types
+        };
+    }
+
+    private static AssemblyName DescribeAssemblyIdentity(MetadataReader reader, AssemblyReferenceHandle reference = default)
+    {
+        AssemblyName result;
+        if (reference.IsNil)
+        {
+            var definition = reader.GetAssemblyDefinition();
+            result = new AssemblyName { Name = reader.GetString(definition.Name), Version = definition.Version, CultureName = definition.Culture.IsNil ? "" : reader.GetString(definition.Culture) };
+            if (!definition.PublicKey.IsNil) result.SetPublicKey(reader.GetBlobBytes(definition.PublicKey));
+        }
+        else
+        {
+            var definition = reader.GetAssemblyReference(reference);
+            result = new AssemblyName { Name = reader.GetString(definition.Name), Version = definition.Version, CultureName = definition.Culture.IsNil ? "" : reader.GetString(definition.Culture) };
+            if (!definition.PublicKeyOrToken.IsNil)
+            {
+                if ((definition.Flags & AssemblyFlags.PublicKey) != 0) result.SetPublicKey(reader.GetBlobBytes(definition.PublicKeyOrToken));
+                else result.SetPublicKeyToken(reader.GetBlobBytes(definition.PublicKeyOrToken));
+            }
+        }
+        return result;
+    }
+
+    private static string PublicKeyToken(AssemblyName identity) => identity.GetPublicKeyToken() is { Length: > 0 } token ? Convert.ToHexString(token).ToLowerInvariant() : "null";
+
+    private static string? CustomAttributeTypeName(MetadataReader reader, TypeNames provider, CustomAttributeHandle handle)
+    {
+        var constructor = reader.GetCustomAttribute(handle).Constructor;
+        return constructor.Kind switch
+        {
+            HandleKind.MemberReference => provider.GetTypeName(reader, reader.GetMemberReference((MemberReferenceHandle)constructor).Parent),
+            HandleKind.MethodDefinition => provider.GetTypeName(reader, reader.GetMethodDefinition((MethodDefinitionHandle)constructor).GetDeclaringType()),
+            _ => null
         };
     }
 
@@ -222,10 +261,11 @@ public static class IlInspector
             {
                 var member = reader.GetMemberReference((MemberReferenceHandle)handle);
                 var parent = provider.GetTypeName(reader, member.Parent);
+                var assemblyName = ReferencedAssemblyName(reader, member.Parent);
                 if (member.GetKind() == MemberReferenceKind.Field)
-                    return new { token, name = reader.GetString(member.Name), declaringType = parent, type = member.DecodeFieldSignature(provider, (object?)null) };
+                    return new { token, name = reader.GetString(member.Name), declaringType = parent, assemblyName, type = member.DecodeFieldSignature(provider, (object?)null) };
                 var signature = member.DecodeMethodSignature(provider, (object?)null);
-                return new { token, name = reader.GetString(member.Name), declaringType = parent, genericParameterCount = signature.GenericParameterCount, returnType = signature.ReturnType, parameters = signature.ParameterTypes.Select((type, i) => new { name = "arg" + i, type }).ToArray(), isStatic = !signature.Header.IsInstance };
+                return new { token, name = reader.GetString(member.Name), declaringType = parent, assemblyName, genericParameterCount = signature.GenericParameterCount, returnType = signature.ReturnType, parameters = signature.ParameterTypes.Select((type, i) => new { name = "arg" + i, type }).ToArray(), isStatic = !signature.Header.IsInstance };
             }
             case HandleKind.MethodSpecification:
             {
@@ -248,8 +288,39 @@ public static class IlInspector
         }
     }
 
+    private static string? ReferencedAssemblyName(MetadataReader reader, EntityHandle handle)
+    {
+        switch (handle.Kind)
+        {
+            case HandleKind.AssemblyReference:
+                return reader.GetString(reader.GetAssemblyReference((AssemblyReferenceHandle)handle).Name);
+            case HandleKind.TypeReference:
+                return ReferencedAssemblyName(reader, reader.GetTypeReference((TypeReferenceHandle)handle).ResolutionScope);
+            case HandleKind.TypeDefinition:
+            case HandleKind.MethodDefinition:
+            case HandleKind.ModuleDefinition:
+                return reader.IsAssembly ? reader.GetString(reader.GetAssemblyDefinition().Name) : null;
+            case HandleKind.TypeSpecification:
+            {
+                // A MemberRef on a closed generic type points at a TypeSpec. Read only
+                // its outer definition; generic arguments can belong to other assemblies.
+                var signature = reader.GetBlobReader(reader.GetTypeSpecification((TypeSpecificationHandle)handle).Signature);
+                var code = signature.ReadSignatureTypeCode();
+                while (code is SignatureTypeCode.RequiredModifier or SignatureTypeCode.OptionalModifier)
+                {
+                    signature.ReadTypeHandle();
+                    code = signature.ReadSignatureTypeCode();
+                }
+                if (code == SignatureTypeCode.GenericTypeInstance) code = signature.ReadSignatureTypeCode();
+                return code == SignatureTypeCode.TypeHandle ? ReferencedAssemblyName(reader, signature.ReadTypeHandle()) : null;
+            }
+            default: return null;
+        }
+    }
+
     private sealed class TypeNames : ISignatureTypeProvider<string, object?>
     {
+        public HashSet<string> ValueTypeNames { get; } = [];
         public string GetArrayType(string elementType, ArrayShape shape) => elementType + "[" + new string(',', shape.Rank - 1) + "]";
         public string GetByReferenceType(string elementType) => elementType + "&";
         public string GetFunctionPointerType(MethodSignature<string> signature) => "methodptr(" + string.Join(",", signature.ParameterTypes) + ")->" + signature.ReturnType;
@@ -265,12 +336,16 @@ public static class IlInspector
         {
             var type = reader.GetTypeDefinition(handle);
             var parent = type.GetDeclaringType();
-            return parent.IsNil ? Join(reader.GetString(type.Namespace), reader.GetString(type.Name)) : GetTypeFromDefinition(reader, parent, 0) + "+" + reader.GetString(type.Name);
+            var name = parent.IsNil ? Join(reader.GetString(type.Namespace), reader.GetString(type.Name)) : GetTypeFromDefinition(reader, parent, 0) + "+" + reader.GetString(type.Name);
+            if (rawTypeKind == (byte)SignatureTypeKind.ValueType) ValueTypeNames.Add(name);
+            return name;
         }
         public string GetTypeFromReference(MetadataReader reader, TypeReferenceHandle handle, byte rawTypeKind)
         {
             var type = reader.GetTypeReference(handle);
-            return type.ResolutionScope.Kind == HandleKind.TypeReference ? GetTypeFromReference(reader, (TypeReferenceHandle)type.ResolutionScope, 0) + "+" + reader.GetString(type.Name) : Join(reader.GetString(type.Namespace), reader.GetString(type.Name));
+            var name = type.ResolutionScope.Kind == HandleKind.TypeReference ? GetTypeFromReference(reader, (TypeReferenceHandle)type.ResolutionScope, 0) + "+" + reader.GetString(type.Name) : Join(reader.GetString(type.Namespace), reader.GetString(type.Name));
+            if (rawTypeKind == (byte)SignatureTypeKind.ValueType) ValueTypeNames.Add(name);
+            return name;
         }
         public string GetTypeFromSpecification(MetadataReader reader, object? genericContext, TypeSpecificationHandle handle, byte rawTypeKind) => reader.GetTypeSpecification(handle).DecodeSignature(this, genericContext);
         private static string Join(string ns, string name) => ns.Length == 0 ? name : ns + "." + name;
