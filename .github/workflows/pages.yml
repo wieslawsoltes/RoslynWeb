@@ -40,6 +40,7 @@ jobs:
           DOTNET=dotnet node tests/projects-v4-verify-native.mjs
           DOTNET=dotnet node tests/wasm-native-verify-native.mjs
           DOTNET=dotnet node tests/compiler-v6-verify-native.mjs
+          DOTNET=dotnet node tests/compiler-v7-verify-native.mjs
           DOTNET=dotnet node tests/standard-values-verify-native.mjs
           DOTNET=dotnet node tests/float-literals-verify-native.mjs
       - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
@@ -78,6 +79,8 @@ jobs:
         run: npm run benchmark:wasm
       - name: Compare compiler modes and compilation caches
         run: npm run benchmark:compilers
+      - name: Compare typed numeric kernels and native intrinsic performance
+        run: npm run benchmark:compilers-v7
       - name: Upload compiler verification and performance reports
         if: always()
         uses: actions/upload-artifact@v4
@@ -87,6 +90,7 @@ jobs:
             docs/*verification.json
             docs/*performance.json
             docs/compiler-performance-v6.json
+            docs/compiler-performance-v7.json
           if-no-files-found: ignore
       - name: Stage browser application
         run: node scripts/stage-pages.mjs

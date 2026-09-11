@@ -2,7 +2,7 @@
 
 This directory compiles normalized ECMA-335 method bodies, produced by the managed
 Roslyn bridge, into executable JavaScript functions. The default compiler groups instructions into basic blocks and emits unboxed
-Int32 code for proven static numeric leaf methods. Other methods use generated
+Int32/Int64/Single/Double code for proven static numeric leaf methods. Other methods use generated
 block dispatch with explicit operand stacks, locals and managed values. Branches
 change compiled continuations and calls invoke generated JavaScript functions.
 `optimize:false` retains per-instruction reference dispatch; `optimize:'blocks'`

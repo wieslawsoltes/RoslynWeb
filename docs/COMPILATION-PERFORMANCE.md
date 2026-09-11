@@ -73,7 +73,7 @@ console.log(wasm.assembly.performance, wasm.cache, wasm.timings, wasm.optimizati
 | Control | Comparison modes |
 | --- | --- |
 | Roslyn | `useCompilationCache:false` compared with identical or edited sources using the default cache. Each request still emits fresh PE. |
-| JavaScript | `optimize:false` reference dispatch; `'blocks'` basic-block dispatch; `true` basic blocks plus proven unboxed Int32 leaf methods. |
+| JavaScript | `optimize:false` reference dispatch; `'blocks'` basic-block dispatch; `true` basic blocks plus proven unboxed Int32/Int64/Single/Double leaf methods. |
 | Native Wasm | `optimize:false` dispatcher comparison; `true` structured reducible control flow, local-tee rewrites and conservative dispatcher fallback. Supported native intrinsics retain their native semantics. |
 | Native engine cache | `loadWasm(bytes,{cache:false})` bypasses the bounded WebAssembly.Module cache. Every load still instantiates fresh program state. |
 
@@ -105,3 +105,22 @@ These local measurements used Node v24.19.0 on AMD EPYC 9V74 80-Core Processor. 
 For this three-method fixture, uncached JavaScript emission plus function construction took **0.289 ms**, and native Wasm emission took **1.016 ms**, at the median. Complete repeated C# compilation pipelines with warm caches took **27.35 ms** for JavaScript and **27.23 ms** for Wasm. The first C#→PE compilation took **1095 ms**, after **418 ms** of local runtime startup. Browser network loading is excluded. Native function-body bytes fell from 666 to 553; generated JavaScript increased in size because the specialized numeric path retains a guarded general path.
 
 These figures are observations for one small fixture and engine. Repeated measurements can change the relative performance of general JavaScript methods; select the reference or block mode when it performs better for the application. CI reruns the same benchmark and uploads its own report.
+
+## Typed numeric compiler measurements
+
+[compiler-performance-v7.json](compiler-performance-v7.json) records the extended compiler corpus and measurements. It uses the same real PE in all five compiler modes, with 2,296 independently obtained native .NET results. On Node 24.19.0 / V8 13.6 and an AMD EPYC 9V74, seven samples rotate execution order after warm-up. The following medians cover 100 public invocations of 500 loop iterations, including invocation and result-check overhead:
+
+| JavaScript workload | Reference (`optimize:false`) | Optimized | Ratio |
+| --- | ---: | ---: | ---: |
+| Int64 polynomial | 120.814 ms | 9.715 ms | 12.44× |
+| Int64 recurrence | 134.819 ms | 14.026 ms | 9.61× |
+| UInt64 recurrence | 123.504 ms | 11.024 ms | 11.20× |
+| Single loop | 66.956 ms | 8.570 ms | 7.81× |
+| Double loop | 74.095 ms | 8.921 ms | 8.31× |
+| Mixed numeric loop | 164.034 ms | 15.057 ms | 10.89× |
+
+These reference numbers use the current compiler with optimization disabled. They are not a comparison against the previous release. Recursive Fibonacci remained on the general path and changed from 167.562 to 171.527 ms for the report's recursive workload; it did not improve. Emission, function construction, engine compilation and instantiation are recorded separately in the JSON report.
+
+A separate historical comparison loads the exact previous source tree `61dd2be16868fc4821f2132ea5122714a8c7fc13` and compiles the same Clamp/Sign loop fixture with each compiler. For 25 calls of 500 iterations, native Clamp changed from 43.724 to 0.062 ms and Sign from 38.884 to 0.099 ms. The previous module called two JavaScript services; the new module has zero imports. These deliberately service-heavy kernels measure the benefit of eliminating a boundary crossing in every iteration. They do not predict general application speedups. Module size changed from 5,795 to 2,939 bytes, while native function bodies grew from 496 to 559 bytes as the intrinsic implementations moved into Wasm.
+
+Run `npm run benchmark:compilers-v7` for current-mode measurements. Its optional `ROSLYNWEB_BASELINE_DIR` comparison accepts an isolated checkout of the previous source plus a `benchmark-baseline.json` provenance record; that record is included in the results. No timing threshold is a correctness test. Results vary by engine, hardware and workload, and exclude browser downloads and Roslyn startup.

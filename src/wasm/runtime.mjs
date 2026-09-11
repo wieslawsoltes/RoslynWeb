@@ -142,7 +142,7 @@ function normalizeError(error, fuel, status) {
   if (error?.code || error?.$type) return error;
   if (error instanceof WebAssembly.RuntimeError) {
     if (status?.value === 1 || fuel?.value !== undefined && fuel.value < 0) return new NativeWasmError('The native WebAssembly instruction budget was exceeded.', 'WASM_INSTRUCTION_LIMIT', undefined, {cause:error});
-    const type = status?.value === 2 ? 'System.OverflowException' : status?.value === 3 ? 'System.DivideByZeroException' : status?.value === 4 ? 'System.ArithmeticException' : /divide by zero/i.test(error.message) ? 'System.DivideByZeroException' : /overflow|unrepresentable/i.test(error.message) ? 'System.OverflowException' : null;
+    const type = status?.value === 2 ? 'System.OverflowException' : status?.value === 3 ? 'System.DivideByZeroException' : status?.value === 4 ? 'System.ArithmeticException' : status?.value === 5 ? 'System.ArgumentException' : status?.value === 6 ? 'System.ArgumentOutOfRangeException' : /divide by zero/i.test(error.message) ? 'System.DivideByZeroException' : /overflow|unrepresentable/i.test(error.message) ? 'System.OverflowException' : null;
     if(type){const wrapped=new NativeWasmError(error.message,type,undefined,{cause:error});wrapped.name=wrapped.$type=type;return wrapped;}
     return new NativeWasmError(error.message,'WASM_RUNTIME_TRAP',undefined,{cause:error});
   }
@@ -331,7 +331,7 @@ function createService(descriptor, context) {
     eh_endfinally:state=>handlerBlock(exceptions.finishFinally(state)),
     eh_exception:state=>exceptions.caughtException(state),
     eh_rethrow:(state,origin)=>exceptions.rethrowException(state,origin),
-    fault:()=>{const code=Number(operand);throw new h.ManagedException(code===2?'System.OverflowException':code===3?'System.DivideByZeroException':'System.ArithmeticException',code===2?'Arithmetic operation resulted in an overflow.':code===3?'Attempted to divide by zero.':'Overflow or underflow in the arithmetic operation.');},
+    fault:()=>{const code=Number(operand);throw new h.ManagedException(code===2?'System.OverflowException':code===3?'System.DivideByZeroException':code===5?'System.ArgumentException':code===6?'System.ArgumentOutOfRangeException':'System.ArithmeticException',code===2?'Arithmetic operation resulted in an overflow.':code===3?'Attempted to divide by zero.':code===5?'The minimum value must be less than or equal to the maximum.':code===6?'Non-negative number required.':'Overflow or underflow in the arithmetic operation.');},
     ldstr:()=>String(operand??''),
     allocate:()=>rt.allocate(typeof operand==='string'?operand:operand.declaringType??operand.name),
     ensure_type:()=>rt.ensureType(typeof operand==='string'?operand:operand.name),

@@ -1,4 +1,5 @@
 import {floatNumberFromBits} from './float-bits.mjs';
+import {integerToSingle} from './integer-float.mjs';
 import { ILExecutionError, capabilities } from './capabilities.mjs';
 import { splitTypeArguments, genericDefinitionName, substituteType, substituteMetadata, matchesMethodReference } from './generics.mjs';
 import { invokeExtendedBuiltin } from './framework.mjs';
@@ -36,7 +37,7 @@ export class Numeric {
 
 export const i4 = value => new Numeric('i4', Number(value) | 0);
 export const i8 = value => new Numeric('i8', BigInt.asIntN(64, BigInt(value)));
-export const r4 = value => new Numeric('r4', Math.fround(Number(value)));
+export const r4 = value => new Numeric('r4', typeof value === 'bigint' ? integerToSingle(value) : Math.fround(Number(value)));
 export const r8 = value => new Numeric('r8', Number(value));
 export function floatLiteral(kind, bits) {
   const value = new Numeric(kind, floatNumberFromBits(kind,bits));
@@ -172,13 +173,21 @@ export function compare(opcode, left, right) {
   throw limitation(`Unsupported comparison ${opcode}.`);
 }
 
-export function convert(opcode, value) {
+export function convert(opcode, value, adjacentSingle = false) {
   if (isPointer(value) && ['conv.i','conv.u'].includes(opcode)) return value;
   let v = raw(value);
   const unsignedInput = opcode.endsWith('.un'), checked = opcode.includes('.ovf.');
   const suffix = opcode.replace(/^conv\.(ovf\.)?/, '').replace(/\.un$/, '');
-  if (opcode === 'conv.r.un') { v = value.kind === 'i8' ? BigInt.asUintN(64, BigInt(v)) : Number(v) >>> 0; return r8(v); }
-  if (suffix === 'r4') return value instanceof Numeric && value.kind === 'r4' ? value : r4(v);
+  if (opcode === 'conv.r.un') {
+    v = value.kind === 'i8' ? BigInt.asUintN(64, BigInt(v)) : Number(v) >>> 0;
+    const result = r8(v);
+    // The compiler sets this only for an immediately adjacent conv.r4. .NET
+    // recognizes that IL pair as a single unsigned-to-Single conversion. A nop,
+    // conv.r8, local store or any other intervening instruction is a barrier.
+    if (adjacentSingle && typeof v === 'bigint') result.integerSingleSource = v;
+    return result;
+  }
+  if (suffix === 'r4') return value instanceof Numeric && value.kind === 'r4' ? value : r4(value?.integerSingleSource ?? v);
   if (suffix === 'r8') return value instanceof Numeric && value.kind === 'r8' ? value : r8(v);
   if (unsignedInput && value instanceof Numeric && !value.kind.startsWith('r')) v = value.kind === 'i8' ? BigInt.asUintN(64, v) : v >>> 0;
   // conv.u8 widens an i4 evaluation-stack value by zero extension. Roslyn
@@ -1088,5 +1097,5 @@ const defaultInstructionTick = ILRuntime.prototype.tick;
 ILRuntime.prototype.hasDefaultInstructionTick = function () { return this.tick === defaultInstructionTick; };
 
 // Helpers are shared by generated methods and remain ordinary, importable JavaScript.
-Object.assign(ILRuntime.prototype, { i4, i8, r4, r8, floatLiteral, raw, truth, binary, unary, compare, convert, copy: copyValue, nullCheck });
+Object.assign(ILRuntime.prototype, { i4, i8, r4, r8, floatLiteral, integerToSingle, raw, truth, binary, unary, compare, convert, copy: copyValue, nullCheck });
 export function createRuntime(model, options = {}) { return new ILRuntime(model, options); }

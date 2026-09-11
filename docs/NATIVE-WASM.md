@@ -92,6 +92,16 @@ Framework services are a finite implementation shared with the JavaScript backen
 
 Selected `System.Numerics.BitOperations` methods compile directly to Wasm instructions: leading/trailing zero counts, population count, rotation, Log2, IsPow2 and rounding up to a power of two. Supported `BitConverter` integer/floating bit reinterpretations and `Math`/`MathF.CopySign` are native intrinsics. Existing native Math operations include square root, absolute value, minimum/maximum, ceiling, floor, truncation and single-argument rounding. Exact overload signatures are checked; an intrinsic does not establish compatibility for every member of its declaring type.
 
+Additional numeric APIs compile without runtime imports when their surrounding methods need no managed services:
+
+- `Int32`, `UInt32`, `Int64` and `UInt64`: LeadingZeroCount, TrailingZeroCount, PopCount, RotateLeft, RotateRight, Log2 and IsPow2, with their exact primitive return types.
+- `Single` and `Double`: IsFinite, IsNaN, IsInfinity, IsPositiveInfinity, IsNegativeInfinity, IsNormal, IsSubnormal, IsNegative, IsPositive, IsInteger, IsEvenInteger and IsOddInteger.
+- `Math.Sign` for SByte, Int16, Int32, Int64, Single and Double; `MathF.Sign` for Single. Floating NaN throws ArithmeticException.
+- `Math.Clamp` for Byte, SByte, Int16, UInt16, Int32, UInt32, Int64, UInt64, Single and Double. Reversed bounds throw ArgumentException; floating signed zero and NaN selection follow the tested CLR behavior.
+- `Math.BitIncrement`/`BitDecrement` for Double and the `MathF` equivalents for Single, including zero, subnormal, infinity and NaN bit patterns.
+
+Exception handlers for these operations use the existing managed exception services. Import-free modules expose native fault status to `loadWasm`, which maps the trap to its managed exception type and resets the status before the next invocation.
+
 Async state machines, arbitrary framework structs, explicit-layout or byref-like structs, unsafe pointers/native interop, open generic execution, Reflection.Emit, full CLR/BCL behavior and unrestricted runtime code generation remain outside this backend. Signatures and reachable code determine compatibility; restoring a package or recognizing a namespace does not make every API native-compatible. The .NET execution backend remains available for assemblies supported by its browser runtime.
 
 ## Compilation and execution speed
