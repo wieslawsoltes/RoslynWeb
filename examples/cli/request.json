@@ -1,0 +1,8 @@
+{
+  "id": "hello",
+  "method": "compile",
+  "args": [
+    { "$text": "examples/cli/Hello.cs" },
+    { "assemblyName": "ApiHello", "emitPdb": false }
+  ]
+}

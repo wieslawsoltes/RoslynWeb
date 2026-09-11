@@ -41,7 +41,8 @@ class DirectHost {
 
 class WorkerHost {
   constructor(options, event) {
-    this.worker = new Worker(options.workerUrl || new URL('./worker.js', import.meta.url), { type: 'module', name: 'roslyn-browser' });
+    const WorkerClass = options.Worker || globalThis.Worker;
+    this.worker = new WorkerClass(options.workerUrl || new URL('./worker.js', import.meta.url), { type: 'module', name: 'roslyn-browser' });
     this.pending = new Map(); this.nextId = 1; this.closed = false; this.lifetime = new AbortController();
     this.signal = options.signal;
     this.abort = () => this.dispose(abortedError());
@@ -142,7 +143,7 @@ export async function createRoslyn(options = {}) {
   const inWorker = options.worker !== false;
   let host, info;
   if (inWorker) {
-    if (typeof Worker === 'undefined') throw new RoslynError('Web Workers are unavailable; use a browser or pass worker:false in a compatible JS host', 'NO_WORKER');
+    if (typeof (options.Worker || globalThis.Worker) !== 'function') throw new RoslynError('Web Workers are unavailable; use a browser, import @roslynweb/core/node, or pass worker:false in a compatible JS host', 'NO_WORKER');
     host = new WorkerHost(options, event);
     try { info = await host.call('$init', [{ baseUrl, config: options.config }], options.startupTimeoutMs ?? 300000); }
     catch (error) { host.dispose(); throw error; }

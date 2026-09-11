@@ -1,12 +1,12 @@
 # Verification report
 
-RoslynWeb version: 0.7.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`. Native CLR oracle generation records the actual installed .NET 10 servicing version.
+RoslynWeb version: 0.8.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`. Native CLR oracle generation records the actual installed .NET 10 servicing version.
 
 ## Results
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **5,332 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| JavaScript unit and real-IL fixture tests | **5,408 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract, Node/CLI and transport tests |
 | Optimized JavaScript/native public compiler APIs | **15 passed, 0 failed** | `npm run test:compilers`; `docs/compiler-v6-worker-verification.json` |
 | Typed kernels, intrinsics and tuple public APIs | **6 passed, 0 failed** | `npm run test:compilers-v7`; `docs/compiler-v7-worker-verification.json` |
 | Extended numeric five-mode compiler conformance | **448 grouped tests passed** | 2,296 independent native CLR cases × five modes = 11,480 comparisons, plus fresh-process Wasm proofs; included in unit tests |
@@ -128,3 +128,13 @@ The value-interface fixture verifies tuple indexing, nested Rest, nullable/Decim
 Twenty-nine new cache tests verify shared same-PE inspection, separate returned models, failure retry, disposal, dependency changes, previously missing dependencies, relevant versus unrelated replacements, mutation before awaited work and both hot/cold preparation gaps. The six new real Worker checks compare both sample programs with .NET WASM in every compiler mode, execute import-free native numeric artifacts, catch intrinsic exceptions and test concurrent emission isolation. All fifteen previous compiler Worker checks also pass.
 
 The browser runner adds the typed numeric example in all five compiler modes and tuple interfaces in both backends. CI runs the resulting 34 staged checks and 33 deployed-site checks; actual reports and screenshots are attached to the relevant workflow run. Performance is observational, with separate reports for typed execution, historical native service elimination and warm emission host reuse. No performance threshold substitutes for semantic validation.
+
+## CLI and production Node host (0.8.0)
+
+The CLI uses the actual bundled Roslyn/.NET WASM runtime in Node worker threads. `npm run test:node` passes seven production-host integration checks. `npm run test:cli` passes five stateful JSON API checks, three actual watch-process checks, and 30 subprocess/package integration checks. These are separate suites with intentional overlap, not feature counts. Reports are in `docs/node-host-verification.json`, `docs/cli-session-verification.json`, `docs/cli-watch-verification.json` and `docs/cli-verification.json`.
+
+The 30 subprocess checks cover PE/PDB/XML, all compilation targets and execution backends, exact Int64 arguments, generators/analyzers, typed managed MSBuild tasks, referenced projects/resources, native WASI commands, DLL/NuGet import, real HTTP feed resolution and offline cached restore, handles/workspaces, persistent compilation/emission reuse, cancellation and process exit statuses. The installed-package test packs the real source/runtime, installs it offline into a new directory and executes its actual `roslynweb` binary. Managed intermediate output directories and optional precompressed copies are excluded from npm packaging; the original boot resources remain included. Generated `.mjs`/`.wasm` execution is tested with a deliberately nonexistent .NET asset directory to prove it does not start Roslyn.
+
+Watch tests execute edits through one real compiler, recover from C# syntax errors, preserve cache reuse, reject output-triggered rebuild loops and verify SIGINT cleanup. The 76 new unit/regression tests cover the Node transport, JSON codecs and session retention, persistent package caching, command and output validation, source/project boundaries, generated-code workers, watch scheduling, static serving and stream/signal behavior. All are included in the 5,408 total above.
+
+Thirty-two executable documentation examples also passed; `docs/cli-examples-verification.json` records the local smoke observations. Local integration used Node 24.19.0 on Linux; the GitHub workflow runs the full CLI suite on Node 22 and also checks the public Node TypeScript declarations and the existing staged/deployed Chromium application. No macOS/Windows CLI certification or new CLR compatibility claim is inferred from these checks.

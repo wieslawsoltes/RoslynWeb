@@ -1,0 +1,6 @@
+{"id":"workspace","method":"createWorkspace","args":[{"files":{"input.txt":"Hello from a persistent workspace"}}]}
+{"id":"program","method":"compile","args":[{"$text":"examples/cli/Files.cs"},{"assemblyName":"WorkspaceProgram","emitPdb":false}]}
+{"id":"execution","method":"run","args":[{"$ref":"program"},{"backend":"wasm","workspaceId":{"$ref":"workspace.workspaceId"},"captureVirtualFiles":true}]}
+{"id":"listing","method":"listWorkspace","args":[{"$ref":"workspace.workspaceId"}]}
+{"id":"read","method":"readWorkspace","args":[{"$ref":"workspace.workspaceId"},["output.txt"]]}
+{"id":"cleanup","method":"disposeWorkspace","args":[{"$ref":"workspace.workspaceId"}]}

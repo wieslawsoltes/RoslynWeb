@@ -1,0 +1,88 @@
+{
+  "testedAt": "2026-09-11T20:08:21.010Z",
+  "runtime": "v24.19.0",
+  "passed": true,
+  "checks": [
+    {
+      "name": "JSON API boots Roslyn once, emits PE/PDB, and runs result references on all four backends",
+      "passed": true,
+      "milliseconds": 2198.562612,
+      "evidence": {
+        "info": {
+          "bridgeVersion": "0.8.0",
+          "roslynVersion": "5.0.0.0",
+          "runtimeVersion": "10.0.0",
+          "referenceCount": 167,
+          "execution": "dotnet-wasm-interpreter"
+        },
+        "peBytes": 2560,
+        "pdbBytes": 10024,
+        "outputs": [
+          {
+            "requested": "wasm",
+            "selected": "wasm",
+            "exitCode": 2
+          },
+          {
+            "requested": "javascript",
+            "selected": "javascript",
+            "exitCode": 2
+          },
+          {
+            "requested": "native-wasm",
+            "selected": "native-wasm",
+            "exitCode": 2
+          },
+          {
+            "requested": "auto",
+            "selected": "javascript",
+            "exitCode": 2
+          }
+        ]
+      }
+    },
+    {
+      "name": "Compiled function target invocation and managed object references retain exact Int64 values",
+      "passed": true,
+      "milliseconds": 281.6803210000003,
+      "evidence": {
+        "compiledFunctionResult": "9007199254740995",
+        "managedObjectValue": "9007199254740997"
+      }
+    },
+    {
+      "name": "Workspace files, byte markers and API references persist through multiple JSON requests",
+      "passed": true,
+      "milliseconds": 157.17768000000024,
+      "evidence": {
+        "text": "PERSISTENT CLI WORKSPACE",
+        "binaryBytes": 3
+      }
+    },
+    {
+      "name": "Compiler diagnostics and malformed requests remain recoverable within the same session",
+      "passed": true,
+      "milliseconds": 116.88109699999995,
+      "evidence": {
+        "diagnosticIds": [
+          "CS1040",
+          "CS1002",
+          "CS0026",
+          "CS0103"
+        ],
+        "recoveredResult": 42,
+        "starts": 1
+      }
+    },
+    {
+      "name": "Runaway managed execution times out without replacing the persistent compiler",
+      "passed": true,
+      "milliseconds": 162.34883599999966,
+      "evidence": {
+        "timeoutCode": "TIMEOUT",
+        "disposed": true,
+        "compilerInstances": 1
+      }
+    }
+  ]
+}

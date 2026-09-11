@@ -1,0 +1,4 @@
+[
+  { "name": "Greeting", "type": "string", "value": "Hello from an embedded resource" },
+  { "name": "Answer", "type": "int", "value": 42 }
+]

@@ -107,6 +107,8 @@ export interface RoslynOptions {
   /** Abort startup and compiler lifetime. Workers are terminated; worker:false rejects pending calls and disables later calls but cannot interrupt managed code already executing in the caller's realm. */
   signal?: AbortSignal;
   baseUrl?: string|URL; worker?: boolean; workerUrl?: string|URL;
+  /** Optional Web Worker constructor for host adapters; does not alter globalThis.Worker. */
+  Worker?: typeof Worker;
   timeoutMs?: number; startupTimeoutMs?: number; config?: Record<string,unknown>;
   onEvent?: (event: CompilerEvent) => void;
 }

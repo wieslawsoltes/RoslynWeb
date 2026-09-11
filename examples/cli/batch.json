@@ -1,0 +1,18 @@
+[
+  {
+    "id": "kernel",
+    "method": "compile",
+    "args": [
+      { "$text": "examples/cli/Kernel.cs" },
+      { "assemblyName": "BatchKernel", "outputKind": "library", "emitPdb": false }
+    ]
+  },
+  {
+    "id": "sum",
+    "method": "invoke",
+    "args": [
+      { "$ref": "kernel.assemblyId" }, "Kernel", "Add",
+      [{ "$bigint": "9007199254740993" }, { "$bigint": "2" }]
+    ]
+  }
+]

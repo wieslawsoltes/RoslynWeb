@@ -1,0 +1,3 @@
+# Node and the included static server read the original boot-manifest resources.
+_framework/*.br
+_framework/*.gz
