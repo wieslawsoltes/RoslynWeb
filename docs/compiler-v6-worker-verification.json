@@ -1,12 +1,12 @@
 {
-  "testedAt": "2026-09-11T15:40:29.715Z",
+  "testedAt": "2026-09-11T16:43:03.121Z",
   "checks": [
     {
       "name": "Initialize real Roslyn in a browser-protocol Worker",
       "passed": true,
-      "milliseconds": 436.98606199999995,
+      "milliseconds": 776.655423,
       "evidence": {
-        "bridgeVersion": "0.6.0",
+        "bridgeVersion": "0.7.0",
         "roslynVersion": "5.0.0.0",
         "runtimeVersion": "10.0.0",
         "referenceCount": 167,
@@ -16,7 +16,7 @@
     {
       "name": "One-call JavaScript pipeline returns real PE, generated source and cache reuse",
       "passed": true,
-      "milliseconds": 1223.935101,
+      "milliseconds": 2097.9150689999997,
       "evidence": {
         "cache": {
           "emitHit": true
@@ -36,7 +36,7 @@
     {
       "name": "Wasm optimization changes native code while preserving an import-free module",
       "passed": true,
-      "milliseconds": 88.60762199999999,
+      "milliseconds": 153.0402469999999,
       "evidence": {
         "reference": {
           "enabled": false,
@@ -65,7 +65,7 @@
     {
       "name": "javascript optimize=false executes exact values and first-pass filters inside its Worker",
       "passed": true,
-      "milliseconds": 627.6252789999999,
+      "milliseconds": 938.9603569999999,
       "evidence": {
         "stdout": "0.3\n42\n(3, 7)\n134\n",
         "backend": "javascript",
@@ -83,7 +83,7 @@
     {
       "name": "javascript optimize=true executes exact values and first-pass filters inside its Worker",
       "passed": true,
-      "milliseconds": 66.25571800000034,
+      "milliseconds": 96.87174199999936,
       "evidence": {
         "stdout": "0.3\n42\n(3, 7)\n134\n",
         "backend": "javascript",
@@ -101,7 +101,7 @@
     {
       "name": "native-wasm optimize=false executes exact values and first-pass filters inside its Worker",
       "passed": true,
-      "milliseconds": 88.72913600000038,
+      "milliseconds": 116.63271999999961,
       "evidence": {
         "stdout": "0.3\n42\n(3, 7)\n134\n",
         "backend": "native-wasm",
@@ -121,7 +121,7 @@
     {
       "name": "native-wasm optimize=true executes exact values and first-pass filters inside its Worker",
       "passed": true,
-      "milliseconds": 76.15663599999971,
+      "milliseconds": 104.17841000000044,
       "evidence": {
         "stdout": "0.3\n42\n(3, 7)\n134\n",
         "backend": "native-wasm",
@@ -141,7 +141,7 @@
     {
       "name": "Both compiler pipelines automatically link a registered managed implementation DLL",
       "passed": true,
-      "milliseconds": 139.09363799999983,
+      "milliseconds": 150.6272310000004,
       "evidence": [
         {
           "backend": "javascript",
@@ -156,7 +156,7 @@
     {
       "name": "Cached JavaScript PE execution isolates virtual filesystem snapshots",
       "passed": true,
-      "milliseconds": 60.3423429999998,
+      "milliseconds": 63.13257599999997,
       "evidence": {
         "inputs": [
           "first",
@@ -168,7 +168,7 @@
     {
       "name": "The rebuilt inspector links explicit constrained interface methods through both Worker pipelines",
       "passed": true,
-      "milliseconds": 220.49719200000027,
+      "milliseconds": 223.50197599999956,
       "evidence": {
         "exitCode": 42,
         "stdout": "0.3"
@@ -177,7 +177,7 @@
     {
       "name": "Invalid C# returns diagnostics and leaves both compiler pipelines reusable",
       "passed": true,
-      "milliseconds": 73.70839299999989,
+      "milliseconds": 79.99123299999974,
       "evidence": [
         {
           "method": "compileToJavaScript",
@@ -192,7 +192,7 @@
     {
       "name": "Both public compiler pipelines retain exact NaN literal sign and payload from the real PE",
       "passed": true,
-      "milliseconds": 178.3481829999996,
+      "milliseconds": 417.8997909999998,
       "evidence": {
         "operandBits": [
           "fff8000000000000",
@@ -213,7 +213,7 @@
     {
       "name": "Saved JavaScript and native Wasm remain executable after the Roslyn Worker is disposed",
       "passed": true,
-      "milliseconds": 9.794153999999708,
+      "milliseconds": 23.471708000000035,
       "evidence": {
         "javascript": 333300,
         "wasm": 333300,
@@ -227,7 +227,7 @@
     {
       "name": "JavaScript instruction limits fail without poisoning reusable compiled functions",
       "passed": true,
-      "milliseconds": 1524.6510160000003,
+      "milliseconds": 1583.5763209999996,
       "evidence": {
         "recoveredExitCode": 4950
       }
@@ -235,7 +235,7 @@
     {
       "name": "A runaway generated JavaScript program is terminated by its Worker timeout",
       "passed": true,
-      "milliseconds": 137.32506099999955,
+      "milliseconds": 141.9630820000002,
       "evidence": {
         "errorCode": "TIMEOUT",
         "disposed": true

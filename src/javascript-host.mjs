@@ -1,4 +1,4 @@
-import {AssemblyCompilerHost, copy, retainedBytes} from './compiler-cache.mjs';
+import {AssemblyCompilerHost, canonical, copy, retainedBytes} from './compiler-cache.mjs';
 import {fromBase64, RoslynError} from './bytes.js';
 import {compileJavaScriptModule, analyzeAssembly} from './il/compiler.mjs';
 import {executeJavaScript} from './execution.js';
@@ -27,15 +27,18 @@ export class JavaScriptCompilerHost extends AssemblyCompilerHost {
     this.sources.set(source,item.key); this.trim();
   }
   async factory(input, options = {}) {
-    const prepared = await this.prepare(input, {...options,optimize:options.optimize??true,strict:options.strict??true});
-    const started = now(); let item = this.touch(prepared.key), moduleHit = !!item;
-    if (!item) {
-      const module = compileJavaScriptModule(prepared.model, prepared.options);
-      item = {module, options:prepared.options, key:prepared.key,
-        size:prepared.key.length * 2 + module.generatedSourceBytes + retainedBytes([module.model,...module.linked.map(item=>item.model)])};
-      this.modules.set(prepared.key,item); this.bytes += item.size; this.trim();
-    }
-    return {item, moduleHit, prepared, timings:{...prepared.timings, javascriptMs:now()-started,totalMs:now()-prepared.start}};
+    const prepared = await this.prepare(input, {...options,optimize:options.optimize??true,strict:options.strict??true}, key => this.touch(key));
+    try {
+      this.assertPrepared(prepared);
+      const started = now(); let item = prepared.reused || this.touch(prepared.key), moduleHit = !!item;
+      if (!item) {
+        const module = compileJavaScriptModule(prepared.model, prepared.options);
+        item = {module, options:prepared.options, key:prepared.key,
+          size:prepared.key.length * 2 + module.generatedSourceBytes + retainedBytes([module.model,...module.linked.map(item=>item.model)])};
+        this.modules.set(prepared.key,item); this.bytes += item.size; this.trim();
+      }
+      return {item, moduleHit, prepared, timings:{...prepared.timings, javascriptMs:now()-started+(prepared.reuseMs||0),totalMs:now()-prepared.start}};
+    } finally { this.releasePreparation(prepared); }
   }
   async analyze(input, options = {}) {
     const prepared = await this.prepare(input,options);
@@ -43,6 +46,7 @@ export class JavaScriptCompilerHost extends AssemblyCompilerHost {
   }
   async emit(input, options = {}) {
     const result = await this.factory(input,options), {item} = result;
+    this.assertActive();
     const start = now(), source = item.module.source;
     this.rememberSource(item,source);
     const {assemblies:_assemblies,...javascriptOptions} = item.options;
@@ -50,16 +54,19 @@ export class JavaScriptCompilerHost extends AssemblyCompilerHost {
       analysis:copy(item.module.analysis),optimization:copy(item.module.optimization),javascriptOptions:copy(javascriptOptions),
       cache:{emitHit:result.moduleHit},timings:{...result.timings,sourceMs:now()-start,totalMs:now()-result.prepared.start}};
   }
-  async compile(request, options) {
-    const started = now(), assembly = await this.callManaged('Compile',[JSON.stringify({...request,includeInspection:!!request.includeInspection})]);
+  async compile(request, options = {}) {
+    this.assertActive();
+    canonical(options); const ownedOptions = copy(options), includeInspection = !!request.includeInspection;
+    const started = now(), assembly = await this.callManaged('Compile',[JSON.stringify({...request,includeInspection})]);
+    this.assertActive();
     const csharpMs = now()-started;
     if (!assembly.success) return {success:false,stage:'csharp',assembly,diagnostics:assembly.diagnostics,error:assembly.error,timings:{csharpMs,totalMs:now()-started}};
     if (assembly.peBase64) assembly.pe = fromBase64(assembly.peBase64);
     if (assembly.pdbBase64) assembly.pdb = fromBase64(assembly.pdbBase64);
     this.rememberInspection(assembly.peBase64,assembly.inspection);
-    if (!request.includeInspection) delete assembly.inspection;
+    if (!includeInspection) delete assembly.inspection;
     try {
-      const artifact = await this.emit({peBase64:assembly.peBase64},options);
+      const artifact = await this.emit({peBase64:assembly.peBase64},ownedOptions);
       return {...artifact,assembly,timings:{...artifact.timings,csharpMs,totalMs:now()-started}};
     } catch (error) {
       if (error.name !== 'ILCompilationError' && !error.code?.startsWith('WASM_')) throw error;
@@ -67,6 +74,7 @@ export class JavaScriptCompilerHost extends AssemblyCompilerHost {
     }
   }
   async run(input, options = {}) {
+    this.assertActive();
     const started = now(); let prepared, item, moduleHit = false;
     if (input.format === 'javascript') {
       item = this.touch(this.sources.get(input.source)); moduleHit = !!item;
@@ -81,7 +89,9 @@ export class JavaScriptCompilerHost extends AssemblyCompilerHost {
       prepared = await this.factory(input,{...options.javascript,optimize:options.optimize ?? options.javascript?.optimize,assemblies:options.assemblies ?? options.javascript?.assemblies});
       item = prepared.item; moduleHit = prepared.moduleHit;
     }
+    this.assertActive();
     const executed = await executeJavaScript(item.module.model,options,item.module);
+    this.assertActive();
     return {...executed,analysis:copy(executed.analysis),optimization:copy(item.module.optimization),cache:{moduleHit},timings:{...prepared?.timings,totalMs:now()-started}};
   }
   async tryRun(input,options = {}) {
@@ -93,5 +103,13 @@ export class JavaScriptCompilerHost extends AssemblyCompilerHost {
     if (!['compile','emit','run','analyze','tryRun'].includes(operation)) throw new TypeError(`Unknown JavaScript compiler operation: ${operation}`);
     return this[operation](...args);
   }
-  dispose() { super.dispose(); this.modules.clear(); this.sources.clear(); this.bytes = 0; }
+  clearCompilations(marker) {
+    if (marker === undefined) { this.modules.clear(); this.sources.clear(); this.bytes = 0; return; }
+    let changed = false;
+    for (const [key, item] of this.modules) if (key.includes(marker)) {
+      this.modules.delete(key); this.bytes -= item.size; if (item.source) this.sources.delete(item.source); changed = true;
+    }
+    return changed;
+  }
+  dispose() { super.dispose(); this.clearCompilations(); }
 }

@@ -3,7 +3,8 @@ import { examples as baseExamples } from './examples.js';
 import {workflowExamples,prepareExample,projectFiles} from './workflows.js';
 import {advancedExamples,resourceProjectFiles,customTaskProjectFiles} from './advanced-workflows.js';
 import {compatibilityExamples,nativeTaskProject} from './compatibility-workflows.js';
-const examples=[...baseExamples,...workflowExamples,...advancedExamples,...compatibilityExamples];
+import {compilerExamples} from './compiler-examples.js';
+const examples=[...baseExamples,...compilerExamples,...workflowExamples,...advancedExamples,...compatibilityExamples];
 const $ = id => document.getElementById(id);
 const source = $('source');
 let compiler, artifact, wasmArtifact, javascriptArtifact, jsSource = '', busy = false, sourceVersion = 0, compiledVersion = -1;
@@ -177,10 +178,11 @@ async function compile(context) {
 }
 function showWasm(result) {
   wasmArtifact = result;
-  $('panel-wasm').textContent = JSON.stringify({format:result.format,bytes:result.bytes.length,exports:result.exports,imports:result.imports,cache:result.cache,timings:result.timings},null,2);
+  $('panel-wasm').textContent = JSON.stringify({format:result.format,bytes:result.bytes.length,exports:result.exports,imports:result.imports,optimization:result.optimization,cache:result.cache,timings:result.timings},null,2);
   const t = result.timings;
   log(`Emitted ${result.bytes.length.toLocaleString()} bytes of native WebAssembly · ${result.exports.length} exports · ${result.imports.length} runtime imports`);
   log(`C# ${(t.csharpMs || 0).toFixed(1)} ms · inspection ${(t.inspectionMs || 0).toFixed(1)} ms · MSIL → Wasm ${(t.emitMs || 0).toFixed(1)} ms${result.cache?.emitHit ? ' (cached)' : ''}`);
+  if (result.optimization) log('WebAssembly optimization: ' + JSON.stringify(result.optimization));
 }
 function showJavaScript(result) {
   javascriptArtifact = result; jsSource = result.source; $('panel-js').textContent = jsSource;

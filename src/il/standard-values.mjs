@@ -6,6 +6,8 @@ import { splitTypeArguments, genericDefinitionName } from './generics.mjs';
 import { ILExecutionError } from './capabilities.mjs';
 
 const DECIMAL = 'System.Decimal', NULLABLE = 'System.Nullable`1';
+const ITUPLE = 'System.Runtime.CompilerServices.ITuple', STRUCTURAL_EQ = 'System.Collections.IStructuralEquatable', STRUCTURAL_CMP = 'System.Collections.IStructuralComparable';
+const EQ_COMPARER = 'System.Collections.IEqualityComparer', COMPARER = 'System.Collections.IComparer';
 const MAX = (1n << 96n) - 1n, POW10 = [1n];
 const ten = n => { for (let i=POW10.length;i<=n;i++) POW10.push(POW10[i-1]*10n); return POW10[n]; };
 const raw = v => v instanceof Numeric ? v.value : v?.$box ? raw(v.value) : v;
@@ -227,8 +229,25 @@ export function standardStaticField(ref) {
   if(typeName(ref.declaringType)!==DECIMAL)return undefined;
   if(ref.name==='Zero')return decimal();if(ref.name==='One')return decimal(1n);if(ref.name==='MinusOne')return decimal(1n,0,true);if(ref.name==='MaxValue')return decimal(MAX);if(ref.name==='MinValue')return decimal(MAX,0,true);
 }
+/** Framework interfaces implemented by value types without metadata definitions. */
+export function isStandardValueInstance(value,target) {
+  value=unwrap(value);
+  if(value?.$tuple)return [ITUPLE,STRUCTURAL_EQ,STRUCTURAL_CMP,'System.IComparable','System.ValueType'].includes(target)||target==='System.IEquatable`1<'+value.$type+'>'||target==='System.IComparable`1<'+value.$type+'>';
+  if(value?.$array&&[STRUCTURAL_EQ,STRUCTURAL_CMP].includes(target))return true;
+  if(value?.$structuralComparer)return target===(value.$structuralComparer==='equality'?EQ_COMPARER:COMPARER);
+  return undefined;
+}
 export function isStandardValueBuiltin(ref) {
   const type=typeName(ref?.declaringType),r=root(type),name=ref?.name,p=ptypes(ref??{}),n=p.length;
+  if(primitiveTypes.has(type)||type==='System.Boolean')return name==='GetHashCode'&&n===0&&ref.isStatic!==true&&(!ref.returnType||typeName(ref.returnType)==='System.Int32');
+  if(type==='System.IComparable')return name==='CompareTo'&&n===1&&p[0]==='System.Object';
+  if(['System.IEquatable`1','System.IComparable`1'].includes(r)&&isStandardValueType(splitTypeArguments(type)[0]))return n===1&&(p[0]===splitTypeArguments(type)[0]||p[0]==='!0')&&name===(r==='System.IEquatable`1'?'Equals':'CompareTo');
+  if(type===ITUPLE)return name==='get_Length'&&n===0||name==='get_Item'&&n===1&&p[0]==='System.Int32';
+  if(type===STRUCTURAL_EQ)return name==='Equals'&&n===2&&p.join(',')==='System.Object,'+EQ_COMPARER||name==='GetHashCode'&&n===1&&p[0]===EQ_COMPARER;
+  if(type===STRUCTURAL_CMP)return name==='CompareTo'&&n===2&&p.join(',')==='System.Object,'+COMPARER;
+  if(type==='System.Collections.StructuralComparisons')return n===0&&['get_StructuralEqualityComparer','get_StructuralComparer'].includes(name);
+  if(type===EQ_COMPARER)return name==='Equals'&&n===2&&p.every(t=>t==='System.Object')||name==='GetHashCode'&&n===1&&p[0]==='System.Object';
+  if(type===COMPARER)return name==='Compare'&&n===2&&p.every(t=>t==='System.Object');
   if(type==='System.Globalization.CultureInfo')return name==='get_InvariantCulture'&&n===0;
   if(type==='System.Console')return ['Write','WriteLine'].includes(name)&&n===1&&p[0]===DECIMAL;
   if(type==='System.Math'&&p[0]===DECIMAL)return ['Abs','Ceiling','Floor','Truncate','Sign'].includes(name)&&n===1 || ['Min','Max'].includes(name)&&n===2&&p[1]===DECIMAL || name==='Clamp'&&n===3&&p.every(t=>t===DECIMAL)||name==='Round'&&n>=1&&n<=3&&p.slice(1).every(t=>t==='System.Int32'||t==='System.MidpointRounding');
@@ -249,11 +268,11 @@ export function isStandardValueBuiltin(ref) {
     return false;
   }
   if(r===NULLABLE){
-    if(name==='GetHashCode')return n===0&&(integerTypes.has(splitTypeArguments(type)[0])||['System.Boolean',DECIMAL].includes(splitTypeArguments(type)[0]));
+    if(name==='GetHashCode')return n===0;
     return name==='.ctor'&&n===1||['get_HasValue','get_Value','ToString'].includes(name)&&n===0||name==='GetValueOrDefault'&&n<=1||name==='Equals'&&n===1&&p[0]==='System.Object';
   }
   if(type==='System.Nullable')return ['Compare','Equals'].includes(name)&&n===2||name==='GetUnderlyingType'&&n===1&&p[0]==='System.Type';
-  if(tuple(type))return name==='.ctor'&&n===splitTypeArguments(type).length||name==='ToString'&&n===0||['Equals','CompareTo'].includes(name)&&n===1||name==='Create'&&ref.isStatic&&n<=8;
+  if(tuple(type))return name==='.ctor'&&n===splitTypeArguments(type).length||['ToString','GetHashCode'].includes(name)&&n===0||['Equals','CompareTo'].includes(name)&&n===1||name==='Create'&&ref.isStatic&&n<=8;
   return false;
 }
 
@@ -264,19 +283,103 @@ function validateProvider(provider) {
   unsupported('Custom Decimal format providers are not implemented; use CultureInfo.InvariantCulture.');
 }
 function valueEqual(rt,a,b,type) {
+  if(a?.$box&&b?.$box&&a.$type!==b.$type)return false;
   a=unwrap(a);b=unwrap(b);if(a?.$decimal&&b?.$decimal)return decimalCompare(a,b)===0;
-  if(a?.$tuple&&b?.$tuple){const types=splitTypeArguments(a.$type);return types.every((t,i)=>valueEqual(rt,a.fields[a.$type+'::'+(i===7?'Rest':'Item'+(i+1))],b.fields[b.$type+'::'+(i===7?'Rest':'Item'+(i+1))],t));}
+  if(a?.$tuple&&b?.$tuple){if(a.$type!==b.$type)return false;const types=splitTypeArguments(a.$type);return types.every((t,i)=>valueEqual(rt,a.fields[a.$type+'::'+(i===7?'Rest':'Item'+(i+1))],b.fields[b.$type+'::'+(i===7?'Rest':'Item'+(i+1))],t));}
+  if(a!=null&&b!=null){const method=rt.findVirtual({declaringType:'System.IEquatable`1<'+(type??a.$type)+'>',name:'Equals',parameters:[{type:type??a.$type}],returnType:'System.Boolean',isStatic:false},a)??rt.findVirtual({declaringType:'System.Object',name:'Equals',parameters:[{type:'System.Object'}],returnType:'System.Boolean',isStatic:false},a);if(method)return !!raw(rt.invokeManaged(method,[b],a));}
   if(a?.$valueType&&b?.$valueType){const ak=Object.keys(a.fields??{}),bk=Object.keys(b.fields??{});return a.$type===b.$type&&ak.length===bk.length&&ak.every(k=>valueEqual(rt,a.fields[k],b.fields[k]));}
   if(a instanceof Numeric&&b instanceof Numeric)return raw(a)===raw(b)||Number.isNaN(raw(a))&&Number.isNaN(raw(b));
   return a===b;
 }
 function compareValues(rt,a,b,type) {
+  if(a?.$box&&b?.$box&&a.$type!==b.$type)fail('ArgumentException','Objects must have the same comparable type.');
   a=unwrap(a);b=unwrap(b);if(a?.$decimal&&b?.$decimal)return decimalCompare(a,b);if(a==null)return b==null?0:-1;if(b==null)return 1;
   if(a?.$tuple&&b?.$tuple){for(const[t,i]of splitTypeArguments(a.$type).map((t,i)=>[t,i])){const n=i===7?'Rest':'Item'+(i+1),c=compareValues(rt,a.fields[a.$type+'::'+n],b.fields[b.$type+'::'+n],t);if(c)return c;}return 0;}
   if(a instanceof Numeric||typeof a==='string'){a=raw(a);b=raw(b);if(type==='System.UInt64'){a=BigInt.asUintN(64,a);b=BigInt.asUintN(64,b);}if(type==='System.UInt32'){a>>>=0;b>>>=0;}if(Number.isNaN(a))return Number.isNaN(b)?0:-1;if(Number.isNaN(b))return 1;return a<b?-1:a>b?1:0;}
   const method=rt.resolveMethod({declaringType:rt.typeName(a),name:'CompareTo',parameters:[{type:type??rt.typeName(b)}],returnType:'System.Int32',isStatic:false});
   if(method)return Number(raw(rt.invokeManaged(method,[b],a)));
   fail('ArgumentException','At least one object must implement IComparable.');
+}
+const tupleFields=value=>splitTypeArguments(value.$type).map((type,i)=>({type,value:value.fields[value.$type+'::'+(i===7?'Rest':'Item'+(i+1))]}));
+function tupleLength(value) { const fields=tupleFields(value);return fields.length===8&&unwrap(fields[7].value)?.$tuple?7+tupleLength(unwrap(fields[7].value)):fields.length; }
+function boxField(rt,value,type) { return value==null?null:value instanceof Numeric||isStandardValueType(type)||value?.$valueType?rt.box(value,type):value; }
+function tupleItem(rt,value,index) {
+  const fields=tupleFields(value);
+  if(index>=7&&fields.length===8&&unwrap(fields[7].value)?.$tuple)return tupleItem(rt,unwrap(fields[7].value),index-7);
+  if(index<0||index>=fields.length)fail('IndexOutOfRangeException','Index was outside the bounds of the tuple.');
+  return boxField(rt,copyValue(fields[index].value),fields[index].type);
+}
+// .NET HashCode's xxHash32 combiner, with a runtime-local seed. Tuple/string
+// hashes are deliberately not persisted or compared across runtimes/processes.
+function combineHashes(rt,hashes) {
+  const p1=0x9e3779b1,p2=0x85ebca77,p3=0xc2b2ae3d,p4=0x27d4eb2f,p5=0x165667b1;
+  const rotate=(n,b)=>(n<<b)|(n>>>(32-b)),round=(a,b)=>Math.imul(rotate((a+Math.imul(b,p2))|0,13),p1);
+  const seed=rt.standardHashSeed??=Math.random()*0x100000000>>>0;
+  let h,index=0;
+  if(hashes.length>=4){let a=(seed+p1+p2)|0,b=(seed+p2)|0,c=seed,d=(seed-p1)|0;while(index+4<=hashes.length){a=round(a,hashes[index++]);b=round(b,hashes[index++]);c=round(c,hashes[index++]);d=round(d,hashes[index++]);}h=(rotate(a,1)+rotate(b,7)+rotate(c,12)+rotate(d,18))|0;}else h=(seed+p5)|0;
+  h=(h+hashes.length*4)|0;for(;index<hashes.length;index++)h=Math.imul(rotate((h+Math.imul(hashes[index],p3))|0,17),p4);
+  h=Math.imul(h^(h>>>15),p2);h=Math.imul(h^(h>>>13),p3);return (h^(h>>>16))|0;
+}
+function valueHash(rt,value,type) {
+  if(value==null)return 0;
+  if(value?.$box){type=value.$type;value=value.value;}
+  if(value?.$nullable)return raw(invokeStandardValueBuiltin(rt,{declaringType:value.$type,name:'GetHashCode',parameters:[]},[],value).value);
+  if(type==='System.Char')return Number(raw(value))|(Number(raw(value))<<16);
+  if(value instanceof Numeric||typeof value==='string'||value?.$decimal||value?.$tuple)return Number(raw(rt.objectHashCode(value)));
+  const method=rt.findVirtual({declaringType:'System.Object',name:'GetHashCode',parameters:[],returnType:'System.Int32',isStatic:false},value);
+  if(method)return Number(raw(rt.invokeManaged(method,[],value)));
+  return Number(raw(rt.objectHashCode(value)));
+}
+function tupleHash(rt,value,comparer) {
+  const fields=tupleFields(value),hash=field=>comparer===undefined?valueHash(rt,field.value,field.type):comparerCall(rt,comparer,'GetHashCode',[boxField(rt,field.value,field.type)]);
+  if(!fields.length)return 0;if(fields.length===1)return hash(fields[0]);
+  if(fields.length===8){const rest=unwrap(fields[7].value);if(rest?.$tuple){const size=tupleLength(rest),restHash=tupleHash(rt,rest,comparer);if(size>=8)return restHash;return combineHashes(rt,[...fields.slice(Math.max(0,size-1),7).map(hash),restHash]);}return combineHashes(rt,fields.slice(0,7).map(hash));}
+  return combineHashes(rt,fields.map(hash));
+}
+function tupleStructural(rt,value,other,comparer,compare) {
+  other=unwrap(other);
+  if(other==null)return compare?1:false;
+  if(other.$type!==value.$type){if(compare)fail('ArgumentException','Argument must be the same tuple type.');return false;}
+  const fields=tupleFields(value),right=tupleFields(other);
+  for(let i=0;i<fields.length;i++){const a=fields[i],b=right[i],result=comparerCall(rt,comparer,compare?'Compare':'Equals',[boxField(rt,a.value,a.type),boxField(rt,b.value,b.type)]);if(compare?result!==0:!result)return compare?result:false;}
+  return compare?0:true;
+}
+function arrayObject(rt,array,index) {const offset=rt.multiArrayIndex(array,[i4(index)]);return boxField(rt,array.items[offset],array.elementType);}
+function arrayStructural(rt,a,b,comparer,operation) {
+  if(operation==='GetHashCode'){if(comparer==null)fail('ArgumentNullException','comparer');return combineHashes(rt,a.items.slice(-8).map((_,i)=>comparerCall(rt,comparer,'GetHashCode',[arrayObject(rt,a,Math.max(0,a.items.length-8)+i)])));}
+  b=unwrap(b);if(b==null)return operation==='Compare'?1:false;
+  if(a===b&&operation!=='Compare')return true;
+  if(!b.$array||a.items.length!==b.items.length){if(operation==='Compare')fail('ArgumentException','Object must be an array of the same length.');return false;}
+  for(let i=0;i<a.items.length;i++){const result=comparerCall(rt,comparer,operation,[arrayObject(rt,a,i),arrayObject(rt,b,i)]);if(operation==='Compare'?result!==0:!result)return operation==='Compare'?result:false;}
+  return operation==='Compare'?0:true;
+}
+function structuralCall(rt,operation,args) {
+  const a=unwrap(args[0]),b=unwrap(args[1]),comparer={$structuralComparer:operation==='Compare'?'comparison':'equality'};
+  if(operation==='GetHashCode'){
+    if(a==null)return 0;if(a.$tuple)return tupleHash(rt,a,comparer);
+    if(a.$array)return arrayStructural(rt,a,null,comparer,'GetHashCode');
+    return valueHash(rt,args[0]);
+  }
+  if(a==null)return b==null?(operation==='Compare'?0:true):operation==='Compare'?-1:false;if(b==null)return operation==='Compare'?1:false;
+  if(a.$tuple)return tupleStructural(rt,a,b,comparer,operation==='Compare');
+  if(a.$array)return arrayStructural(rt,a,b,comparer,operation);
+  if(a===b)return operation==='Compare'?0:true;
+  if(operation==='Compare'&&(typeof a==='string'||typeof b==='string'))unsupported('Culture-sensitive default string ordering is not implemented; pass StringComparer.Ordinal or an explicit managed comparer.');
+  return operation==='Compare'?compareValues(rt,args[0],args[1],args[0]?.$type):valueEqual(rt,args[0],args[1],args[0]?.$type);
+}
+function comparerCall(rt,comparer,operation,args) {
+  if(comparer==null)fail('NullReferenceException','Object reference not set to an instance of an object.');
+  if(comparer.$structuralComparer)return structuralCall(rt,operation,args);
+  if(['ordinal','ordinalIgnoreCase'].includes(comparer.$comparer)){
+    let a=raw(args[0]),b=raw(args[1]);if(operation==='GetHashCode'){if(a==null)fail('ArgumentNullException','obj');if(typeof a!=='string')return valueHash(rt,args[0]);}
+    if(a!=null&&typeof a!=='string'||operation!=='GetHashCode'&&b!=null&&typeof b!=='string')fail('ArgumentException','Objects must be strings.');
+    if(comparer.$comparer==='ordinalIgnoreCase'){if(/[^\x00-\x7f]/.test((a??'')+(b??'')))unsupported('OrdinalIgnoreCase currently supports ASCII strings; use an explicit managed comparer for non-ASCII case mapping.');a=a?.toUpperCase();b=b?.toUpperCase();}
+    if(operation==='GetHashCode')return valueHash(rt,a);if(operation==='Equals')return a===b?1:0;
+    if(a===b)return 0;if(a==null)return-1;if(b==null)return 1;for(let i=0;i<Math.min(a.length,b.length);i++){const d=a.charCodeAt(i)-b.charCodeAt(i);if(d)return d;}return a.length-b.length;
+  }
+  const ref={declaringType:operation==='Compare'?COMPARER:EQ_COMPARER,name:operation,parameters:args.map(()=>({type:'System.Object'})),returnType:operation==='Equals'?'System.Boolean':'System.Int32',isStatic:false};
+  const method=rt.findVirtual(ref,comparer);if(method)return Number(raw(rt.invokeManaged(method,args,comparer)));
+  unsupported('The supplied comparer has no compiled '+operation+' implementation.');
 }
 function tupleText(rt,value) {
   const items=[];for(const[t,i]of splitTypeArguments(value.$type).map((t,i)=>[t,i])){const v=value.fields[value.$type+'::'+(i===7?'Rest':'Item'+(i+1))];if(i===7&&v?.$tuple)items.push(...tupleText(rt,v));else items.push(rt.format(v,undefined,t));}return items;
@@ -290,6 +393,12 @@ export function formatStandardValue(rt,value,format) {
 export function invokeStandardValueBuiltin(rt,ref,args,self,kind) {
   if(!isStandardValueBuiltin(ref))return{handled:false};
   const type=typeName(ref.declaringType),r=root(type),name=ref.name,p=ptypes(ref),target=self?.$byref?self:null;self=unwrap(self);
+  if(primitiveTypes.has(type)||type==='System.Boolean')return done(i4(valueHash(rt,self,type)));
+  if(type==='System.Collections.StructuralComparisons')return done({$type:'System.Collections.'+(name==='get_StructuralEqualityComparer'?'StructuralEqualityComparer':'StructuralComparer'),$structuralComparer:name==='get_StructuralEqualityComparer'?'equality':'comparison'});
+  if(type===EQ_COMPARER||type===COMPARER)return done(i4(comparerCall(rt,self,name,args)));
+  if(type==='System.IComparable'||r==='System.IEquatable`1'||r==='System.IComparable`1'){if(self?.$tuple)return done(i4(name==='Equals'?unwrap(args[0])?.$type===self.$type&&valueEqual(rt,self,args[0]):args[0]==null?1:unwrap(args[0])?.$type!==self.$type?fail('ArgumentException','Argument must be the same tuple type.'):compareValues(rt,self,args[0])));if(self?.$decimal)return invokeStandardValueBuiltin(rt,{...ref,declaringType:DECIMAL},args,self,kind);return {handled:false};}
+  if(type===ITUPLE){if(!self?.$tuple)return {handled:false};return done(name==='get_Length'?i4(tupleLength(self)):tupleItem(rt,self,Number(raw(args[0]))));}
+  if(type===STRUCTURAL_EQ||type===STRUCTURAL_CMP){if(self?.$array)return done(i4(arrayStructural(rt,self,args[0],name==='GetHashCode'?args[0]:args[1],name==='CompareTo'?'Compare':name)));if(!self?.$tuple)return {handled:false};return done(i4(name==='GetHashCode'?tupleHash(rt,self,args[0]):tupleStructural(rt,self,args[0],args[1],name==='CompareTo')));}
   if(type==='System.Globalization.CultureInfo')return done({$type:type,name:''});
   if(type==='System.Console'){rt.output(formatDecimal(args[0]),{newline:name==='WriteLine'});return done();}
   if(type==='System.Convert'){
@@ -332,7 +441,7 @@ export function invokeStandardValueBuiltin(rt,ref,args,self,kind) {
     if(name==='.ctor'){const value=defaultStandardValue(rt,type);value.fields[type+'::hasValue']=i4(1);value.fields[type+'::value']=rt.coerce(args[0],splitTypeArguments(type)[0]);if(target){target.set(value);return done();}return{handled:true,constructed:value};}
     if(name==='get_HasValue')return done(i4(has()));if(name==='get_Value'){if(!has())fail('InvalidOperationException','Nullable object must have a value.');return done(get());}if(name==='GetValueOrDefault')return done(has()?get():args.length?copyValue(args[0]):get());
     if(name==='ToString')return done(formatStandardValue(rt,self));if(name==='Equals'){const inner=splitTypeArguments(type)[0],other=args[0];return done(i4(has()?other!=null&&(!other.$box||other.$type===inner)&&valueEqual(rt,get(),other,inner):other==null));}
-    if(name==='GetHashCode'){if(!has())return done(i4(0));const value=get();if(value?.$decimal)return invokeStandardValueBuiltin(rt,{declaringType:DECIMAL,name:'GetHashCode',parameters:[]},[],value);if(value instanceof Numeric){const n=raw(value);return done(i4(typeof n==='bigint'?Number(n&0xffffffffn)^Number(n>>32n):n));}unsupported('Nullable.GetHashCode currently supports integral and Decimal underlying values only.');}
+    if(name==='GetHashCode')return done(i4(has()?valueHash(rt,get(),splitTypeArguments(type)[0]):0));
   }
   if(type==='System.Nullable'){
     if(name==='GetUnderlyingType'){const t=args[0];if(!t)fail('ArgumentNullException','nullableType');const name=t.typeName;return done(nullable(name)?{$type:'System.RuntimeType',typeName:splitTypeArguments(name)[0]}:null);}
@@ -346,6 +455,7 @@ export function invokeStandardValueBuiltin(rt,ref,args,self,kind) {
       for(let i=0;i<args.length;i++)value.fields[actual+'::'+(i===7?'Rest':'Item'+(i+1))]=rt.coerce(args[i],types[i]);if(target){target.set(value);return done();}return name==='Create'?done(value):{handled:true,constructed:value};
     }
     if(name==='ToString')return done(formatStandardValue(rt,self));
+    if(name==='GetHashCode')return done(i4(tupleHash(rt,self)));
     const other=unwrap(args[0]);if(name==='Equals')return done(i4(other?.$type===self.$type&&valueEqual(rt,self,other)));
     if(other==null)return done(i4(1));if(other.$type!==self.$type)fail('ArgumentException','Argument must be the same tuple type.');return done(i4(compareValues(rt,self,other)));
   }

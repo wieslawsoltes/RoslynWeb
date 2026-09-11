@@ -1,0 +1,2163 @@
+{
+  "runtime": "10.0.0",
+  "roslynVersion": "5.0.0.0",
+  "cases": [
+    {
+      "method": "TupleLength",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "TupleLength",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "TupleLength",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2"
+      }
+    },
+    {
+      "method": "TupleLength",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "7"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "TupleLength",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "8"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "8"
+      }
+    },
+    {
+      "method": "TupleLength",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "9"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "9"
+      }
+    },
+    {
+      "method": "TupleLength",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "16"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "16"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-2"
+        }
+      ],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        }
+      ],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "6"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "7"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "8"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "8"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "9"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "13"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "14"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "14"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "15"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "15"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "16"
+      }
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "16"
+        }
+      ],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "TupleIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "17"
+        }
+      ],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "EmptyIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        }
+      ],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "EmptyIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "EmptyIndex",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-3"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "9"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "9"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "9"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "9"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "9"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "8"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "9"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "9"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "10"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "10"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "10"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "10"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "10"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "10"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "11"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "11"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "11"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "11"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "11"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "11"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "12"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "12"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "12"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "12"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "StructuralEqual",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "12"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralCompare",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "12"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NestedTupleIndex",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "3"
+      }
+    },
+    {
+      "method": "InterfaceCasts",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "TupleIndexNullable",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "TupleIndexDecimal",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "1.2300:ok"
+      }
+    },
+    {
+      "method": "StructuralExplicit",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralWrongType",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralWrongTypeCompare",
+      "arguments": [],
+      "exception": "System.ArgumentException"
+    },
+    {
+      "method": "StructuralNull",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralNullCompare",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "StructuralNullComparer",
+      "arguments": [],
+      "exception": "System.NullReferenceException"
+    },
+    {
+      "method": "StructuralEmptyNullComparer",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralEmptyHash",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "StructuralSingleHash",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "2"
+      }
+    },
+    {
+      "method": "StructuralHash",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "HashCallOrder",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "8,9,2,3,4,5,6,7,"
+      }
+    },
+    {
+      "method": "LastEightHash",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "LastFifteenHash",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "TupleHashContract",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "NullableTupleHash",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "EmptyNullableHash",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "StructuralDefaultArrays",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralDefaultArraysHash",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "StructuralDefaultCompare",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "StructuralDefaultTypeMismatch",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "StructuralComparerThrows",
+      "arguments": [],
+      "exception": "System.InvalidOperationException"
+    },
+    {
+      "method": "ManagedHashOverride",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "ManagedCompareOverride",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "-3"
+      }
+    },
+    {
+      "method": "ManagedEqualsOverride",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "InvalidRestLength",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "8"
+      }
+    },
+    {
+      "method": "InvalidRestIndex",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "ComparableInterface",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "ComparableGenericInterface",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "EquatableGenericInterface",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "ArrayStructuralCustom",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "ArrayStructuralCompare",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "ArrayStructuralHash",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "EmptyArrayNullHash",
+      "arguments": [],
+      "exception": "System.ArgumentNullException"
+    },
+    {
+      "method": "EmptyArrayNullEquals",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "EmptyArrayNullCompare",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "SameArrayNullCompare",
+      "arguments": [],
+      "exception": "System.NullReferenceException"
+    },
+    {
+      "method": "ArrayRankHash",
+      "arguments": [],
+      "exception": "System.ArgumentException"
+    },
+    {
+      "method": "EmptyArrayRankCompare",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "ArrayLowerBoundHash",
+      "arguments": [],
+      "exception": "System.IndexOutOfRangeException"
+    },
+    {
+      "method": "SingleTupleHash",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2147483648"
+      }
+    },
+    {
+      "method": "SingleTupleHash",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "SingleTupleHash",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "SingleTupleHash",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "SingleTupleHash",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "42"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "SingleTupleHash",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2147483647"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2147483647"
+      }
+    },
+    {
+      "method": "SingleTupleCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NullableCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DirectCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "SingleTupleCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "65"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "4259905"
+      }
+    },
+    {
+      "method": "NullableCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "65"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "4259905"
+      }
+    },
+    {
+      "method": "DirectCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "65"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "4259905"
+      }
+    },
+    {
+      "method": "SingleTupleCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "4660"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "305402420"
+      }
+    },
+    {
+      "method": "NullableCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "4660"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "305402420"
+      }
+    },
+    {
+      "method": "DirectCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "4660"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "305402420"
+      }
+    },
+    {
+      "method": "SingleTupleCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "65535"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "NullableCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "65535"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "DirectCharHash",
+      "arguments": [
+        {
+          "type": "char",
+          "value": "65535"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "-2251799813685248"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2146435072"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "-2251799813685248"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2146435072"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "Infinity",
+          "bits": "9218868437227405312"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2146435072"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "Infinity",
+          "bits": "9218868437227405312"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2146435072"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-Infinity",
+          "bits": "-4503599627370496"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1048576"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-Infinity",
+          "bits": "-4503599627370496"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1048576"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1",
+          "bits": "4607182418800017408"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1072693248"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1",
+          "bits": "4607182418800017408"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1072693248"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1.5",
+          "bits": "4609434218613702656"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1073217536"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1.5",
+          "bits": "4609434218613702656"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1073217536"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "5E-324",
+          "bits": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "5E-324",
+          "bits": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "NullableDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "9219188693200907213"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2146435072"
+      }
+    },
+    {
+      "method": "DirectDoubleHash",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "9219188693200907213"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2146435072"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "-4194304"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2139095040"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "-4194304"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2139095040"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "Infinity",
+          "bits": "2139095040"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2139095040"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "Infinity",
+          "bits": "2139095040"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2139095040"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-Infinity",
+          "bits": "-8388608"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-8388608"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-Infinity",
+          "bits": "-8388608"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-8388608"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1",
+          "bits": "1065353216"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1065353216"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1",
+          "bits": "1065353216"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1065353216"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1.5",
+          "bits": "1069547520"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1069547520"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1.5",
+          "bits": "1069547520"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1069547520"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1E-45",
+          "bits": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1E-45",
+          "bits": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "NullableSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "2143363909"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2139095040"
+      }
+    },
+    {
+      "method": "DirectSingleHash",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "2143363909"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2139095040"
+      }
+    },
+    {
+      "method": "NullableLongHash",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2147483648"
+      }
+    },
+    {
+      "method": "NullableLongHash",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2097152"
+      }
+    },
+    {
+      "method": "NullableLongHash",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NullableLongHash",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NullableLongHash",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "NullableLongHash",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "9007199254740993"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2097153"
+      }
+    },
+    {
+      "method": "NullableLongHash",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "9223372036854775807"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2147483648"
+      }
+    }
+  ],
+  "tupleHashes": {
+    "seed": 889237719,
+    "values": [
+      0,
+      1,
+      -537035297,
+      1529356629,
+      1904618839,
+      -1799865238,
+      -1766002838,
+      1111098509,
+      -234687381,
+      2084012000,
+      -2004277949,
+      2097485285,
+      -1601310888,
+      -945870588,
+      1689743805,
+      -138173528,
+      1034161120
+    ]
+  },
+  "sdk": "10.0.100",
+  "sourceSha256": "763f98d12febc2e56978bcc01d6d72b6eb9ddd2b03cd22f742ada722b2bde1b8",
+  "assemblySha256": "af532eb35a6f69d88ac9d7d5762b2d1af00b0e9eb7ec89cf25e44e79c3898c0a",
+  "methodology": "Actual C# compiled by the pinned SDK Roslyn in Release mode; exact emitted PE inspected with the repository IlInspector and independently executed on native .NET. Both JavaScript and Wasm optimized/unoptimized backends consume the same unchanged inspector model. Randomized tuple hashes are checked through native equality contracts and comparer call order rather than cross-process hash identity."
+}

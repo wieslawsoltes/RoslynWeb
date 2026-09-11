@@ -10,7 +10,7 @@ import { invokeCollectionsBuiltin, isCollectionsInstance } from './collections-e
 import { invokeIoBuiltin, ioTypeBases } from './io.mjs';
 import { invokeJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isPointer, allocateMemory, releaseMemory, pointerBinary, readMemory, writeMemory, copyMemory, initializeMemory } from './memory.mjs';
-import { isStandardValueType, defaultStandardValue, decimalFromJS, standardValueFromJS, standardValueToJS, boxStandardValue, unboxStandardValue, standardStaticField, formatStandardValue, invokeStandardValueBuiltin } from './standard-values.mjs';
+import { isStandardValueType, isStandardValueInstance, defaultStandardValue, decimalFromJS, standardValueFromJS, standardValueToJS, boxStandardValue, unboxStandardValue, standardStaticField, formatStandardValue, invokeStandardValueBuiltin } from './standard-values.mjs';
 
 const voidType = type => !type || type === 'System.Void' || type === 'void';
 const trimType = type => String(type?.name ?? type ?? '').replace(/&$/, '');
@@ -279,13 +279,13 @@ export class ILRuntime {
   arithmeticException() { return managedError('System.ArithmeticException', 'Overflow or underflow in the arithmetic operation.'); }
 
   objectHashCode(value) {
-    if (value?.$box) return this.objectHashCode(value.value);
+    if (value?.$box) return value.$type==='System.Char' ? i4(Number(raw(value.value))|(Number(raw(value.value))<<16)) : this.objectHashCode(value.value);
     if (value instanceof Numeric) {
       if (value.kind === 'i4') return i4(value.value);
       if (value.kind === 'i8') return i4(Number(BigInt.asIntN(32, value.value ^ (value.value >> 32n))));
       const view = new DataView(new ArrayBuffer(8));
-      if (value.kind === 'r4') {view.setFloat32(0, value.value === 0 ? 0 : Number.isNaN(value.value) ? NaN : value.value, true); return i4(view.getInt32(0, true));}
-      view.setFloat64(0, value.value === 0 ? 0 : Number.isNaN(value.value) ? NaN : value.value, true);
+      if (value.kind === 'r4') {view.setFloat32(0, value.value === 0 ? 0 : Number.isNaN(value.value) ? Infinity : value.value, true); return i4(view.getInt32(0, true));}
+      view.setFloat64(0, value.value === 0 ? 0 : Number.isNaN(value.value) ? Infinity : value.value, true);
       return i4(view.getInt32(0, true) ^ view.getInt32(4, true));
     }
     if (typeof value === 'string') {let hash = 2166136261; for (let i = 0; i < value.length; i++) hash = Math.imul(hash ^ value.charCodeAt(i), 16777619); return i4(hash);}
@@ -590,6 +590,8 @@ export class ILRuntime {
     if (value == null) return false;
     const target = trimType(type), actual = this.typeName(value);
     if (actual === target || this.inherits(actual, target)) return true;
+    const standard = isStandardValueInstance(value, target);
+    if (standard !== undefined) return standard;
     const collection = isCollectionsInstance(this, value, target);
     if (collection !== undefined) return collection;
     if (value.$array && (target === 'System.Array' || target === 'System.Collections.IEnumerable')) return true;

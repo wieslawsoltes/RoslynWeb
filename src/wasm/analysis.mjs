@@ -163,6 +163,52 @@ export function analyzeWasmAssembly(model, options = {}) {
     descriptor.parameters = descriptor.paramTypes; descriptor.result = descriptor.resultType; descriptor.locals = descriptor.localTypes;
     return descriptor;
   };
+  // Framework tuple/comparer services can call back into managed implementations.
+  // Retain only matching methods on closed types encountered in the export closure;
+  // their IL is compiled to Wasm exactly like direct calls, with no JS IL fallback.
+  const serviceCallbacks = new Map(), serviceTypes = new Map(), serviceRetained = new Set();
+  const retainServiceCallbacks = () => {
+    for (const {closedType, assemblyName} of serviceTypes.values()) {
+      let type = typesByAssembly.get(`${assemblyName}|${genericDefinitionName(closedType)}`) ?? types.get(genericDefinitionName(closedType));
+      let actual = closedType;
+      const visited = new Set();
+      while (type && !visited.has(actual)) {
+        visited.add(actual);
+        for (const callback of serviceCallbacks.values()) {
+          const key = `${assemblyName}|${actual}|${callback.name}|${callback.count}`;
+          if (serviceRetained.has(key)) continue;
+          serviceRetained.add(key);
+          for (const method of type.methods ?? []) {
+            if (method.isStatic || method.isAbstract || method.isPInvoke || method.isRuntime || method.isExternal || method.genericParameters?.length) continue;
+            if (!(method.name === callback.name || method.name.endsWith(`.${callback.name}`)) || method.parameters?.length !== callback.count) continue;
+            const parameters=method.parameters.map(p=>substituteType(typeName(p),splitTypeArguments(actual)));
+            if (callback.comparer ? parameters.some(p=>p!=='System.Object') : parameters.some(p=>p!==actual&&p!=='System.Object')) continue;
+            const definition = definitionsByToken.get(`${type.assemblyName}|${method.token}`);
+            if (definition) enqueue(definition, {...definition, declaringType:actual});
+          }
+        }
+        actual = substituteType(type.baseType, splitTypeArguments(actual));
+        type = typesByAssembly.get(`${type.assemblyName}|${genericDefinitionName(actual)}`) ?? types.get(genericDefinitionName(actual));
+      }
+    }
+  };
+  const noteServiceType = (type, assemblyName) => {
+    type = String(typeName(type) ?? '').replace(/&$/, '').replace(/\[[,]*\]$/, '');
+    if (/!\d/.test(type)) return;
+    if (typesByAssembly.has(`${assemblyName}|${genericDefinitionName(type)}`) || types.has(genericDefinitionName(type))) serviceTypes.set(`${assemblyName}|${type}`, {closedType:type,assemblyName});
+    for (const argument of splitTypeArguments(type)) noteServiceType(argument, assemblyName);
+  };
+  const noteServiceCall = ref => {
+    const type = String(ref.declaringType ?? ''), name = ref.name;
+    const structural = ['System.Collections.IStructuralEquatable','System.Collections.IStructuralComparable','System.Collections.IEqualityComparer','System.Collections.IComparer'].includes(type);
+    if (!structural && !isStandardValueType(type) && !['System.IComparable','System.IComparable`1','System.IEquatable`1'].includes(genericDefinitionName(type))) return;
+    const callback = name === 'CompareTo' || name === 'Compare' ? {name:'Compare',count:2} : name === 'Equals' ? {name:'Equals',count:2} : name === 'GetHashCode' ? {name:'GetHashCode',count:1} : null;
+    if (!callback) return;
+    if (structural) serviceCallbacks.set(`${callback.name}|${callback.count}`,{...callback,comparer:true});
+    const valueCallback = {name:name === 'Compare' || name === 'CompareTo' ? 'CompareTo' : name,count:name === 'GetHashCode' ? 0 : 1};
+    serviceCallbacks.set(`${valueCallback.name}|${valueCallback.count}`,valueCallback);
+    retainServiceCallbacks();
+  };
   const rootCandidates = definitions.filter(m => m.assemblyName === model.name);
   const selectors = options.exports;
   if (selectors !== undefined && !Array.isArray(selectors)) report('WASM_EXPORTS', 'exports must be an array of method selectors.');
@@ -236,13 +282,21 @@ export function analyzeWasmAssembly(model, options = {}) {
       if (resolvedRef.isStatic || opcodeOf(instruction) === 'newobj') ensureInitializer(resolvedRef.declaringType, target.assemblyName, descriptor, instruction);
       calls.set(target.key, call); return call;
     }
-    if (isNativeWasmBuiltin(resolvedRef) || isDelegate && ['.ctor','Invoke'].includes(resolvedRef.name)) { const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
+    if (isNativeWasmBuiltin(resolvedRef) || isDelegate && ['.ctor','Invoke'].includes(resolvedRef.name)) { noteServiceCall(resolvedRef); const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
     report(definition?.isPInvoke ? 'WASM_PINVOKE' : definition?.isAbstract ? 'WASM_ABSTRACT_DISPATCH' : 'WASM_UNRESOLVED_CALL', `No native WebAssembly implementation or supported runtime service for '${methodSignature(resolvedRef)}'.`, descriptor, instruction);
     return { kind:'unresolved', ref:resolvedRef, params, result };
   };
 
   for (let pendingIndex = 0; pendingIndex < pending.length; pendingIndex++) {
     const descriptor = pending[pendingIndex], method = descriptor.method, instructions = descriptor.instructions;
+    for (const type of [...(!method.isStatic?[method.declaringType]:[]),method.returnType,...(method.parameters??[]).map(typeName),...(method.locals??[]).map(typeName)]) noteServiceType(type,descriptor.assemblyName);
+    for (const instruction of instructions) {
+      const ref=instruction.operand,op=opcodeOf(instruction),assemblyName=ref?.assemblyName??descriptor.assemblyName;
+      if(ref?.declaringType&&(op==='newobj'||['ldfld','ldflda','stfld'].includes(op)||['call','callvirt','ldftn','ldvirtftn'].includes(op)&&ref.isStatic===false))noteServiceType(ref.declaringType,assemblyName);
+      if(ref?.type)noteServiceType(ref.type,assemblyName);
+      if(typeof ref==='string'&&['initobj','box','unbox','unbox.any','ldobj','stobj','cpobj','castclass','isinst','newarr','ldelema'].includes(op))noteServiceType(ref,descriptor.assemblyName);
+    }
+    retainServiceCallbacks();
     if (methods.length > (options.maxMethods ?? 4096)) { report('WASM_METHOD_LIMIT', 'Native method specialization exceeds the configured method limit.', descriptor); break; }
     if (method.decodeError) report('WASM_IL_DECODE', method.decodeError, descriptor);
     try { descriptor.exceptionPlan = buildExceptionPlan(method); }

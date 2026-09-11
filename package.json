@@ -1,6 +1,6 @@
 {
   "name": "@roslynweb/core",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "type": "module",
   "description": "Roslyn C# compilation in WebAssembly, direct MSIL-to-WebAssembly compilation and managed assembly execution",
   "license": "MIT",
@@ -66,7 +66,9 @@
     "test:wasm-native": "node tests/wasm-native-integration.mjs",
     "test:compilers": "node tests/compiler-v6-integration.mjs",
     "benchmark:compilers": "node scripts/benchmark-compilers.mjs",
-    "benchmark:compilers-v7": "node scripts/benchmark-compilers-v7.mjs"
+    "test:compilers-v7": "node tests/compiler-v7-integration.mjs",
+    "benchmark:compilers-v7": "node scripts/benchmark-compilers-v7.mjs",
+    "benchmark:host-cache": "node scripts/benchmark-host-cache.mjs"
   },
   "engines": {
     "node": ">=22"
