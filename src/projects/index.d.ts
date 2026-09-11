@@ -2,6 +2,24 @@ import type { PackageResolution, PackageRequest, NuGetResolverOptions } from '..
 export type VirtualFile = string | Uint8Array | ArrayBuffer;
 export interface ProjectDiagnostic { id?: string; severity?: string; message: string; path?: string; [key: string]: unknown; }
 export interface ProjectItem { include: string; path?: string; recursiveDir?: string; metadata: Record<string,string>; }
+export interface ManagedTaskItem { itemSpec:string; metadata?:Record<string,string>; }
+export interface ManagedBuildTaskRequest {
+ parameters?:Record<string,unknown>;
+ files?:Array<{path:string;base64:string}>;
+ workingDirectory?:string;
+ virtualPaths?:boolean;
+ outputProperties?:string[];
+ continueOnError?:boolean;
+}
+export interface ManagedBuildTaskResult {
+ success:boolean;
+ outputs?:Record<string,unknown>;
+ diagnostics?:ProjectDiagnostic[];
+ files?:Array<{path:string;base64:string}>;
+ removedFiles?:string[];
+ error?:unknown;
+}
+export interface ProjectUsingTask { name:string; file:string; override:boolean; assemblyName?:string; assemblyFile?:string; }
 export interface ProjectCompiler {
  compile(sources: Array<{path:string;text:string}>, options: Record<string,unknown>): Promise<{success:boolean;pe?:Uint8Array;pdb?:Uint8Array;diagnostics?:ProjectDiagnostic[];[key:string]:unknown}>;
  addReference(name:string,bytes:Uint8Array): Promise<unknown>;
@@ -9,6 +27,8 @@ export interface ProjectCompiler {
  addCompilerExtension?(name:string,bytes:Uint8Array): Promise<unknown>;
  loadPackages?(resolution:PackageResolution):Promise<unknown>;
  restore?(requests:PackageRequest[], options?:NuGetResolverOptions):Promise<PackageResolution>;
+ executeBuildTask?(assemblyIdOrBase64:string,taskName:string,request:ManagedBuildTaskRequest):Promise<ManagedBuildTaskResult>;
+ convertResx?(xml:string):Promise<{success:boolean;base64?:string;bytes?:Uint8Array;diagnostics?:ProjectDiagnostic[]}>;
 }
 export interface ProjectOptions {
  projectPath?: string;
@@ -22,6 +42,8 @@ export interface ProjectOptions {
  targetsImports?: string[];
  signal?: AbortSignal;
  onMessage?: (diagnostic:ProjectDiagnostic)=>void;
+ /** Retain between builds and pass the previous result.files to reuse unchanged generation targets. */
+ incrementalCache?: Map<string,unknown>;
 }
 export interface ProjectEvaluation {
  projectPath: string;
@@ -29,6 +51,7 @@ export interface ProjectEvaluation {
  items: Record<string,ProjectItem[]>;
  imports: string[];
  targets: string[];
+ usingTasks: ProjectUsingTask[];
  files: Map<string,VirtualFile>;
  diagnostics: ProjectDiagnostic[];
 }
@@ -38,6 +61,8 @@ export interface ProjectBuildResult extends ProjectEvaluation {
  pe?: Uint8Array;
  pdb?: Uint8Array;
  generatedFiles: Map<string,VirtualFile>;
+ skippedTargets: string[];
+ targetOutputs: Record<string,string[]>;
  projectReferences: ProjectBuildResult[];
  packages: PackageResolution | null;
  error?: {code:string;message:string;details?:Record<string,unknown>};

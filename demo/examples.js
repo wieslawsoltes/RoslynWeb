@@ -11,7 +11,7 @@ public static class Program
         return 0;
     }
 }` },
-  { name: 'Algorithms → JavaScript', description: 'Recursion, loops, arrays, integer arithmetic and method calls. Try the JavaScript backend.', source: `using System;
+  { name: 'Algorithms → JavaScript', preferredBackend:'javascript', description: 'Recursion, loops, arrays, integer arithmetic and method calls. Try the JavaScript backend.', source: `using System;
 
 public static class Program
 {

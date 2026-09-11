@@ -1,0 +1,52 @@
+{
+  "testedAt": "2026-09-11T12:23:09.652Z",
+  "environment": "Actual .NET browser WASM and Worker protocol under Node",
+  "passed": 11,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Public API loads pinned Microsoft.Build task compiler references",
+      "passed": true
+    },
+    {
+      "name": "Public API converts RESX to genuine managed resources",
+      "passed": true
+    },
+    {
+      "name": "Public API creates typed resources",
+      "passed": true
+    },
+    {
+      "name": "Raw resource is embedded in a real emitted PE and read in WASM",
+      "passed": true
+    },
+    {
+      "name": "Demo RESX project builds and runs in the Worker",
+      "passed": true
+    },
+    {
+      "name": "Demo custom managed task generates C# through UsingTask and executes",
+      "passed": true
+    },
+    {
+      "name": "Direct custom task API returns typed outputs and changed files",
+      "passed": true
+    },
+    {
+      "name": "C# Reflection.Emit demo executes DynamicMethod as JavaScript",
+      "passed": true
+    },
+    {
+      "name": "Virtual file input and changed output cross the real Worker protocol",
+      "passed": true
+    },
+    {
+      "name": "Binary stream and virtual file demo executes real C# MSIL",
+      "passed": true
+    },
+    {
+      "name": "AbortSignal cancels a pending compiler startup",
+      "passed": true
+    }
+  ]
+}

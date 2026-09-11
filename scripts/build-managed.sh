@@ -24,5 +24,7 @@ cp -a "$project_root/managed/publish/wwwroot/_framework/." "$project_root/dist/_
 cp "$project_root/managed/RoslynPatched/browser-adaptation.json" "$project_root/dist/browser-adaptation.json"
 mkdir -p "$project_root/dist/compiler-references"
 cp "$project_root/managed/RoslynPatched/Microsoft.CodeAnalysis.dll" "$project_root/managed/RoslynPatched/Microsoft.CodeAnalysis.CSharp.dll" "$project_root/dist/compiler-references/"
+mkdir -p "$project_root/dist/task-references"
+cp "$sdk_base/Microsoft.Build.Framework.dll" "$sdk_base/Microsoft.Build.Utilities.Core.dll" "$project_root/dist/task-references/"
 node "$project_root/managed/prune-framework.mjs" "$project_root/dist/_framework"
 echo "Browser runtime published to $project_root/dist/_framework"

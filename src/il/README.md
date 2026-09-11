@@ -165,6 +165,33 @@ exception regions. They emit executable JavaScript or standalone ES-module sourc
 **they do not implement the entire System.Reflection.Emit API or emit PE DLL bytes**.
 Use Roslyn compilation for PE/PDB emission.
 
+The JavaScript backend also executes the C# `System.Reflection.Emit.DynamicMethod`
+API. Supported overloads create methods, get an `ILGenerator`, emit implemented
+`OpCodes` with numeric/string/type/member/label/local operands, declare locals,
+mark branch/switch labels, and build catch/finally/fault regions. `CreateDelegate`
+supports standard and linked custom delegate types, with exact signatures and an
+optional bound first argument. `MethodInfo.Invoke` executes dynamic methods, and
+`MethodInfo.CreateDelegate` also binds ordinary linked static and open/closed
+instance methods. Dynamic methods share the caller's linked assemblies, static
+fields, managed objects and instruction budget. They compile only when first
+invoked or bound to a delegate.
+
+This is a bounded implementation of the documented
+[DynamicMethod](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.dynamicmethod?view=net-10.0)
+and [ILGenerator](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator?view=net-10.0)
+APIs. It generates JavaScript functions and requires the host's dynamic-code
+permission. Runtime type/assembly builders, raw metadata emission, unmanaged
+`EmitCalli`, varargs, custom modifiers and native machine-code generation are not
+implemented. Unlike .NET's silent ignoring of emission after completion, this
+adapter rejects attempts to modify a completed method. Emitted assemblies remain
+linked until the JavaScript runtime instance is discarded.
+
+`Type.GetProperty`/`GetProperties` and `PropertyInfo` use properties extracted from
+the PE metadata. They support exact indexed signatures, inherited/closed-generic
+properties, binding visibility flags, public/nonpublic accessor queries, boxed
+values and getter/setter invocation. Properties are not inferred from accessor
+names, and custom reflection binders remain unsupported.
+
 ```js
 import { DynamicMethodBuilder } from './src/il/index.mjs';
 const method = new DynamicMethodBuilder('Double', 'System.Int32', ['System.Int32']);
@@ -188,6 +215,15 @@ initializers, typed catches/filters/finally, delegates, externals, linked assemb
 portable generated modules, rejection of unsupported overloads, resource limits,
 64-bit metadata constants and real Roslyn-emitted IL.
 
+The Reflection.Emit fixture has 17 differential cases captured from native
+.NET 10.0.0, including custom delegates, exact Int64 constants, shared static
+storage, bound targets, indexed branches and rethrow/finally behavior. The JS
+tests compare every result with `tests/il-emit-native-baseline.json`. To regenerate
+that native baseline with a local .NET 10 SDK, run
+`DOTNET=/path/to/dotnet node tests/il-emit-verify-native.mjs`.
+`tests/il-property-fixture.cs` additionally verifies real reflected property and
+indexer metadata, including private accessors and closed generic types.
+
 `tests/il-fixture.cs` and its checked-in inspection `tests/il-fixture.json` cover
 checked arithmetic, exact large integers, initialized arrays, byrefs, virtual
 overrides, exception filters, nested finally regions, collection enumeration,
@@ -208,3 +244,50 @@ and import metadata plus explicitly supplied P/Invoke exports. The unsafe fixtur
 function-pointer calli, and typed references. The SelfTest inspection mode enables
 unsafe compilation solely for these compiler fixtures. Additional tests cover
 memory lifetime/bounds and linked-dependency preflight rejection.
+
+## Browser IO adapters
+
+The JavaScript tier implements a bounded synchronous IO subset with explicit
+signature admission. `MemoryStream` supports byte-array segments, aliasing,
+read/write/seek, capacity and length changes, copying, and disposal. Buffered
+`StreamWriter` and `StreamReader` support UTF-8 and UTF-16, preambles and BOM
+detection, text/line/character-buffer operations and `leaveOpen`; `StringReader`
+and `StringWriter` support in-memory text. UTF-8/UTF-16/ASCII/Latin-1 encoding
+conversions and strict UTF-8 error reporting are available. `BinaryReader` and
+`BinaryWriter` support little-endian primitive numbers, booleans, UTF-8/UTF-16
+length-prefixed strings, byte buffers and 7-bit encoded 32-/64-bit integers.
+
+`File`, `Directory`, `Path`, and basic `FileStream` operations use a private virtual
+filesystem. Paths use `/` separators and a virtual current directory. They do not
+access the host operating system or browser-origin storage. Ordinary file writes,
+append, reads, copying, moving, directory creation/deletion, wildcard listing and
+recursive listing are supported. Files are limited by `maxVirtualFileBytes`
+(default 16 MiB); stream allocations use `maxArrayLength` (default 10 million).
+
+```js
+import { compileAssembly, VirtualFileSystem } from './src/il/index.mjs';
+const files = new VirtualFileSystem({
+  maxBytes: 4 * 1024 * 1024,
+  files: { '/input/data.txt': 'hello from JavaScript' },
+});
+const runtime = compileAssembly(inspection, { strict: true, virtualFileSystem: files });
+runtime.invoke('Program::Main');
+const output = files.snapshot(); // Record<string, Uint8Array>, copied file contents
+```
+
+For structured-clone boundaries, pass `virtualFiles` as a plain object mapping
+paths to strings, `Uint8Array` values, or byte arrays, plus `maxVirtualFileBytes`.
+Each runtime creates independent file state unless a `VirtualFileSystem` instance
+is shared explicitly. `snapshot()` returns copied byte arrays suitable for a
+Worker response. This is an in-memory adapter: persistence, filesystem watchers,
+ACLs, file timestamps, operating-system file locking/sharing, asynchronous IO,
+span/memory overloads, arbitrary `Stream` subclasses and additional encodings
+remain outside this adapter. `StreamReader` buffers the remaining in-memory stream
+on first read; arbitrary concurrent modification of its base stream is not
+supported. Unsupported overloads stay outside JavaScript compatibility admission.
+
+`tests/il-io-fixture.cs` and its checked-in inspection exercise actual Roslyn IL
+for memory/text/binary streams, UTF-8 data, virtual files, directory enumeration,
+and stream/encoding base types. `tests/il-io.test.mjs` additionally verifies
+buffer aliasing, zero-filled growth, disposal, resource budgets, malformed byte
+sequences, EOF, virtual-file isolation, and copied Worker-safe file snapshots.

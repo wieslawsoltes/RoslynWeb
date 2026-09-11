@@ -23,6 +23,7 @@ const memberProperties = new Set(['get_Name', 'get_DeclaringType', 'get_Reflecte
 export function isReflectionBuiltin(ref) {
   if (!ref || typeof ref !== 'object') return false;
   const t = simpleRoot(ref.declaringType ?? ''), n = ref.name, p = signature(ref), len = p.length;
+  if ((methodsTypes.has(t) || ['System.Reflection.MemberInfo', 'System.Reflection.FieldInfo', 'System.Reflection.PropertyInfo'].includes(t)) && ['op_Equality', 'op_Inequality'].includes(n)) return len === 2 && p[0] === t && p[1] === t;
   if (typeTypes.has(t)) {
     if (typeProperties.has(n) || ['ToString', 'GetGenericArguments', 'GetGenericTypeDefinition', 'GetElementType', 'GetInterfaces'].includes(n)) return len === 0;
     if (['op_Equality', 'op_Inequality'].includes(n)) return len === 2 && p.every(x => x === 'System.Type');
@@ -30,10 +31,11 @@ export function isReflectionBuiltin(ref) {
     if (n === 'GetType') return len >= 1 && len <= 3 && p[0] === 'System.String' && p.slice(1).every(x => x === 'System.Boolean');
     if (['Equals', 'IsAssignableFrom', 'IsSubclassOf', 'IsInstanceOfType'].includes(n)) return len === 1;
     if (['MakeGenericType'].includes(n)) return len === 1 && p[0] === 'System.Type[]';
-    if (['GetMethods', 'GetFields', 'GetConstructors'].includes(n)) return len === 0 || len === 1 && p[0] === 'System.Reflection.BindingFlags';
+    if (['GetMethods', 'GetFields', 'GetConstructors', 'GetProperties'].includes(n)) return len === 0 || len === 1 && p[0] === 'System.Reflection.BindingFlags';
     if (['GetField'].includes(n)) return len >= 1 && len <= 2 && p[0] === 'System.String' && (len === 1 || p[1] === 'System.Reflection.BindingFlags');
     if (n === 'GetMethod') return len === 1 && p[0] === 'System.String' || len === 2 && p[0] === 'System.String' && ['System.Type[]', 'System.Reflection.BindingFlags'].includes(p[1]) || len === 3 && p[0] === 'System.String' && p[1] === 'System.Type[]' && p[2] === 'System.Reflection.ParameterModifier[]';
     if (n === 'GetConstructor') return len === 1 && p[0] === 'System.Type[]';
+    if (n === 'GetProperty') return len === 1 && p[0] === 'System.String' || len === 2 && p[0] === 'System.String' && ['System.Type', 'System.Type[]', 'System.Reflection.BindingFlags'].includes(p[1]) || len === 3 && p[0] === 'System.String' && p[1] === 'System.Type' && p[2] === 'System.Type[]';
   }
   if (methodsTypes.has(t) || t === 'System.Reflection.MemberInfo') {
     if (memberProperties.has(n) || ['GetParameters', 'GetGenericArguments', 'GetGenericMethodDefinition', 'ToString'].includes(n)) return len === 0;
@@ -46,6 +48,12 @@ export function isReflectionBuiltin(ref) {
     if (n === 'GetValue') return len === 1 && p[0] === 'System.Object';
     if (n === 'SetValue') return len === 2 && p.every(x => x === 'System.Object');
     if (n === 'GetFieldFromHandle') return len >= 1 && len <= 2 && p[0] === 'System.RuntimeFieldHandle' && (len === 1 || p[1] === 'System.RuntimeTypeHandle');
+  }
+  if (t === 'System.Reflection.PropertyInfo' || t === 'System.Reflection.RuntimePropertyInfo') {
+    if (['get_Name', 'get_DeclaringType', 'get_ReflectedType', 'get_MetadataToken', 'get_Module', 'get_PropertyType', 'get_CanRead', 'get_CanWrite', 'get_GetMethod', 'get_SetMethod', 'GetIndexParameters', 'ToString'].includes(n)) return len === 0;
+    if (['GetGetMethod', 'GetSetMethod', 'GetAccessors'].includes(n)) return len === 0 || len === 1 && p[0] === 'System.Boolean';
+    if (n === 'GetValue') return len >= 1 && len <= 2 && p[0] === 'System.Object' && (len === 1 || p[1] === 'System.Object[]');
+    if (n === 'SetValue') return len >= 2 && len <= 3 && p[0] === 'System.Object' && p[1] === 'System.Object' && (len === 2 || p[2] === 'System.Object[]');
   }
   if (t === 'System.Reflection.ParameterInfo') return ['get_Name', 'get_Position', 'get_ParameterType', 'get_IsOut', 'get_IsOptional', 'get_HasDefaultValue', 'get_DefaultValue'].includes(n) && len === 0;
   if (t === 'System.Reflection.Assembly') return ['GetTypes', 'get_FullName', 'GetName'].includes(n) && len === 0 || n === 'GetType' && len === 1 && p[0] === 'System.String';
@@ -72,7 +80,10 @@ function members(runtime, name, kind, flags) {
   const answer = [], seen = new Set(); let current = name, inherited = false;
   while (current && !seen.has(current)) {
     seen.add(current); const d = definition(runtime, current); if (!d) break;
-    const source = kind === 'FieldInfo' ? d.fields ?? [] : (d.methods ?? []).map(m => runtime.resolveMethod({ ...m, declaringType: current, assemblyName: d.$assembly ?? m.assemblyName }) ?? m);
+    const source = kind === 'FieldInfo' ? d.fields ?? [] : kind === 'PropertyInfo' ? (d.properties ?? []).map(property => {
+      const accessors = [property.getter, property.setter].filter(Boolean).map(m => runtime.resolveMethod({ ...m, declaringType: current, assemblyName: d.$assembly ?? m.assemblyName }) ?? m);
+      return { ...property, isPublic: accessors.some(isPublic), isPrivate: accessors.every(isPrivate) };
+    }) : (d.methods ?? []).map(m => runtime.resolveMethod({ ...m, declaringType: current, assemblyName: d.$assembly ?? m.assemblyName }) ?? m);
     for (const item of source) {
       const ctor = item.name === '.ctor' || item.name === '.cctor';
       if (kind === 'ConstructorInfo' ? !ctor || inherited || item.name === '.cctor' : kind === 'MethodInfo' && ctor) continue;
@@ -163,7 +174,14 @@ function createInstance(runtime, type, values, nonPublic = false) {
 export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call') {
   if (!isReflectionBuiltin(ref)) return { handled: false };
   if (self?.$byref) self = self.get();
+  if (self?.typeName && ref.declaringType === 'System.Reflection.MemberInfo' && ref.name === 'get_Name') ref = { ...ref, declaringType: 'System.Type' };
   const done = value => ({ handled: true, value }), name = ref.name, owner = simpleRoot(ref.declaringType), p = signature(ref);
+  if (['op_Equality', 'op_Inequality'].includes(name) && !typeTypes.has(owner)) {
+    const [left, right] = args;
+    const key = value => { const m = value?.$member; return m && `${m.$assembly ?? m.assemblyName}:${m.token}:${m.declaringType}:${(m.genericArguments ?? m.$methodArguments ?? []).join(',')}`; };
+    const equal = left === right || left != null && right != null && !left.$builder && !right.$builder && key(left) != null && key(left) === key(right);
+    return done(i4(name === 'op_Equality' ? equal : !equal));
+  }
   if (owner === 'System.Activator') return done(createInstance(runtime, args.length ? args[0] : ref.genericArguments[0], p[1] === 'System.Object[]' ? args[1] : null, p[1] === 'System.Boolean' && !!raw(args[1])));
   if (typeTypes.has(owner)) {
     if (name === 'GetTypeFromHandle') return done(reflectionType(runtime, args[0]));
@@ -210,12 +228,14 @@ export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call')
       if (ga.length !== count || ga.some(x => !x || x === 'System.Void' || /[&*]$/.test(x))) fail('ArgumentException', 'Invalid generic type arguments.');
       const closed = `${t}<${ga.join(',')}>`; definition(runtime, closed); return done(reflectionType(runtime, closed));
     }
-    if (/^Get(Method|Field|Constructor)s?$/.test(name)) {
-      const memberKind = name.includes('Method') ? 'MethodInfo' : name.includes('Field') ? 'FieldInfo' : 'ConstructorInfo';
+    if (/^Get(Method|Field|Constructor|Property|Propertie)s?$/.test(name)) {
+      const memberKind = name.includes('Method') ? 'MethodInfo' : name.includes('Field') ? 'FieldInfo' : name.includes('Propert') ? 'PropertyInfo' : 'ConstructorInfo';
       const flagIndex = p.indexOf('System.Reflection.BindingFlags'), flags = flagIndex >= 0 ? Number(raw(args[flagIndex])) : 4 | 8 | 16;
-      const candidates = members(runtime, t, memberKind, flags);
+      let candidates = members(runtime, t, memberKind, flags);
       if (name.endsWith('s')) return done(array(candidates, `System.Reflection.${memberKind}`));
       const typeIndex = p.indexOf('System.Type[]'), desired = typeIndex >= 0 ? itemsOf(args[typeIndex]) : null;
+      const returnIndex = p.indexOf('System.Type');
+      if (memberKind === 'PropertyInfo' && returnIndex >= 0) candidates = candidates.filter(x => x.$member.type === typeName(args[returnIndex]));
       const sought = p[0] === 'System.String' ? args[0] : null;
       if (p[0] === 'System.String' && sought == null) fail('ArgumentNullException', 'Member name cannot be null.');
       return done(choose(candidates, sought, desired, flags));
@@ -232,6 +252,21 @@ export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call')
   }
   if (self?.$member) {
     const m = self.$member;
+    if (self.$type === 'System.Reflection.PropertyInfo' || self.$type === 'System.Reflection.RuntimePropertyInfo') {
+      const accessor = (method, nonPublic) => method && (nonPublic || isPublic(runtime.resolveMethod(method) ?? method)) ? reflectedMember('MethodInfo', runtime.resolveMethod(method) ?? method, self.$reflectedType) : null;
+      if (name === 'get_PropertyType') return done(reflectionType(runtime, m.type));
+      if (name === 'get_CanRead' || name === 'get_CanWrite') return done(i4(!!m[name === 'get_CanRead' ? 'getter' : 'setter']));
+      if (name === 'GetGetMethod' || name === 'get_GetMethod') return done(accessor(m.getter, name.startsWith('get_') || !!raw(args[0])));
+      if (name === 'GetSetMethod' || name === 'get_SetMethod') return done(accessor(m.setter, name.startsWith('get_') || !!raw(args[0])));
+      if (name === 'GetAccessors') return done(array([accessor(m.getter, !!raw(args[0])), accessor(m.setter, !!raw(args[0]))].filter(Boolean), 'System.Reflection.MethodInfo'));
+      if (name === 'GetIndexParameters') return done(array((m.parameters ?? []).map((parameter, index) => ({ $type: 'System.Reflection.ParameterInfo', $parameter: parameter, position: index })), 'System.Reflection.ParameterInfo'));
+      if (name === 'GetValue' || name === 'SetValue') {
+        const method = m[name === 'GetValue' ? 'getter' : 'setter'];
+        if (!method) fail('ArgumentException', `Property '${m.name}' has no ${name === 'GetValue' ? 'getter' : 'setter'}.`);
+        const argumentsArray = itemsOf(args[name === 'GetValue' ? 1 : 2]);
+        return done(invokeMember(runtime, runtime.resolveMethod(method) ?? method, args[0], array(name === 'SetValue' ? [...argumentsArray, args[1]] : argumentsArray, 'System.Object')));
+      }
+    }
     if (name === 'get_Name') return done(m.name);
     if (name === 'get_DeclaringType') return done(reflectionType(runtime, m.declaringType));
     if (name === 'get_ReflectedType') return done(reflectionType(runtime, self.$reflectedType));

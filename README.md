@@ -16,7 +16,7 @@ npm run serve
 
 Open **http://localhost:8080**. Node 22 or later is sufficient to serve the supplied build. No npm packages, .NET installation, workload installation, or compiler server are required to run the included sample. Serve through HTTP or HTTPS; opening `demo/index.html` as a `file:` URL will not load browser modules correctly.
 
-The sample provides C# editing, compile/run/stop, selectable execution backends, DLL and generated-JavaScript downloads, MSIL inspection, source diagnostics, DLL and `.nupkg` import, NuGet restore, program arguments, and light/dark themes. Examples cover algorithms, LINQ and records, async and exceptions, JSON and reflection, a reusable library, Newtonsoft.Json, deliberate compiler errors, real source generators and analyzers, imported project targets, CLR objects, runtime-generated functions, and browser UI controls. Ctrl/Cmd+Enter runs the current program.
+The sample provides C# editing, compile/run/stop, selectable execution backends, DLL and generated-JavaScript downloads, MSIL inspection, source diagnostics, DLL and `.nupkg` import, NuGet restore, program arguments, and light/dark themes. Examples cover algorithms, LINQ and records, async and exceptions, JSON and reflection, a reusable library, Newtonsoft.Json, deliberate compiler errors, real source generators and analyzers, imported project targets, CLR objects, runtime-generated functions, browser UI controls, embedded RESX resources, managed custom build tasks, C# Reflection.Emit, and virtual files with binary streams. Ctrl/Cmd+Enter runs the current program.
 
 The sample is a static developer tool. Package restore contacts the selected package feed; source compilation and program execution stay within the runtime. It does not provide accounts, collaborative editing or a desktop IDE.
 
@@ -25,7 +25,7 @@ The sample is a static developer tool. Package restore contacts the selected pac
 Copy `src/` and `dist/` into your application. Preserve the `_framework` contents and paths. Import the ES module:
 
 ```js
-import { createRoslyn } from './src/index.js';
+import { createRoslyn } from './src/browser.js';
 
 const compiler = await createRoslyn({
   baseUrl: new URL('./dist/', import.meta.url).href,
@@ -121,7 +121,7 @@ await compiler.importPackage(new Uint8Array(await file.arrayBuffer()));
 
 Local import reads that archive only; restore its declared dependencies separately. `loadPackages` accepts a graph returned by `NuGetResolver`. Configurable feeds, fetch functions, memory caches and browser Cache Storage caches are supported. See `src/packages/README.md` for detailed options.
 
-The resolver uses strict constraint intersection and reports conflicts; it does not reproduce NuGet's direct-dependency-wins downgrade behavior. Managed analyzer/source-generator assets are registered and run by Roslyn. `buildProject` evaluates supported package `.props` and `.targets`, content assets, project references and built-in tasks in a virtual filesystem. This is a defined MSBuild subset: arbitrary `UsingTask`, `Exec`, property functions, batching and full incremental-build semantics are rejected. Package signature validation and every NuGet restore convention are not implemented. Native assets are rejected by default; opting in exposes their bytes for an explicitly supplied native WASM adapter. See `src/projects/README.md` and `docs/HOSTING.md`.
+The resolver uses strict constraint intersection and reports conflicts; it does not reproduce NuGet's direct-dependency-wins downgrade behavior. Managed analyzer/source-generator assets are registered and run by Roslyn. `buildProject` evaluates supported package `.props` and `.targets`, content assets, project references and built-in tasks in a virtual filesystem. This is a defined MSBuild subset: compatible managed `UsingTask` assemblies execute in the real browser .NET runtime. OS process tasks such as `Exec`, inline task factories, property functions, batching and complete MSBuild conformance remain unsupported. Embedded resources and supported RESX values are compiled into actual PE manifest resources, and an optional exact-content cache reuses generation targets. Package signature validation and every NuGet restore convention are not implemented. Native assets are rejected by default; opting in exposes their bytes for an explicitly supplied native WASM adapter. See `src/projects/README.md` and `docs/HOSTING.md`.
 
 ## Compile MSIL to JavaScript
 
@@ -181,13 +181,27 @@ if (build.success) console.log((await compiler.run(build.compileResult)).stdout)
 
 Register a compiled generator/analyzer with `addCompilerExtension(name, bytes)`, or restore a package containing supported analyzer assets. `compile` runs registered extensions asynchronously and returns `generatedSources`, generator diagnostics and analyzer diagnostics. Select extensions with `compilerExtensions`, or disable generators/analyzers explicitly. Additional texts and analyzer config files are accepted. `loadCompilerReferences()` lazily loads the compiler API reference DLLs when compiling extensions in the browser itself. The demo includes a working incremental generator and analyzer.
 
-The JS backend additionally exports assembly/type/method/IL builder APIs from `src/il/index.js`. These produce JavaScript and normalized IL models; they do not emit PE files or reproduce the CLR `Reflection.Emit` API. Use `compileFunction` when a real DLL is required.
+The JS backend additionally exports assembly/type/method/IL builder APIs from `src/il/index.js`. Actual C# `DynamicMethod`, `ILGenerator`, `OpCodes`, delegate creation and supported reflection APIs now map to these builders and execute generated JavaScript. These builders do not emit PE files or provide a native JIT. Use `compileFunction` when a real DLL is required. See the Reflection.Emit example in the sample and `src/il/README.md` for exact supported overloads.
+
+## Managed MSBuild tasks and resources
+
+`loadTaskReferences()` lazily registers the SDK-pinned task interfaces and base classes so you can compile a task DLL with Roslyn. Project `UsingTask` declarations execute compatible compiled `ITask` implementations, transfer task parameters and `[Output]` values, preserve item metadata, and copy virtual input/output files. The direct `executeBuildTask(assembly, typeName, request)` API exposes the same host.
+
+`compile` accepts `resources` descriptors with raw base64 data, RESX XML or typed entries. `createResources(entries)` and `convertResx(xml)` return real `.resources` data. The project builder handles `EmbeddedResource`, `GenerateResource`, resource naming overrides and default RESX items. The sample demonstrates both a custom task that generates C# and ResourceManager reading compiled resources.
+
+Task assemblies still run under browser .NET platform restrictions. Native processes, external SDK tools, nested native MSBuild execution and arbitrary RESX object deserialization are not supplied by this host. See `managed/README.md` and `src/projects/README.md` for protocols and examples.
+
+## Startup and deployment
+
+The sample uses the lean `src/browser.js` entry point. The compatibility `src/index.js` entry retains the earlier aggregate exports; import the lean entry when only the asynchronous compiler API is needed at startup. IL compilation and package loading are deferred until used. A small independent bootstrap displays module-loading failures, runtime resource downloads report progress, and Restart compiler cancels an in-flight startup.
+
+The compiler Worker uses `addEventListener('message', ...)`. This matters for the pinned .NET 10 loader, which inspects `onmessage` to recognize an application-owned sidecar Worker. Assigning that property before runtime import prevents asset readiness promises from resolving. The source fix preserves the loader's automatic detection without modifying runtime binaries.
 
 ## Execution and cancellation
 
-- Default compilation and execution use a Web Worker. A deadline terminates the entire worker; runtime state is discarded. Run defaults to a 30-second deadline, startup to 120 seconds. Override `timeoutMs` or `startupTimeoutMs` when needed.
+- Default compilation and execution use a Web Worker. A deadline terminates the entire worker; runtime state is discarded. Run defaults to a 30-second deadline, startup to 300 seconds. An AbortSignal can cancel startup or terminate the compiler lifetime. Override `timeoutMs` or `startupTimeoutMs` when needed.
 - JavaScript execution also has an instruction budget (`maxInstructions`, default 10,000,000). This budget is separate from elapsed time.
-- `worker:false` hosts the runtime directly and cannot enforce a hard deadline or release WebAssembly memory by calling `dispose()`; destroy the realm to release it. It is intended for controlled integration and testing.
+- `worker:false` hosts the runtime directly. Cancellation rejects pending API calls and prevents new calls, but cannot interrupt already-running managed code, enforce a hard deadline, or release WebAssembly memory; destroy the realm to release it. It is intended for controlled integration and testing.
 - Function-valued JavaScript `externals` execute in the caller's realm because functions cannot be cloned to a worker. Generated-IL instruction budgets still apply, but a blocking external cannot be interrupted by this API's timeout.
 - A worker is a responsiveness/lifecycle boundary, not a security boundary from the hosting origin. Run untrusted programs in a separately isolated origin with an application-appropriate policy. Managed programs retain the capabilities of their browser environment and any adapters supplied by the host.
 - Browser requests still follow CORS, origin and CSP rules. Serve `.wasm` with `application/wasm` and module scripts with JavaScript MIME types. Dynamic in-memory JavaScript compilation uses `Function`; generated modules can instead be emitted and imported without that construction path.
@@ -204,6 +218,9 @@ npm run test:wasm
 npm run test:worker
 npm run test:compat
 node managed/runtime-tooling-tests.mjs
+node managed/runtime-build-tests.mjs
+npm run test:build
+npm run test:projects-wasm
 ```
 
 The first build restores .NET/NuGet dependencies. No `wasm-tools` workload, AOT compiler, native relink or Blazor UI is required. `DOTNET=/path/to/dotnet` selects the SDK executable. Linux/macOS and PowerShell build scripts are included. `global.json` pins the SDK. `ROSLYN_IN_PROCESS_BUILD=1` supports constrained build hosts that cannot create the MSBuild worker's named-pipe sockets.
@@ -226,10 +243,10 @@ See `docs/VERIFICATION.md`, `docs/wasm-verification.json`, `docs/worker-verifica
 | NuGet | Managed asset import, compatible TFM/RID selection, transitive version constraints and live official-feed verification |
 | Advanced CLR/native APIs | No desktop OS services, arbitrary P/Invoke host, unrestricted Reflection.Emit, native JIT, mixed-mode C++/CLI or Windows UI stack |
 | Full JS CLR/BCL parity | Not implemented; use WASM for supported managed framework behavior |
-| Source generators/analyzers/projects | Actual Roslyn generators/analyzers; SDK-style `.csproj` evaluation, imports, package assets and documented build tasks |
-| Runtime-generated functions | `compileFunction` / `evaluate` emit real PE through Roslyn; JS IL builders generate executable JS/modules |
+| Source generators/analyzers/projects | Actual Roslyn generators/analyzers; SDK-style `.csproj` evaluation, imports, genuine managed custom tasks, resources and defined incremental reuse |
+| Runtime-generated functions | `compileFunction` / `evaluate` emit real PE through Roslyn; C# DynamicMethod/ILGenerator adapters and JS IL builders generate executable JS/modules |
 | Native and UI adapters | Explicit native WASM ABI and DOM widget/event host; these do not emulate Windows, WPF or C++/CLI |
-| Browser engine/UI verification here | Blocked by the environment's browser preview policy; actual WASM and worker protocol were tested under Node |
+| Browser verification | Real Chromium CI checks the staged Pages app and live deployment, including startup, compile/run and UI workflows |
 
 The archive includes the original runtime assets and omits redundant precompressed `.gz`/`.br` copies; a production server can apply HTTP compression. The supplied binaries deliberately retain the framework and metadata for compatibility rather than trimming aggressively. Package size and first-load cost reflect that choice. Mobile memory behavior, Safari/Firefox and production CSP/hosting still require validation in the target application.
 
@@ -237,7 +254,7 @@ The archive includes the original runtime assets and omits redundant precompress
 
 | Path | Purpose |
 | --- | --- |
-| `src/index.js`, `src/index.d.ts` | Public JavaScript API and types |
+| `src/browser.js`, `src/index.js`, `src/index.d.ts` | Lean browser API, aggregate exports and TypeScript declarations |
 | `src/host.js`, `src/worker.js`, `src/execution.js` | WASM loader, worker RPC and execution selection |
 | `src/il/` | MSIL-to-JavaScript compiler and execution runtime |
 | `src/packages/` | ZIP/NuGet reader, dependency resolver and caches |

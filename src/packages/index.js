@@ -170,7 +170,10 @@ export class NuGetResolver {
       for (const feed of sources) {
         const bytes = await this._bytes(`${feed}/${id}/${version}/${id}.${version}.nupkg`,options,true);
         if (!bytes) continue;
-        const pkg = await importNupkg(bytes,options);
+        // Asset include/exclude rules apply after the dependency graph is known.
+        // Parse native metadata now and enforce the host requirement on active
+        // browser assets below; excluded or other-platform assets are not loaded.
+        const pkg = await importNupkg(bytes,{...options,allowNativeAssets:true});
         if (validatePackageId(pkg.id) !== id || normalizeVersion(pkg.version) !== version) throw new NuGetError('PACKAGE_IDENTITY_MISMATCH', `Requested ${id} ${version}, but the package manifest identifies ${pkg.id} ${pkg.version}.`);
         pkg.feed = feed; packagesCache.set(key,pkg); return pkg;
       }
@@ -202,6 +205,7 @@ export class NuGetResolver {
     const resolved = await solve(new Map());
     if (!resolved) throw new NuGetError('DEPENDENCY_CONFLICT', `No compatible version of ${lastConflict.id} satisfies ${lastConflict.constraints.map(c=>`${c.range} from ${c.source}`).join('; ')}.`,lastConflict);
     const packages = applyDependencyAssets([...resolved.values()].sort((a,b)=>a.id.toLowerCase().localeCompare(b.id.toLowerCase())), requests);
+    if(options.allowNativeAssets!==true)for(const pkg of packages)if(pkg.nativeAssets.length)throw new NuGetError('NATIVE_ASSETS_REQUIRE_HOST',`${pkg.id} has active native browser assets. Provide a native WASM host and allowNativeAssets:true, or exclude native assets for this package.`,{packageId:pkg.id,nativeAssets:pkg.nativeAssets.map(asset=>asset.path)});
     const result = { packages,analyzerAssets:assetSet(packages,'analyzerAssets'),buildAssets:packages.flatMap(p=>p.buildAssets),contentAssets:packages.flatMap(p=>p.contentAssets),nativeAssets:packages.flatMap(p=>p.nativeAssets),compileAssets:assetSet(packages,'compileAssets'),runtimeAssets:assetSet(packages,'runtimeAssets'),warnings:packages.flatMap(p=>p.warnings),lock:{version:1,targetFramework:options.targetFramework || 'net10.0',runtimeIdentifier:options.runtimeIdentifier || 'browser-wasm',packages:packages.map(p=>({id:p.id,version:p.version,feed:p.feed,dependencies:p.dependencies.map(d=>({id:d.id,version:d.version,include:d.include,exclude:d.exclude})),assetKinds:p.assetKinds}))} };
     options.onProgress?.({phase:'complete',packages:packages.length,compileAssemblies:result.compileAssets.length,runtimeAssemblies:result.runtimeAssets.length});
     return result;

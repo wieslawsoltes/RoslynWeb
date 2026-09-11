@@ -95,9 +95,11 @@ var disabled = Parse(await CompilerBridge.CompileAsync(System.Text.Json.JsonSeri
 Check(disabled["success"]!.GetValue<bool>() && disabled["generatedSources"]!.AsArray().Count==0 && disabled["analyzerDiagnostics"]!.AsArray().Count==0, "generator/analyzer execution can be disabled explicitly");
 var objects = Parse(await CompilerBridge.CompileAsync(System.Text.Json.JsonSerializer.Serialize(new {
  source="public class Counter { public int Value {get;set;} public Counter(int value) {Value=value;} public int Add(int n) => Value+=n; public string Pick(int n)=>\"int\"; public string Pick(string n)=>\"string\"; public T Echo<T>(T value)=>value; public static T StaticEcho<T>(T value)=>value; public int Copy(Counter value)=>value.Value; }",
- outputKind="library",compilerExtensions=Array.Empty<string>()
+ outputKind="library",compilerExtensions=Array.Empty<string>(),includeInspection=true
 })));
 Image(objects);
+var valueProperty = objects["inspection"]?["types"]?.AsArray().FirstOrDefault(t => t?["name"]?.GetValue<string>() == "Counter")?["properties"]?.AsArray().FirstOrDefault(p => p?["name"]?.GetValue<string>() == "Value");
+Check(valueProperty?["getter"]?["name"]?.GetValue<string>() == "get_Value" && valueProperty?["setter"]?["name"]?.GetValue<string>() == "set_Value", "property metadata preserves real getter/setter references");
 var created = Parse(await CompilerBridge.CreateObject(objects["assemblyId"]!.GetValue<string>(), "Counter", "[10]", "{}"));
 var handle = created["result"]!["$handle"]!.GetValue<string>();
 Check(created["success"]!.GetValue<bool>(), "persistent CLR instance created");
@@ -112,4 +114,28 @@ Check(staticGeneric["result"]!.GetValue<int>()==42, "generic static invocation w
 var handleArgument = Parse(await CompilerBridge.InvokeObject(handle,"Copy","[{\"$handle\":\""+handle+"\"}]","{}"));
 Check(handleArgument["result"]!.GetValue<int>()==42, "object handles pass as typed managed arguments");
 Check(Parse(CompilerBridge.ReleaseObject(handle))["success"]!.GetValue<bool>() && !Parse(await CompilerBridge.GetProperty(handle,"Value"))["success"]!.GetValue<bool>(), "released CLR handles reject further access");
+var taskAssembly = Parse(await CompilerBridge.CompileAsync(System.Text.Json.JsonSerializer.Serialize(new { source = File.ReadAllText(Path.Combine(AppContext.BaseDirectory, "BuildTaskFixture.cs.txt")), outputKind = "library", compilerExtensions = Array.Empty<string>() })));
+var taskImage = Image(taskAssembly);
+var taskResult = Parse(await CompilerBridge.ExecuteBuildTask(taskImage, "GenerateValue", """
+{"parameters":{"InputFile":"/app/value.txt","Factor":"6","Enabled":"true","Items":[{"itemSpec":"input","metadata":{"Label":"typed"}}]},"files":[{"path":"app/value.txt","base64":"Nw=="}],"workingDirectory":"app","virtualPaths":true}
+"""));
+Check(taskResult["success"]!.GetValue<bool>() && taskResult["outputs"]!["Value"]!.GetValue<int>() == 42, "genuine ITask executes with typed properties and virtual files");
+Check(taskResult["outputs"]!["Label"]!.GetValue<string>() == "input:typed" && taskResult["outputs"]!["Generated"]![0]!["metadata"]!["Generator"]!.GetValue<string>() == "ManagedITask", "ITaskItem metadata round-trips through task parameters and outputs");
+Check(taskResult["files"]!.AsArray().Count == 1 && taskResult["outputs"]!["Generated"]![0]!["itemSpec"]!.GetValue<string>() == "/app/obj/TaskGenerated.cs", "task-created files and absolute output paths map back to virtual project");
+Check(taskResult["diagnostics"]!.AsArray().Any(d => d!["id"]?.GetValue<string>() == "TASK001"), "custom task warning is structured");
+Check(!Parse(await CompilerBridge.ExecuteBuildTask(taskImage,"GenerateValue","{}"))["success"]!.GetValue<bool>(), "missing required task parameter is rejected");
+Check(!Parse(await CompilerBridge.ExecuteBuildTask(taskImage,"LoggedFailure","{}"))["success"]!.GetValue<bool>(), "task logging an error fails even when Execute returns true");
+var deleted = Parse(await CompilerBridge.ExecuteBuildTask(taskImage,"DeleteInput","{\"parameters\":{\"InputFile\":\"value.txt\"},\"files\":[{\"path\":\"value.txt\",\"base64\":\"Nw==\"}]}"));
+Check(deleted["success"]!.GetValue<bool>() && deleted["removedFiles"]![0]!.GetValue<string>() == "value.txt", "custom task deleted files are reported");
+var resourceResult = Parse(await CompilerBridge.CompileAsync(System.Text.Json.JsonSerializer.Serialize(new {
+ source="using System;using System.IO;using System.Reflection;using System.Resources;var a=Assembly.GetExecutingAssembly();Console.WriteLine(new StreamReader(a.GetManifestResourceStream(\"Raw.txt\")!).ReadToEnd());var r=new ResourceManager(\"Values\",a);Console.WriteLine(r.GetString(\"Greeting\"));Console.WriteLine(r.GetObject(\"Number\"));",
+ compilerExtensions=Array.Empty<string>(), resources = new object[] {
+ new { name="Raw.txt",base64="cmF3LXJlc291cmNl" },
+ new { name="Values.resources",resx="<root><data name=\"Greeting\"><value>Hello resource</value></data><data name=\"Number\" type=\"System.Int32\"><value>42</value></data></root>" }
+ }
+})));
+var resourceRun = Parse(await CompilerBridge.Run(Image(resourceResult),"[]"));
+Check(resourceRun["success"]!.GetValue<bool>() && resourceRun["stdout"]!.GetValue<string>().Replace("\r","").Trim() == "raw-resource\nHello resource\n42", "real raw manifest and typed RESX resource blobs are emitted and loaded by ResourceManager");
+Check(!Parse(CompilerBridge.ConvertResx("<root><data name=\"bad\" type=\"System.Drawing.Bitmap\"><value>anything</value></data></root>"))["success"]!.GetValue<bool>(), "unsupported serialized resource types are rejected explicitly");
+Check(!Parse(CompilerBridge.ConvertResx("<!DOCTYPE root [<!ENTITY value SYSTEM 'file:///etc/passwd'>]><root><data name=\"bad\"><value>&value;</value></data></root>"))["success"]!.GetValue<bool>(), "RESX DTD and external entity loading are disabled");
 Console.WriteLine($"ALL {assertions} MANAGED ASSERTIONS PASSED");

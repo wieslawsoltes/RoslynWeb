@@ -21,6 +21,12 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '10.0.100'
+      - name: Cache pinned NuGet packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-roslynweb-nuget-${{ hashFiles('global.json', 'managed/**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-roslynweb-nuget-
       - name: Restore public test fixtures
         run: node scripts/prepare-fixtures.mjs
       - name: Build compiler WebAssembly
@@ -37,6 +43,12 @@ jobs:
         run: node managed/runtime-tooling-tests.mjs
       - name: Extended compatibility integration
         run: npm run test:compat
+      - name: Managed tasks and resources in WebAssembly
+        run: node managed/runtime-build-tests.mjs
+      - name: Public resource, task and Reflection.Emit APIs
+        run: npm run test:build
+      - name: Actual Worker project builds
+        run: npm run test:projects-wasm
       - name: Stage browser application
         run: node scripts/stage-pages.mjs
       - name: Install Chromium browser test runtime
@@ -109,6 +121,7 @@ jobs:
         env:
           BROWSER_ENGINE: chromium
           BROWSER_BASE_URL: ${{ steps.deployment.outputs.page_url }}
+          BROWSER_FULL_DEMO: '1'
       - name: Upload deployed-site browser verification
         if: always()
         uses: actions/upload-artifact@v4

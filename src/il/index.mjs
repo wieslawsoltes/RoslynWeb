@@ -5,3 +5,4 @@ export { capabilities, ILCompilationError, ILExecutionError } from './capabiliti
 export { ILAssemblyBuilder, ILTypeBuilder, ILMethodBuilder, DynamicMethodBuilder } from './emitter.mjs';
 export { BindingFlags, reflectionType } from './reflection.mjs';
 export { splitTypeArguments, substituteType } from './generics.mjs';
+export { VirtualFileSystem } from './io.mjs';

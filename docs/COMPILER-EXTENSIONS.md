@@ -1,6 +1,6 @@
 # Compiler extensions and persistent CLR objects
 
-RoslynWeb 0.2 runs real Roslyn `ISourceGenerator`, `IIncrementalGenerator`, and `DiagnosticAnalyzer` implementations inside the .NET WebAssembly runtime. Their output joins the actual C# compilation: generated source is parsed and emitted, analyzer diagnostics are reported, and unsuppressed analyzer errors make compilation fail. These APIs are available through the normal JavaScript worker interface.
+RoslynWeb 0.3 runs real Roslyn `ISourceGenerator`, `IIncrementalGenerator`, and `DiagnosticAnalyzer` implementations inside the .NET WebAssembly runtime. Their output joins the actual C# compilation: generated source is parsed and emitted, analyzer diagnostics are reported, and unsuppressed analyzer errors make compilation fail. These APIs are available through the normal JavaScript worker interface.
 
 ## Compile and register an extension
 
@@ -225,7 +225,86 @@ const result = await multiply.invoke(9007199254740993n, 2n);
 console.log(result.result); // 18014398509481986n
 ```
 
-This path supports runtime generation through source compilation. It does not replace or emulate every `System.Reflection.Emit` API or supply a browser native-code JIT.
+This path supports runtime generation through source compilation. Separately, the JavaScript execution backend can execute compatible C# DynamicMethod/ILGenerator code: emit instructions, declare locals, mark branch labels, construct catch/finally/fault regions, create delegates, and invoke reflected linked methods. Emitted code shares managed objects, static state, virtual files, and the configured instruction budget. See [the IL backend guide](../src/il/README.md) for the admitted overloads and the 17-case native differential fixture. This remains a bounded Reflection.Emit surface; it does not supply arbitrary AssemblyBuilder/TypeBuilder graphs or a browser native-code JIT.
+
+## Genuine managed build tasks
+
+`loadTaskReferences()` loads the pinned Microsoft.Build.Framework and Microsoft.Build.Utilities.Core metadata references. These let Roslyn compile a real ITask implementation in the browser. The runtime includes the matching executable assemblies.
+
+```js
+await compiler.loadTaskReferences();
+const task = await compiler.compile(`
+using System.IO;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+
+public sealed class GenerateAnswer : Task
+{
+    [Required] public string Destination { get; set; } = "";
+    [Output] public ITaskItem[] GeneratedFiles { get; private set; }
+        = System.Array.Empty<ITaskItem>();
+
+    public override bool Execute()
+    {
+        Directory.CreateDirectory(Path.GetDirectoryName(
+            Path.GetFullPath(Destination))!);
+        File.WriteAllText(Destination,
+            "public static class Answer { public const int Value = 42; }");
+        GeneratedFiles = new ITaskItem[] {
+            new TaskItem(Path.GetFullPath(Destination))
+        };
+        Log.LogMessage("Generated Answer");
+        return true;
+    }
+}
+`, { outputKind: 'library', compilerExtensions: [] });
+if (!task.success) throw new Error(JSON.stringify(task.diagnostics));
+
+const result = await compiler.executeBuildTask(task, 'GenerateAnswer', {
+  parameters: { Destination: 'obj/Answer.g.cs' },
+  files: [],
+  workingDirectory: '',
+  outputProperties: ['GeneratedFiles']
+});
+if (!result.success) throw new Error(JSON.stringify(result.error));
+console.log(result.outputs.GeneratedFiles);
+console.log(result.files); // [{ path: 'obj/Answer.g.cs', base64: '...' }]
+```
+
+The first argument accepts a compile artifact, assembly ID, compatible registered assembly identity, or PE bytes/base64 using the same assembly transport conventions as other execution APIs. Scalar strings are converted to the declared managed property types. Arrays may contain strings or `{ itemSpec, metadata }` values for ITaskItem parameters. Required attributes are checked before execution; outputProperties selects attributed output properties. Omitting it returns every `[Output]` property.
+
+`files` mounts root-relative `{ path, base64 }` entries before execution. `workingDirectory` selects a relative directory inside that workspace. Generated/modified files return in files; deleted input paths return in removedFiles. Managed DLLs in the mounted files register before task load so adjacent package dependencies can resolve. maxFileBytes bounds input/output file totals and defaults to 256 MiB. Console stdout/stderr and structured task diagnostics are captured. Returning false or logging an error fails the task.
+
+The request's `virtualPaths:true` maps absolute virtual input strings such as `/app/input.txt` into the task workspace and maps returned paths back; the default direct API leaves parameter strings unchanged. `.csproj` builds enable that mapping automatically. They also implement UsingTask registration, task Output properties/items, ContinueOnError, and OnError recovery. See [the project builder guide](../src/projects/README.md).
+
+The task workspace is a file-transfer boundary, not a separate security sandbox for managed code. Code executes with the capabilities of the containing .NET runtime. Browser-compatible ITask implementations can run; tasks depending on native OS tools, desktop-only libraries, process launching, unsupported runtime APIs, or nested native MSBuild builds cannot. This bridge does not implement arbitrary inline task factories.
+
+## Embedded resources
+
+Compilation accepts `resources`, with a unique manifest name per item and optional isPublic (default true). Each resource uses one input form: base64 raw bytes, RESX XML text, or typed entries written as real `.resources` data.
+
+```js
+const program = await compiler.compile(`
+using System;
+using System.Reflection;
+using System.Resources;
+var resources = new ResourceManager("Example.Values", Assembly.GetExecutingAssembly());
+Console.WriteLine(resources.GetString("Greeting"));
+Console.WriteLine(resources.GetObject("Answer"));
+`, {
+  resources: [{
+    name: 'Example.Values.resources',
+    entries: [
+      { name: 'Greeting', type: 'string', value: 'Hello from resources' },
+      { name: 'Answer', type: 'int', value: 42 }
+    ]
+  }]
+});
+```
+
+`createResources(entries)` and `convertResx(xml)` expose standalone conversion. Their envelopes contain success, base64, and a JavaScript Uint8Array bytes field on success, plus diagnostics or structured errors on failure. Resource entries support explicit strings, numeric/Boolean/character values, byte arrays, DateTime, and TimeSpan. Large integers can use decimal strings to preserve their value. RESX processing does not deserialize arbitrary objects, and XML DTD/external entities are rejected.
+
+Project EmbeddedResource and GenerateResource integrate the same managed converter. LogicalName specifies the exact manifest name; default naming and satellite/resource naming boundaries are documented in the project guide. Emitting a resource into a PE does not add general ResourceManager behavior to the JavaScript backend: use the .NET WASM backend for framework resource operations outside the JavaScript compatibility set.
 
 ## Low-level managed ABI
 
@@ -241,10 +320,13 @@ InvokeObject(handle, methodName, argsJson, optionsJson) -> Task<string>
 GetProperty(handle, propertyName) -> Task<string>
 SetProperty(handle, propertyName, valueJson) -> Task<string>
 ReleaseObject(handle) -> string
+ExecuteBuildTask(assembly, typeName, requestJson) -> Task<string>
+CreateResources(entriesJson) -> string
+ConvertResx(xml) -> string
 ```
 
 The existing single-threaded portable-PDB scheduling adaptation is still required. Extension execution uses asynchronous analyzer APIs and disables parallel compilation/analyzer scheduling; it does not remove or obscure that compiler adaptation.
 
 ## Verification
 
-`managed/SelfTest` verifies the managed APIs against the native .NET runtime. `node managed/runtime-tooling-tests.mjs` uses the actual browser-WASM runtime under Node, including compiling and executing extension DLLs inside WASM. Its saved results are in `docs/wasm-tooling-verification.json`. Browser UI validation is documented separately.
+`managed/SelfTest` verifies the managed APIs against the native .NET runtime. `node managed/runtime-tooling-tests.mjs` uses the actual browser-WASM runtime under Node, including compiling and executing extension DLLs inside WASM. Its saved results are in `docs/wasm-tooling-verification.json`. `node managed/runtime-build-tests.mjs` validates the real custom-task/resource ABI; `npm run test:build` and `npm run test:projects-wasm` validate public Worker and project integration. Saved reports and separate browser UI validation are indexed in [VERIFICATION.md](./VERIFICATION.md).

@@ -13,3 +13,5 @@ This package contains genuine .NET and Roslyn binaries. The JavaScript bridge, t
 `dist/browser-adaptation.json` records the original and adapted Microsoft.CodeAnalysis SHA-256 hashes and exact scheduling change. The SDK binary's ReadyToRun code and invalidated strong-name signature are removed while retaining its IL and assembly identity. See `managed/README.md` for the reason and reproduction steps. Do not represent this binary as byte-for-byte unmodified upstream Roslyn.
 
 The official `.nupkg` fixture retains the upstream package and its metadata. The resolver does not implement cryptographic package-signature validation. The live verification report compares the fixture digest with the digest returned by the official feed; this is an integrity observation, not a signature-validation service.
+
+Microsoft.Build.Framework, Microsoft.Build.Utilities.Core and Microsoft.NET.StringTools from .NET SDK 10.0.100 provide the actual managed task interfaces and base classes. They are MIT licensed components from https://github.com/dotnet/msbuild; see `licenses/MSBuild-LICENSE.txt`.

@@ -3,6 +3,8 @@ import { createRuntime, methodKey } from './runtime.mjs';
 import { genericDefinitionName, matchesMethodReference } from './generics.mjs';
 import { isExtendedBuiltin } from './framework.mjs';
 import { isReflectionBuiltin } from './reflection.mjs';
+import { isEmitBuiltin, isEmitField } from './reflection-emit.mjs';
+import { isIoBuiltin } from './io.mjs';
 
 // This is JavaScript source serialization, including exact 64-bit metadata constants.
 const literal = value => {
@@ -33,7 +35,7 @@ export function isOpcodeSupported(opcode) {
 /** This is a deliberately finite bridge, not a replacement implementation of the .NET BCL. */
 export function isBuiltinCandidate(ref) {
   if (!ref || typeof ref !== 'object') return false;
-  if (isExtendedBuiltin(ref) || isReflectionBuiltin(ref)) return true;
+  if (isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
   if (/\[[,]+\]$/.test(ref.declaringType ?? '')) { const rank = ref.declaringType.slice(ref.declaringType.lastIndexOf('[')).split(',').length, n = ref.parameters?.length ?? 0; return ref.name === '.ctor' && n === rank || ['Get','Address'].includes(ref.name) && n === rank || ref.name === 'Set' && n === rank + 1; }
   const type = String(ref.declaringType ?? '').split(/[<\[]/)[0], name = ref.name, p = (ref.parameters ?? []).map(p => p.type ?? p), n = p.length;
   const numeric = t => /^System\.(Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|Int64|UInt64|IntPtr|UIntPtr|Single|Double)$/.test(t);
@@ -138,7 +140,7 @@ export function analyzeAssembly(model, options = {}) {
       if (op === 'switch' && (!Array.isArray(instruction.operand) || instruction.operand.some(target => !offsets.has(Number(target))))) add('IL_INVALID_SWITCH', 'Switch has an invalid branch target.', instruction);
       if (fields.test(op)) {
         const f = instruction.operand, key = `${f?.declaringType}::${f?.name}`;
-        const builtin = op === 'ldsfld' && (key === 'System.String::Empty' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key));
+        const builtin = op === 'ldsfld' && (key === 'System.String::Empty' || key === 'System.Type::EmptyTypes' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) || (op === 'ldsfld' || op === 'ldsflda') && isEmitField(f);
         const external = options.externals instanceof Map ? options.externals.get(key) : options.externals?.[key];
         if (!fieldKeys.has(key) && !fieldKeys.has(`${genericDefinitionName(f?.declaringType)}::${f?.name}`) && !builtin && !(external && typeof external.get === 'function')) add('IL_UNRESOLVED_FIELD', `No linked storage or JavaScript external for field '${key}'.`, instruction);
       }
@@ -273,7 +275,7 @@ export function generateModule(model, options = {}) {
   if (options.strict && !analysis.supported) throw new ILCompilationError(`Assembly '${model.name}' is not fully supported by the JavaScript tier.`, analysis.diagnostics);
   const importPath = options.runtimeImport ?? './runtime.mjs';
   const linkedSource = (options.assemblies ?? []).map(linked => `{model:${literal(linked)},compiledMethods:${generatedMap(linked)}}`).join(',\n');
-  return `// Generated from normalized ECMA-335 IL. No WebAssembly or dynamic eval is used by this module.\nimport {createRuntime} from ${literal(importPath)};\nexport const model=${literal(model)};\nexport const diagnostics=${literal(analysis.diagnostics)};\nexport const compiledMethods=${generatedMap(model)};\nexport const linkedAssemblies=[${linkedSource}];\nexport function createAssembly(options={}){const runtime=createRuntime(model,{...options,compiledMethods});for(const linked of linkedAssemblies)runtime.addAssembly(linked.model,linked.compiledMethods);return runtime;}\nexport default createAssembly;\n`;
+  return `// Generated from normalized ECMA-335 IL. These method bodies are precompiled JavaScript; explicit runtime-emission APIs still require dynamic-code permission.\nimport {createRuntime} from ${literal(importPath)};\nexport const model=${literal(model)};\nexport const diagnostics=${literal(analysis.diagnostics)};\nexport const compiledMethods=${generatedMap(model)};\nexport const linkedAssemblies=[${linkedSource}];\nexport function createAssembly(options={}){const runtime=createRuntime(model,{...options,compiledMethods});for(const linked of linkedAssemblies)runtime.addAssembly(linked.model,linked.compiledMethods);return runtime;}\nexport default createAssembly;\n`;
 }
 
 /** Compile all IL methods to real JS functions; unresolved paths throw when reached. */

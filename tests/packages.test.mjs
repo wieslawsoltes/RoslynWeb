@@ -133,3 +133,12 @@ test('Nuspec contentFiles rules preserve build actions and copy metadata',()=>{
  const result=parseNuspec('<package><metadata><id>A</id><version>1</version><contentFiles><files include="cs/**" exclude="**/old.cs" buildAction="Compile" copyToOutput="true" flatten="false"/></contentFiles></metadata></package>');
  assert.deepEqual(result.contentFiles,[{include:'cs/**',exclude:'**/old.cs',buildAction:'Compile',copyToOutput:'true',flatten:'false'}]);
 });
+
+test('native requirements are enforced after graph asset exclusions and browser RID selection',async()=>{
+ const feed=mockFeed([{id:'NativeBrowser',version:'1',assets:{'lib/net8.0/NativeBrowser.dll':new Uint8Array([1]),'runtimes/browser-wasm/native/module.wasm':new Uint8Array([2])}},{id:'Portable',version:'1',assets:{'lib/net8.0/Portable.dll':new Uint8Array([3]),'runtimes/win-x64/native/unused.dll':new Uint8Array([4])}}]);
+ const resolver=resolverFor(feed);
+ await assert.rejects(()=>resolver.resolve([{id:'NativeBrowser',version:'[1]'}]),error=>error.code==='NATIVE_ASSETS_REQUIRE_HOST');
+ const excluded=await resolver.resolve([{id:'NativeBrowser',version:'[1]',excludeAssets:'native'}]);assert.equal(excluded.nativeAssets.length,0);assert.equal(excluded.runtimeAssets.length,1);
+ const allowed=await resolver.resolve([{id:'NativeBrowser',version:'[1]'}],{allowNativeAssets:true});assert.equal(allowed.nativeAssets.length,1);
+ const portable=await resolver.resolve([{id:'Portable',version:'[1]'}]);assert.equal(portable.runtimeAssets.length,1);assert.equal(portable.nativeAssets.length,0);
+});

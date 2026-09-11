@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-11T11:38:11.909Z",
+  "testedAt": "2026-09-11T12:20:23.898Z",
   "environment": "Actual .NET 10 browser-wasm runtime hosted by Node",
   "runtime": {
     "bridgeVersion": "0.2.0",
@@ -14,32 +14,32 @@
     {
       "name": "Real Roslyn compiler references registered lazily",
       "status": "passed",
-      "ms": 518
+      "ms": 1094
     },
     {
       "name": "Culture-specific assemblies preserve identities and resolve independently",
       "status": "passed",
-      "ms": 1614
+      "ms": 1853
     },
     {
       "name": "PE-image run and assemblyId invocation share static state",
       "status": "passed",
-      "ms": 105
+      "ms": 112
     },
     {
       "name": "Compile generator/analyzer source inside actual browser WASM",
       "status": "passed",
-      "ms": 605
+      "ms": 650
     },
     {
       "name": "Load and discover classic/incremental generators and diagnostic analyzer",
       "status": "passed",
-      "ms": 26
+      "ms": 25
     },
     {
       "name": "Classic and incremental generators execute, analyzer reports diagnostics, PDB emitted",
       "status": "passed",
-      "ms": 400
+      "ms": 361
     },
     {
       "name": "Generated C# executes inside WASM runtime",
@@ -49,27 +49,27 @@
     {
       "name": "Actual editorconfig error severity prevents publishing PE output",
       "status": "passed",
-      "ms": 80
+      "ms": 75
     },
     {
       "name": "Actual editorconfig suppression prevents analyzer diagnostics",
       "status": "passed",
-      "ms": 70
+      "ms": 80
     },
     {
       "name": "Compiler extension selector and execution flags disable extensions",
       "status": "passed",
-      "ms": 23
+      "ms": 32
     },
     {
       "name": "Missing extension is an explicit compiler error",
       "status": "passed",
-      "ms": 11
+      "ms": 15
     },
     {
       "name": "Compile persistent CLR object and generic methods",
       "status": "passed",
-      "ms": 71
+      "ms": 81
     },
     {
       "name": "Create persistent object handle",
@@ -114,7 +114,7 @@
     {
       "name": "Release object handle invalidates further access",
       "status": "passed",
-      "ms": 4
+      "ms": 5
     }
   ]
 }

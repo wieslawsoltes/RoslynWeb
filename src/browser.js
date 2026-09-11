@@ -1,10 +1,48 @@
 import { asBytes, toBase64, fromBase64, stringifyArguments, RoslynError } from './bytes.js';
 export { RoslynError };
 
+const abortedError = () => new RoslynError('Compiler startup or lifetime was aborted', 'ABORTED');
+function abortable(promise, signal, error = abortedError) {
+  if (!signal) return promise;
+  return new Promise((resolve, reject) => {
+    const abort = () => { signal.removeEventListener('abort', abort); reject(error()); };
+    if (signal.aborted) abort();
+    else signal.addEventListener('abort', abort, { once: true });
+    Promise.resolve(promise).then(resolve, reject).finally(() => signal.removeEventListener('abort', abort));
+  });
+}
+
+class DirectHost {
+  constructor(managed, signal) {
+    this.managed = managed; this.info = managed.info; this.closed = false;
+    this.lifetime = new AbortController(); this.signal = signal;
+    this.abort = () => this.dispose(abortedError());
+    signal?.addEventListener('abort', this.abort, { once: true });
+    if (signal?.aborted) this.abort();
+  }
+  call(method, args) {
+    if (this.closed) return Promise.reject(this.error);
+    const operation = Promise.resolve().then(() => {
+      if (this.closed) throw this.error;
+      return this.managed.call(method, args);
+    });
+    return abortable(operation, this.lifetime.signal, () => this.error);
+  }
+  dispose(error = new RoslynError('Compiler was disposed', 'DISPOSED')) {
+    if (this.closed) return;
+    this.closed = true; this.error = error;
+    this.signal?.removeEventListener('abort', this.abort);
+    this.lifetime.abort(); this.managed.dispose();
+  }
+}
+
 class WorkerHost {
   constructor(options, event) {
     this.worker = new Worker(options.workerUrl || new URL('./worker.js', import.meta.url), { type: 'module', name: 'roslyn-browser' });
     this.pending = new Map(); this.nextId = 1; this.closed = false;
+    this.signal = options.signal;
+    this.abort = () => this.dispose(abortedError());
+    this.signal?.addEventListener('abort', this.abort, { once: true });
     this.worker.onmessage = ({ data }) => {
       if (data.event) { event(data.event); return; }
       const pending = this.pending.get(data.id);
@@ -27,7 +65,8 @@ class WorkerHost {
     });
   }
   dispose(error = new RoslynError('Compiler worker terminated', 'DISPOSED')) {
-    this.closed = true; this.worker.terminate();
+    if (this.closed) return;
+    this.closed = true; this.error = error; this.signal?.removeEventListener('abort', this.abort); this.worker.terminate();
     for (const entry of this.pending.values()) { clearTimeout(entry.timer); entry.reject(error); }
     this.pending.clear();
   }
@@ -42,8 +81,10 @@ function peBase64(input) {
 
 /** Create an isolated Roslyn compiler. Call dispose() to release its worker and assemblies. */
 export async function createRoslyn(options = {}) {
+  if (options.signal?.aborted) throw new RoslynError('Compiler startup was aborted', 'ABORTED');
   const listeners = new Set();
-  const event = e => { options.onEvent?.(e); for (const listener of listeners) listener(e); };
+  let eventsClosed = false;
+  const event = e => { if (eventsClosed || options.signal?.aborted) return; options.onEvent?.(e); for (const listener of listeners) listener(e); };
   const baseUrl = new URL(options.baseUrl || '../dist/', import.meta.url).href;
   const inWorker = options.worker !== false;
   let host, info;
@@ -53,15 +94,21 @@ export async function createRoslyn(options = {}) {
     try { info = await host.call('$init', [{ baseUrl, config: options.config }], options.startupTimeoutMs ?? 300000); }
     catch (error) { host.dispose(); throw error; }
   } else {
-    const { bootManaged } = await import('./host.js');
-    host = await bootManaged({ ...options, baseUrl }, event); info = host.info;
+    const startup = import('./host.js').then(async ({ bootManaged }) => {
+      if (options.signal?.aborted) throw abortedError();
+      const managed = await bootManaged({ ...options, baseUrl }, event);
+      if (options.signal?.aborted) { managed.dispose(); throw abortedError(); }
+      return managed;
+    });
+    host = new DirectHost(await abortable(startup, options.signal), options.signal); info = host.info;
   }
   const timeout = options.timeoutMs ?? 30000;
   const call = (method, args, ms = timeout) => host.call(method, args, ms);
   let disposed = false;
   // Serialize package/reference mutations and compiler calls, even in direct mode.
   let queue = Promise.resolve();
-  const serial = fn => { const next = queue.then(() => { if (disposed) throw new RoslynError('Compiler was disposed', 'DISPOSED'); return fn(); }); queue = next.catch(() => {}); return next; };
+  const ensureActive = () => { if (disposed || host.closed) throw host.error || new RoslynError('Compiler was disposed', 'DISPOSED'); };
+  const serial = fn => { const next = queue.then(() => { ensureActive(); return fn(); }); queue = next.catch(() => {}); return next; };
   const api = {
     info,
     get disposed() { return disposed || host.closed === true; },
@@ -95,11 +142,33 @@ export async function createRoslyn(options = {}) {
     async loadCompilerReferences() {
       const names = ['Microsoft.CodeAnalysis.dll', 'Microsoft.CodeAnalysis.CSharp.dll'];
       for (const name of names) {
-        const response = await fetch(new URL('compiler-references/' + name, baseUrl));
-        if (!response.ok) throw new RoslynError(`Could not load compiler reference ${name}: HTTP ${response.status}`, 'COMPILER_REFERENCE');
-        await api.addReference(name, new Uint8Array(await response.arrayBuffer()));
+        await api.addReference(name, await loadAssetBytes(new URL('compiler-references/' + name, baseUrl)));
       }
       return names;
+    },
+    async loadTaskReferences() {
+      const names = ['Microsoft.Build.Framework.dll', 'Microsoft.Build.Utilities.Core.dll'];
+      for (const name of names) {
+        await api.addReference(name, await loadAssetBytes(new URL('task-references/' + name, baseUrl)));
+      }
+      return names;
+    },
+    executeBuildTask(assembly, typeName, request = {}) {
+      return serial(() => call('ExecuteBuildTask', [peBase64(assembly), typeName, stringifyArguments(request)]));
+    },
+    createResources(entries) {
+      return serial(async () => {
+        const result = await call('CreateResources', [stringifyArguments(entries)]);
+        if (result.base64) result.bytes = fromBase64(result.base64);
+        return result;
+      });
+    },
+    convertResx(xml) {
+      return serial(async () => {
+        const result = await call('ConvertResx', [xml]);
+        if (result.base64) result.bytes = fromBase64(result.base64);
+        return result;
+      });
     },
     async buildProject(options) {
       const {buildProject} = await import('./projects/index.js');
@@ -147,11 +216,16 @@ export async function createRoslyn(options = {}) {
           analysis = analyzeAssembly(model, { externals: runOptions.externals, assemblies: runOptions.assemblies });
           if (backend === 'javascript' || (analysis.supported && !analysis.dependencies?.some(dependency => dependency.overloadValidatedAtRuntime))) {
             // Function-valued custom externals must stay in the caller's realm.
-            const jsOptions = { args: runOptions.args || [], maxInstructions: runOptions.maxInstructions ?? runOptions.maxSteps ?? 1e7, assemblies: runOptions.assemblies };
+            const jsOptions = { args: runOptions.args || [], maxInstructions: runOptions.maxInstructions ?? runOptions.maxSteps ?? 1e7, assemblies: runOptions.assemblies, virtualFiles: runOptions.virtualFiles, maxVirtualFileBytes: runOptions.maxVirtualFileBytes, captureVirtualFiles: runOptions.captureVirtualFiles };
             if (inWorker && !runOptions.externals) return call('$runJS', [model, jsOptions], runOptions.timeoutMs ?? timeout);
             const { executeJavaScript } = await import('./execution.js');
-            return executeJavaScript(model, { ...jsOptions, externals: runOptions.externals });
+            ensureActive();
+            const result = await executeJavaScript(model, { ...jsOptions, externals: runOptions.externals });
+            ensureActive(); return result;
           }
+        }
+        if (runOptions.virtualFiles !== undefined || runOptions.captureVirtualFiles !== undefined || runOptions.maxVirtualFileBytes !== undefined) {
+          throw new RoslynError('Virtual file options require the JavaScript backend. The selected backend is WebAssembly, including automatic compatibility fallback; no program was executed.', 'VIRTUAL_FILES_REQUIRE_JAVASCRIPT');
         }
         const result = await call('Run', [pe, JSON.stringify(runOptions.args || [])], runOptions.timeoutMs ?? timeout);
         return { ...result, backend: 'wasm', ...(analysis ? { fallback: analysis } : {}) };
@@ -187,9 +261,18 @@ export async function createRoslyn(options = {}) {
         return { model, analysis: analyzeAssembly(model, emitOptions), source: generateModule(model, { strict: true, ...emitOptions }) };
       });
     },
-    dispose() { disposed = true; host.dispose(); listeners.clear(); }
+    dispose() { disposed = true; eventsClosed = true; host.dispose(); listeners.clear(); }
   };
   return api;
+}
+async function loadAssetBytes(url) {
+  if (url.protocol === 'file:' && typeof process !== 'undefined' && process.versions?.node) {
+    const { readFile } = await import('node:fs/promises');
+    return new Uint8Array(await readFile(url));
+  }
+  const response = await fetch(url);
+  if (!response.ok) throw new RoslynError(`Could not load ${url.pathname}: HTTP ${response.status}`, 'REFERENCE_DOWNLOAD');
+  return new Uint8Array(await response.arrayBuffer());
 }
 function handleId(value) { return typeof value === 'object' ? String(value.$handle ?? value.handle ?? '') : String(value); }
 function requireSuccess(result) {

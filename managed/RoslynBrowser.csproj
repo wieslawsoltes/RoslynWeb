@@ -26,6 +26,9 @@
     <Reference Include="Microsoft.CodeAnalysis.CSharp">
       <HintPath>$(RoslynAssembliesPath)/Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Framework"><HintPath>$(MSBuildSDKsPath)/../Microsoft.Build.Framework.dll</HintPath></Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core"><HintPath>$(MSBuildSDKsPath)/../Microsoft.Build.Utilities.Core.dll</HintPath></Reference>
+    <Reference Include="Microsoft.NET.StringTools"><HintPath>$(MSBuildSDKsPath)/../Microsoft.NET.StringTools.dll</HintPath></Reference>
     <EmbeddedResource Include="$(ReferenceAssembliesPath)/*.dll" LogicalName="ReferenceAssemblies/%(Filename)%(Extension)" WithCulture="false" />
   </ItemGroup>
   <ItemGroup>

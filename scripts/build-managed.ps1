@@ -20,6 +20,9 @@ Copy-Item (Join-Path $projectRoot 'managed/RoslynPatched/browser-adaptation.json
 $compilerReferences = Join-Path $projectRoot 'dist/compiler-references'
 New-Item -ItemType Directory -Force $compilerReferences | Out-Null
 Copy-Item (Join-Path $projectRoot 'managed/RoslynPatched/Microsoft.CodeAnalysis.dll'), (Join-Path $projectRoot 'managed/RoslynPatched/Microsoft.CodeAnalysis.CSharp.dll') $compilerReferences -Force
+$taskReferences = Join-Path $projectRoot 'dist/task-references'
+New-Item -ItemType Directory -Force $taskReferences | Out-Null
+Copy-Item (Join-Path $sdkBase 'Microsoft.Build.Framework.dll'), (Join-Path $sdkBase 'Microsoft.Build.Utilities.Core.dll') $taskReferences -Force
 & node (Join-Path $projectRoot 'managed/prune-framework.mjs') $destination
 if ($LASTEXITCODE -ne 0) { throw "Runtime asset cleanup failed ($LASTEXITCODE)" }
 Write-Output "Browser runtime published to $destination"
