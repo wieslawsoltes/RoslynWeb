@@ -1,0 +1,12 @@
+import {cp, mkdir, writeFile, rm, readdir} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {join} from 'node:path';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const output=join(root,'artifacts','pages');
+await rm(output,{recursive:true,force:true});await mkdir(output,{recursive:true});
+for(const dir of ['demo','src','dist'])await cp(join(root,dir),join(output,dir),{recursive:true,filter:path=>!path.endsWith('.br')&&!path.endsWith('.gz')});
+for(const file of ['README.md','LICENSE','THIRD-PARTY-NOTICES.md'])await cp(join(root,file),join(output,file));
+await cp(join(root,'licenses'),join(output,'licenses'),{recursive:true});
+await writeFile(join(output,'.nojekyll'),'');
+await writeFile(join(output,'index.html'),'<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="refresh" content="0;url=./demo/"><title>RoslynWeb</title><a href="./demo/">Open RoslynWeb compiler lab</a></html>\n');
+console.log(output);

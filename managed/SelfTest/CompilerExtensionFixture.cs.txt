@@ -1,0 +1,39 @@
+using System;
+using System.Collections.Immutable;
+using System.Linq;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.Diagnostics;
+
+[Generator]
+public sealed class ClassicGenerator : ISourceGenerator
+{
+ public void Initialize(GeneratorInitializationContext context) { }
+ public void Execute(GeneratorExecutionContext context)
+ {
+  context.AnalyzerConfigOptions.GlobalOptions.TryGetValue("build_property.Suffix", out var suffix);
+  var file = context.AdditionalFiles.FirstOrDefault();
+  var content = file?.GetText(context.CancellationToken)?.ToString() ?? "missing";
+  context.AddSource("ClassicGenerated.g.cs", "public static class ClassicGenerated { public const string Value = \""+content+suffix+"\"; }");
+ }
+}
+[Generator]
+public sealed class Incremental : IIncrementalGenerator
+{
+ public void Initialize(IncrementalGeneratorInitializationContext context)
+ {
+  var values=context.AdditionalTextsProvider.Select((file,cancellationToken)=>file.GetText(cancellationToken)!.ToString());
+  context.RegisterSourceOutput(values, (production,value)=>production.AddSource("IncrementalGenerated.g.cs", "public static class IncrementalGenerated { public const int Value = "+value.Length+"; }"));
+ }
+}
+[DiagnosticAnalyzer(LanguageNames.CSharp)]
+public sealed class ClassAnalyzer : DiagnosticAnalyzer
+{
+ private static readonly DiagnosticDescriptor Rule = new("BROWSER001", "Browser rule", "Class '{0}' checked", "Test", DiagnosticSeverity.Warning, true);
+ public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => ImmutableArray.Create(Rule);
+ public override void Initialize(AnalysisContext context)
+ {
+  context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+  context.RegisterSyntaxNodeAction(c => c.ReportDiagnostic(Diagnostic.Create(Rule,c.Node.GetLocation(), ((Microsoft.CodeAnalysis.CSharp.Syntax.ClassDeclarationSyntax)c.Node).Identifier.Text)),SyntaxKind.ClassDeclaration);
+ }
+}

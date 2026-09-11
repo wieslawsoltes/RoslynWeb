@@ -1,0 +1,57 @@
+{
+  "name": "@roslynweb/core",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Roslyn C# compilation in WebAssembly, managed assembly execution and an explicit MSIL-to-JavaScript backend",
+  "license": "MIT",
+  "exports": {
+    ".": {
+      "types": "./src/index.d.ts",
+      "import": "./src/index.js"
+    },
+    "./il": "./src/il/index.js",
+    "./packages": {
+      "types": "./src/packages/index.d.ts",
+      "import": "./src/packages/index.js"
+    },
+    "./projects": {
+      "types": "./src/projects/index.d.ts",
+      "import": "./src/projects/index.js"
+    },
+    "./hosting": {
+      "types": "./src/hosting/index.d.ts",
+      "import": "./src/hosting/index.js"
+    }
+  },
+  "files": [
+    "src",
+    "dist",
+    "demo",
+    "docs",
+    "managed",
+    "scripts",
+    "README.md",
+    "LICENSE",
+    "THIRD-PARTY-NOTICES.md",
+    "licenses",
+    "global.json"
+  ],
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "serve": "node scripts/serve.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:browser": "node scripts/test-browser.mjs",
+    "test:wasm": "node scripts/test-wasm.mjs",
+    "test:worker": "node scripts/test-worker.mjs",
+    "test:compat": "node scripts/test-compat.mjs",
+    "pages:build": "node scripts/stage-pages.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wieslawsoltes/RoslynWeb.git"
+  },
+  "homepage": "https://wieslawsoltes.github.io/RoslynWeb/"
+}

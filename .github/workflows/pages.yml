@@ -1,0 +1,82 @@
+name: Build, verify and deploy RoslynWeb
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: roslynweb-pages
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.100'
+      - name: Restore public test fixtures
+        run: node scripts/prepare-fixtures.mjs
+      - name: Build compiler WebAssembly
+        run: npm run build
+      - name: JavaScript and project tests
+        run: npm test
+      - name: Native managed assertions
+        run: dotnet run --project managed/SelfTest/SelfTest.csproj -c Release
+      - name: Actual WebAssembly integration
+        run: npm run test:wasm
+      - name: Worker integration
+        run: npm run test:worker
+      - name: Managed compiler extension integration
+        run: node managed/runtime-tooling-tests.mjs
+      - name: Extended compatibility integration
+        run: npm run test:compat
+      - name: Stage browser application
+        run: node scripts/stage-pages.mjs
+      - name: Upload complete runnable project artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: roslynweb-source-and-wasm
+          path: |
+            src
+            managed
+            dist
+            demo
+            scripts
+            tests
+            docs
+            licenses
+            package.json
+            global.json
+            README.md
+            LICENSE
+            THIRD-PARTY-NOTICES.md
+            !managed/**/bin/**
+            !managed/**/obj/**
+            !managed/publish/**
+            !managed/RoslynPatched/**
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: artifacts/pages
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Deploy Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

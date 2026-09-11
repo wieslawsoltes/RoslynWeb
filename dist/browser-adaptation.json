@@ -1,0 +1,11 @@
+{
+  "assembly": "Microsoft.CodeAnalysis",
+  "version": "5.0.0.0",
+  "sourceSha256": "3e346089a768e9548bf43ed3d53d3d97e47503f59a9f3667d6af99730ee1b346",
+  "outputSha256": "72256485c60e2a3fb0c8f2a274df9e17162ed5e4109ce72db0c11c4b5f638980",
+  "method": "Microsoft.Cci.DebugSourceDocument..ctor(string, Guid, Func\u003CDebugSourceInfo\u003E)",
+  "adaptation": "Task.Run(factory) -\u003E Task.FromResult(factory())",
+  "readyToRunNativeCodeRemoved": true,
+  "strongNameSignatureRemoved": true,
+  "upstream": "https://github.com/dotnet/roslyn/blob/main/src/Compilers/Core/Portable/PEWriter/DebugSourceDocument.cs"
+}

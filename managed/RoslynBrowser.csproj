@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AssemblyName>RoslynBrowser</AssemblyName>
+    <RootNamespace>RoslynBrowser</RootNamespace>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <PublishTrimmed>false</PublishTrimmed>
+    <WasmBuildNative>false</WasmBuildNative>
+    <WasmEnableSIMD>true</WasmEnableSIMD>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <JsonSerializerIsReflectionEnabledByDefault>true</JsonSerializerIsReflectionEnabledByDefault>
+    <BlazorEnableCompression>false</BlazorEnableCompression>
+    <NoWarn>$(NoWarn);CA1416;IL2026;IL3050</NoWarn>
+    <RoslynAssembliesPath Condition="'$(RoslynAssembliesPath)' == ''">$(MSBuildProjectDirectory)/RoslynPatched</RoslynAssembliesPath>
+    <ReferenceAssembliesPath Condition="'$(ReferenceAssembliesPath)' == ''">$(MSBuildSDKsPath)/../../../packs/Microsoft.NETCore.App.Ref/10.0.0/ref/net10.0</ReferenceAssembliesPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+    <Reference Include="Microsoft.CodeAnalysis">
+      <HintPath>$(RoslynAssembliesPath)/Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp">
+      <HintPath>$(RoslynAssembliesPath)/Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+    </Reference>
+    <EmbeddedResource Include="$(ReferenceAssembliesPath)/*.dll" LogicalName="ReferenceAssemblies/%(Filename)%(Extension)" WithCulture="false" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="SelfTest/**;PatchRoslyn/**" />
+    <Content Remove="SelfTest/**;PatchRoslyn/**;RoslynPatched/**;publish/**" />
+    <None Remove="SelfTest/**;PatchRoslyn/**;RoslynPatched/**;publish/**" />
+  </ItemGroup>
+  <!-- Optional in-process tasks support hosts which prohibit local named-pipe sockets. -->
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.GenerateWasmBootJson" AssemblyFile="$(NuGetPackageRoot)microsoft.net.sdk.webassembly.pack/10.0.0/tools/net10.0/Microsoft.NET.Sdk.WebAssembly.Pack.Tasks.dll" Override="true" Condition="'$(RoslynInProcessBuild)' == 'true'" />
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.ComputeWasmBuildAssets" AssemblyFile="$(NuGetPackageRoot)microsoft.net.sdk.webassembly.pack/10.0.0/tools/net10.0/Microsoft.NET.Sdk.WebAssembly.Pack.Tasks.dll" Override="true" Condition="'$(RoslynInProcessBuild)' == 'true'" />
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.ComputeWasmPublishAssets" AssemblyFile="$(NuGetPackageRoot)microsoft.net.sdk.webassembly.pack/10.0.0/tools/net10.0/Microsoft.NET.Sdk.WebAssembly.Pack.Tasks.dll" Override="true" Condition="'$(RoslynInProcessBuild)' == 'true'" />
+  <UsingTask TaskName="Microsoft.NET.Sdk.WebAssembly.ConvertDllsToWebCil" AssemblyFile="$(NuGetPackageRoot)microsoft.net.sdk.webassembly.pack/10.0.0/tools/net10.0/Microsoft.NET.Sdk.WebAssembly.Pack.Tasks.dll" Override="true" Condition="'$(RoslynInProcessBuild)' == 'true'" />
+</Project>

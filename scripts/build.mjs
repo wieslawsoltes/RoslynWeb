@@ -1,0 +1,11 @@
+import { spawn } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { access } from 'node:fs/promises';
+const root = fileURLToPath(new URL('../', import.meta.url));
+const windows = process.platform === 'win32';
+const script = fileURLToPath(new URL(windows ? './build-managed.ps1' : './build-managed.sh', import.meta.url));
+const command = windows ? 'powershell' : 'bash';
+const args = windows ? ['-ExecutionPolicy','Bypass','-File',script] : [script];
+const child = spawn(command, args, { cwd: root, env: process.env, stdio: 'inherit' });
+child.on('error', e => { console.error(e.message); process.exitCode = 1; });
+child.on('exit', async code => { if (code !== 0) { process.exitCode=code||1; return; } await access(new URL('../dist/_framework/dotnet.js', import.meta.url)); console.log('Browser bundle is ready. Run npm run serve.'); });

@@ -1,0 +1,295 @@
+{
+  "validatedAt": "2026-09-11T11:38:14.285Z",
+  "passed": true,
+  "runtime": "Actual .NET WebAssembly running in Node worker_threads",
+  "protocol": "Unmodified src/worker.js with scripts/node-worker.mjs browser-worker adapter",
+  "browserEngineValidated": false,
+  "elapsedMilliseconds": 3122,
+  "checks": [
+    {
+      "name": "Default worker startup loads actual .NET WebAssembly and Roslyn",
+      "passed": true,
+      "milliseconds": 456,
+      "evidence": {
+        "bridgeVersion": "0.2.0",
+        "roslynVersion": "5.0.0.0",
+        "runtimeVersion": "10.0.0",
+        "referenceCount": 167,
+        "execution": "dotnet-wasm-interpreter"
+      }
+    },
+    {
+      "name": "C# compilation returns PE and portable PDB through the worker",
+      "passed": true,
+      "milliseconds": 1441,
+      "evidence": {
+        "peBytes": 2560,
+        "pdbBytes": 10092
+      }
+    },
+    {
+      "name": "Emitted MSIL executes in the worker .NET WASM runtime",
+      "passed": true,
+      "milliseconds": 20,
+      "evidence": {
+        "backend": "wasm",
+        "stdout": "42\n",
+        "exitCode": 7
+      }
+    },
+    {
+      "name": "MSIL-to-JavaScript backend executes inside the same worker protocol",
+      "passed": true,
+      "milliseconds": 13,
+      "evidence": {
+        "backend": "javascript",
+        "stdout": "42\n",
+        "exitCode": 7
+      }
+    },
+    {
+      "name": "Asynchronous C# Main yields and resumes without blocking the worker",
+      "passed": true,
+      "milliseconds": 411,
+      "evidence": {
+        "stdout": "async-worker\n",
+        "exitCode": 9
+      }
+    },
+    {
+      "name": "Roslyn diagnostics preserve source identity and position across messages",
+      "passed": true,
+      "milliseconds": 60,
+      "evidence": {
+        "id": "CS1525",
+        "severity": "error",
+        "message": "Invalid expression term ';'",
+        "path": "WorkerSyntax.cs",
+        "startLine": 1,
+        "startColumn": 49,
+        "endLine": 1,
+        "endColumn": 50,
+        "warningLevel": 0,
+        "isSuppressed": false
+      }
+    },
+    {
+      "name": "Invalid DLL references and runtime assemblies reject with structured errors",
+      "passed": true,
+      "milliseconds": 12,
+      "evidence": [
+        {
+          "method": "addReference",
+          "code": "MANAGED_ERROR",
+          "managedType": "System.BadImageFormatException"
+        },
+        {
+          "method": "addAssembly",
+          "code": "MANAGED_ERROR",
+          "managedType": "System.BadImageFormatException"
+        }
+      ]
+    },
+    {
+      "name": "Official Newtonsoft.Json NuGet DLL compiles and executes in the worker",
+      "passed": true,
+      "milliseconds": 426,
+      "evidence": {
+        "package": "Newtonsoft.Json 13.0.3",
+        "assembly": "lib/net6.0/Newtonsoft.Json.dll",
+        "stdout": "{\"Name\":\"worker\",\"Value\":42}\n"
+      }
+    },
+    {
+      "name": "Managed execution exceptions retain their error type and message",
+      "passed": true,
+      "milliseconds": 50,
+      "evidence": {
+        "type": "System.InvalidOperationException",
+        "message": "worker-failure",
+        "stack": "   at Program.<Main>$(String[] args)\n   at System.Reflection.MethodBaseInvoker.InterpretedInvoke_Method(Object obj, IntPtr* args)\n   at System.Reflection.MethodBaseInvoker.InvokeDirectByRefWithFewArgs(Object obj, Span`1 copyOfArgs, BindingFlags invokeAttr)"
+      }
+    },
+    {
+      "name": "Worker preserves Int64 arguments and results as BigInt",
+      "passed": true,
+      "milliseconds": 78,
+      "evidence": {
+        "value": "9007199254740993",
+        "jsType": "bigint"
+      }
+    },
+    {
+      "name": "Timeout terminates actual runaway C# code in its worker",
+      "passed": true,
+      "milliseconds": 154,
+      "evidence": {
+        "requestedTimeoutMs": 100,
+        "observedMilliseconds": 102,
+        "workerExitCode": 1
+      }
+    },
+    {
+      "name": "Calls after worker termination reject as disposed",
+      "passed": true,
+      "milliseconds": 0,
+      "evidence": {
+        "disposed": true
+      }
+    }
+  ],
+  "workerMessages": [
+    {
+      "sent": [
+        {
+          "id": 1,
+          "method": "$init"
+        },
+        {
+          "id": 2,
+          "method": "Compile"
+        },
+        {
+          "id": 3,
+          "method": "Run"
+        },
+        {
+          "id": 4,
+          "method": "$runJS"
+        },
+        {
+          "id": 5,
+          "method": "Compile"
+        },
+        {
+          "id": 6,
+          "method": "Run"
+        },
+        {
+          "id": 7,
+          "method": "Compile"
+        },
+        {
+          "id": 8,
+          "method": "AddReference"
+        },
+        {
+          "id": 9,
+          "method": "AddAssembly"
+        },
+        {
+          "id": 10,
+          "method": "InspectAssembly"
+        },
+        {
+          "id": 11,
+          "method": "AddReference"
+        },
+        {
+          "id": 12,
+          "method": "AddAssembly"
+        },
+        {
+          "id": 13,
+          "method": "Compile"
+        },
+        {
+          "id": 14,
+          "method": "Run"
+        },
+        {
+          "id": 15,
+          "method": "Compile"
+        },
+        {
+          "id": 16,
+          "method": "Run"
+        },
+        {
+          "id": 17,
+          "method": "Compile"
+        },
+        {
+          "id": 18,
+          "method": "Invoke"
+        },
+        {
+          "id": 19,
+          "method": "Compile"
+        },
+        {
+          "id": 20,
+          "method": "Run"
+        }
+      ],
+      "received": [
+        {
+          "event": "progress",
+          "stage": "runtime"
+        },
+        {
+          "event": "progress",
+          "stage": "ready"
+        },
+        {
+          "id": 1
+        },
+        {
+          "id": 2
+        },
+        {
+          "id": 3
+        },
+        {
+          "id": 4
+        },
+        {
+          "id": 5
+        },
+        {
+          "id": 6
+        },
+        {
+          "id": 7
+        },
+        {
+          "id": 8
+        },
+        {
+          "id": 9
+        },
+        {
+          "id": 10
+        },
+        {
+          "id": 11
+        },
+        {
+          "id": 12
+        },
+        {
+          "id": 13
+        },
+        {
+          "id": 14
+        },
+        {
+          "id": 15
+        },
+        {
+          "id": 16
+        },
+        {
+          "id": 17
+        },
+        {
+          "id": 18
+        },
+        {
+          "id": 19
+        }
+      ]
+    }
+  ],
+  "boundary": "This validates actual WASM execution, worker message serialization, JavaScript backend dispatch, and termination. Browser engine loading, CSP, and visual UI remain separate checks."
+}

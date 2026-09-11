@@ -1,0 +1,15 @@
+**/bin/
+**/obj/
+node_modules/
+artifacts/
+*.tgz
+*.zip
+managed/publish/
+managed/RoslynPatched/
+
+# Reproducible build output is distributed through Actions artifacts and Pages.
+dist/_framework/
+tests/fixtures/*.dll
+tests/fixtures/*.nupkg
+docs/distribution-manifest.json
+dist/compiler-references/
