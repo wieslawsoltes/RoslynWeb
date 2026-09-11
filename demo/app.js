@@ -1,4 +1,4 @@
-import { createRoslyn } from '../src/index.js';
+import { createRoslyn } from '../src/browser.js';
 import { examples as baseExamples } from './examples.js';
 import {workflowExamples,prepareExample,projectFiles} from './workflows.js';
 const examples=[...baseExamples,...workflowExamples];
@@ -42,11 +42,12 @@ function ilText(model) {
   }).join('\n\n') || JSON.stringify(model, null, 2);
 }
 async function initialize() {
-  compiler?.dispose(); compiler = null; controls(); status('Loading runtime');
+  compiler?.dispose(); compiler = null; controls(); status('Loading runtime'); $('restart').hidden = false; $('restart').disabled = true;
+  log('Starting the compiler worker…', false);
   const started = performance.now();
   try {
     compiler = await createRoslyn({ baseUrl: new URL('../dist/', import.meta.url).href, onEvent(event) {
-      if (event.type === 'progress') status(event.message);
+      if (event.type === 'progress') { status(event.message); log(event.message, false); }
       if (event.type === 'package') status(event.message || `Restoring ${event.id || 'package'}`);
     } });
     const i = compiler.info;
@@ -54,7 +55,8 @@ async function initialize() {
     status('Ready'); log(`Compiler ready in ${((performance.now() - started) / 1000).toFixed(1)}s. Choose an example or write C#, then Run.`, false);
     $('packages').replaceChildren();
     const li = document.createElement('li'); li.textContent = `.NET ${i.runtimeVersion || '10'} · ${i.referenceCount || ''} reference assemblies`; $('packages').append(li);
-  } catch (error) { status('Runtime unavailable'); log(error.message, false); log('Build the managed bundle with npm run build, then serve the project with npm run serve.'); }
+  } catch (error) { status('Runtime unavailable'); log(error.stack || error.message, false); log('Use Restart compiler to retry. The failure above identifies the asset or runtime operation that could not load.'); }
+  $('restart').disabled = false;
   controls();
 }
 async function compile() {
@@ -124,6 +126,7 @@ $('run').onclick = () => operation(async () => {
   if (result.fallback) log('Auto selected .NET WebAssembly after checking JavaScript compatibility.');
   $('timing').textContent = `Execution ${(performance.now() - started).toFixed(0)} ms`;
 });
+$('restart').onclick = () => { busy = false; artifact = null; jsSource = ''; initialize(); };
 $('stop').onclick = () => { compiler?.dispose(); busy = false; artifact = null; jsSource = ''; controls(); log('Worker terminated. Starting a fresh compiler instance…'); initialize(); };
 $('clear').onclick = () => { log('', false); diagnostics([]); };
 function download(name, bytes, type = 'application/octet-stream') { const a = document.createElement('a'); const url = URL.createObjectURL(new Blob([bytes], { type })); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
