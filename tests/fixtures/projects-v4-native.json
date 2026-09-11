@@ -1,0 +1,12 @@
+{
+  "environment": "Native dotnet msbuild, SDK 10.0.100",
+  "fixture": "projects-v4.proj",
+  "files": {
+    "properties.txt": "BROWSER BUILD\nbrowser\n13\none_two\n42\n4\n9007199254740993\nTrue\nname\nsub/file.cs\nfallback\nsub/\nxbvDs8WCdw==\n3\n007\n10\nTrue\nTrue\n",
+    "red.txt": "a\nc\n",
+    "blue.txt": "b\n",
+    "target-a.txt": "a\n",
+    "target-b.txt": "b\n",
+    "target-c.txt": "c\n"
+  }
+}

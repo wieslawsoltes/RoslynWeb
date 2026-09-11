@@ -1,0 +1,107 @@
+{
+  "environment": "Actual .NET 10 browser-wasm runtime in Worker hosted by Node; original Microsoft desktop-reference DLLs unchanged",
+  "passed": 20,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Unsigned clean-room desktop assemblies compile and install in actual WASM Worker",
+      "status": "passed",
+      "ms": 3883
+    },
+    {
+      "name": "forms: unchanged fixture provenance identifies original official desktop references",
+      "status": "passed",
+      "ms": 1
+    },
+    {
+      "name": "forms: original-reference compiled DLL executes unchanged in browser WASM",
+      "status": "passed",
+      "ms": 50
+    },
+    {
+      "name": "forms: DOM click dispatch invokes original compiled C# handler and updates state",
+      "status": "passed",
+      "ms": 4
+    },
+    {
+      "name": "forms: text and check events invoke original compiled handlers",
+      "status": "passed",
+      "ms": 7
+    },
+    {
+      "name": "forms: selection dispatch preserves original ObjectCollection and SelectedIndexChanged",
+      "status": "passed",
+      "ms": 3
+    },
+    {
+      "name": "forms: close dispatch disposes original window and removes managed tree",
+      "status": "passed",
+      "ms": 4
+    },
+    {
+      "name": "wpf: unchanged fixture provenance identifies original official desktop references",
+      "status": "passed",
+      "ms": 0
+    },
+    {
+      "name": "wpf: original-reference compiled DLL executes unchanged in browser WASM",
+      "status": "passed",
+      "ms": 34
+    },
+    {
+      "name": "wpf: DOM click dispatch invokes original compiled C# handler and updates state",
+      "status": "passed",
+      "ms": 2
+    },
+    {
+      "name": "wpf: text and check events invoke original compiled handlers",
+      "status": "passed",
+      "ms": 3
+    },
+    {
+      "name": "wpf: close dispatch disposes original window and removes managed tree",
+      "status": "passed",
+      "ms": 2
+    },
+    {
+      "name": "Native HWND access fails with an explicit capability error",
+      "status": "passed",
+      "ms": 158
+    },
+    {
+      "name": "Synchronous native modal dialogs reject explicitly",
+      "status": "passed",
+      "ms": 55
+    },
+    {
+      "name": "Desktop compatibility rejects JavaScript backend selection",
+      "status": "passed",
+      "ms": 2
+    },
+    {
+      "name": "A compiler allows only one active desktop session",
+      "status": "passed",
+      "ms": 0
+    },
+    {
+      "name": "WPF logical trees reject content, ancestor and multiple-parent cycles before serialization",
+      "status": "passed",
+      "ms": 95
+    },
+    {
+      "name": "Read-only controls and disabled ancestors reject synthetic user edits",
+      "status": "passed",
+      "ms": 107
+    },
+    {
+      "name": "Closed desktop windows cannot reopen with stale widget identifiers",
+      "status": "passed",
+      "ms": 49
+    },
+    {
+      "name": "Disposed desktop sessions reject execution before user code can run",
+      "status": "passed",
+      "ms": 42
+    }
+  ]
+}

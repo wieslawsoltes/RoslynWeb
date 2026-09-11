@@ -1,8 +1,8 @@
 {
-  "testedAt": "2026-09-11T12:20:23.898Z",
+  "testedAt": "2026-09-11T13:34:47.706Z",
   "environment": "Actual .NET 10 browser-wasm runtime hosted by Node",
   "runtime": {
-    "bridgeVersion": "0.2.0",
+    "bridgeVersion": "0.4.0",
     "roslynVersion": "5.0.0.0",
     "runtimeVersion": "10.0.0",
     "referenceCount": 169,
@@ -14,32 +14,32 @@
     {
       "name": "Real Roslyn compiler references registered lazily",
       "status": "passed",
-      "ms": 1094
+      "ms": 942
     },
     {
       "name": "Culture-specific assemblies preserve identities and resolve independently",
       "status": "passed",
-      "ms": 1853
+      "ms": 2216
     },
     {
       "name": "PE-image run and assemblyId invocation share static state",
       "status": "passed",
-      "ms": 112
+      "ms": 110
     },
     {
       "name": "Compile generator/analyzer source inside actual browser WASM",
       "status": "passed",
-      "ms": 650
+      "ms": 718
     },
     {
       "name": "Load and discover classic/incremental generators and diagnostic analyzer",
       "status": "passed",
-      "ms": 25
+      "ms": 23
     },
     {
       "name": "Classic and incremental generators execute, analyzer reports diagnostics, PDB emitted",
       "status": "passed",
-      "ms": 361
+      "ms": 340
     },
     {
       "name": "Generated C# executes inside WASM runtime",
@@ -54,27 +54,27 @@
     {
       "name": "Actual editorconfig suppression prevents analyzer diagnostics",
       "status": "passed",
-      "ms": 80
+      "ms": 62
     },
     {
       "name": "Compiler extension selector and execution flags disable extensions",
       "status": "passed",
-      "ms": 32
+      "ms": 23
     },
     {
       "name": "Missing extension is an explicit compiler error",
       "status": "passed",
-      "ms": 15
+      "ms": 35
     },
     {
       "name": "Compile persistent CLR object and generic methods",
       "status": "passed",
-      "ms": 81
+      "ms": 77
     },
     {
       "name": "Create persistent object handle",
       "status": "passed",
-      "ms": 24
+      "ms": 12
     },
     {
       "name": "Invoke object method preserves mutable state",
@@ -84,7 +84,7 @@
     {
       "name": "Get and set CLR property",
       "status": "passed",
-      "ms": 2
+      "ms": 3
     },
     {
       "name": "Invoke generic instance method",
@@ -94,7 +94,7 @@
     {
       "name": "Invoke generic static method with explicit parameter signature",
       "status": "passed",
-      "ms": 1
+      "ms": 2
     },
     {
       "name": "Pass object handle as managed method argument",
@@ -104,17 +104,17 @@
     {
       "name": "Method return creates another persistent object handle",
       "status": "passed",
-      "ms": 3
+      "ms": 6
     },
     {
       "name": "Optional arguments and ref argument output",
       "status": "passed",
-      "ms": 3
+      "ms": 4
     },
     {
       "name": "Release object handle invalidates further access",
       "status": "passed",
-      "ms": 5
+      "ms": 1
     }
   ]
 }

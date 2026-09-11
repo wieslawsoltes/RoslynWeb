@@ -81,7 +81,7 @@ test('Reflection.Emit admits exact overloads and does not advertise unimplemente
   assert.equal(isEmitBuiltin(ref(E + 'ILGenerator', 'Emit', [E + 'OpCode', I])), true);
   assert.equal(isEmitBuiltin(ref(E + 'ILGenerator', 'EmitCalli', [E + 'OpCode', 'System.Runtime.InteropServices.CallingConvention', T, T + '[]'])), false);
   assert.equal(isEmitBuiltin(ref(E + 'DynamicMethod', 'GetDynamicILInfo')), false);
-  assert.equal(isEmitBuiltin(ref(E + 'AssemblyBuilder', 'DefineDynamicAssembly', ['System.Reflection.AssemblyName', E + 'AssemblyBuilderAccess'])), false);
+  assert.equal(isEmitBuiltin(ref(E + 'AssemblyBuilder', 'DefineDynamicAssembly', ['System.Reflection.AssemblyName', E + 'AssemblyBuilderAccess'])), true);
   assert.equal(reflectedOpcode('Unimplemented'), null);
   assert.equal(reflectedOpcode('Tailcall').$opcode, 'tail.');
 });

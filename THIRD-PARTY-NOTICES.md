@@ -15,3 +15,5 @@ This package contains genuine .NET and Roslyn binaries. The JavaScript bridge, t
 The official `.nupkg` fixture retains the upstream package and its metadata. The resolver does not implement cryptographic package-signature validation. The live verification report compares the fixture digest with the digest returned by the official feed; this is an integrity observation, not a signature-validation service.
 
 Microsoft.Build.Framework, Microsoft.Build.Utilities.Core and Microsoft.NET.StringTools from .NET SDK 10.0.100 provide the actual managed task interfaces and base classes. They are MIT licensed components from https://github.com/dotnet/msbuild; see `licenses/MSBuild-LICENSE.txt`.
+
+The real native command fixture (`tests/fixtures/wasi-command.json` and its demo copy) was built with WASI SDK 34, clang 23.1.0, and wasi-libc commit `2e6fb9d8ee0c`. Embedded wasi-libc/musl/cloudlibc portions retain the licenses and notices in `licenses/wasi-libc-*`. The host and fixture C source are repository MIT code. See `docs/WASI-COMMANDS.md` for compiler provenance and reproduction.

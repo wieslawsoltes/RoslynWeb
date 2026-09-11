@@ -1,0 +1,47 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile}from'node:fs/promises';
+import {compileAssembly,analyzeAssembly}from'../src/il/compiler.mjs';
+import {isEmitBuiltin,invokeEmitBuiltin,reflectedOpcode}from'../src/il/reflection-emit.mjs';
+import {reflectionType}from'../src/il/reflection.mjs';import{i4}from'../src/il/runtime.mjs';
+const model=JSON.parse(await readFile(new URL('./il-types-fixture.json',import.meta.url)));
+const baseline=JSON.parse(await readFile(new URL('./il-types-native-baseline.json',import.meta.url)));
+const E='System.Reflection.Emit.',R='System.Reflection.',T='System.Type',I='System.Int32',S='System.String';
+const ref=(owner,name,p=[])=>({declaringType:owner,name,parameters:p.map(type=>({type}))});
+const invoke=(runtime,owner,name,p,args=[],self=null)=>invokeEmitBuiltin(runtime,ref(owner,name,p),args,self).value;
+const rt=()=>compileAssembly(model,{strict:true});
+const managedArray=(items,type=T)=>({$array:true,$type:type+'[]',items,elementType:type});
+function make(runtime,name='Check'){
+ const a=invoke(runtime,E+'AssemblyBuilder','DefineDynamicAssembly',[R+'AssemblyName',E+'AssemblyBuilderAccess'],[{$type:R+'AssemblyName',name},i4(1)]);
+ const module=invoke(runtime,E+'AssemblyBuilder','DefineDynamicModule',[S],[name],a);
+ const type=invoke(runtime,E+'ModuleBuilder','DefineType',[S,R+'TypeAttributes'],[name,i4(1)],module);return{a,module,type};
+}
+test('actual Roslyn emitted type fixture passes strict JavaScript compatibility analysis',()=>assert.deepEqual(analyzeAssembly(model).diagnostics,[]));
+for(const[name,wanted]of Object.entries(baseline.results))test(`native .NET differential: dynamic type ${name}`,()=>{const runtime=rt();assert.equal(String(runtime.invoke('EmitTypeFixture::'+name)),wanted);});
+test('same-named types from repeated dynamic assemblies retain distinct runtime identity and state',()=>{const runtime=rt();for(let i=0;i<3;i++){assert.equal(runtime.invoke('EmitTypeFixture::ConstructorField'),42);assert.equal(runtime.invoke('EmitTypeFixture::StaticInitializer'),42);assert.equal(runtime.invoke('EmitTypeFixture::DuplicateNameIdentity'),42);}});
+test('dynamic types retain assembly metadata when later sibling types are created',()=>{const runtime=rt();assert.equal(runtime.invoke('EmitTypeFixture::MultipleTypes'),3);const assembly=[...runtime.assemblies.values()].find(a=>a.displayName==='MultiAssembly');assert.deepEqual(assembly.types.map(t=>t.displayName),['FirstType','SecondType']);});
+test('unsupported emit overloads remain outside automatic JavaScript compatibility',()=>{
+ assert.equal(isEmitBuiltin(ref(E+'AssemblyBuilder','DefineDynamicAssembly',[R+'AssemblyName',E+'AssemblyBuilderAccess'])),true);
+ assert.equal(isEmitBuiltin(ref(E+'AssemblyBuilder','DefineDynamicAssembly',[R+'AssemblyName',E+'AssemblyBuilderAccess','System.Collections.Generic.IEnumerable`1<System.Reflection.Emit.CustomAttributeBuilder>'])),false);
+ assert.equal(isEmitBuiltin(ref(E+'TypeBuilder','DefineGenericParameters',[S+'[]'])),false);
+ assert.equal(isEmitBuiltin(ref(E+'TypeBuilder','DefinePInvokeMethod',[S,S,R+'MethodAttributes',R+'CallingConventions',T,T+'[]','System.Runtime.InteropServices.CallingConvention','System.Runtime.InteropServices.CharSet'])),false);
+ assert.equal(isEmitBuiltin(ref(E+'ModuleBuilder','DefineType',[S,R+'TypeAttributes',T,'System.Reflection.Emit.PackingSize'])),false);
+});
+test('collectible native lifecycle, explicit dynamic layout, and varargs reject explicitly',()=>{const runtime=rt();
+ assert.throws(()=>invoke(runtime,E+'AssemblyBuilder','DefineDynamicAssembly',[R+'AssemblyName',E+'AssemblyBuilderAccess'],[{name:'Collect'},i4(9)]),e=>e.$type==='System.NotSupportedException');
+ const{module,type}=make(runtime);
+ assert.throws(()=>invoke(runtime,E+'ModuleBuilder','DefineType',[S,R+'TypeAttributes'],['Layout',i4(17)],module),e=>e.$type==='System.NotSupportedException');
+ assert.throws(()=>invoke(runtime,E+'TypeBuilder','DefineConstructor',[R+'MethodAttributes',R+'CallingConventions',T+'[]'],[i4(6),i4(2),managedArray([])],type),e=>e.$type==='System.NotSupportedException');
+});
+test('CreateType rejects unresolved dynamic IL without partially publishing metadata',()=>{const runtime=rt(),{type}=make(runtime,'Unfinished');const method=invoke(runtime,E+'TypeBuilder','DefineMethod',[S,R+'MethodAttributes',T,T+'[]'],['Missing',i4(22),reflectionType(runtime,I),managedArray([])],type);
+ assert.throws(()=>invoke(runtime,E+'TypeBuilder','CreateType',[],[],type),e=>e.$type==='System.NotSupportedException'&&e.diagnostics.some(d=>d.code==='IL_NO_BODY'));
+ assert.equal(runtime.types.has(type.typeName),false);
+ const gen=invoke(runtime,E+'MethodBuilder','GetILGenerator',[],[],method);invoke(runtime,E+'ILGenerator','Emit',[E+'OpCode',I],[reflectedOpcode('Ldc_I4'),i4(42)],gen);invoke(runtime,E+'ILGenerator','Emit',[E+'OpCode'],[reflectedOpcode('Ret')],gen);
+ const result=invoke(runtime,E+'TypeBuilder','CreateType',[],[],type);assert.equal(result.typeName,type.typeName);assert.equal(runtime.types.get(type.typeName).methods.filter(m=>m.name==='.ctor').length,1);
+ assert.throws(()=>invoke(runtime,E+'ILGenerator','Emit',[E+'OpCode'],[reflectedOpcode('Nop')],gen),e=>e.$type==='System.InvalidOperationException');
+});
+test('dynamic members cannot be invoked before publication and accessors must match property signatures',()=>{const runtime=rt(),{type}=make(runtime,'Validation');const method=invoke(runtime,E+'TypeBuilder','DefineMethod',[S,R+'MethodAttributes',T,T+'[]'],['Get',i4(22),reflectionType(runtime,I),managedArray([])],type);
+ assert.throws(()=>invoke(runtime,R+'MethodInfo','CreateDelegate',[T],[reflectionType(runtime,'System.Func`1<System.Int32>')],method),e=>e.$type==='System.NotSupportedException');
+ const property=invoke(runtime,E+'TypeBuilder','DefineProperty',[S,R+'PropertyAttributes',T,T+'[]'],['Text',i4(0),reflectionType(runtime,S),managedArray([])],type);
+ assert.throws(()=>invoke(runtime,E+'PropertyBuilder','SetGetMethod',[E+'MethodBuilder'],[method],property),e=>e.$type==='System.ArgumentException');
+ const field=invoke(runtime,E+'TypeBuilder','DefineField',[S,T,R+'FieldAttributes'],['TextConstant',reflectionType(runtime,S),i4(86)],type);
+ assert.throws(()=>invoke(runtime,E+'FieldBuilder','SetConstant',['System.Object'],[runtime.box(i4(42),I)],field),e=>e.$type==='System.ArgumentException');
+});

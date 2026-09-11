@@ -30,6 +30,25 @@ export interface ProjectCompiler {
  executeBuildTask?(assemblyIdOrBase64:string,taskName:string,request:ManagedBuildTaskRequest):Promise<ManagedBuildTaskResult>;
  convertResx?(xml:string):Promise<{success:boolean;base64?:string;bytes?:Uint8Array;diagnostics?:ProjectDiagnostic[]}>;
 }
+export interface ProjectCommandRequest {
+ command:string;
+ args:string[];
+ env:Record<string,string>;
+ workingDirectory:string;
+ files:Record<string,Uint8Array>;
+ directories:string[];
+ signal?:AbortSignal;
+}
+export interface ProjectCommandResult {
+ exitCode:number;
+ stdout?:string;
+ stderr?:string;
+ files?:Record<string,VirtualFile>|Map<string,VirtualFile>;
+ removedFiles?:string[];
+ directories?:string[];
+ success?:boolean;
+}
+export interface ProjectSatelliteAssembly { culture:string; name:string; path:string; pe:Uint8Array; }
 export interface ProjectOptions {
  projectPath?: string;
  files: Map<string,VirtualFile> | Record<string,VirtualFile>;
@@ -42,6 +61,8 @@ export interface ProjectOptions {
  targetsImports?: string[];
  signal?: AbortSignal;
  onMessage?: (diagnostic:ProjectDiagnostic)=>void;
+ /** Explicit registered browser/WASI command adapter. Exec never starts an OS shell. */
+ commandRunner?:(request:ProjectCommandRequest)=>Promise<ProjectCommandResult>;
  /** Retain between builds and pass the previous result.files to reuse unchanged generation targets. */
  incrementalCache?: Map<string,unknown>;
 }
@@ -64,6 +85,7 @@ export interface ProjectBuildResult extends ProjectEvaluation {
  skippedTargets: string[];
  targetOutputs: Record<string,string[]>;
  projectReferences: ProjectBuildResult[];
+ satelliteAssemblies: ProjectSatelliteAssembly[];
  packages: PackageResolution | null;
  error?: {code:string;message:string;details?:Record<string,unknown>};
 }

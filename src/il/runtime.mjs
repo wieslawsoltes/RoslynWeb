@@ -3,6 +3,8 @@ import { splitTypeArguments, genericDefinitionName, substituteType, substituteMe
 import { invokeExtendedBuiltin } from './framework.mjs';
 import { invokeReflectionBuiltin } from './reflection.mjs';
 import { invokeEmitBuiltin, isEmitField, reflectedOpcode } from './reflection-emit.mjs';
+import { emitTypeBases } from './reflection-types.mjs';
+import { invokeCollectionsBuiltin, isCollectionsInstance } from './collections-extra.mjs';
 import { invokeIoBuiltin, ioTypeBases } from './io.mjs';
 import { isPointer, allocateMemory, releaseMemory, pointerBinary, readMemory, writeMemory, copyMemory, initializeMemory } from './memory.mjs';
 
@@ -332,6 +334,8 @@ export class ILRuntime {
   findVirtual(ref, self) {
     let type = this.typeName(self);
     while (type) {
+      const override = this.closeType(type)?.methodOverrides?.find(x => x.declaration.declaringType === ref.declaringType && x.declaration.name === ref.name && (x.declaration.parameters ?? []).map(p => p.type ?? p).join() === (ref.parameters ?? []).map(p => p.type ?? p).join());
+      if (override) return this.resolveMethod(override.body);
       const candidate = this.resolveMethod({ ...ref, declaringType: type });
       if (candidate && !candidate.isStatic) return candidate;
       type = this.closeType(type)?.baseType;
@@ -476,6 +480,7 @@ export class ILRuntime {
     if (type === target || target === 'System.Object') return true;
     if (ioTypeBases[type]?.some(base => base === target || this.inherits(base, target))) return true;
     if (exceptionBases[type]) return this.inherits(exceptionBases[type], target);
+    if (emitTypeBases[type]) return this.inherits(emitTypeBases[type], target);
     if (type === 'System.Reflection.Emit.DynamicMethod') return this.inherits('System.Reflection.MethodInfo', target);
     if (type === 'System.Reflection.Emit.LocalBuilder') return this.inherits('System.Reflection.LocalVariableInfo', target);
     if (type === 'System.MulticastDelegate') return target === 'System.Delegate';
@@ -498,6 +503,8 @@ export class ILRuntime {
     if (value == null) return false;
     const target = trimType(type), actual = this.typeName(value);
     if (actual === target || this.inherits(actual, target)) return true;
+    const collection = isCollectionsInstance(this, value, target);
+    if (collection !== undefined) return collection;
     if (value.$array && (target === 'System.Array' || target === 'System.Collections.IEnumerable')) return true;
     if (value.$array && target.endsWith('[]') && !isNumericType(value.elementType) && !this.types.get(value.elementType)?.isValueType) return this.inherits(value.elementType, target.slice(0, -2));
     if (value.$box && target === 'System.ValueType') return true;
@@ -762,6 +769,8 @@ export class ILRuntime {
     if (io.handled) return io;
     const emitted = invokeEmitBuiltin(this, ref, args, self, kind);
     if (emitted.handled) return emitted;
+    const collections = invokeCollectionsBuiltin(this, ref, args, self, kind);
+    if (collections.handled) return collections;
     const extended = invokeExtendedBuiltin(this, ref, args, self, kind);
     if (extended.handled) return extended;
     const reflection = invokeReflectionBuiltin(this, ref, args, self, kind);

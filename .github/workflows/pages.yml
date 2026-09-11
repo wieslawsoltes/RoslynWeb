@@ -33,6 +33,13 @@ jobs:
         run: npm run build
       - name: Native managed assertions and real IL fixture generation
         run: dotnet run --project managed/SelfTest/SelfTest.csproj -c Release
+      - name: Native CLR and MSBuild differential baselines
+        run: |
+          DOTNET=dotnet node tests/il-types-verify-native.mjs
+          DOTNET=dotnet node tests/il-collections-verify-native.mjs
+          DOTNET=dotnet node tests/projects-v4-verify-native.mjs
+      - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
+        run: bash scripts/prepare-desktop-fixtures.sh --check
       - name: JavaScript and project tests
         run: npm test
       - name: Actual WebAssembly integration
@@ -49,6 +56,12 @@ jobs:
         run: npm run test:build
       - name: Actual Worker project builds
         run: npm run test:projects-wasm
+      - name: Managed filesystem and persistent workspace ABI
+        run: node managed/runtime-files-tests.mjs
+      - name: Public managed files and native WASI Worker APIs
+        run: node scripts/test-v4.mjs
+      - name: Original desktop binaries in actual WebAssembly
+        run: node tests/desktop/wasm.mjs
       - name: Stage browser application
         run: node scripts/stage-pages.mjs
       - name: Install Chromium browser test runtime

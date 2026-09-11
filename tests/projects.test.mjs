@@ -42,7 +42,7 @@ test('NuGet props/targets imports really generate source and selected package as
 });
 
 test('unsupported tasks, external SDKs, invalid XML and cycles fail with explicit diagnostic codes',async()=>{
- for(const [xml,code] of [['<Project DefaultTargets="B"><Target Name="B"><Exec Command="echo no"/></Target></Project>','UNSUPPORTED_BUILD_TASK'],['<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop"/>','UNSUPPORTED_SDK'],['<Project><Bad></Project>','INVALID_PROJECT_XML'],['<Project DefaultTargets="A"><Target Name="A" DependsOnTargets="B"/><Target Name="B" DependsOnTargets="A"/></Project>','TARGET_CYCLE'],['<Project><Import Project="App.csproj"/></Project>','IMPORT_CYCLE']]){const result=await buildProject(host(),{files:{'App.csproj':xml}});assert.equal(result.success,false);assert.equal(result.error.code,code);}
+ for(const [xml,code] of [['<Project DefaultTargets="B"><Target Name="B"><Exec Command="echo no"/></Target></Project>','COMMAND_RUNNER_REQUIRED'],['<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop"/>','UNSUPPORTED_SDK'],['<Project><Bad></Project>','INVALID_PROJECT_XML'],['<Project DefaultTargets="A"><Target Name="A" DependsOnTargets="B"/><Target Name="B" DependsOnTargets="A"/></Project>','TARGET_CYCLE'],['<Project><Import Project="App.csproj"/></Project>','IMPORT_CYCLE']]){const result=await buildProject(host(),{files:{'App.csproj':xml}});assert.equal(result.success,false);assert.equal(result.error.code,code);}
 });
 
 test('conditions support comparisons, Exists, negation and report unsupported functions',()=>{

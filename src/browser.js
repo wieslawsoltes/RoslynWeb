@@ -79,6 +79,28 @@ function peBase64(input) {
   return toBase64(input);
 }
 
+function workspacePath(path, directory = false) {
+  if (typeof path !== 'string' || path.includes('\0') || path.includes(':') || /^[\\/]/.test(path) || path.replaceAll('\\', '/').split('/').includes('..') || (!directory && !path)) {
+    throw new RoslynError('Managed workspace paths must be relative, without drive letters or parent traversal. C# must access them using relative File/Directory paths.', 'INVALID_WORKSPACE_PATH');
+  }
+  return path;
+}
+function encodeWorkspaceFiles(files = {}) {
+  return Object.entries(files).map(([path, value]) => ({ path: workspacePath(path), base64: toBase64(typeof value === 'string' ? new TextEncoder().encode(value) : Array.isArray(value) ? Uint8Array.from(value) : value) }));
+}
+function decodeWorkspaceResult(result) {
+  const decoded = { ...result };
+  for (const key of ['files', 'changedFiles']) if (Array.isArray(result[key])) decoded[key] = Object.fromEntries(result[key].map(file => [file.path, fromBase64(file.base64)]));
+  return decoded;
+}
+const hasExecutionFiles = options => ['virtualFiles','captureVirtualFiles','maxVirtualFileBytes','maxVirtualFileCount','workspaceId','workingDirectory','removedFiles'].some(key => options[key] !== undefined);
+function executionFileRequest(options) {
+  return { workspaceId: options.workspaceId, files: encodeWorkspaceFiles(options.virtualFiles),
+    removedFiles: options.removedFiles?.map(path => workspacePath(path)),
+    workingDirectory: options.workingDirectory === undefined ? undefined : workspacePath(options.workingDirectory, true),
+    captureFiles: options.captureVirtualFiles ?? true, maxFileBytes: options.maxVirtualFileBytes, maxFileCount: options.maxVirtualFileCount };
+}
+
 /** Create an isolated Roslyn compiler. Call dispose() to release its worker and assemblies. */
 export async function createRoslyn(options = {}) {
   if (options.signal?.aborted) throw new RoslynError('Compiler startup was aborted', 'ABORTED');
@@ -105,10 +127,19 @@ export async function createRoslyn(options = {}) {
   const timeout = options.timeoutMs ?? 30000;
   const call = (method, args, ms = timeout) => host.call(method, args, ms);
   let disposed = false;
+  let nativeCommands;
   // Serialize package/reference mutations and compiler calls, even in direct mode.
   let queue = Promise.resolve();
   const ensureActive = () => { if (disposed || host.closed) throw host.error?.code === 'ABORTED' ? host.error : new RoslynError('Compiler was disposed', 'DISPOSED'); };
   const serial = fn => { const next = queue.then(() => { ensureActive(); return fn(); }); queue = next.catch(() => {}); return next; };
+  const nativeCall = async (operation, args, ms) => {
+    if (inWorker) return call('$nativeCommand', [operation, args], ms);
+    if (!nativeCommands) { const { NativeCommandHost } = await import('./native-commands.js'); nativeCommands = new NativeCommandHost(); }
+    ensureActive();
+    const result = await abortable(nativeCommands.call(operation, args), options.signal);
+    ensureActive(); return result;
+  };
+  const workspaceCall = request => serial(async () => decodeWorkspaceResult(requireSuccess(await call('WorkspaceFiles', [JSON.stringify(request)]))));
   const api = {
     info,
     get disposed() { return disposed || host.closed === true; },
@@ -156,6 +187,33 @@ export async function createRoslyn(options = {}) {
     executeBuildTask(assembly, typeName, request = {}) {
       return serial(() => call('ExecuteBuildTask', [peBase64(assembly), typeName, stringifyArguments(request)]));
     },
+    createWorkspace(workspaceOptions = {}) {
+      return workspaceCall({ operation: 'create', files: encodeWorkspaceFiles(workspaceOptions.files), maxFileBytes: workspaceOptions.maxFileBytes, maxFileCount: workspaceOptions.maxFileCount });
+    },
+    readWorkspace(workspaceId, paths) { return workspaceCall({ operation: 'read', workspaceId, paths: paths?.map(path => workspacePath(path)) }); },
+    writeWorkspace(workspaceId, files, removedFiles = []) { return workspaceCall({ operation: 'write', workspaceId, files: encodeWorkspaceFiles(files), removedFiles: removedFiles.map(path => workspacePath(path)) }); },
+    listWorkspace(workspaceId) { return workspaceCall({ operation: 'list', workspaceId }); },
+    deleteWorkspaceFiles(workspaceId, paths) { return workspaceCall({ operation: 'delete', workspaceId, paths: paths.map(path => workspacePath(path)) }); },
+    disposeWorkspace(workspaceId) { return workspaceCall({ operation: 'dispose', workspaceId }); },
+    addNativeCommand(name, source, commandOptions = {}) {
+      return serial(async () => {
+        commandOptions.signal?.throwIfAborted();
+        const bytes = typeof source === 'string' || source instanceof URL ? await loadAssetBytes(new URL(source, baseUrl)) : source;
+        commandOptions.signal?.throwIfAborted(); ensureActive();
+        return nativeCall('register', [name, bytes], commandOptions.timeoutMs ?? timeout);
+      });
+    },
+    runNativeCommand(name, request = {}) {
+      return serial(async () => {
+        request.signal?.throwIfAborted();
+        const { signal, timeoutMs, ...commandRequest } = request;
+        const abort = () => host.dispose(abortedError());
+        if (inWorker) signal?.addEventListener('abort', abort, { once: true });
+        try { return await nativeCall('run', [name, inWorker ? commandRequest : request], timeoutMs ?? timeout); }
+        finally { signal?.removeEventListener('abort', abort); }
+      });
+    },
+    removeNativeCommand(name) { return serial(() => nativeCall('remove', [name], timeout)); },
     createResources(entries) {
       return serial(async () => {
         const result = await call('CreateResources', [stringifyArguments(entries)]);
@@ -210,13 +268,15 @@ export async function createRoslyn(options = {}) {
         if (assembly?.success === false) throw new RoslynError('Compilation failed; fix the diagnostics before running', 'COMPILE_FAILED', assembly.diagnostics);
         const pe = peBase64(assembly);
         let analysis;
-        if (backend !== 'wasm') {
+        const managedWorkspace = runOptions.workspaceId !== undefined || runOptions.removedFiles !== undefined || runOptions.maxVirtualFileCount !== undefined;
+        if (managedWorkspace && backend === 'javascript') throw new RoslynError('Persistent workspace, removal, and file-count options require the WebAssembly backend.', 'WORKSPACE_REQUIRES_WASM');
+        if (backend !== 'wasm' && !managedWorkspace) {
           const { analyzeAssembly } = await import('./il/index.js');
           const model = assembly.inspection || requireSuccess(await call('InspectAssembly', [pe]));
           analysis = analyzeAssembly(model, { externals: runOptions.externals, assemblies: runOptions.assemblies });
           if (backend === 'javascript' || (analysis.supported && !analysis.dependencies?.some(dependency => dependency.overloadValidatedAtRuntime))) {
             // Function-valued custom externals must stay in the caller's realm.
-            const jsOptions = { args: runOptions.args || [], maxInstructions: runOptions.maxInstructions ?? runOptions.maxSteps ?? 1e7, assemblies: runOptions.assemblies, virtualFiles: runOptions.virtualFiles, maxVirtualFileBytes: runOptions.maxVirtualFileBytes, captureVirtualFiles: runOptions.captureVirtualFiles };
+            const jsOptions = { args: runOptions.args || [], maxInstructions: runOptions.maxInstructions ?? runOptions.maxSteps ?? 1e7, assemblies: runOptions.assemblies, virtualFiles: runOptions.virtualFiles, maxVirtualFileBytes: runOptions.maxVirtualFileBytes, captureVirtualFiles: runOptions.captureVirtualFiles, workingDirectory: runOptions.workingDirectory };
             if (inWorker && !runOptions.externals) return call('$runJS', [model, jsOptions], runOptions.timeoutMs ?? timeout);
             const { executeJavaScript } = await import('./execution.js');
             ensureActive();
@@ -224,17 +284,20 @@ export async function createRoslyn(options = {}) {
             ensureActive(); return result;
           }
         }
-        if (runOptions.virtualFiles !== undefined || runOptions.captureVirtualFiles !== undefined || runOptions.maxVirtualFileBytes !== undefined) {
-          throw new RoslynError('Virtual file options require the JavaScript backend. The selected backend is WebAssembly, including automatic compatibility fallback; no program was executed.', 'VIRTUAL_FILES_REQUIRE_JAVASCRIPT');
-        }
-        const result = await call('Run', [pe, JSON.stringify(runOptions.args || [])], runOptions.timeoutMs ?? timeout);
-        return { ...result, backend: 'wasm', ...(analysis ? { fallback: analysis } : {}) };
+        const files = hasExecutionFiles(runOptions);
+        const result = decodeWorkspaceResult(await call(files ? 'RunWithFiles' : 'Run', [pe, JSON.stringify(runOptions.args || []), ...(files ? [JSON.stringify(executionFileRequest(runOptions))] : [])], runOptions.timeoutMs ?? timeout));
+        return { ...result, ...(result.files ? { virtualFiles: result.files } : {}), backend: 'wasm', ...(analysis ? { fallback: analysis } : {}) };
       });
     },
     invoke(assemblyId, typeName, methodName, args = [], options) {
-      return serial(() => options
-        ? call('InvokeWithOptions', [assemblyId, typeName, methodName, stringifyArguments(args), JSON.stringify(options)])
-        : call('Invoke', [assemblyId, typeName, methodName, stringifyArguments(args)]));
+      return serial(async () => {
+        if (options && hasExecutionFiles(options)) {
+          const result = decodeWorkspaceResult(await call('InvokeWithFiles', [assemblyId, typeName, methodName, stringifyArguments(args), JSON.stringify({ ...executionFileRequest(options), invokeOptions: options })], options.timeoutMs ?? timeout));
+          return { ...result, ...(result.files ? { virtualFiles: result.files } : {}), backend: 'wasm' };
+        }
+        return options ? call('InvokeWithOptions', [assemblyId, typeName, methodName, stringifyArguments(args), JSON.stringify(options)], options.timeoutMs ?? timeout)
+          : call('Invoke', [assemblyId, typeName, methodName, stringifyArguments(args)]);
+      });
     },
     createObject(assemblyId, typeName, args = [], options = {}) {
       return serial(async () => requireSuccess(await call('CreateObject', [assemblyId, typeName, stringifyArguments(args), JSON.stringify(options)])).result);
@@ -261,7 +324,7 @@ export async function createRoslyn(options = {}) {
         return { model, analysis: analyzeAssembly(model, emitOptions), source: generateModule(model, { strict: true, ...emitOptions }) };
       });
     },
-    dispose() { disposed = true; eventsClosed = true; host.dispose(); listeners.clear(); }
+    dispose() { disposed = true; eventsClosed = true; host.dispose(); nativeCommands?.dispose(); listeners.clear(); }
   };
   return api;
 }

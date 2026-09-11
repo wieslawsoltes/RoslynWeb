@@ -22,7 +22,7 @@ const length = value => typeof value === 'number' && Number.isFinite(value) ? `$
 const boxStyle = { boxSizing: 'border-box', minWidth: '0' };
 function assignStyle(element, values) { Object.assign(element.style, values); }
 
-/** A DOM-backed widget protocol. This is a web UI host, not a WPF/WinForms runtime. */
+/** DOM widget host shared by the JSON protocol and optional desktop binary shims. */
 export class BrowserDesktopHost {
   constructor({ root, document = root?.ownerDocument || globalThis.document, onEvent, onError, data = {} } = {}) {
     if (!root || !document?.createElement) throw new TypeError('A DOM root element and document are required');
@@ -66,10 +66,10 @@ export class BrowserDesktopHost {
       const header = d.createElement('header'), title = d.createElement('span'), close = d.createElement('button'), body = d.createElement('div');
       close.textContent = '×'; close.type = 'button'; close.setAttribute('aria-label', 'Close window');
       header.append(title, close); element.append(header, body); node.content = body; node.title = title; node.close = close;
-      assignStyle(element, { border: '1px solid #8a94a6', borderRadius: '8px', overflow: 'hidden', background: 'Canvas', color: 'CanvasText', font: '14px system-ui, sans-serif' });
+      assignStyle(element, { display: 'flex', flexDirection: 'column', border: '1px solid #8a94a6', borderRadius: '8px', overflow: 'hidden', background: 'Canvas', color: 'CanvasText', font: '14px system-ui, sans-serif' });
       assignStyle(header, { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', background: 'ButtonFace', fontWeight: '600' });
       assignStyle(close, { border: '0', background: 'transparent', color: 'inherit', cursor: 'pointer', fontSize: '20px' });
-      assignStyle(body, { padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' });
+      assignStyle(body, { flex: '1', minHeight: '0', padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' });
       element.setAttribute('role', 'region'); this.listen(node, close, 'click', event => this.emit(node, 'close', {}, event));
     }
     if (node.type === 'check') {
@@ -105,6 +105,7 @@ export class BrowserDesktopHost {
     const action = node.events[type];
     if (action && typeof action === 'object' && action.preventDefault) nativeEvent?.preventDefault?.();
     const event = { sequence: ++this.sequence, id: node.id, type, action: typeof action === 'object' ? action.action : action || type, ...details };
+    if (details.property) node.pendingEdit = { sequence: event.sequence, property: details.property, value: clone(details.value) };
     this.queue = this.queue.then(async () => {
       if (this.closed) return;
       for (const listener of this.listeners) await listener(event);
@@ -133,10 +134,15 @@ export class BrowserDesktopHost {
     const styles = {};
     for (const property of ['width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight', 'margin']) if (p[property] !== undefined) styles[property] = length(p[property]);
     if (p.grow !== undefined) styles.flexGrow = Math.max(0, Number(p.grow) || 0);
+    if (['relative', 'absolute'].includes(p.position)) styles.position = p.position;
+    for (const property of ['left', 'top', 'right', 'bottom']) if (p[property] !== undefined) styles[property] = length(p[property]);
+    for (const property of ['color', 'backgroundColor']) if (typeof p[property] === 'string') styles[property] = p[property];
     assignStyle(el, styles);
     if (p.layout) {
       const layout = p.layout, container = node.content;
-      if (layout.kind === 'grid') {
+      if (layout.kind === 'absolute') {
+        assignStyle(container, { display: 'block', position: 'relative', minHeight: '0' });
+      } else if (layout.kind === 'grid') {
         assignStyle(container, { display: 'grid', gridTemplateColumns: (layout.columns || [1]).map(value => `${Math.max(0.01, Number(value) || 1)}fr`).join(' ') });
       } else assignStyle(container, { display: 'flex', flexDirection: layout.orientation === 'horizontal' ? 'row' : 'column', flexWrap: layout.wrap ? 'wrap' : 'nowrap' });
       container.style.gap = length(layout.gap ?? 8); container.style.padding = length(layout.padding ?? 0);
@@ -149,10 +155,11 @@ export class BrowserDesktopHost {
       case 'text':
         if (el.value !== String(p.value ?? '')) el.value = String(p.value ?? '');
         el.placeholder = String(p.placeholder ?? ''); el.readOnly = !!p.readOnly;
+        if (el.tagName?.toLowerCase() === 'input') el.type = p.password ? 'password' : 'text';
         if (p.maxLength !== undefined) el.maxLength = Math.max(0, Number(p.maxLength) || 0);
         if (el.tagName?.toLowerCase() === 'textarea') el.rows = Math.max(1, Number(p.rows) || 3);
         break;
-      case 'check': node.input.checked = !!p.checked; node.caption.textContent = String(p.text ?? p.label ?? ''); break;
+      case 'check': node.input.indeterminate = !!p.indeterminate; node.input.checked = !!p.checked; node.caption.textContent = String(p.text ?? p.label ?? ''); break;
       case 'list': {
         el.multiple = !!p.multiple; el.size = Math.max(1, Number(p.size) || 1);
         el.replaceChildren(); const values = new Set((Array.isArray(p.value) ? p.value : [p.value]).map(String));
@@ -164,6 +171,14 @@ export class BrowserDesktopHost {
       }
       case 'grid': this.drawGrid(node, p); break;
       case 'progress': el.max = Math.max(1, Number(p.max) || 100); if (p.value == null) el.removeAttribute('value'); else el.value = Number(p.value) || 0; break;
+    }
+    // Inline flex/grid display overrides the browser's default [hidden] rule.
+    if (p.visible === false) {
+      if (el.style.display !== 'none') node.visibleDisplay = el.style.display || '';
+      el.style.display = 'none';
+    } else if (node.visibleDisplay !== undefined) {
+      if (el.style.display === 'none') el.style.display = node.visibleDisplay;
+      delete node.visibleDisplay;
     }
   }
   drawGrid(node, props) {

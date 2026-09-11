@@ -16,6 +16,7 @@
     <Compile Include="../ObjectBridge.cs" Link="ObjectBridge.cs" />
     <Compile Include="../BuildTaskBridge.cs" Link="BuildTaskBridge.cs" />
     <Compile Include="../Resources.cs" Link="Resources.cs" />
+    <Compile Include="../ExecutionFiles.cs" Link="ExecutionFiles.cs" />
     <Compile Include="../CompilerBridge.cs" Link="CompilerBridge.cs" />
     <Compile Include="../IlInspector.cs" Link="IlInspector.cs" />
     <Compile Include="../IntegerJsonConverters.cs" Link="IntegerJsonConverters.cs" />

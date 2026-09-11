@@ -1,3 +1,4 @@
+import { expandProperties, escapeValue } from './functions.js';
 import { parseXml } from '../packages/nuspec.js';
 
 export class ProjectError extends Error {
@@ -51,9 +52,9 @@ export class ProjectEvaluator {
     for (const [key, value] of Object.entries({ Configuration:'Debug', Platform:'AnyCPU', RuntimeIdentifier:'browser-wasm', Language:'C#', NuGetPackageRoot:'/.nuget/packages/', MSBuildRuntimeType:'Core', MSBuildRuntimeVersion:'10.0', IsCrossTargetingBuild:'false', IsBrowser:'true', TargetFramework:'net10.0', AssemblyName:name, OutputType:'Library', EnableDefaultItems:'true', EnableDefaultCompileItems:'true', EnableDefaultEmbeddedResourceItems:'true', RootNamespace:name, IntermediateOutputPath:'obj/', OutputPath:'bin/', BuildDependsOn:'BeforeBuild;CoreCompile;AfterBuild', MSBuildProjectFullPath:this.path, MSBuildProjectDirectory:this.dir, MSBuildProjectFile:basename(this.path), MSBuildProjectName:name })) this.set(key, value);
     for (const [key, value] of Object.entries(options.properties || {})) { this.set(key, value); this.global.add(key.toLowerCase()); }
   }
-  set(key, value) {
+  set(key, value, escapedValue) {
     if (this.global.has(key.toLowerCase())) return;
-    this.props.set(key.toLowerCase(), { key, value:String(value) });
+    this.props.set(key.toLowerCase(), { key, value:String(value), ...(escapedValue===undefined?{}:{escapedValue:String(escapedValue)}) });
     if (key.toLowerCase() === 'targetframework') {
       const match = /^(netstandard|netcoreapp|net)([0-9]+\.[0-9]+)(?:-([a-z]+)[\d.]*)?$/i.exec(value);
       if (match) { const identifier=match[1]==='netstandard'?'.NETStandard':'.NETCoreApp'; this.set('TargetFrameworkIdentifier',identifier);this.set('TargetFrameworkVersion','v'+match[2]);this.set('TargetFrameworkMoniker',identifier+',Version=v'+match[2]);this.set('TargetPlatformIdentifier',match[3]||''); }
@@ -63,18 +64,20 @@ export class ProjectEvaluator {
     const builtins = { msbuildthisfiledirectory:dirname(this.currentFile).replace(/\/$/,'') + '/', msbuildthisfilefullpath:this.currentFile, msbuildthisfile:basename(this.currentFile), msbuildthisfilename:basename(this.currentFile).replace(/\.[^.]+$/, ''), msbuildthisfileextension:/\.[^.]+$/.exec(this.currentFile)?.[0] || '' };
     return builtins[key.toLowerCase()] ?? this.props.get(key.toLowerCase())?.value ?? '';
   }
+  getExpansion(key) {return this.props.get(key.toLowerCase())?.escapedValue ?? this.get(key);}
   metadata(item, key) {
-    if (!item) fail('UNSUPPORTED_BATCHING', `Item metadata %(${key}) needs an item context; task batching is unsupported.`);
+    if (!item) fail('MISSING_METADATA_CONTEXT', `Item metadata %(${key}) needs an item or task batch context.`);
     const path = item.path || normalizePath(item.include, this.dir), file = basename(path), extension = /\.[^.]+$/.exec(file)?.[0] || '';
     const builtins = { identity:item.include, fullpath:path, filename:file.slice(0, file.length - extension.length), extension, rootdir:'/', directory:dirname(path).slice(1) + '/', relativedir:item.include.includes('/') ? item.include.slice(0, item.include.lastIndexOf('/') + 1) : '', recursivedir:item.recursiveDir || '' };
     return builtins[key.toLowerCase()] ?? Object.entries(item.metadata).find(([k]) => k.toLowerCase() === key.toLowerCase())?.[1] ?? '';
   }
   expand(value = '', item) {
     let text = String(value);
-    if (/\$\(\[|\$\([^)]*::/.test(text)) fail('UNSUPPORTED_PROPERTY_FUNCTION', 'MSBuild property functions require an explicit host implementation.', { expression:text });
-    text = text.replace(/\$\(([\w.]+)\)/g, (_, key) => this.get(key));
-    text = text.replace(/@\(([\w.]+)(?:\s*->\s*(['"])(.*?)\2)?(?:\s*,\s*(['"])(.*?)\4)?\)/g, (_, type, quote, transform, separatorQuote, separator) => (this.items[type] || []).map(entry => transform === undefined ? entry.include : this.expand(transform, entry)).join(separator ?? ';'));
-    text = text.replace(/%\((?:[\w]+\.)?([\w]+)\)/g, (_, key) => this.metadata(item, key));
+    this.expansionDepth=(this.expansionDepth||0)+1;
+    if(this.expansionDepth>32){this.expansionDepth--;fail('PROPERTY_EXPRESSION_LIMIT','Nested property expression exceeds 32 levels.');}
+    try {text = expandProperties(text,this,item);} finally {this.expansionDepth--;}
+    text = text.replace(/@\(([\w.]+)(?:\s*->\s*(['"])(.*?)\2)?(?:\s*,\s*(['"])(.*?)\4)?\)/g, (_, type, quote, transform, separatorQuote, separator) => (this.items[type] || []).map(entry => transform === undefined ? escapeValue(entry.include) : this.expand(transform, entry)).join(separator ?? ';'));
+    text = text.replace(/%\((?:([\w]+)\.)?([\w]+)\)/g, (_, type, key) => escapeValue(this.metadata(item || this.batch?.get(type || '') || this.batch?.values().next().value, key)));
     if (/\$\(|@\(|%\(/.test(text)) fail('UNSUPPORTED_EXPRESSION', `Unsupported project expression: ${text}`);
     return text;
   }
@@ -90,22 +93,23 @@ export class ProjectEvaluator {
     }
     let p = 0; const peek = value => tokens[p]?.value.toLowerCase() === value.toLowerCase();
     const truth = value => { if (typeof value === 'boolean') return value; if (/^true$/i.test(value)) return true; if (/^false$/i.test(value)) return false; fail('INVALID_CONDITION', `Expected a Boolean in condition: ${text}`); };
-    const atom = () => {
-      if (peek('!')) { p++; return !truth(atom()); }
-      if (peek('(')) { p++; const value = or(); if (!peek(')')) fail('INVALID_CONDITION', `Missing ')' in ${text}`); p++; return value; }
+    const atom = (active=true) => {
+      if (peek('!')) { p++; const value=atom(active);return active?!truth(value):false; }
+      if (peek('(')) { p++; const value = or(active); if (!peek(')')) fail('INVALID_CONDITION', `Missing ')' in ${text}`); p++; return value; }
       const token = tokens[p++]; if (!token) fail('INVALID_CONDITION', `Incomplete condition: ${text}`);
       if (!token.quoted && peek('(')) {
         p++; const argument = tokens[p++]; if (!argument || !peek(')')) fail('INVALID_CONDITION', `Invalid function in ${text}`); p++;
+        if(!active)return false;
         if (/^Exists$/i.test(token.value)) { const path = normalizePath(argument.value, this.dir); return this.files.has(path) || this.directories.has(path) || [...this.files.keys()].some(file => file.startsWith(path + '/')); }
         if (/^HasTrailingSlash$/i.test(token.value)) return /[\\/]$/.test(argument.value);
         fail('UNSUPPORTED_CONDITION_FUNCTION', `Unsupported condition function: ${token.value}`);
       }
       return token.value;
     };
-    const compare = () => {
-      const left = atom(), op = tokens[p]?.value;
+    const compare = (active=true) => {
+      const left = atom(active), op = tokens[p]?.value;
       if (!['==','!=','>','<','>=','<='].includes(op)) return left;
-      p++; const right = atom(), a = String(left).toLowerCase(), b = String(right).toLowerCase();
+      p++; const right = atom(active);if(!active)return false;const a = String(left).toLowerCase(), b = String(right).toLowerCase();
       if (op === '==') return a === b; if (op === '!=') return a !== b;
       let cmp;
       if (/^-?(?:\d+\.?\d*|0x[\da-f]+)$/i.test(a) && /^-?(?:\d+\.?\d*|0x[\da-f]+)$/i.test(b)) cmp = Number(a) - Number(b);
@@ -113,8 +117,8 @@ export class ProjectEvaluator {
       else fail('INVALID_CONDITION', `Ordered comparison needs numbers or versions: ${text}`);
       return op === '>' ? cmp > 0 : op === '<' ? cmp < 0 : op === '>=' ? cmp >= 0 : cmp <= 0;
     };
-    const and = () => { let value=compare(); while(peek('and')) {p++;const right=compare();value=truth(value)&&truth(right);} return value; };
-    const or = () => { let value=and(); while(peek('or')) {p++;const right=and();value=truth(value)||truth(right);} return value; };
+    const and = (active=true) => { let value=compare(active); while(peek('and')) {p++;const left=active?truth(value):false,right=compare(active&&left);if(active)value=left&&truth(right);} return value; };
+    const or = (active=true) => { let value=and(active); while(peek('or')) {p++;const left=active?truth(value):false,right=and(active&&!left);if(active)value=left||truth(right);} return value; };
     const value = or(); if (p !== tokens.length) fail('INVALID_CONDITION', `Unexpected token in ${text}`); return truth(value);
   }
   paths(value, { base=this.dir, literal=true } = {}) {
@@ -125,7 +129,7 @@ export class ProjectEvaluator {
   }
   applyProperties(node) {
     if (!this.condition(node.attrs.Condition)) return;
-    for (const property of node.children) if (this.condition(property.attrs.Condition)) this.set(property.name, unescape(this.expand(property.text)));
+    for (const property of node.children) if (this.condition(property.attrs.Condition)) {const expanded=this.expand(property.text);this.set(property.name,unescape(expanded),expanded);}
   }
   applyItems(node) {
     if (!this.condition(node.attrs.Condition)) return;

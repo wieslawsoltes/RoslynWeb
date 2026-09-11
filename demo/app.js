@@ -2,11 +2,12 @@ import { createRoslyn } from '../src/browser.js';
 import { examples as baseExamples } from './examples.js';
 import {workflowExamples,prepareExample,projectFiles} from './workflows.js';
 import {advancedExamples,resourceProjectFiles,customTaskProjectFiles} from './advanced-workflows.js';
-const examples=[...baseExamples,...workflowExamples,...advancedExamples];
+import {compatibilityExamples,nativeTaskProject} from './compatibility-workflows.js';
+const examples=[...baseExamples,...workflowExamples,...advancedExamples,...compatibilityExamples];
 const $ = id => document.getElementById(id);
 const source = $('source');
 let compiler, artifact, jsSource = '', busy = false, sourceVersion = 0, compiledVersion = -1;
-let initializationController, initializationVersion = 0, desktopHost;
+let initializationController, initializationVersion = 0, desktopHost, desktopCompatibility;
 window.lab = { get compiler() { return compiler; }, get artifact() { return artifact; } };
 function log(message, append = true) { $('console').textContent = (append ? $('console').textContent : '') + message + '\n'; }
 function status(text) { $('status').textContent = text; }
@@ -47,6 +48,7 @@ async function initialize() {
   const attempt = ++initializationVersion;
   initializationController?.abort();
   desktopHost?.dispose(); desktopHost = null;
+  desktopCompatibility?.dispose().catch(() => {}); desktopCompatibility = null;
   initializationController = new AbortController();
   compiler?.dispose(); compiler = null; controls(); status('Loading runtime'); $('restart').hidden = false; $('restart').disabled = false;
   log('Starting the compiler worker…', false);
@@ -83,7 +85,28 @@ async function compile(context) {
   const example = examples[Number($('example').value)];
   const extensionOptions = await prepareExample(activeCompiler, example); context.check();
   let compiled;
-  if (example?.kind === 'resources' || example?.kind === 'custom-task') {
+  if (example?.kind === 'desktop-binary') {
+    if (!desktopCompatibility) {
+      desktopHost?.dispose(); desktopHost = null;
+      const {createDesktopCompatibility} = await import('../src/hosting/index.js'); context.check();
+      const created = await createDesktopCompatibility({compiler:activeCompiler,root:$('panel-host'),onOutput:output=>{if(context.current()&&output.stdout)log(output.stdout.trimEnd());},onError:error=>{if(context.current())log(error.message);}});
+      if(!context.current()){created.dispose().catch(()=>{});context.check();}
+      desktopCompatibility = created;
+    }
+    await desktopCompatibility.reset(); context.check();
+    if (text === example.original.source) {
+      const peBase64 = example.original.peBase64;
+      compiled = {success:true,pe:Uint8Array.from(atob(peBase64),c=>c.charCodeAt(0)),peBase64,assemblyName:example.desktopKind==='forms'?'OriginalForms':'OriginalWpf',diagnostics:[],originalReferenceFixture:true};
+      log('Loaded the original DLL compiled against Microsoft desktop references; its bytes are unchanged.');
+    } else {
+      compiled = await activeCompiler.compile(text,{optimization:'release',nullable:'enable',emitPdb:true,includeInspection:true,outputKind:'console',compilerExtensions:[],enableGenerators:false,enableAnalyzers:false}); context.check();
+      log('Compiled edited source against the browser desktop compatibility APIs.');
+    }
+  } else if (example?.kind === 'native-task') {
+    const project = await nativeTaskProject(activeCompiler,text); context.check();
+    const build = await activeCompiler.buildProject({...project,signal:context.signal}); context.check();
+    compiled = build.compileResult || {success:false,diagnostics:build.diagnostics};
+  } else if (example?.kind === 'resources' || example?.kind === 'custom-task') {
     const files = example.kind === 'resources' ? resourceProjectFiles(text) : await customTaskProjectFiles(activeCompiler, text); context.check();
     const build = await activeCompiler.buildProject({projectPath:example.kind === 'resources' ? 'ResourceDemo.csproj' : 'TaskDemo.csproj',files,restore:false,signal:context.signal}); context.check();
     compiled = build.compileResult || {success:false,diagnostics:build.diagnostics};
@@ -103,7 +126,7 @@ async function compile(context) {
   $('timing').textContent = `${(performance.now() - started).toFixed(0)} ms`;
   if (!compiled.success) { if (compiled.error) log(compiled.error.message); status('Compilation failed'); log('Compilation failed. Select a diagnostic to jump to the source.'); return false; }
   $('dirty').hidden = sourceVersion === version;
-  log(`Emitted ${compiled.assemblyName}.dll · ${compiled.pe.length.toLocaleString()} bytes`);
+  log(`${compiled.originalReferenceFixture?'Loaded':'Emitted'} ${compiled.assemblyName}.dll · ${compiled.pe.length.toLocaleString()} bytes`);
   const model = compiled.inspection || await activeCompiler.inspect(compiled); context.check();
   $('panel-il').textContent = ilText(model);
   try {
@@ -150,10 +173,17 @@ $('run').onclick = () => operation(async context => {
   } else if (example?.kind === 'dynamic') {
     result = await activeCompiler.invoke(runningArtifact.assemblyId, 'RoslynWeb.Dynamic.Function', 'Multiply', [9007199254740993n,2n]); context.check();
     result = {...result,backend:'wasm',stdout:`Generated function result: ${result.result}\n`};
+  } else if (example?.kind === 'desktop-binary') {
+    result = await desktopCompatibility.run(runningArtifact,{args,timeoutMs:30000}); context.check(); tab('host');
+    if(result.success)log('Original managed event handlers are connected to the browser controls.');
   } else if (example?.kind === 'desktop') {
+    if(desktopCompatibility){await desktopCompatibility.dispose();desktopCompatibility=null;context.check();}
     result = await activeCompiler.invoke(runningArtifact.assemblyId, 'DesktopDemo', 'Model', []); context.check();
     if (result.success) { await showDesktop(result.result, runningArtifact.assemblyId, context); context.check(); tab('host'); }
     result = {...result,backend:'wasm',stdout:'Browser controls connected to the managed DesktopDemo class.\n'};
+  } else if (example?.kind === 'managed-files') {
+    result = await activeCompiler.run(runningArtifact, {backend,args,virtualFiles:{'input.txt':'Hello from JavaScript file input!'},captureVirtualFiles:true,timeoutMs:30000}); context.check();
+    if(result.success) for(const [path,bytes] of Object.entries(result.virtualFiles||{})) log(`File ${path}: ${new TextDecoder().decode(bytes)}`);
   } else { result = await activeCompiler.run(runningArtifact, {backend,args,timeoutMs:30000}); context.check(); }
   if (result.stdout) log(result.stdout.trimEnd());
   if (result.stderr) log(result.stderr.trimEnd());

@@ -5,6 +5,7 @@ export { ProjectError, evaluateProject, normalizePath } from './evaluator.js';
 
 const bool = value => /^(true|enable|enabled)$/i.test(value || '');
 const bytes = value => typeof value === 'string' ? new TextEncoder().encode(value) : value instanceof Uint8Array ? value : new Uint8Array(value);
+const equalBytes=(a,b)=>{if(a===b)return true;const left=bytes(a),right=bytes(b);return left.length===right.length&&left.every((value,index)=>value===right[index]);};
 const meta = (item, name) => Object.entries(item.metadata).find(([key])=>key.toLowerCase()===name.toLowerCase())?.[1] || '';
 
 async function prepare(compiler, options) {
@@ -57,7 +58,7 @@ async function prepare(compiler, options) {
 }
 
 class ProjectBuilder {
-  constructor(compiler, options, context) {this.compiler=compiler;this.options=options;this.context=context;this.done=new Set();this.running=[];this.executed=[];this.skipped=[];this.targetOutputs={};this.projectReferences=[];this.compileResult=null;this.referencesLoaded=false;this.hadErrors=false;}
+  constructor(compiler, options, context) {this.compiler=compiler;this.options=options;this.context=context;this.done=new Set();this.running=[];this.executed=[];this.skipped=[];this.targetOutputs={};this.projectReferences=[];this.compileResult=null;this.satelliteAssemblies=[];this.referencesLoaded=false;this.hadErrors=false;}
   abort() {this.options.signal?.throwIfAborted();}
   async init() {this.abort();this.state=await prepare(this.compiler,this.options);return this;}
   file(path) {if(!this.state.files.has(path))fail('FILE_NOT_FOUND',`Virtual file not found: ${path}`);return this.state.files.get(path);}
@@ -83,6 +84,7 @@ class ProjectBuilder {
     for(const item of state.items.ProjectReference || []) {
       if(bool(meta(item,'BuildReference') || 'true')) {
         const path=item.path || normalizePath(item.include,state.dir);
+        if(this.context.stack.some(key=>key.startsWith(path+'|')))fail('PROJECT_CYCLE',`Circular ProjectReference: ${path}`);
         const properties={...(this.options.properties || {})};
         for(const part of split(meta(item,'AdditionalProperties'))) {const at=part.indexOf('=');if(at>=0)properties[part.slice(0,at)]=part.slice(at+1);}
         const result=await buildInternal(compiler,{...this.options,projectPath:path,files:state.files,properties,packageResolution:undefined,targets:['Build']},this.context);
@@ -129,7 +131,9 @@ class ProjectBuilder {
     const globalOptions={};for(const {key,value} of state.props.values())globalOptions[`build_property.${key}`]=value;
     const options={assemblyName:state.get('AssemblyName'),outputKind:outputType==='library'?'library':'console',languageVersion:pick('LangVersion','LangVersion','preview'),nullable:pick('Nullable','Nullable','disable'),optimization:bool(pick('Optimize','Optimize',state.get('Configuration')==='Release'?'true':'false'))?'release':'debug',allowUnsafe:bool(pick('AllowUnsafeBlocks','AllowUnsafeBlocks')),checkOverflow:bool(pick('CheckForOverflowUnderflow','CheckForOverflowUnderflow')),emitPdb:pick('EmitDebugInformation','DebugSymbols','true').toLowerCase()!=='false'&&pick('DebugType','DebugType','portable').toLowerCase()!=='none',emitXmlDocumentation:!!pick('DocumentationFile','DocumentationFile'),mainTypeName:pick('MainEntryPoint','StartupObject')||null,warningLevel:Number(pick('WarningLevel','WarningLevel','4')),warningsAsErrors:bool(pick('TreatWarningsAsErrors','TreatWarningsAsErrors')),deterministic:pick('Deterministic','Deterministic','true').toLowerCase()!=='false',defines:[...new Set(definitions)],additionalTexts:texts(additional),analyzerConfigFiles:texts(configPaths),analyzerOptions:{globalOptions},compilerExtensions:[...new Set(extensions)]};
     const resourceItems=attrs.Resources?state.paths(attrs.Resources).map(path=>({include:path,path,metadata:{}})):(state.items.EmbeddedResource || []);
-    options.resources=await this.resources(resourceItems);
+    const cultures=new Map(),neutral=[];
+    for(const item of resourceItems){const culture=meta(item,'WithCulture').toLowerCase()==='false'?'':meta(item,'Culture')||(/\.([a-z]{2,3}(?:-[a-z0-9]{2,8})*)\.resx$/i.exec(item.path||item.include)?.[1]||'');if(culture){if(!/^[a-z]{2,3}(?:-[a-z0-9]{2,8})*$/i.test(culture))fail('INVALID_RESOURCE_CULTURE',`Invalid resource culture: ${culture}`);if(!cultures.has(culture))cultures.set(culture,[]);cultures.get(culture).push(item);}else neutral.push(item);}
+    options.resources=await this.resources(neutral);
     const sourceFiles=texts(sources);
     if(bool(state.get('ImplicitUsings'))) {
       const imports=['System','System.Collections.Generic','System.IO','System.Linq','System.Net.Http','System.Threading','System.Threading.Tasks'];
@@ -149,15 +153,22 @@ class ProjectBuilder {
     this.write(output,this.compileResult.pe);state.set('TargetPath',output);state.set('TargetFileName',basename(output));
     if(this.compileResult.pdb)this.write(output.replace(/\.dll$/i,'.pdb'),this.compileResult.pdb);
     const xml=pick('DocumentationFile','DocumentationFile');if(xml&&this.compileResult.xmlDocumentation)this.write(normalizePath(xml,state.dir),this.compileResult.xmlDocumentation);
+    for(const [culture,items] of cultures){
+      const resources=await this.resources(items,culture),name=state.get('AssemblyName')+'.resources';
+      const version=state.get('AssemblyVersion')||'1.0.0.0';if(!/^\d+(?:\.\d+){1,3}$/.test(version))fail('INVALID_ASSEMBLY_VERSION',`Invalid AssemblyVersion: ${version}`);
+      const emitted=await this.compiler.compile([{path:normalizePath(culture+'/Satellite.g.cs',normalizePath(state.get('IntermediateOutputPath'),state.dir)),text:`[assembly:System.Reflection.AssemblyCulture(${JSON.stringify(culture)})]\n[assembly:System.Reflection.AssemblyVersion(${JSON.stringify(version)})]`}],{assemblyName:name,outputKind:'library',emitPdb:false,compilerExtensions:[],resources,deterministic:true});
+      state.diagnostics.push(...(emitted.diagnostics||[]));if(!emitted.success)fail('SATELLITE_COMPILE_FAILED',`Cannot compile ${culture} satellite.`,{diagnostics:emitted.diagnostics});
+      const path=normalizePath(culture+'/'+name+'.dll',dirname(output));this.write(path,emitted.pe);this.satelliteAssemblies.push({culture,name,path,pe:emitted.pe});if(this.compiler.addAssembly)await this.compiler.addAssembly(culture+'/'+name+'.dll',emitted.pe);
+    }
     this.output(node,{OutputAssembly:output});
   }
-  async resources(items) {
+  async resources(items,culture='') {
     const result=[],seen=new Set(),s=this.state;
     for(const item of items) {
       const path=item.path || normalizePath(item.include,s.dir),resx=/\.resx$/i.test(path);
-      if(resx && meta(item,'WithCulture').toLowerCase()!=='false' && (meta(item,'Culture') || /\.[a-z]{2}(?:-[a-z]{2,4})?\.resx$/i.test(path)))fail('SATELLITE_RESOURCE_REQUIRED',`Culture resource '${path}' requires a satellite assembly. Use WithCulture=false only when embedding it intentionally in the main assembly.`);
       let name=meta(item,'LogicalName');
       if(!name) {const manifest=meta(item,'ManifestResourceName');name=manifest?(resx&&!/\.resources$/i.test(manifest)?manifest+'.resources':manifest):[s.get('RootNamespace') || s.get('AssemblyName'),(meta(item,'Link') || item.include.replace(/^\//,'')).replace(/[/\\]/g,'.').replace(/\.resx$/i,'.resources')].filter(Boolean).join('.');}
+      if(culture&&resx&&!meta(item,'LogicalName')&&!name.toLowerCase().endsWith('.'+culture.toLowerCase()+'.resources'))name=name.replace(/\.resources$/i,'.'+culture+'.resources');
       if(seen.has(name))fail('DUPLICATE_RESOURCE_NAME',`Duplicate manifest resource name: ${name}`);seen.add(name);
       let data=this.file(path);
       if(resx) {
@@ -190,6 +201,29 @@ class ProjectBuilder {
     this.output(node,result.outputs || {});
   }
   async task(node) {
+    if(!['ItemGroup','PropertyGroup'].includes(node.name)){const batches=this.taskBatches(node);if(batches){const properties=new Map(this.state.props);for(const batch of batches)await this.inBatch(batch,()=>this.taskOnce(node),properties);return;}}
+    await this.taskOnce(node);
+  }
+  taskBatches(node) {
+    const s=this.state,text=Object.values(node.attrs).join(' '),itemTypes=[...text.matchAll(/@\(([\w.]+)/g)].map(m=>m[1]);
+    const stripped=text.replace(/@\([\w.]+\s*->\s*(['"])(.*?)\1(?:\s*,\s*(['"])(.*?)\3)?\)/g,'');
+    const refs=[...stripped.matchAll(/%\((?:([\w]+)\.)?([\w]+)\)/g)].map(m=>({type:m[1],key:m[2]}));if(!refs.length)return null;
+    const qualified=[...new Set(refs.map(r=>r.type).filter(Boolean))];if(qualified.length>1)fail('UNSUPPORTED_BATCHING','A task may qualify metadata from one item type; use common unqualified metadata to batch several lists.');
+    // A qualified metadata reference batches that item type only. Other task
+    // item lists remain complete inputs to every batch, as in native MSBuild.
+    const types=qualified.length?[...qualified]:[...new Set(itemTypes)];
+    if(!types.length)for(const [type,items] of Object.entries(s.items))if(items.some(item=>refs.every(ref=>s.metadata(item,ref.key)!=='')))types.push(type);
+    if(!types.length)fail('MISSING_METADATA_CONTEXT','Task metadata requires a referenced item list.');
+    const keys=[...new Set(refs.map(r=>r.key))],groups=new Map();
+    for(const type of types)for(const item of s.items[type]||[]){const signature=JSON.stringify(keys.map(key=>s.metadata(item,key)));if(!groups.has(signature))groups.set(signature,{lists:new Map(types.map(t=>[t,[]])),metadata:new Map()});const group=groups.get(signature);group.lists.get(type).push(item);group.metadata.set(type,item);if(!group.metadata.has(''))group.metadata.set('',item);}
+    if(groups.size>10000)fail('BATCH_LIMIT','Task batching exceeds 10,000 groups.');return [...groups.values()];
+  }
+  async inBatch(batch,action,propertySeed) {
+    const s=this.state,original=s.items,previous=s.batch,originalProps=s.props;if(propertySeed)s.props=new Map(propertySeed);s.items=Object.fromEntries(Object.entries(original).map(([type,items])=>[type,[...items]]));s.batch=batch.metadata;for(const [type,items] of batch.lists)s.items[type]=[...items];
+    const before=new Map(Object.entries(s.items).map(([k,v])=>[k,[...v]]));
+    try{return await action();}finally{for(const [type,items] of Object.entries(s.items)){const prior=before.get(type)||[];const added=items.filter(item=>!prior.includes(item)),removed=prior.filter(item=>!items.includes(item));original[type]=(original[type]||[]).filter(item=>!removed.includes(item));original[type].push(...added);}s.items=original;s.batch=previous;if(propertySeed){for(const [key,value] of s.props)if(propertySeed.get(key)?.value!==value.value||propertySeed.get(key)?.escapedValue!==value.escapedValue)originalProps.set(key,value);s.props=originalProps;}}
+  }
+  async taskOnce(node) {
     const policy=unescape(this.state.expand(node.attrs.ContinueOnError || 'false')).toLowerCase();
     if(!['false','errorandstop','true','warnandcontinue','errorandcontinue'].includes(policy))fail('INVALID_CONTINUE_ON_ERROR',`Invalid ContinueOnError value: ${policy}`);
     const start=this.state.diagnostics.length;
@@ -209,13 +243,14 @@ class ProjectBuilder {
     let definition=s.usingTasks.get(node.name.toLowerCase());
     if(!definition) {const candidates=[...s.usingTasks.values()].filter(task=>task.name.split('.').at(-1).toLowerCase()===node.name.toLowerCase());if(candidates.length>1)fail('AMBIGUOUS_TASK_NAME',`Task '${node.name}' matches several registered types; use its full name.`);definition=candidates[0];}
     if(definition){await this.customTask(node,definition);return;}
+    const supportedAttributes={WriteLinesToFile:['File','Lines','Overwrite','Encoding','WriteOnlyWhenDifferent'],ReadLinesFromFile:['File'],Copy:['SourceFiles','DestinationFiles','DestinationFolder','SkipUnchangedFiles'],MakeDir:['Directories'],Delete:['Files'],CallTarget:['Targets'],Message:['Text','Importance','Code'],Warning:['Text','Code','File','HelpKeyword'],Error:['Text','Code','File','HelpKeyword']};
+    if(supportedAttributes[node.name]) for(const key of Object.keys(a)) if(!['Condition','ContinueOnError',...supportedAttributes[node.name]].includes(key)) fail('UNSUPPORTED_TASK_PARAMETER',`Unsupported ${node.name} parameter: ${key}`);
     if(['Message','Warning','Error'].includes(node.name)) {
+      this.output(node,{});
       const diagnostic={id:expand(a.Code || (node.name==='Error'?'PROJECT_ERROR':node.name==='Warning'?'PROJECT_WARNING':'PROJECT_MESSAGE')),severity:node.name==='Message'?'info':node.name.toLowerCase(),message:expand(a.Text||''),path:s.currentFile};
       s.diagnostics.push(diagnostic);this.options.onMessage?.(diagnostic);
       if(node.name==='Error')fail(diagnostic.id,diagnostic.message,{path:diagnostic.path});return;
     }
-    const supportedAttributes={WriteLinesToFile:['File','Lines','Overwrite','Encoding','WriteOnlyWhenDifferent'],ReadLinesFromFile:['File'],Copy:['SourceFiles','DestinationFiles','DestinationFolder','SkipUnchangedFiles'],MakeDir:['Directories'],Delete:['Files'],CallTarget:['Targets'],Message:['Text','Importance','Code'],Warning:['Text','Code','File','HelpKeyword'],Error:['Text','Code','File','HelpKeyword']};
-    if(supportedAttributes[node.name]) for(const key of Object.keys(a)) if(!['Condition','ContinueOnError',...supportedAttributes[node.name]].includes(key)) fail('UNSUPPORTED_TASK_PARAMETER',`Unsupported ${node.name} parameter: ${key}`);
     if(node.name==='WriteLinesToFile') {
       if(!a.File) fail('MISSING_TASK_PARAMETER','WriteLinesToFile requires File.');
       const path=normalizePath(expand(a.File),s.dir),lineItems=split(s.expand(a.Lines)),lines=lineItems.length?lineItems.join('\n')+'\n':'';
@@ -236,6 +271,8 @@ class ProjectBuilder {
     if(node.name==='MakeDir') {const paths=s.paths(a.Directories);for(const path of paths)s.directories.add(path);this.output(node,{DirectoriesCreated:paths});return;}
     if(node.name==='Delete') {const paths=s.paths(a.Files);for(const path of paths){s.files.delete(path);s.generatedFiles.delete(path);}this.output(node,{DeletedFiles:paths});return;}
     if(node.name==='CallTarget') {const outputs=[];for(const target of split(s.expand(a.Targets))){await this.target(target);outputs.push(...(this.targetOutputs[target] || []));}this.output(node,{TargetOutputs:outputs});return;}
+    if(node.name==='MSBuild'){await this.nestedBuild(node);return;}
+    if(node.name==='Exec'){await this.execCommand(node);return;}
     if(node.name==='Csc'){await this.compile(node);return;}
     if(node.name==='GenerateResource') {
       for(const key of Object.keys(a))if(!['Condition','ContinueOnError','Sources','OutputResources'].includes(key))fail('UNSUPPORTED_TASK_PARAMETER',`Unsupported GenerateResource parameter: ${key}`);
@@ -247,11 +284,48 @@ class ProjectBuilder {
     }
     fail('UNSUPPORTED_BUILD_TASK',`Build task '${node.name}' is not available in the browser project host.`,{path:s.currentFile,target:this.running.at(-1)});
   }
+  async nestedBuild(node) {
+    const s=this.state,a=node.attrs,expand=value=>unescape(s.expand(value));
+    for(const key of Object.keys(a))if(!['Condition','ContinueOnError','Projects','Targets','Properties','RemoveProperties','BuildInParallel','StopOnFirstFailure','RebaseOutputs','RunEachTargetSeparately','SkipNonexistentProjects','UnloadProjectsOnCompletion','ToolsVersion'].includes(key))fail('UNSUPPORTED_TASK_PARAMETER',`Unsupported MSBuild parameter: ${key}`);
+    if(a.ToolsVersion)fail('UNSUPPORTED_TOOLS_VERSION','Nested builds use the installed browser compiler.');
+    const direct=/^@\(([\w.]+)\)$/.exec((a.Projects||'').trim()),projects=direct?(s.items[direct[1]]||[]):split(s.expand(a.Projects)).map(include=>({include,metadata:{}}));
+    const outputs=[];let failed=false;
+    for(const item of projects){
+      const path=item.path||normalizePath(item.include,s.dir);if(!s.files.has(path)){if(bool(expand(a.SkipNonexistentProjects))||bool(meta(item,'SkipNonexistentProjects')))continue;fail('PROJECT_NOT_FOUND',`Nested project not found: ${path}`);}
+      const properties={...(this.options.properties||{})};
+      for(const name of [...split(s.expand(a.RemoveProperties)),...split(meta(item,'GlobalPropertiesToRemove'))])for(const key of Object.keys(properties))if(key.toLowerCase()===name.toLowerCase())delete properties[key];
+      for(const part of [...split(s.expand(a.Properties)),...split(meta(item,'Properties')),...split(meta(item,'AdditionalProperties'))]){const at=part.indexOf('=');if(at<=0)fail('INVALID_GLOBAL_PROPERTY',`Invalid MSBuild property assignment: ${part}`);const key=part.slice(0,at).trim();for(const old of Object.keys(properties))if(old.toLowerCase()===key.toLowerCase())delete properties[old];properties[key]=part.slice(at+1);}
+      const targets=split(s.expand(a.Targets)),groups=bool(expand(a.RunEachTargetSeparately))&&targets.length?targets.map(t=>[t]):[targets.length?targets:undefined];
+      for(const group of groups){
+        const result=await buildInternal(this.compiler,{...this.options,projectPath:path,files:s.files,properties,targets:group,packageResolution:undefined},this.context);this.projectReferences.push(result);
+        for(const [file,value] of result.generatedFiles)this.write(file,value);
+        s.diagnostics.push(...result.diagnostics);if(!result.success){failed=true;if(bool(expand(a.StopOnFirstFailure)))break;continue;}
+        const requested=group||result.targets;for(const target of requested){const values=result.targetOutputs[target]||[];for(let include of values){if(bool(expand(a.RebaseOutputs)))include=normalizePath(include,dirname(path));outputs.push({itemSpec:include,metadata:{MSBuildSourceProjectFile:path,MSBuildSourceTargetName:target}});}}
+      }
+      if(failed&&bool(expand(a.StopOnFirstFailure)))break;
+    }
+    this.output(node,{TargetOutputs:outputs});if(failed)fail('NESTED_BUILD_FAILED','One or more nested projects failed.');
+  }
+  async execCommand(node) {
+    const s=this.state,a=node.attrs,expand=value=>unescape(s.expand(value));
+    for(const key of Object.keys(a))if(!['Condition','ContinueOnError','Command','WorkingDirectory','EnvironmentVariables','ConsoleToMSBuild','IgnoreExitCode','IgnoreStandardErrorWarningFormat','StandardOutputImportance','StandardErrorImportance','Outputs'].includes(key))fail('UNSUPPORTED_TASK_PARAMETER',`Unsupported Exec parameter: ${key}`);
+    if(typeof this.options.commandRunner!=='function')fail('COMMAND_RUNNER_REQUIRED','Exec requires an explicit browser commandRunner (for example a registered WASI module).');
+    const command=expand(a.Command);if(/[\r\n|&<>]/.test(command)||command.includes('$(')||command.includes('`'))fail('UNSUPPORTED_SHELL_COMMAND','Exec accepts one registered command with quoted arguments; shell expansion, redirection and operators are unsupported.');
+    const tokens=[];let token='',quote='',started=false;for(let i=0;i<command.length;i++){const c=command[i];if(quote){if(c===quote)quote='';else token+=c;started=true;}else if(c==='"'||c==="'"){quote=c;started=true;}else if(/\s/.test(c)){if(started){tokens.push(token);token='';started=false;}}else{token+=c;started=true;}}if(quote)fail('INVALID_COMMAND','Unclosed command argument quote.');if(started)tokens.push(token);if(!tokens.length)fail('MISSING_TASK_PARAMETER','Exec requires Command.');
+    const env={};for(const entry of split(s.expand(a.EnvironmentVariables))){const at=entry.indexOf('=');if(at<1)fail('INVALID_COMMAND_ENVIRONMENT',`Invalid environment entry: ${entry}`);env[entry.slice(0,at)]=entry.slice(at+1);}
+    const result=await this.options.commandRunner({command:tokens[0],args:tokens.slice(1),env,workingDirectory:normalizePath(expand(a.WorkingDirectory)||s.dir,s.dir),files:Object.fromEntries([...s.files].map(([p,v])=>[p,bytes(v)])),directories:[...s.directories],signal:this.options.signal});this.abort();
+    if(!result||!Number.isInteger(result.exitCode))fail('INVALID_COMMAND_RESULT','commandRunner must return an integer exitCode.');
+    for(const path of result.directories||[])s.directories.add(normalizePath(path));
+    for(const [path,value] of result.files instanceof Map?result.files:Object.entries(result.files||{})){const p=normalizePath(path);if(!s.files.has(p)||!equalBytes(s.files.get(p),value))this.write(p,bytes(value));}for(const path of result.removedFiles||[]){const p=normalizePath(path);s.files.delete(p);s.generatedFiles.delete(p);}
+    const lines=(String(result.stdout||'')+'\n'+String(result.stderr||'')).split(/\r?\n/).filter(Boolean);for(const message of lines){const diagnostic={severity:'info',id:'EXEC_OUTPUT',message,path:s.currentFile};s.diagnostics.push(diagnostic);this.options.onMessage?.(diagnostic);}
+    this.output(node,{ExitCode:result.exitCode,ConsoleOutput:bool(expand(a.ConsoleToMSBuild))?lines:[],Outputs:split(s.expand(a.Outputs))});
+    if(result.exitCode!==0&&!bool(expand(a.IgnoreExitCode)))fail('COMMAND_FAILED',`Command '${tokens[0]}' exited with code ${result.exitCode}.`,{exitCode:result.exitCode});
+  }
   cacheProbe(name,target) {
     const cache=this.options.incrementalCache,s=this.state;
     // Compilation and target calls have host-side effects beyond virtual files.
     // They execute each build; generation/copy/custom-task targets can be cached.
-    if(!cache || !target.attrs.Inputs || !target.attrs.Outputs || target.children.some(node=>['Csc','CallTarget','OnError'].includes(node.name)))return null;
+    if(!cache || !target.attrs.Inputs || !target.attrs.Outputs || target.children.some(node=>['Csc','CallTarget','MSBuild','Exec','OnError'].includes(node.name)))return null;
     const inputs=s.paths(target.attrs.Inputs),outputs=s.paths(target.attrs.Outputs);
     if(!inputs.length || !outputs.length || inputs.some(path=>!s.files.has(path)))return null;
     const encoded=path=>s.files.has(path)?toBase64(bytes(s.files.get(path))):null;
@@ -275,7 +349,7 @@ class ProjectBuilder {
     if(probe.outputs.some(path=>!s.files.has(path)))return;
     for(const [path,value] of s.files)if(!probe.files.has(path)||(probe.files.get(path)!==value&&encode(probe.files.get(path))!==encode(value)))changed.push([path,typeof value==='string'?value:value.slice(0)]);
     const changedPaths=new Set([...probe.outputs,...changed.map(([path])=>path)]);
-    const properties=[...s.props].filter(([key,value])=>probe.properties.get(key)?.value!==value.value).map(([key,value])=>[key,{...value}]);
+    const properties=[...s.props].filter(([key,value])=>probe.properties.get(key)?.value!==value.value||probe.properties.get(key)?.escapedValue!==value.escapedValue).map(([key,value])=>[key,{...value}]);
     this.options.incrementalCache.set(probe.key,{signature:probe.signature,outputs:[...changedPaths].map(path=>[path,encode(s.files.get(path))]),properties,items:structuredClone(s.items),directories:[...s.directories],files:changed,deleted:[...probe.files.keys()].filter(path=>!s.files.has(path)),diagnostics:structuredClone(s.diagnostics.slice(probe.diagnostics))});
   }
   async target(name) {
@@ -283,28 +357,31 @@ class ProjectBuilder {
     const target=this.state.targets.get(name);if(!target)fail('TARGET_NOT_FOUND',`Target '${name}' does not exist.`);
     const s=this.state,previous=s.currentFile;s.currentFile=target.file;this.running.push(name);
     try {
-      const enabled=s.condition(target.attrs.Condition);
+      const batches=this.taskBatches({attrs:{Inputs:target.attrs.Inputs||'',Outputs:target.attrs.Outputs||''}});
+      const enabled=batches?true:s.condition(target.attrs.Condition);
       if(enabled)for(const dependency of split(s.expand(target.attrs.DependsOnTargets)))await this.target(dependency);
       for(const [other,value] of s.targets)if(split(s.expand(value.attrs.BeforeTargets)).includes(name))await this.target(other);
       if(enabled) {
-        const probe=this.cacheProbe(name,target);
+        if(batches){const outputs=[],properties=new Map(s.props);for(const batch of batches)await this.inBatch(batch,async()=>{if(!s.condition(target.attrs.Condition))return;for(const node of target.children)if(node.name!=='OnError')await this.task(node);outputs.push(...split(s.expand(target.attrs.Returns ?? target.attrs.Outputs)));},properties);this.executed.push(name);this.targetOutputs[name]=outputs;}
+        else {const probe=this.cacheProbe(name,target);
         if(probe?.hit){this.restoreCachedTarget(probe.hit);this.skipped.push(name);}
         else {for(const node of target.children)if(node.name!=='OnError')await this.task(node);this.executed.push(name);this.cacheTarget(probe);}
-        this.targetOutputs[name]=split(s.expand(target.attrs.Returns ?? target.attrs.Outputs));
+        this.targetOutputs[name]=split(s.expand(target.attrs.Returns ?? target.attrs.Outputs));}
         this.done.add(name);
       }
       for(const [other,value] of s.targets)if(split(s.expand(value.attrs.AfterTargets)).includes(name))await this.target(other);
     }catch(error){for(const node of target.children.filter(child=>child.name==='OnError'))if(s.condition(node.attrs.Condition))for(const recovery of split(s.expand(node.attrs.ExecuteTargets)))await this.target(recovery);throw error;}finally{this.running.pop();s.currentFile=previous;}
   }
-  result(success,error) {const s=this.state;return {success,...(s?s.snapshot():{projectPath:this.options.projectPath,properties:{},items:{},files:new Map(),diagnostics:[]}),success,compileResult:this.compileResult,pe:this.compileResult?.pe,pdb:this.compileResult?.pdb,generatedFiles:s?.generatedFiles || new Map(),targets:this.executed,skippedTargets:this.skipped,targetOutputs:this.targetOutputs,projectReferences:this.projectReferences,packages:s?.packages || null,...(error?{error:{code:error.code || 'PROJECT_BUILD_ERROR',message:error.message,details:error.details}}:{})};}
+  result(success,error) {const s=this.state;return {success,...(s?s.snapshot():{projectPath:this.options.projectPath,properties:{},items:{},files:new Map(),diagnostics:[]}),success,compileResult:this.compileResult,pe:this.compileResult?.pe,pdb:this.compileResult?.pdb,generatedFiles:s?.generatedFiles || new Map(),targets:this.executed,skippedTargets:this.skipped,targetOutputs:this.targetOutputs,projectReferences:this.projectReferences,satelliteAssemblies:this.satelliteAssemblies,packages:s?.packages || null,...(error?{error:{code:error.code || 'PROJECT_BUILD_ERROR',message:error.message,details:error.details}}:{})};}
   async run() {await this.init();for(const target of [...this.state.initialTargets,...(this.options.targets || this.state.defaultTargets)])await this.target(target);return this.result(!this.hadErrors);}
 }
 
 async function buildInternal(compiler,options,context) {
-  const path=normalizePath(options.projectPath || '/App.csproj'),key=path+'|'+JSON.stringify(options.properties || {});
-  if(context.stack.includes(path))fail('PROJECT_CYCLE',`Circular ProjectReference: ${[...context.stack,path].join(' -> ')}`);
+  const path=normalizePath(options.projectPath || '/App.csproj'),key=path+'|'+JSON.stringify(Object.entries(options.properties || {}).map(([k,v])=>[k.toLowerCase(),v]).sort())+'|'+JSON.stringify(options.targets||null);
+  if(context.stack.length>=64)fail('PROJECT_DEPTH_LIMIT','Nested project depth exceeds 64.');
+  if(context.stack.includes(key))fail('PROJECT_CYCLE',`Circular ProjectReference: ${[...context.stack,path].join(' -> ')}`);
   if(context.cache.has(key))return context.cache.get(key);
-  const builder=new ProjectBuilder(compiler,options,context);context.stack.push(path);
+  const builder=new ProjectBuilder(compiler,options,context);context.stack.push(key);
   try {
     const result=await builder.run();context.cache.set(key,result);return result;
   }catch(error){

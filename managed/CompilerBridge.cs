@@ -79,7 +79,7 @@ public static partial class CompilerBridge
     public static string Version()
     {
         Initialize();
-        return Serialize(new { bridgeVersion = "0.3.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
+        return Serialize(new { bridgeVersion = "0.4.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
     }
 
     [JSExport]
@@ -230,8 +230,11 @@ public static partial class CompilerBridge
     [JSExport]
     public static async Task<string> Run(string assemblyIdOrBase64, string argsJson)
     {
-        return await Execute(async () =>
-        {
+        return await Execute(() => RunAction(assemblyIdOrBase64, argsJson), entryPoint: true);
+    }
+
+    private static async Task<object?> RunAction(string assemblyIdOrBase64, string argsJson)
+    {
             var assembly = Load(assemblyIdOrBase64);
             var entry = assembly.EntryPoint ?? throw new MissingMethodException("The assembly has no entry point. Compile as console or use Invoke for a library.");
             // Roslyn emits a synchronous <Main> wrapper for async entry points. Its
@@ -247,14 +250,16 @@ public static partial class CompilerBridge
             var args = JsonSerializer.Deserialize<string[]>(argsJson, Json) ?? [];
             var result = entry.Invoke(null, entry.GetParameters().Length == 0 ? null : [args]);
             return await AwaitResult(result);
-        }, entryPoint: true);
     }
 
     [JSExport]
     public static async Task<string> Invoke(string assemblyIdOrBase64, string typeName, string methodName, string argsJson)
     {
-        return await Execute(async () =>
-        {
+        return await Execute(() => InvokeAction(assemblyIdOrBase64, typeName, methodName, argsJson), entryPoint: false);
+    }
+
+    private static async Task<object?> InvokeAction(string assemblyIdOrBase64, string typeName, string methodName, string argsJson)
+    {
             var assembly = Load(assemblyIdOrBase64);
             var type = assembly.GetType(typeName, throwOnError: true)!;
             var args = JsonSerializer.Deserialize<JsonElement[]>(argsJson, Json) ?? [];
@@ -276,7 +281,6 @@ public static partial class CompilerBridge
             }
             if (method is null) throw new ArgumentException("Arguments cannot be converted to the method's CLR parameter types.");
             return await AwaitResult(method.Invoke(null, values));
-        }, entryPoint: false);
     }
 
     private static async Task<object?> AwaitResult(object? result)
@@ -293,7 +297,7 @@ public static partial class CompilerBridge
         return result;
     }
 
-    private static async Task<string> Execute(Func<Task<object?>> action, bool entryPoint)
+    private static async Task<string> Execute(Func<Task<object?>> action, bool entryPoint, string? fileRequestJson = null)
     {
         await ExecutionGate.WaitAsync();
         using var stdout = new StringWriter(CultureInfo.InvariantCulture);
@@ -301,24 +305,62 @@ public static partial class CompilerBridge
         var originalOut = Console.Out;
         var originalError = Console.Error;
         var watch = Stopwatch.StartNew();
+        ExecutionFileScope? files = null;
+        var response = new Dictionary<string, object?>();
         try
         {
             Console.SetOut(stdout);
             Console.SetError(stderr);
-            var result = await action();
-            return Serialize(new { success = true, result, exitCode = entryPoint && result is int code ? code : 0, stdout = stdout.ToString(), stderr = stderr.ToString(), elapsedMs = watch.Elapsed.TotalMilliseconds });
-        }
-        catch (Exception error)
-        {
-            return Serialize(new { success = false, exitCode = 1, stdout = stdout.ToString(), stderr = stderr.ToString(), error = Error(error), elapsedMs = watch.Elapsed.TotalMilliseconds });
+            try
+            {
+                if (fileRequestJson is not null) files = ExecutionFileScope.Create(fileRequestJson);
+                var result = await action();
+                response["success"] = true;
+                response["result"] = result;
+                response["exitCode"] = entryPoint && result is int code ? code : 0;
+            }
+            catch (Exception error)
+            {
+                response["success"] = false;
+                response["exitCode"] = 1;
+                response["error"] = Error(error);
+            }
+            if (files is not null)
+            {
+                try { files.Capture(response); }
+                catch (Exception error)
+                {
+                    response["success"] = false;
+                    response["exitCode"] = 1;
+                    if (response.ContainsKey("error")) response["fileError"] = Error(error);
+                    else response["error"] = Error(error);
+                }
+            }
+            response["stdout"] = stdout.ToString();
+            response["stderr"] = stderr.ToString();
+            response["elapsedMs"] = watch.Elapsed.TotalMilliseconds;
+            try { return Serialize(response); }
+            catch (Exception error)
+            {
+                response.Remove("result");
+                response["success"] = false;
+                response["exitCode"] = 1;
+                response["error"] = Error(error);
+                return Serialize(response);
+            }
         }
         finally
         {
-            Console.SetOut(originalOut);
-            Console.SetError(originalError);
-            ExecutionGate.Release();
+            try { files?.Dispose(); }
+            finally
+            {
+                Console.SetOut(originalOut);
+                Console.SetError(originalError);
+                ExecutionGate.Release();
+            }
         }
     }
+
 }
 
 public sealed class CompileRequest

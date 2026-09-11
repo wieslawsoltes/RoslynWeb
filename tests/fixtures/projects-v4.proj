@@ -1,0 +1,38 @@
+<Project DefaultTargets="Build">
+  <PropertyGroup>
+    <Value>  browser build  </Value>
+    <OutputDir Condition="'$(OutputDir)' == ''">out</OutputDir>
+    <Upper>$(Value.Trim().ToUpperInvariant())</Upper>
+    <Sub>$(Value.Trim().Substring(0,7))</Sub>
+    <Length>$(Upper.Length)</Length>
+    <Replace>$([System.String]::Copy('one-two').Replace('-', '_'))</Replace>
+    <Nested>$([MSBuild]::Add(2, $([MSBuild]::Multiply(4, 10))))</Nested>
+    <Divide>$([MSBuild]::Divide(9, 2))</Divide>
+    <Big>$([System.Int64]::Parse('9007199254740993'))</Big>
+    <Version>$([MSBuild]::VersionGreaterThan('v10.0.1-preview', '9.9.9'))</Version>
+    <File>$([System.IO.Path]::GetFileNameWithoutExtension('sub/name.resx'))</File>
+    <Combined>$([System.IO.Path]::Combine('sub','file.cs'))</Combined>
+    <Default>$([MSBuild]::ValueOrDefault('','fallback'))</Default>
+    <Slash>$([MSBuild]::EnsureTrailingSlash('sub'))</Slash>
+    <Encoded>$([MSBuild]::ConvertToBase64('Żółw'))</Encoded>
+    <Minor>$([System.Version]::Parse('10.3.2').Minor)</Minor>
+    <Pad>$([System.String]::Copy('7').PadLeft(3,'0'))</Pad>
+    <Bits>$([MSBuild]::BitwiseOr(8,2))</Bits>
+    <Whitespace>$([System.String]::IsNullOrWhiteSpace('  '))</Whitespace>
+    <Compare>$([System.String]::Equals('Ab','aB','System.StringComparison.OrdinalIgnoreCase'))</Compare>
+  </PropertyGroup>
+  <ItemGroup>
+    <Input Include="a"><Flavor>red</Flavor></Input>
+    <Input Include="b"><Flavor>blue</Flavor></Input>
+    <Input Include="c"><Flavor>red</Flavor></Input>
+  </ItemGroup>
+  <Target Name="Build">
+    <MakeDir Directories="$(OutputDir)" />
+    <WriteLinesToFile File="$(OutputDir)/properties.txt" Lines="$(Upper);$(Sub);$(Length);$(Replace);$(Nested);$(Divide);$(Big);$(Version);$(File);$(Combined);$(Default);$(Slash);$(Encoded);$(Minor);$(Pad);$(Bits);$(Whitespace);$(Compare)" Overwrite="true" />
+    <WriteLinesToFile File="$(OutputDir)/%(Input.Flavor).txt" Lines="@(Input)" Overwrite="true" />
+    <CallTarget Targets="TargetBatch" />
+  </Target>
+  <Target Name="TargetBatch" Inputs="@(Input)" Outputs="$(OutputDir)/target-%(Input.Identity).txt">
+    <WriteLinesToFile File="$(OutputDir)/target-%(Input.Identity).txt" Lines="@(Input)" Overwrite="true" />
+  </Target>
+</Project>

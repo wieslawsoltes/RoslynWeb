@@ -284,7 +284,7 @@ console.log(result.virtualFiles); // Record<string, Uint8Array>
 
 These files belong to that JavaScript execution runtime; they do not access the host operating system or browser-origin persistent storage. The standalone VirtualFileSystem API permits deliberate state sharing within one JavaScript realm. Worker snapshots use structured-clone-compatible byte arrays. See [the IL backend guide](../src/il/README.md) for size budgets, supported encodings, and IO limitations. Persistence, filesystem watchers/ACLs/OS locking, asynchronous/span IO, and arbitrary Stream subclasses remain outside this adapter.
 
-The managed custom-task API uses a separate mounted workspace inside .NET WASM and returns changed files explicitly. It executes genuine compatible ITask implementations using managed System.IO. File mounting and transfer limits do not create a security sandbox for task code. The [compiler and build-task guide](./COMPILER-EXTENSIONS.md) documents the request/result protocol; the [project guide](../src/projects/README.md) documents UsingTask, generated source/resources, and incremental target reuse. Neither workspace provides Windows DLL or desktop binary emulation.
+The managed custom-task API uses a separate mounted workspace inside .NET WASM and returns changed files explicitly. It executes genuine compatible ITask implementations using managed System.IO. File mounting and transfer limits do not create a security sandbox for task code. The [compiler and build-task guide](./COMPILER-EXTENSIONS.md) documents the request/result protocol; the [project guide](../src/projects/README.md) documents UsingTask, generated source/resources, and incremental target reuse. General managed execution also supports temporary and persistent workspaces through `run`, `invoke`, and workspace methods; see [the filesystem API](WORKSPACES.md). Desktop binary compatibility is a separate opt-in layer described in [the desktop guide](DESKTOP-COMPATIBILITY.md).
 
 ## Optional remote host protocol
 
@@ -341,3 +341,7 @@ safe text assignment, and validation. Transport tests use a WebSocket fixture an
 cover frame correlation, byte encoding, cancellation, timeouts, and connection
 failure. These fixtures do not establish target-browser layout fidelity or
 interoperability with an independently implemented remote server.
+
+## WASI commands and desktop binary compatibility
+
+The [WASI command host](WASI-COMMANDS.md) executes registered native programs compiled to WebAssembly, including project `Exec` commands. The [desktop compatibility layer](DESKTOP-COMPATIBILITY.md) runs selected WinForms/WPF binaries unchanged with managed replacement assemblies and DOM event dispatch. Both are opt-in capabilities with explicit supported APIs.

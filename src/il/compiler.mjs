@@ -4,6 +4,7 @@ import { genericDefinitionName, matchesMethodReference } from './generics.mjs';
 import { isExtendedBuiltin } from './framework.mjs';
 import { isReflectionBuiltin } from './reflection.mjs';
 import { isEmitBuiltin, isEmitField } from './reflection-emit.mjs';
+import { isCollectionsBuiltin } from './collections-extra.mjs';
 import { isIoBuiltin } from './io.mjs';
 
 // This is JavaScript source serialization, including exact 64-bit metadata constants.
@@ -35,7 +36,7 @@ export function isOpcodeSupported(opcode) {
 /** This is a deliberately finite bridge, not a replacement implementation of the .NET BCL. */
 export function isBuiltinCandidate(ref) {
   if (!ref || typeof ref !== 'object') return false;
-  if (isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
+  if (isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
   if (/\[[,]+\]$/.test(ref.declaringType ?? '')) { const rank = ref.declaringType.slice(ref.declaringType.lastIndexOf('[')).split(',').length, n = ref.parameters?.length ?? 0; return ref.name === '.ctor' && n === rank || ['Get','Address'].includes(ref.name) && n === rank || ref.name === 'Set' && n === rank + 1; }
   const type = String(ref.declaringType ?? '').split(/[<\[]/)[0], name = ref.name, p = (ref.parameters ?? []).map(p => p.type ?? p), n = p.length;
   const numeric = t => /^System\.(Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|Int64|UInt64|IntPtr|UIntPtr|Single|Double)$/.test(t);

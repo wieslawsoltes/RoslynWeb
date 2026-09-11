@@ -90,3 +90,7 @@ The workspace is a file-transfer boundary, not a security sandbox for arbitrary 
 Compilation embeds manifest resources through Roslyn's `ResourceDescription`. Supply `resources:[{name,base64,isPublic}]` for raw bytes, `{name,resx,isPublic}` for RESX XML, or `{name,entries,isPublic}` for typed entries. Exactly one of `base64`, `resx`, or `entries` must be set. A typed entry is `{name,type,value}`. Strings, primitive numbers, booleans, characters, DateTime, TimeSpan, null, and base64 byte arrays produce genuine `.resources` data readable by `ResourceManager`. Wide integer values should be decimal strings. Arbitrary object serialization, binary formatter RESX data, RESX file references, and DTD/external entity resolution are rejected.
 
 `node managed/runtime-build-tests.mjs` tests these features against the actual .NET browser WASM runtime, including tasks compiled at runtime, adjacent DLL resolution, generated-file compilation and execution, structured logging, task-item metadata, raw manifest resources, and `ResourceManager` loading of typed resources.
+
+## Managed execution files
+
+`RunWithFiles`, `InvokeWithFiles`, and `WorkspaceFiles` expose genuine runtime-local System.IO and persistent workspace state. See [ExecutionFiles.md](ExecutionFiles.md) for relative paths, base64 transfer, quotas, concurrency and lifecycle.

@@ -1,6 +1,8 @@
 import assert from 'node:assert/strict';
 import {readFile,writeFile} from 'node:fs/promises';
 import {createRoslyn} from '../src/index.js';
+import {WasmCommandRegistry} from '../src/hosting/wasi.js';
+import {fromBase64} from '../src/bytes.js';
 import {NodeBrowserWorker} from '../scripts/worker-adapter.mjs';
 const previousWorker=globalThis.Worker;globalThis.Worker=NodeBrowserWorker;
 let compiler,taskAssembly,first;const cache=new Map(),records=[];
@@ -29,6 +31,20 @@ try {
  });
  await test('Managed task errors and OnError cleanup propagate through public project build',async()=>{
   const result=await compiler.buildProject({files:{'App.csproj':'<Project DefaultTargets="Build"><UsingTask TaskName="BrowserTasks.LoggedFailure" AssemblyFile="Tasks.dll"/><Target Name="Build"><LoggedFailure/><OnError ExecuteTargets="Clean"/></Target><Target Name="Clean"><WriteLinesToFile File="cleanup.txt" Lines="cleaned"/></Target></Project>','Tasks.dll':taskAssembly.pe}});assert.equal(result.success,false);assert.equal(result.error.code,'CUSTOM_TASK_FAILED');assert.equal(result.files.get('/cleanup.txt'),'cleaned\n');assert.ok(result.diagnostics.some(d=>d.severity==='error'));
+ });
+
+ await test('Culture RESX produces genuine satellite assemblies and ResourceManager resolves cultures',async()=>{
+  const files={'/local/Local.csproj':'<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><RootNamespace>Local</RootNamespace></PropertyGroup></Project>','/local/Program.cs':'using System;using System.Globalization;using System.Resources;using System.Reflection;var r=new ResourceManager("Local.Strings",Assembly.GetExecutingAssembly());Console.WriteLine(r.GetString("Greeting",CultureInfo.InvariantCulture));Console.WriteLine(r.GetString("Greeting",CultureInfo.GetCultureInfo("pl")));Console.WriteLine(r.GetString("Greeting",CultureInfo.GetCultureInfo("fr")));','/local/Strings.resx':'<root><data name="Greeting"><value>Hello</value></data></root>','/local/Strings.pl.resx':'<root><data name="Greeting"><value>Cześć</value></data></root>','/local/Strings.fr.resx':'<root><data name="Greeting"><value>Bonjour</value></data></root>'};
+  const built=ok(await compiler.buildProject({projectPath:'/local/Local.csproj',files}));assert.equal(built.satelliteAssemblies.length,2);assert.ok(built.files.has('/local/bin/pl/Local.resources.dll'));const result=ok(await compiler.run(built.compileResult,{backend:'wasm'}));assert.equal(result.stdout.trim(),'Hello\nCześć\nBonjour');
+ });
+ await test('Nested MSBuild projects and metadata batches generate real C# compiled and executed in WASM',async()=>{
+  const built=ok(await compiler.buildProject({projectPath:'/main/Batch.csproj',files:{'/main/Batch.csproj':`<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType><Value>$([MSBuild]::Multiply(6,7))</Value></PropertyGroup><Target Name="Nested" BeforeTargets="CoreCompile"><MSBuild Projects="../gen/Generate.proj" Targets="Generate" Properties="Value=$(Value)" RebaseOutputs="true"><Output TaskParameter="TargetOutputs" ItemName="Compile"/></MSBuild></Target></Project>`,'/main/Program.cs':'System.Console.WriteLine(Generated.Value);','/gen/Generate.proj':`<Project><ItemGroup><Entry Include="Generated"><Number>$(Value)</Number></Entry></ItemGroup><Target Name="Generate" Returns="@(Made)"><WriteLinesToFile File="obj/%(Entry.Identity).cs" Lines="public static class %(Entry.Identity) { public const int Value = %(Entry.Number)%3B }" Overwrite="true"/><ItemGroup><Made Include="obj/Generated.cs"/></ItemGroup></Target></Project>`}}));
+  assert.equal(ok(await compiler.run(built.compileResult,{backend:'wasm'})).stdout.trim(),'42');assert.equal(built.projectReferences[0].success,true);
+ });
+
+ await test('Exec runs a real native WASI command and compiles its generated C# in managed WASM',async()=>{
+  const registry=new WasmCommandRegistry();const fixture=JSON.parse(await readFile(new URL('fixtures/wasi-command.json',import.meta.url),'utf8'));await registry.register('native-tool',fromBase64(fixture.base64));
+  const built=ok(await compiler.buildProject({projectPath:'/native/App.csproj',commandRunner:r=>registry.run(r.command,r),files:{'/native/App.csproj':`<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><OutputType>Exe</OutputType></PropertyGroup><Target Name="Generate" BeforeTargets="CoreCompile"><MakeDir Directories="obj"/><Exec Command="native-tool generate input.txt obj/Generated.cs" EnvironmentVariables="OFFSET=2"/><ItemGroup><Compile Include="obj/Generated.cs"/></ItemGroup></Target></Project>`,'/native/input.txt':'40','/native/Program.cs':'System.Console.WriteLine(NativeGenerated.Value);'}}));assert.equal(ok(await compiler.run(built.compileResult,{backend:'wasm'})).stdout.trim(),'42');assert.ok(built.files.has('/native/obj/Generated.cs'));
  });
 }catch(error){records.push({name:'startup',passed:false,error:error.message});console.error(error);}
 finally {

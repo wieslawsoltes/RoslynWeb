@@ -87,3 +87,14 @@ test('desktop one-way bindings preserve data and event failures do not prevent l
   assert.equal(host.getData('name'),'Initial'); assert.equal(errors.length,1);
   input.dispatchEvent(new Event('change')); await host.flushEvents(); assert.equal(errors.length,1);
 });
+
+
+test('visibility hides and restores controls with inline flex and grid layout', () => {
+  const {host} = setup();
+  host.render([{id:'check',type:'check',props:{text:'Hidden check',visible:false}}, {id:'panel',type:'panel',props:{visible:false,layout:{kind:'grid',columns:[1]}}}]);
+  assert.equal(host.nodes.get('check').element.style.display,'none');
+  assert.equal(host.nodes.get('panel').element.style.display,'none');
+  host.update('check',{props:{visible:true}});host.update('panel',{props:{visible:true}});
+  assert.equal(host.nodes.get('check').element.style.display,'flex');
+  assert.equal(host.nodes.get('panel').element.style.display,'grid');
+});
