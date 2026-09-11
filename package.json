@@ -65,7 +65,8 @@
     "benchmark:wasm": "node scripts/benchmark-wasm.mjs",
     "test:wasm-native": "node tests/wasm-native-integration.mjs",
     "test:compilers": "node tests/compiler-v6-integration.mjs",
-    "benchmark:compilers": "node scripts/benchmark-compilers.mjs"
+    "benchmark:compilers": "node scripts/benchmark-compilers.mjs",
+    "benchmark:compilers-v7": "node scripts/benchmark-compilers-v7.mjs"
   },
   "engines": {
     "node": ">=22"

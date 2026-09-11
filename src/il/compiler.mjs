@@ -1,7 +1,7 @@
 import {parseFloatBits, floatNumberFromBits, floatLiteralExecutionBits} from './float-bits.mjs';
 import { ILCompilationError, capabilities } from './capabilities.mjs';
 import { createRuntime, methodKey } from './runtime.mjs';
-import { buildBasicBlocks, analyzeInt32Method, generateInt32Method } from './optimizer.mjs';
+import { buildBasicBlocks, analyzeInt32Method, generateInt32Method, analyzeNumericMethod, generateNumericMethod } from './optimizer.mjs';
 import { genericDefinitionName, matchesMethodReference } from './generics.mjs';
 import { isExtendedBuiltin } from './framework.mjs';
 import { isReflectionBuiltin } from './reflection.mjs';
@@ -188,7 +188,7 @@ function operandIndex(op, operand) {
 
 function targetOffset(operand) { return Number(typeof operand === 'object' ? operand.target ?? operand.offset : operand); }
 
-function instructionSource(instruction, next, method, inline = false, filterEntry = false) {
+function instructionSource(instruction, next, method, inline = false, filterEntry = false, nextOpcode = '') {
   const op = opcodeOf(instruction), operand = instruction.operand, lit = `$rt.context(${literal(operand)},$f.method)`;
   const go = target => `$pc=${Number(target)};continue;`;
   const advance = inline ? '' : next === null ? 'throw $rt.invalid("Method fell through without ret.");' : go(next);
@@ -216,7 +216,10 @@ function instructionSource(instruction, next, method, inline = false, filterEntr
   if (op === 'pop') return emit('$s.pop();');
   if (/^(add|sub|mul|div|rem|and|or|xor|shl|shr)(\.|$)/.test(op)) return emit(`{const b=$s.pop(),a=$s.pop();$s.push($rt.binary(${literal(op)},a,b));}`);
   if (op === 'neg' || op === 'not') return emit(`$s.push($rt.unary(${literal(op)},$s.pop()));`);
-  if (op.startsWith('conv.')) return emit(`$s.push($rt.convert(${literal(op)},$s.pop()));`);
+  if (op.startsWith('conv.')) {
+    const adjacentSingle = op === 'conv.r.un' && nextOpcode === 'conv.r4';
+    return emit(`$s.push($rt.convert(${literal(op)},$s.pop()${adjacentSingle ? ',true' : ''}));`);
+  }
   if (/^c(eq|gt|lt)(\.|$)/.test(op)) return emit(`{const b=$s.pop(),a=$s.pop();$s.push($rt.i4($rt.compare(${literal(op)},a,b)));}`);
   if (branches.test(op)) {
     const branch = op.replace(/\.s$/, ''), target = targetOffset(operand);
@@ -276,7 +279,7 @@ function referenceMethod(method, blocks) {
     source += `case ${block.offset}:{`;
     for (let i = 0; i < block.instructions.length; i++) {
       const instruction = block.instructions[i], index = indices.get(instruction.offset);
-      source += `$rt.tick($f,${instruction.offset});${instructionSource(instruction, body[index + 1]?.offset ?? null, method, i + 1 < block.instructions.length, filterEntry)}`;
+      source += `$rt.tick($f,${instruction.offset});${instructionSource(instruction, body[index + 1]?.offset ?? null, method, i + 1 < block.instructions.length, filterEntry, opcodeOf(body[index + 1] ?? {}))}`;
     }
     source += '}\n';
   }
@@ -290,8 +293,12 @@ function methodPlan(method, options) {
   if (!body.length || method.decodeError) return { source: `function($rt){throw $rt.unsupported(${literal(method.decodeError ?? 'method-without-il-body')},{method:${literal({ name, declaringType: method.declaringType })},offset:0});}`, mode: 'unavailable', blocks: 0, instructions: body.length };
   const blocks = options.optimize === false ? body.map(instruction => ({ offset: instruction.offset, instructions: [instruction] })) : buildBasicBlocks(method);
   const reference = referenceMethod(method, blocks);
-  const numeric = options.optimize !== false && options.optimize !== 'blocks' ? analyzeInt32Method(method, blocks) : null;
-  return { source: numeric ? generateInt32Method(method, numeric, reference) : reference, mode: numeric ? 'int32' : options.optimize === false ? 'reference' : 'blocks', blocks: numeric ? numeric.blocks.length : blocks.length, instructions: body.length };
+  const optimizeNumeric = options.optimize !== false && options.optimize !== 'blocks';
+  const int32 = optimizeNumeric ? analyzeInt32Method(method, blocks) : null;
+  const numeric = !int32 && optimizeNumeric ? analyzeNumericMethod(method, blocks) : null;
+  return { source: int32 ? generateInt32Method(method, int32, reference) : numeric ? generateNumericMethod(method, numeric, reference) : reference,
+    mode: int32 ? 'int32' : numeric ? 'numeric' : options.optimize === false ? 'reference' : 'blocks',
+    blocks: (int32 ?? numeric)?.blocks.length ?? blocks.length, instructions: body.length };
 }
 
 export function generateMethod(method, options = {}) { return methodPlan(method, options).source; }
@@ -302,7 +309,7 @@ function prepareSources(model, options) {
   const optimization = { enabled: options.optimize !== false, mode: options.optimize === false ? 'reference' : options.optimize === 'blocks' ? 'blocks' : 'numeric', methods: 0, numericMethods: 0, basicBlocks: 0, instructions: 0, generatedSourceBytes: 0 };
   const generatedMap = assembly => `\n{${allMethods(assembly).map(method => {
     const plan = methodPlan(method, options);
-    optimization.methods++; optimization.numericMethods += plan.mode === 'int32' ? 1 : 0;
+    optimization.methods++; optimization.numericMethods += plan.mode === 'int32' || plan.mode === 'numeric' ? 1 : 0;
     optimization.basicBlocks += plan.blocks; optimization.instructions += plan.instructions;
     optimization.generatedSourceBytes += plan.source.length * 2;
     return `${literal(String(method.token))}:${plan.source}`;

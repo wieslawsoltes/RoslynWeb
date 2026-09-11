@@ -37,9 +37,9 @@ C# failures return `{success:false,stage:'csharp',assembly,diagnostics,error}`. 
 | --- | --- |
 | `optimize:false` | Reference generation with a dispatch case for each IL instruction. |
 | `optimize:'blocks'` | Basic-block dispatch using the general tagged-value runtime. |
-| `optimize:true` or omitted | Basic blocks plus unboxed Int32 code for methods whose numeric types and evaluation stack are proven by analysis. |
+| `optimize:true` or omitted | Basic blocks plus unboxed Int32, Int64, Single and Double code for methods whose numeric types and evaluation stack are proven by analysis. |
 
-The unboxed path is limited to supported static 32-bit numeric leaf methods. Calls, exception regions, byrefs, Int64, floating point and uncertain stack shapes use the general compiler. This is an optimization decision within the same JavaScript backend, preserving supported program behavior. It does not establish new CLR/BCL compatibility merely because an optimizer declined a method.
+The unboxed paths cover supported static numeric leaf methods, including mixed Int32/Int64/floating loops, unsigned operations and checked conversions. Int64 stays in BigInt registers and Single arithmetic rounds to its required precision. Calls, exception regions, byrefs and uncertain stack shapes use the general compiler. Provenance-bearing or NaN floating inputs and NaN literals retain their general path; custom instruction hooks also retain the observable frame behavior. These are optimization decisions within the same JavaScript backend, preserving supported program behavior.
 
 All modes preserve IL instruction budgets, precise exception offsets, signed/unsigned wrapping and checked arithmetic. The inspector retains the exact hexadecimal `operandBits` for floating constants. Both emitters consume those bits, preserving NaN signs/payloads and signed zero through constant loads and bit reinterpretation, including CLR quieting of signaling Single constants; older hand-supplied models that omit this metadata cannot reconstruct lost NaN bits. The numeric budget precheck applies only when the original runtime tick implementation and its supported invocation conditions are present; otherwise normal ticks execute. This avoids bypassing custom tick hooks or cancellation behavior.
 

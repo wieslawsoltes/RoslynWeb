@@ -23,7 +23,7 @@ export interface JavaScriptRuntimeOptions {
   [key:string]: unknown;
 }
 export interface JavaScriptCompileOptions extends JavaScriptRuntimeOptions {
-  /** true (default) specializes eligible Int32 methods; 'blocks' groups IL blocks; false retains reference instruction dispatch. */
+  /** true (default) specializes eligible Int32/Int64/Single/Double leaf methods; 'blocks' groups IL blocks; false retains reference instruction dispatch. */
   optimize?: JavaScriptOptimization;
   /** Reject unresolved or unsupported IL before generating methods. */
   strict?: boolean;

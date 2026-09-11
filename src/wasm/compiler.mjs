@@ -25,7 +25,7 @@ const json = value => JSON.stringify(value, (_,v) => typeof v==='bigint'?{$int64
 const clock = () => globalThis.performance?.now?.() ?? Date.now();
 const stripCode = value => {
   if (Array.isArray(value)) return value.map(stripCode);
-  if (value && typeof value==='object') return Object.fromEntries(Object.entries(value).filter(([key])=>!['body','instructions','exceptionHandlers'].includes(key)).map(([key,v])=>[key,stripCode(v)]));
+  if (value && typeof value==='object') return Object.fromEntries(Object.entries(value).filter(([key,v])=>!['body','instructions','exceptionHandlers'].includes(key)||!Array.isArray(v)).map(([key,v])=>[key,stripCode(v)]));
   return value;
 };
 class CodeWriter extends Writer {
@@ -55,7 +55,7 @@ export function compileWasm(model, options={}) {
   const scalarType=(type,assembly)=>{type=typeName(type);const matches=analysis.types.filter(t=>t.isEnum&&t.name===type),definition=matches.find(t=>t.assemblyName===assembly)??(matches.length===1?matches[0]:null);return definition?.fields?.find(f=>f.name==='value__')?.type??nativeFrameworkEnums.get(type)??type;};
   const manifestMethods=mainMethods.map((m,i)=>({id:methodId(m),key:m.key,exportName:`m${i}`,token:m.method.token,type:m.method.declaringType,name:m.method.name,assemblyName:m.assemblyName??m.method.assemblyName??model.name,parameters:(m.method.parameters??[]).map(typeName),returnType:typeName(m.method.returnType)??'System.Void',isStatic:!!m.method.isStatic,wasmParameters:m.paramTypes??m.parameters,wasmResult:m.resultType??m.result??null,genericArguments:m.method.genericArguments??[],scalarParameters:(m.method.parameters??[]).map(p=>scalarType(p,m.assemblyName)),scalarReturnType:scalarType(m.method.returnType,m.assemblyName)??'System.Void'}));
   const rootIds=new Set(analysis.roots??analysis.exports?.map(x=>typeof x==='object'?x.id??x.key:x)??methods.filter(m=>m.isRoot).map(methodId));
-  const manifest={formatVersion:1,backend:'native-wasm',...(filterPlan.nativeFilters.length?{nativeFilters:filterPlan.nativeFilters}:{}),assembly:model.name,...(imports.length?{model:stripCode(model),assemblies:(options.assemblies??[]).map(stripCode)}:{}),methods:manifestMethods,exports:manifestMethods.filter(m=>!rootIds.size||rootIds.has(m.id)),entryPointToken:model.entryPoint?.token??model.entryPoint??null,entryPoint:analysis.entryPoint??null,imports:imports.map(({typeIndex,...d})=>d),fuel:options.instructionBudget!==false,statusCodes:{1:'instruction-budget',2:'overflow',3:'divide-by-zero',4:'arithmetic'},compiler:'RoslynWeb direct MSIL-to-WebAssembly'};
+  const manifest={formatVersion:1,backend:'native-wasm',...(filterPlan.nativeFilters.length?{nativeFilters:filterPlan.nativeFilters}:{}),assembly:model.name,...(imports.length?{model:stripCode(model),assemblies:(options.assemblies??[]).map(stripCode)}:{}),methods:manifestMethods,exports:manifestMethods.filter(m=>!rootIds.size||rootIds.has(m.id)),entryPointToken:model.entryPoint?.token??model.entryPoint??null,entryPoint:analysis.entryPoint??null,imports:imports.map(({typeIndex,...d})=>d),fuel:options.instructionBudget!==false,statusCodes:{1:'instruction-budget',2:'overflow',3:'divide-by-zero',4:'arithmetic',5:'argument',6:'argument-out-of-range'},compiler:'RoslynWeb direct MSIL-to-WebAssembly'};
   const methodTypes=methods.map(m=>typeIndex(m.paramTypes??m.parameters,m.resultType??m.result??null));
   const out=new Writer().raw([0,97,115,109,1,0,0,0]);
   out.section(1,new Writer().vector(signatures,(w,s)=>w.byte(0x60).vector(s.parameters,(b,t)=>b.byte(valueTypes[t])).vector(s.result?[s.result]:[],(b,t)=>b.byte(valueTypes[t]))));
@@ -77,6 +77,7 @@ function emitMethod(ctx, analyzed) {
   const method=analyzed.method, params=analyzed.paramTypes??analyzed.parameters, localTypes=analyzed.localTypes??analyzed.locals, result=analyzed.resultType??analyzed.result??null;
   const hasEH=!!analyzed.exceptionPlan?.handlers?.length, layout=ctx.options.optimize!==false&&!hasEH&&!analyzed.nativeFilter?planStructuredControlFlow(analyzed.blocks):null;
   const blocks=layout?.blocks??analyzed.blocks, w=new CodeWriter(), locals=[...localTypes], slots=new Map(), temps=new Map();
+  const instructionByOffset=new Map(blocks.flatMap(block=>block.instructions.map(instruction=>[instruction.offset,instruction])));
   if(layout){ctx.optimization.structuredMethods++;ctx.optimization.nativeLoops+=layout.loops.size;}else if(blocks.length>1||hasEH)ctx.optimization.dispatcherMethods++;
   let latestSet=null;
   const labels=[];let physicalNext;
@@ -159,7 +160,7 @@ function emitMethod(ctx, analyzed) {
       w.byte(op[`${type}_${base}${['div','rem','shr'].includes(base)&&type.startsWith('i')?unsigned?'_u':'_s':''}`]);push();return;
     }
     if(code==='neg'||code==='not'){if(top.startsWith('f')){last();w.byte(op[`${top}_neg`]);}else{constant(top,code==='not'?-1:0);last();w.byte(op[`${top}_${code==='not'?'xor':'sub'}`]);}push();return;}
-    if(code.startsWith('conv.')){conversion(code,top,topId,after.at(-1));push();return;}
+    if(code.startsWith('conv.')){conversion(code,top,topId,after.at(-1),code==='conv.r.un'&&opname(instructionByOffset.get(next)??{})==='conv.r4');push();return;}
     if(['ceq','cgt','cgt.un','clt','clt.un'].includes(code)){compare(code,before[count-2],slot(count-2,before[count-2]),topId);push();return;}
     if(code==='ckfinite'){last();last();w.byte(op[`${top}_ne`]);last();w.byte(op[`${top}_abs`]);constant(top,Infinity);w.byte(op[`${top}_eq`]).byte(op.i32_or);faultIf(4);return;}
     if(/^leave(\.s)?$/.test(code)){get(ehFrame);constant('i32',i.offset);constant('i32',targetOf(operand));service('eh_leave',ehDescriptor,['externref','i32','i32'],'i32');set(pc);w.byte(op.br).u32(depth);return true;}
@@ -182,7 +183,7 @@ function emitMethod(ctx, analyzed) {
       if(code==='newobj'&&target){
         const object=temp('externref'),struct=ctx.isValueType(ref.declaringType,target.assemblyName);service('allocate',ref.declaringType,[],'externref');if(struct)service('cell_new',ref.declaringType,['externref'],'externref');set(object);get(object);const p=target.paramTypes??target.parameters;for(let n=0;n<parameterTypes.length;n++){a(count-parameterTypes.length+n,p[n+1]);copy(p[n+1]);}w.managed(ctx.methodId(target));get(object);if(struct)service('cell_get',ref.declaringType,['externref'],'externref');push();return;
       }
-      if(code!=='newobj'&&(emitIntrinsic(ref,before,start)||nativeMath(ref,before,start,callResult))){if(callResult)push();return;}
+      if(!target&&code!=='newobj'&&(emitIntrinsic(ref,before,start)||nativeMath(ref,before,start,callResult))){if(callResult)push();return;}
       for(let n=0;n<callParams.length;n++){a(start+n,callParams[n]);copy(callParams[n]);}
       if(call.constrainedMode&&call.constrainedMode!=='direct-value'){service('constrained_call',{...ref,constrainedType:call.constrainedType,constrainedMode:call.constrainedMode},callParams,callResult,{parameterTypes:[...(!ref.isStatic?[ref.declaringType]:[]),...parameterTypes],returnType:ref.returnType});}
       else if(target&&code!=='newobj'&&!call.virtual){if(code==='callvirt'){
@@ -232,9 +233,17 @@ function emitMethod(ctx, analyzed) {
     }
     get(r);
   }
-  function conversion(code,from,value,to) {
+  function conversion(code,from,value,to,unsignedToSingle=false) {
     const checked=code.includes('.ovf'),unsignedSource=code.endsWith('.un'),target=code.replace(/^conv\./,'').replace(/^ovf\./,'').replace(/\.un$/,''),unsignedTarget=target.startsWith('u'),bits=target.endsWith('1')?8:target.endsWith('2')?16:target.endsWith('8')?64:32;
-    if(target==='r'){get(value);coerce(from,to,true);return;}
+    if(target==='r'){
+      get(value);
+      // ECMA's F stack type does not require an intervening binary64 rounding.
+      // Roslyn emits conv.r.un; conv.r4 for UInt64 -> Single; convert directly
+      // at Single precision before storing the analyzed f64 stack slot. Keep
+      // both IL instructions and their original instruction-budget charges.
+      if(unsignedToSingle&&from==='i64'){coerce(from,'f32',true);coerce('f32',to);}else coerce(from,to,true);
+      return;
+    }
     if(target==='r4'||target==='r8'){get(value);coerce(from,to,false);return;}
     if(checked){
       const min=unsignedTarget?0n:-(1n<<BigInt(bits-1)),max=unsignedTarget?(1n<<BigInt(bits))-1n:(1n<<BigInt(bits-1))-1n;
@@ -293,12 +302,48 @@ function emitMethod(ctx, analyzed) {
     const intrinsic=nativeIntrinsic(ref);if(!intrinsic)return false;ctx.optimization.intrinsicCalls++;
     const {type,name}=intrinsic;
     const arg=(n,as)=>{get(slot(start+n,before[start+n]));if(as)coerce(before[start+n],as);};
+    if(intrinsic.kind==='floatStep'){
+      const integer=type==='f64'?'i64':'i32',sign=type==='f64'?0x8000000000000000n:0x80000000n,infinity=type==='f64'?0x7ff0000000000000n:0x7f800000n,increment=name==='BitIncrement',bits=temp(integer,46),magnitude=temp(integer,47);
+      arg(0,type);w.byte(op[`${integer}_reinterpret_${type}`]);set(bits);get(bits);constant(integer,sign-1n);w.byte(op[`${integer}_and`]);set(magnitude);
+      get(magnitude);constant(integer,infinity);w.byte(op[`${integer}_gt_u`]);get(bits);constant(integer,increment?infinity:sign|infinity);w.byte(op[`${integer}_eq`]).byte(op.i32_or).byte(op.if).byte(valueTypes[integer]);get(bits);w.byte(op.else);
+      get(magnitude);w.byte(op[`${integer}_eqz`]).byte(op.if).byte(valueTypes[integer]);constant(integer,increment?1n:sign|1n);w.byte(op.else);
+      get(bits);constant(integer,0);w.byte(op[`${integer}_lt_s`]).byte(op.if).byte(valueTypes[integer]);get(bits);constant(integer,1);w.byte(op[`${integer}_${increment?'sub':'add'}`]);w.byte(op.else);get(bits);constant(integer,1);w.byte(op[`${integer}_${increment?'add':'sub'}`]);w.byte(op.end).byte(op.end).byte(op.end).byte(op[`${type}_reinterpret_${integer}`]);return true;
+    }
+    if(intrinsic.kind==='sign'){
+      const floating=type.startsWith('f');
+      if(floating){arg(0,type);arg(0,type);w.byte(op[`${type}_ne`]);faultIf(4);}
+      arg(0,type);constant(type,0);w.byte(op[`${type}_gt${floating?'':'_s'}`]);arg(0,type);constant(type,0);w.byte(op[`${type}_lt${floating?'':'_s'}`]).byte(op.i32_sub);return true;
+    }
+    if(intrinsic.kind==='clamp'){
+      const suffix=type.startsWith('f')?'':intrinsic.unsigned?'_u':'_s';
+      arg(1,type);arg(2,type);w.byte(op[`${type}_gt${suffix}`]);faultIf(5);
+      arg(0,type);arg(1,type);w.byte(op[`${type}_lt${suffix}`]).byte(op.if).byte(valueTypes[type]);arg(1,type);w.byte(op.else);
+      arg(0,type);arg(2,type);w.byte(op[`${type}_gt${suffix}`]).byte(op.if).byte(valueTypes[type]);arg(2,type);w.byte(op.else);arg(0,type);w.byte(op.end).byte(op.end);return true;
+    }
+    if(intrinsic.kind==='floatPredicate'){
+      const integer=type==='f64'?'i64':'i32',sign=type==='f64'?0x8000000000000000n:0x80000000,inf=type==='f64'?0x7ff0000000000000n:0x7f800000,normal=type==='f64'?0x0010000000000000n:0x00800000;
+      const rawBits=()=>{arg(0,type);w.byte(op[`${integer}_reinterpret_${type}`]);};
+      const magnitude=()=>{rawBits();constant(integer,typeof sign==='bigint'?sign-1n:sign-1);w.byte(op[`${integer}_and`]);};
+      const finite=()=>{magnitude();constant(integer,inf);w.byte(op[`${integer}_lt_u`]);};
+      const isInteger=()=>{finite();arg(0,type);w.byte(op[`${type}_trunc`]);arg(0,type);w.byte(op[`${type}_eq`]).byte(op.i32_and);};
+      if(name==='IsFinite'){finite();return true;}
+      if(name==='IsNaN'||name==='IsInfinity'){magnitude();constant(integer,inf);w.byte(op[`${integer}_${name==='IsNaN'?'gt_u':'eq'}`]);return true;}
+      if(name==='IsPositiveInfinity'||name==='IsNegativeInfinity'){arg(0,type);constant(type,name==='IsPositiveInfinity'?Infinity:-Infinity);w.byte(op[`${type}_eq`]);return true;}
+      if(name==='IsNegative'||name==='IsPositive'){rawBits();constant(integer,0);w.byte(op[`${integer}_${name==='IsNegative'?'lt':'ge'}_s`]);return true;}
+      if(name==='IsNormal'){magnitude();constant(integer,normal);w.byte(op[`${integer}_ge_u`]);finite();w.byte(op.i32_and);return true;}
+      if(name==='IsSubnormal'){magnitude();constant(integer,0);w.byte(op[`${integer}_gt_u`]);magnitude();constant(integer,normal);w.byte(op[`${integer}_lt_u`]).byte(op.i32_and);return true;}
+      isInteger();
+      if(name==='IsEvenInteger'||name==='IsOddInteger'){
+        arg(0,type);constant(type,0.5);w.byte(op[`${type}_mul`]);set(temp(type,45));get(temp(type,45));w.byte(op[`${type}_trunc`]);get(temp(type,45));w.byte(op[`${type}_${name==='IsEvenInteger'?'eq':'ne'}`]).byte(op.i32_and);
+      }
+      return true;
+    }
     if(intrinsic.kind==='reinterpret'){arg(0,intrinsic.from);w.byte(op[`${intrinsic.to}_reinterpret_${intrinsic.from}`]);return true;}
     if(intrinsic.kind==='copySign'){arg(0,type);arg(1,type);w.byte(op[`${type}_copysign`]);return true;}
     const count={LeadingZeroCount:'clz',TrailingZeroCount:'ctz',PopCount:'popcnt'}[name];
-    if(count){arg(0,type);w.byte(op[`${type}_${count}`]);coerce(type,'i32');return true;}
+    if(count){arg(0,type);w.byte(op[`${type}_${count}`]);coerce(type,intrinsic.result??'i32');return true;}
     if(name==='RotateLeft'||name==='RotateRight'){arg(0,type);arg(1,type);w.byte(op[`${type}_${name==='RotateLeft'?'rotl':'rotr'}`]);return true;}
-    if(name==='Log2'){constant(type,type==='i64'?63:31);arg(0,type);constant(type,1);w.byte(op[`${type}_or`]).byte(op[`${type}_clz`]).byte(op[`${type}_sub`]);coerce(type,'i32');return true;}
+    if(name==='Log2'){if(intrinsic.primitive&&intrinsic.signed){arg(0,type);constant(type,0);w.byte(op[`${type}_lt_s`]);faultIf(6);}constant(type,type==='i64'?63:31);arg(0,type);constant(type,1);w.byte(op[`${type}_or`]).byte(op[`${type}_clz`]).byte(op[`${type}_sub`]);coerce(type,intrinsic.result??'i32');return true;}
     if(name==='IsPow2'){arg(0,type);constant(type,0);w.byte(op[`${type}_${intrinsic.signed?'gt_s':'ne'}`]);arg(0,type);arg(0,type);constant(type,1);w.byte(op[`${type}_sub`]).byte(op[`${type}_and`]).byte(op[`${type}_eqz`]).byte(op.i32_and);return true;}
     if(name==='RoundUpToPowerOf2'){
       // Shift counts are masked in Wasm; guard zero and overflow explicitly.
