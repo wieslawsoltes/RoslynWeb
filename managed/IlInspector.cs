@@ -35,6 +35,7 @@ public static class IlInspector
                 genericParameters = type.GetGenericParameters().Select(p => reader.GetString(reader.GetGenericParameter(p).Name)).ToArray(),
                 interfaces = type.GetInterfaceImplementations().Select(i => provider.GetTypeName(reader, reader.GetInterfaceImplementation(i).Interface)).ToArray(),
                 fields = type.GetFields().Select(fieldHandle => DescribeField(pe, reader, provider, fieldHandle)).ToArray(),
+                properties = type.GetProperties().Select(propertyHandle => DescribeProperty(pe, reader, provider, propertyHandle, typeName)).ToArray(),
                 methods = type.GetMethods().Select(methodHandle => DescribeMethod(pe, reader, provider, methodHandle)).ToArray()
             };
         }).ToArray();
@@ -45,6 +46,22 @@ public static class IlInspector
             moduleVersionId = reader.GetGuid(reader.GetModuleDefinition().Mvid).ToString(),
             references = reader.AssemblyReferences.Select(h => { var a = reader.GetAssemblyReference(h); return new { name = reader.GetString(a.Name), version = a.Version.ToString() }; }).ToArray(),
             types
+        };
+    }
+
+    private static object DescribeProperty(PEReader pe, MetadataReader reader, TypeNames provider, PropertyDefinitionHandle handle, string declaringType)
+    {
+        var property = reader.GetPropertyDefinition(handle);
+        var signature = property.DecodeSignature(provider, (object?)null);
+        var accessors = property.GetAccessors();
+        return new
+        {
+            token = MetadataTokens.GetToken(handle), name = reader.GetString(property.Name), declaringType,
+            assemblyName = reader.IsAssembly ? reader.GetString(reader.GetAssemblyDefinition().Name) : null,
+            attributes = property.Attributes.ToString(), type = signature.ReturnType, isStatic = !signature.Header.IsInstance,
+            parameters = signature.ParameterTypes.Select((type, i) => new { name = "arg" + i, type }).ToArray(),
+            getter = accessors.Getter.IsNil ? null : DescribeToken(pe, reader, provider, MetadataTokens.GetToken(accessors.Getter)),
+            setter = accessors.Setter.IsNil ? null : DescribeToken(pe, reader, provider, MetadataTokens.GetToken(accessors.Setter))
         };
     }
 

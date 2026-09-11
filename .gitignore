@@ -13,3 +13,5 @@ tests/fixtures/*.dll
 tests/fixtures/*.nupkg
 docs/distribution-manifest.json
 dist/compiler-references/
+
+dist/task-references/

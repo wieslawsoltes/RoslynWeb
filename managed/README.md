@@ -26,7 +26,12 @@ JavaScript obtains the exports with `runtime.getAssemblyExports('RoslynBrowser')
 | `GetReferences` | None | Registered metadata reference identities |
 | `AddReference` | File name, base64 PE | Register compile-time metadata only |
 | `AddAssembly` | File name, base64 PE | Register runtime dependency implementation |
-| `Compile` | Compile request JSON | Emitted PE/PDB, diagnostics, assembly ID |
+| `CompileAsync` | Compile request JSON | Promise of emitted PE/PDB, diagnostics, assembly ID, generated sources and analyzer results |
+| `Compile` | Compile request JSON | Synchronous compatibility export; browser callers with registered compiler extensions must use `CompileAsync` |
+| `AddCompilerExtension` | Name, base64 PE | Register classic/incremental generators and diagnostic analyzers |
+| `ExecuteBuildTask` | Assembly ID/base64/name, CLR task type, task request JSON | Promise of task status, typed output properties, diagnostics and changed files |
+| `CreateResources` | JSON resource-entry array | Real `.resources` bytes as base64 |
+| `ConvertResx` | RESX XML | Real `.resources` bytes as base64 |
 | `InspectAssembly` | Base64 PE | Types, methods, fields, instructions, signatures, exceptions |
 | `Run` | Assembly ID or base64 PE, JSON string array | Entry-point result and captured output |
 | `Invoke` | Assembly ID or base64 PE, CLR type name, static method name, JSON arguments array | Static method result and captured output |
@@ -71,3 +76,17 @@ Inspection uses `PEReader` and `MetadataReader`; it does not execute the assembl
 `dotnet run --project managed/SelfTest/SelfTest.csproj -c Release -p:UseSharedCompilation=false` validates the compiler and bridge natively. It checks actual compiler diagnostics, async/record/LINQ compilation and execution, PE inspection, external DLL references and dependency resolution, invocation, and structured failures. Native tests do not establish browser runtime compatibility; the repository's browser/WASM integration tests cover that layer.
 
 The execution platform is the .NET browser runtime. APIs that require a desktop OS, native DLLs, arbitrary native processes, or unsupported dynamic native code generation retain those platform limitations. The compiler accepting a reference does not establish that the assembly's APIs can execute in a browser.
+
+## Managed build tasks and embedded resources
+
+The published runtime includes the SDK-pinned `Microsoft.Build.Framework`, `Microsoft.Build.Utilities.Core`, and `Microsoft.NET.StringTools` assemblies. These are the actual upstream task interfaces and base classes. The first two also publish as lazy compile-time references in `dist/task-references`. Task classes implement `ITask` and have a public parameterless constructor. Their `Execute()` method runs in the managed WASM runtime. This supports managed filesystem tasks; it does not make native tools, operating-system APIs, or `ToolTask` process launches available in the browser.
+
+`ExecuteBuildTask` accepts `{parameters, files, workingDirectory, outputProperties, virtualPaths, continueOnError, maxFileBytes}`. Files are `{path,base64}` with paths relative to an invocation-specific virtual workspace. `workingDirectory` is relative to that workspace. Hydrated managed DLL files register automatically as task dependencies. Input/output data default to a combined limit of 256 MiB per direction, configurable with `maxFileBytes`.
+
+Public task properties accept typed JSON, invariant scalar strings, arrays, and task items represented as `{itemSpec,metadata}`. The bridge validates `[Required]` properties and returns `[Output]` properties; `outputProperties` optionally selects a subset. `virtualPaths:true` translates absolute virtual input paths to workspace paths and maps output paths back. It applies to strings beginning `/`; leave it false when those strings represent non-path task arguments. Output task items preserve custom metadata. Structured logs preserve warning/error codes and source locations. An error log causes `success:false` even if the task returned true. New or modified files return as `{path,base64}`, and deletions return in `removedFiles`.
+
+The workspace is a file-transfer boundary, not a security sandbox for arbitrary managed code. An application should use its normal Worker/runtime isolation. `IBuildEngine4` supplies logging, single-node yield/reacquire, and per-invocation registered task objects. Nested build requests throw an explicit unsupported-operation error; use the JavaScript project builder's project references instead. AppDomain-wide task caches and multi-node MSBuild scheduling are not implemented.
+
+Compilation embeds manifest resources through Roslyn's `ResourceDescription`. Supply `resources:[{name,base64,isPublic}]` for raw bytes, `{name,resx,isPublic}` for RESX XML, or `{name,entries,isPublic}` for typed entries. Exactly one of `base64`, `resx`, or `entries` must be set. A typed entry is `{name,type,value}`. Strings, primitive numbers, booleans, characters, DateTime, TimeSpan, null, and base64 byte arrays produce genuine `.resources` data readable by `ResourceManager`. Wide integer values should be decimal strings. Arbitrary object serialization, binary formatter RESX data, RESX file references, and DTD/external entity resolution are rejected.
+
+`node managed/runtime-build-tests.mjs` tests these features against the actual .NET browser WASM runtime, including tasks compiled at runtime, adjacent DLL resolution, generated-file compilation and execution, structured logging, task-item metadata, raw manifest resources, and `ResourceManager` loading of typed resources.

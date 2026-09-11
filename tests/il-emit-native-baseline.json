@@ -1,0 +1,22 @@
+{
+  "runtime": "10.0.0",
+  "results": {
+    "Add": "42",
+    "CustomDelegate": "42",
+    "Loop": "4950",
+    "Switch0": "10",
+    "Switch1": "20",
+    "Switch2": "-1",
+    "ExactLong": "9007199254741035",
+    "LinkedState": "42",
+    "BoundTarget": "42",
+    "ReflectedInvoke": "42",
+    "CatchFinally0": "99",
+    "CatchFinally2": "121",
+    "CatchThrowsFinally": "42",
+    "Metadata": "Metadata:value:0:ldarg.0",
+    "InvalidDelegate": "1",
+    "InvalidLabel": "1",
+    "ReflectedDelegates": "42"
+  }
+}

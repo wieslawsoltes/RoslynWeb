@@ -79,7 +79,7 @@ public static partial class CompilerBridge
     public static string Version()
     {
         Initialize();
-        return Serialize(new { bridgeVersion = "0.2.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
+        return Serialize(new { bridgeVersion = "0.3.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
     }
 
     [JSExport]
@@ -186,7 +186,8 @@ public static partial class CompilerBridge
             using var pe = new MemoryStream();
             using var pdb = request.EmitPdb ? new MemoryStream() : null;
             using var xml = request.EmitXmlDocumentation ? new MemoryStream() : null;
-            var emitted = compilation.Emit(pe, pdb, xmlDocumentationStream: xml, options: new EmitOptions(debugInformationFormat: DebugInformationFormat.PortablePdb, pdbFilePath: assemblyName + ".pdb"));
+            var resources = request.Resources.Select(CreateManifestResource).ToArray();
+            var emitted = compilation.Emit(pe, pdb, xmlDocumentationStream: xml, manifestResources: resources, options: new EmitOptions(debugInformationFormat: DebugInformationFormat.PortablePdb, pdbFilePath: assemblyName + ".pdb"));
             var diagnostics = emitted.Diagnostics.Concat(extensionResult.Diagnostics)
                 .Distinct(DiagnosticIdentityComparer.Instance).Select(DiagnosticInfo).ToArray();
             var success = emitted.Success && !extensionResult.Diagnostics.Any(d => d.Severity == DiagnosticSeverity.Error && !d.IsSuppressed);
@@ -348,6 +349,7 @@ public sealed class CompileRequest
     public List<SourceFile> AdditionalTexts { get; set; } = [];
     public List<SourceFile> AnalyzerConfigFiles { get; set; } = [];
     public BrowserAnalyzerOptions AnalyzerOptions { get; set; } = new();
+    public List<BrowserResource> Resources { get; set; } = [];
 }
 
 public sealed class SourceFile

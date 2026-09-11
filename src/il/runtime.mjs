@@ -2,6 +2,8 @@ import { ILExecutionError, capabilities } from './capabilities.mjs';
 import { splitTypeArguments, genericDefinitionName, substituteType, substituteMetadata, matchesMethodReference } from './generics.mjs';
 import { invokeExtendedBuiltin } from './framework.mjs';
 import { invokeReflectionBuiltin } from './reflection.mjs';
+import { invokeEmitBuiltin, isEmitField, reflectedOpcode } from './reflection-emit.mjs';
+import { invokeIoBuiltin, ioTypeBases } from './io.mjs';
 import { isPointer, allocateMemory, releaseMemory, pointerBinary, readMemory, writeMemory, copyMemory, initializeMemory } from './memory.mjs';
 
 const voidType = type => !type || type === 'System.Void' || type === 'void';
@@ -11,6 +13,13 @@ const intTypes = new Set(['System.Boolean', 'System.Byte', 'System.SByte', 'Syst
 const longTypes = new Set(['System.Int64', 'System.UInt64', 'long', 'ulong']);
 const floatTypes = new Set(['System.Single', 'System.Double', 'float', 'double']);
 const isNumericType = type => intTypes.has(trimType(type)) || longTypes.has(trimType(type)) || floatTypes.has(trimType(type));
+const exceptionBases = Object.freeze({
+  'System.ArgumentNullException': 'System.ArgumentException', 'System.ArgumentOutOfRangeException': 'System.ArgumentException',
+  'System.ObjectDisposedException': 'System.InvalidOperationException',
+  'System.IO.EndOfStreamException': 'System.IO.IOException', 'System.IO.FileNotFoundException': 'System.IO.IOException',
+  'System.IO.DirectoryNotFoundException': 'System.IO.IOException', 'System.IO.PathTooLongException': 'System.IO.IOException',
+  'System.IO.IOException': 'System.SystemException', 'System.InvalidOperationException': 'System.SystemException',
+});
 
 /** Numeric values carry the evaluation-stack kind; e.g. integer division must truncate. */
 export class Numeric {
@@ -277,6 +286,9 @@ export class ILRuntime {
     const type = { ...substituteMetadata(definition, args), name, $typeArguments: args, $definitionType: root, methods: [] };
     this.types.set(name, type);
     type.fields = (definition.fields ?? []).map(field => ({ ...substituteMetadata(field, args), declaringType: name }));
+    type.properties = (definition.properties ?? []).map(property => ({ ...substituteMetadata(property, args), declaringType: name,
+      getter: property.getter ? { ...substituteMetadata(property.getter, args), declaringType: name } : null,
+      setter: property.setter ? { ...substituteMetadata(property.setter, args), declaringType: name } : null }));
     type.methods = (definition.methods ?? []).map(method => this.specializeMethod(this.methodsByToken.get(`${definition.$assembly}:${method.token}`) ?? { ...method, declaringType: root, $assembly: definition.$assembly }, args, [], name));
     for (const field of type.fields) if (field.isStatic) this.staticFields.set(fieldKey(field), field.constant != null ? fromJS(field.constant, field.type) : this.defaultValue(field.type));
     return type;
@@ -400,7 +412,8 @@ export class ILRuntime {
     for (const target of targets) {
       const method = this.resolveMethod(target.pointer.method, target.pointer.assembly);
       if (!method) throw limitation('Delegate target must resolve to a linked managed method.');
-      result = this.invokeManaged(method, args, target.target);
+      const callArgs = target.$openInstance ? args.slice(1) : [...(target.$boundArguments ?? []), ...args];
+      result = this.invokeManaged(method, callArgs, target.$openInstance ? nullCheck(args[0]) : target.target);
     }
     return result;
   }
@@ -421,7 +434,11 @@ export class ILRuntime {
       result = this.invokeExternal(declared, args, self, external);
     } else {
       const method = kind === 'callvirt' && self ? this.findVirtual(declared, self) ?? this.resolveMethod(declared, frame.method.$assembly) : this.resolveMethod(declared, frame.method.$assembly);
-      if (method) result = this.invokeManaged(method, args, self);
+      if (self?.$delegate && declared.name === 'Invoke') result = this.invokeDelegate(self, args);
+      else if (method?.isRuntime && kind === 'newobj' && declared.name === '.ctor' && this.inherits(declared.declaringType, 'System.MulticastDelegate') && args[1]?.$function) {
+        Object.assign(self, { $delegate: true, target: args[0], pointer: args[1] });
+      }
+      else if (method) result = this.invokeManaged(method, args, self);
       else {
         const native = this.callBuiltin(declared, args, self, kind);
         if (!native.handled) throw limitation(`No managed or JavaScript implementation for ${methodKey(declared)}.`, { method: methodKey(declared) });
@@ -457,6 +474,12 @@ export class ILRuntime {
 
   inherits(type, target) {
     if (type === target || target === 'System.Object') return true;
+    if (ioTypeBases[type]?.some(base => base === target || this.inherits(base, target))) return true;
+    if (exceptionBases[type]) return this.inherits(exceptionBases[type], target);
+    if (type === 'System.Reflection.Emit.DynamicMethod') return this.inherits('System.Reflection.MethodInfo', target);
+    if (type === 'System.Reflection.Emit.LocalBuilder') return this.inherits('System.Reflection.LocalVariableInfo', target);
+    if (type === 'System.MulticastDelegate') return target === 'System.Delegate';
+    if (/^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(type)) return target === 'System.MulticastDelegate' || target === 'System.Delegate';
     const builtInBases = { 'System.RuntimeType':'System.Type', 'System.Type':'System.Reflection.MemberInfo', 'System.Reflection.MethodInfo':'System.Reflection.MethodBase', 'System.Reflection.ConstructorInfo':'System.Reflection.MethodBase', 'System.Reflection.MethodBase':'System.Reflection.MemberInfo', 'System.Reflection.FieldInfo':'System.Reflection.MemberInfo', 'System.Reflection.PropertyInfo':'System.Reflection.MemberInfo', 'System.Reflection.TypeInfo':'System.Type', 'System.Reflection.RuntimeMethodInfo':'System.Reflection.MethodInfo', 'System.Reflection.RuntimeFieldInfo':'System.Reflection.FieldInfo', 'System.Reflection.RuntimeConstructorInfo':'System.Reflection.ConstructorInfo' };
     if (builtInBases[type]) return this.inherits(builtInBases[type],target);
     if (target === 'System.Exception' && type?.startsWith('System.') && type.endsWith('Exception')) return true;
@@ -499,6 +522,11 @@ export class ILRuntime {
     const isStatic = operation.includes('sfld');
     const key = fieldKey(ref);
     if (operation === 'ldsfld' && key === 'System.String::Empty') { frame.stack.push(''); return; }
+    if (operation === 'ldsfld' && key === 'System.Type::EmptyTypes') { frame.stack.push(this.newArray('System.Type', i4(0))); return; }
+    if ((operation === 'ldsfld' || operation === 'ldsflda') && isEmitField(ref)) {
+      const value = reflectedOpcode(ref.name);
+      frame.stack.push(operation === 'ldsfld' ? value : address(() => value, () => { throw managedError('System.FieldAccessException', 'OpCodes fields are read-only.'); }, ref.type)); return;
+    }
     if (operation === 'ldsfld' && ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) { frame.stack.push(i4(0)); return; }
     if (isStatic) this.ensureType(ref.declaringType);
     const value = operation.startsWith('st') ? frame.stack.pop() : undefined;
@@ -730,6 +758,10 @@ export class ILRuntime {
   }
 
   callBuiltin(ref, args, self, kind) {
+    const io = invokeIoBuiltin(this, ref, args, self, kind);
+    if (io.handled) return io;
+    const emitted = invokeEmitBuiltin(this, ref, args, self, kind);
+    if (emitted.handled) return emitted;
     const extended = invokeExtendedBuiltin(this, ref, args, self, kind);
     if (extended.handled) return extended;
     const reflection = invokeReflectionBuiltin(this, ref, args, self, kind);

@@ -1,0 +1,25 @@
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text.Json;
+
+var results = new Dictionary<string, string>();
+void Check(string name, object result) => results[name] = Convert.ToString(result, CultureInfo.InvariantCulture)!;
+Check("Add", EmitFixture.Add(20, 22));
+Check("CustomDelegate", EmitFixture.CustomDelegate(6, 7));
+Check("Loop", EmitFixture.Loop(100));
+Check("Switch0", EmitFixture.Switch(0));
+Check("Switch1", EmitFixture.Switch(1));
+Check("Switch2", EmitFixture.Switch(2));
+Check("ExactLong", EmitFixture.ExactLong(42));
+Check("LinkedState", EmitFixture.LinkedState(7));
+Check("BoundTarget", EmitFixture.BoundTarget(20, 22));
+Check("ReflectedInvoke", EmitFixture.ReflectedInvoke(21));
+Check("CatchFinally0", EmitFixture.CatchFinally(0));
+Check("CatchFinally2", EmitFixture.CatchFinally(2));
+Check("CatchThrowsFinally", EmitFixture.CatchThrowsFinally());
+Check("Metadata", EmitFixture.Metadata());
+Check("InvalidDelegate", EmitFixture.InvalidDelegate());
+Check("InvalidLabel", EmitFixture.InvalidLabel());
+Check("ReflectedDelegates", EmitFixture.ReflectedDelegates());
+Console.WriteLine(JsonSerializer.Serialize(new { runtime = Environment.Version.ToString(), results }, new JsonSerializerOptions { WriteIndented = true }));

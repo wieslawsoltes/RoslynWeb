@@ -1,15 +1,15 @@
 {
-  "validatedAt": "2026-09-11T11:38:14.285Z",
+  "validatedAt": "2026-09-11T12:33:00.008Z",
   "passed": true,
   "runtime": "Actual .NET WebAssembly running in Node worker_threads",
   "protocol": "Unmodified src/worker.js with scripts/node-worker.mjs browser-worker adapter",
   "browserEngineValidated": false,
-  "elapsedMilliseconds": 3122,
+  "elapsedMilliseconds": 3935,
   "checks": [
     {
       "name": "Default worker startup loads actual .NET WebAssembly and Roslyn",
       "passed": true,
-      "milliseconds": 456,
+      "milliseconds": 532,
       "evidence": {
         "bridgeVersion": "0.2.0",
         "roslynVersion": "5.0.0.0",
@@ -21,7 +21,7 @@
     {
       "name": "C# compilation returns PE and portable PDB through the worker",
       "passed": true,
-      "milliseconds": 1441,
+      "milliseconds": 1823,
       "evidence": {
         "peBytes": 2560,
         "pdbBytes": 10092
@@ -30,7 +30,7 @@
     {
       "name": "Emitted MSIL executes in the worker .NET WASM runtime",
       "passed": true,
-      "milliseconds": 20,
+      "milliseconds": 23,
       "evidence": {
         "backend": "wasm",
         "stdout": "42\n",
@@ -40,7 +40,7 @@
     {
       "name": "MSIL-to-JavaScript backend executes inside the same worker protocol",
       "passed": true,
-      "milliseconds": 13,
+      "milliseconds": 37,
       "evidence": {
         "backend": "javascript",
         "stdout": "42\n",
@@ -50,7 +50,7 @@
     {
       "name": "Asynchronous C# Main yields and resumes without blocking the worker",
       "passed": true,
-      "milliseconds": 411,
+      "milliseconds": 500,
       "evidence": {
         "stdout": "async-worker\n",
         "exitCode": 9
@@ -59,7 +59,7 @@
     {
       "name": "Roslyn diagnostics preserve source identity and position across messages",
       "passed": true,
-      "milliseconds": 60,
+      "milliseconds": 71,
       "evidence": {
         "id": "CS1525",
         "severity": "error",
@@ -76,7 +76,7 @@
     {
       "name": "Invalid DLL references and runtime assemblies reject with structured errors",
       "passed": true,
-      "milliseconds": 12,
+      "milliseconds": 17,
       "evidence": [
         {
           "method": "addReference",
@@ -93,7 +93,7 @@
     {
       "name": "Official Newtonsoft.Json NuGet DLL compiles and executes in the worker",
       "passed": true,
-      "milliseconds": 426,
+      "milliseconds": 618,
       "evidence": {
         "package": "Newtonsoft.Json 13.0.3",
         "assembly": "lib/net6.0/Newtonsoft.Json.dll",
@@ -103,7 +103,7 @@
     {
       "name": "Managed execution exceptions retain their error type and message",
       "passed": true,
-      "milliseconds": 50,
+      "milliseconds": 46,
       "evidence": {
         "type": "System.InvalidOperationException",
         "message": "worker-failure",
@@ -113,7 +113,7 @@
     {
       "name": "Worker preserves Int64 arguments and results as BigInt",
       "passed": true,
-      "milliseconds": 78,
+      "milliseconds": 106,
       "evidence": {
         "value": "9007199254740993",
         "jsType": "bigint"
@@ -122,10 +122,10 @@
     {
       "name": "Timeout terminates actual runaway C# code in its worker",
       "passed": true,
-      "milliseconds": 154,
+      "milliseconds": 161,
       "evidence": {
         "requestedTimeoutMs": 100,
-        "observedMilliseconds": 102,
+        "observedMilliseconds": 101,
         "workerExitCode": 1
       }
     },
@@ -226,6 +226,834 @@
         {
           "event": "progress",
           "stage": "runtime"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "download"
+        },
+        {
+          "event": "progress",
+          "stage": "bridge"
         },
         {
           "event": "progress",

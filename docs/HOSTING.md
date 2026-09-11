@@ -269,6 +269,23 @@ Removal recursively cleans up descendants and listeners. Rendering validates the
 widget tree, ids and binding paths before replacing the old tree. Command arrays
 and batches execute sequentially; they are not rollback transactions.
 
+## Virtual files and managed build workspaces
+
+The JavaScript backend supplies synchronous MemoryStream, text/binary stream, and a bounded virtual File/Directory/Path/FileStream implementation. Applications can provide input files and request a copied output snapshot through the public API:
+
+```js
+const result = await compiler.run(assembly, {
+  backend: 'javascript',
+  virtualFiles: { '/input.txt': 'Application input' },
+  captureVirtualFiles: true
+});
+console.log(result.virtualFiles); // Record<string, Uint8Array>
+```
+
+These files belong to that JavaScript execution runtime; they do not access the host operating system or browser-origin persistent storage. The standalone VirtualFileSystem API permits deliberate state sharing within one JavaScript realm. Worker snapshots use structured-clone-compatible byte arrays. See [the IL backend guide](../src/il/README.md) for size budgets, supported encodings, and IO limitations. Persistence, filesystem watchers/ACLs/OS locking, asynchronous/span IO, and arbitrary Stream subclasses remain outside this adapter.
+
+The managed custom-task API uses a separate mounted workspace inside .NET WASM and returns changed files explicitly. It executes genuine compatible ITask implementations using managed System.IO. File mounting and transfer limits do not create a security sandbox for task code. The [compiler and build-task guide](./COMPILER-EXTENSIONS.md) documents the request/result protocol; the [project guide](../src/projects/README.md) documents UsingTask, generated source/resources, and incremental target reuse. Neither workspace provides Windows DLL or desktop binary emulation.
+
 ## Optional remote host protocol
 
 ```js

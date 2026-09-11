@@ -19,7 +19,12 @@ export function normalizePath(value, base = '/') {
 }
 export const dirname = path => path.slice(0, path.lastIndexOf('/')) || '/';
 export const basename = path => path.split('/').at(-1);
-export const decodeFile = value => typeof value === 'string' ? value : new TextDecoder('utf-8', { fatal: true }).decode(value);
+export function decodeFile(value) {
+  if(typeof value==='string')return value;
+  const data=value instanceof Uint8Array?value:new Uint8Array(value);
+  const encoding=data[0]===0xff&&data[1]===0xfe?'utf-16le':data[0]===0xfe&&data[1]===0xff?'utf-16be':'utf-8';
+  return new TextDecoder(encoding,{fatal:true}).decode(data);
+}
 export function virtualFiles(input = {}) {
   return new Map([...(input instanceof Map ? input : Object.entries(input))].map(([path, value]) => [normalizePath(path), value]));
 }
@@ -41,9 +46,9 @@ export class ProjectEvaluator {
     this.files = virtualFiles(options.files); this.generatedFiles = new Map(); this.directories = new Set(['/']);
     this.props = new Map(); this.global = new Set(); this.items = {}; this.targets = new Map(); this.itemNodes = []; this.imports = [];
     this.initialTargets = []; this.defaultTargets = []; this.diagnostics = []; this.currentFile = this.path; this.importStack = [];
-    this.sdk = false; this.evaluating = false;
+    this.sdk = false; this.evaluating = false; this.usingTasks = new Map(); this.usingTaskNodes = [];
     const name = basename(this.path).replace(/\.[^.]*$/, '');
-    for (const [key, value] of Object.entries({ Configuration:'Debug', Platform:'AnyCPU', RuntimeIdentifier:'browser-wasm', Language:'C#', NuGetPackageRoot:'/.nuget/packages/', MSBuildRuntimeType:'Core', MSBuildRuntimeVersion:'10.0', IsCrossTargetingBuild:'false', IsBrowser:'true', TargetFramework:'net10.0', AssemblyName:name, OutputType:'Library', EnableDefaultItems:'true', EnableDefaultCompileItems:'true', IntermediateOutputPath:'obj/', OutputPath:'bin/', BuildDependsOn:'BeforeBuild;CoreCompile;AfterBuild', MSBuildProjectFullPath:this.path, MSBuildProjectDirectory:this.dir, MSBuildProjectFile:basename(this.path), MSBuildProjectName:name })) this.set(key, value);
+    for (const [key, value] of Object.entries({ Configuration:'Debug', Platform:'AnyCPU', RuntimeIdentifier:'browser-wasm', Language:'C#', NuGetPackageRoot:'/.nuget/packages/', MSBuildRuntimeType:'Core', MSBuildRuntimeVersion:'10.0', IsCrossTargetingBuild:'false', IsBrowser:'true', TargetFramework:'net10.0', AssemblyName:name, OutputType:'Library', EnableDefaultItems:'true', EnableDefaultCompileItems:'true', EnableDefaultEmbeddedResourceItems:'true', RootNamespace:name, IntermediateOutputPath:'obj/', OutputPath:'bin/', BuildDependsOn:'BeforeBuild;CoreCompile;AfterBuild', MSBuildProjectFullPath:this.path, MSBuildProjectDirectory:this.dir, MSBuildProjectFile:basename(this.path), MSBuildProjectName:name })) this.set(key, value);
     for (const [key, value] of Object.entries(options.properties || {})) { this.set(key, value); this.global.add(key.toLowerCase()); }
   }
   set(key, value) {
@@ -164,9 +169,21 @@ export class ProjectEvaluator {
       } else if (node.name === 'ImportGroup' && this.condition(node.attrs.Condition)) this.visit(node.children);
       else if (node.name === 'Choose') { const branch=node.children.find(n=>n.name==='When'&&this.condition(n.attrs.Condition)) || node.children.find(n=>n.name==='Otherwise'); if(branch)this.visit(branch.children); }
       else if (node.name === 'Target') { const name=this.expand(node.attrs.Name); if(!name)fail('INVALID_TARGET','Target requires a name.'); this.targets.set(name,{...node,file:this.currentFile}); }
-      else if (node.name === 'UsingTask') fail('UNSUPPORTED_CUSTOM_TASK', `Custom task ${node.attrs.TaskName} requires a native MSBuild task host.`, {path:this.currentFile});
+      else if (node.name === 'UsingTask') this.usingTaskNodes.push({node,file:this.currentFile});
       else if (!['Import','ImportGroup'].includes(node.name)) fail('UNSUPPORTED_PROJECT_ELEMENT', `Unsupported project element: ${node.name}`, {path:this.currentFile});
     }
+  }
+  registerTask(node, file) {
+    const a=node.attrs;if(!this.condition(a.Condition))return;
+    for(const key of Object.keys(a))if(!['TaskName','AssemblyName','AssemblyFile','TaskFactory','Condition','Runtime','Architecture','Override'].includes(key))fail('UNSUPPORTED_USING_TASK_OPTION',`Unsupported UsingTask option: ${key}`,{path:file});
+    const expand=value=>unescape(this.expand(value)),name=expand(a.TaskName || '');
+    if(!name || (!a.AssemblyName===!a.AssemblyFile))fail('INVALID_USING_TASK','UsingTask requires TaskName and exactly one of AssemblyFile or AssemblyName.',{path:file});
+    if(node.children.length || (a.TaskFactory && a.TaskFactory!=='AssemblyTaskFactory'))fail('UNSUPPORTED_TASK_FACTORY','Inline task factories require a dedicated host; use a compiled managed task assembly.',{path:file});
+    if(a.Runtime&&!/^(NET|CurrentRuntime|\*)$/i.test(expand(a.Runtime)))fail('UNSUPPORTED_TASK_RUNTIME',`The browser task host cannot run ${a.Runtime} tasks.`,{path:file});
+    if(a.Architecture&&!/^(CurrentArchitecture|\*)$/i.test(expand(a.Architecture)))fail('UNSUPPORTED_TASK_ARCHITECTURE',`The browser task host cannot select ${a.Architecture} processes.`,{path:file});
+    const key=name.toLowerCase(),override=/^true$/i.test(expand(a.Override || 'false')),previous=this.usingTasks.get(key);
+    if(override&&previous?.override)fail('DUPLICATE_TASK_OVERRIDE',`UsingTask '${name}' has multiple overrides.`,{path:file});
+    if(!previous || override)this.usingTasks.set(key,{name,file,override,assemblyName:a.AssemblyName?expand(a.AssemblyName):undefined,assemblyFile:a.AssemblyFile?normalizePath(expand(a.AssemblyFile),dirname(file)):undefined});
   }
   importFile(path) {
     if (this.importStack.includes(path)) fail('IMPORT_CYCLE', `Circular project import: ${[...this.importStack,path].join(' -> ')}`);
@@ -197,12 +214,13 @@ export class ProjectEvaluator {
     if(this.sdk) {
       if (/^true$/i.test(this.get('UseWPF')) || /^true$/i.test(this.get('UseWindowsForms'))) fail('UNSUPPORTED_DESKTOP_WORKLOAD', 'Desktop framework project workloads require an external platform host.');
       if(this.get('TargetFrameworks')&&!this.options.properties?.TargetFramework)fail('MULTITARGET_REQUIRES_SELECTION','Select a single TargetFramework when building a multi-target project.');
-      if(this.get('EnableDefaultItems').toLowerCase()!=='false'&&this.get('EnableDefaultCompileItems').toLowerCase()!=='false') {
+      if(this.get('EnableDefaultItems').toLowerCase()!=='false') {
         const excludes=[`${this.dir}/bin/**`,`${this.dir}/obj/**`,normalizePath(this.get('IntermediateOutputPath'),this.dir)+'/**',normalizePath(this.get('OutputPath'),this.dir)+'/**',...split(this.get('DefaultItemExcludes')).map(x=>normalizePath(x,this.dir))].map(glob);
-        this.items.Compile=[...this.files.keys()].filter(path=>path.startsWith(this.dir==='/'?'/':this.dir+'/')&&/\.cs$/i.test(path)&&!/(?:^|\/)\.[^/]+/.test(path)&&!excludes.some(regex=>regex.test(path))).sort().map(path=>({include:path.slice(this.dir==='/'?1:this.dir.length+1),path,metadata:{}}));
+        for (const [kind,extension,enabled] of [['Compile',/\.cs$/i,'EnableDefaultCompileItems'],['EmbeddedResource',/\.resx$/i,'EnableDefaultEmbeddedResourceItems']]) if(this.get(enabled).toLowerCase()!=='false') this.items[kind]=[...this.files.keys()].filter(path=>path.startsWith(this.dir==='/'?'/':this.dir+'/')&&extension.test(path)&&!/(?:^|\/)\.[^/]+/.test(path)&&!excludes.some(regex=>regex.test(path))).sort().map(path=>({include:path.slice(this.dir==='/'?1:this.dir.length+1),path,metadata:{}}));
       }
     }
     for(const {node,file} of this.itemNodes) {const previous=this.currentFile;this.currentFile=file;try {this.applyItems(node);}finally{this.currentFile=previous;}}
+    for(const {node,file} of this.usingTaskNodes) {const previous=this.currentFile;this.currentFile=file;try {this.registerTask(node,file);} finally {this.currentFile=previous;}}
     if(this.sdk) {
       const target=(name,depends,children=[])=>({name:'Target',attrs:{Name:name,...(depends?{DependsOnTargets:depends}:{})},children,file:this.path});
       for(const [name,value] of [['BeforeBuild',target('BeforeBuild')],['AfterBuild',target('AfterBuild')],['CoreCompile',target('CoreCompile',null,[{name:'Csc',attrs:{},children:[]}])],['Build',target('Build','$(BuildDependsOn)')]])if(!this.targets.has(name))this.targets.set(name,value);
@@ -211,7 +229,7 @@ export class ProjectEvaluator {
     if(!this.defaultTargets.length&&this.targets.size)this.defaultTargets=[this.targets.keys().next().value];
     return this;
   }
-  snapshot() {return {projectPath:this.path,properties:Object.fromEntries([...this.props.values()].map(({key,value})=>[key,value])),items:this.items,imports:[...this.imports],targets:[...this.targets.keys()],files:this.files,diagnostics:this.diagnostics};}
+  snapshot() {return {projectPath:this.path,properties:Object.fromEntries([...this.props.values()].map(({key,value})=>[key,value])),items:this.items,imports:[...this.imports],targets:[...this.targets.keys()],usingTasks:[...this.usingTasks.values()],files:this.files,diagnostics:this.diagnostics};}
 }
 
 export function evaluateProject(options) {return new ProjectEvaluator(options).evaluate().snapshot();}

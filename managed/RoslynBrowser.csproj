@@ -1,6 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
+    <!-- Keep published runtime bytes reproducible across hosts with newer .NET patches. -->
+    <RuntimeFrameworkVersion>10.0.0</RuntimeFrameworkVersion>
+    <TargetLatestRuntimePatch>false</TargetLatestRuntimePatch>
     <OutputType>Exe</OutputType>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -26,6 +29,9 @@
     <Reference Include="Microsoft.CodeAnalysis.CSharp">
       <HintPath>$(RoslynAssembliesPath)/Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Framework"><HintPath>$(MSBuildSDKsPath)/../Microsoft.Build.Framework.dll</HintPath></Reference>
+    <Reference Include="Microsoft.Build.Utilities.Core"><HintPath>$(MSBuildSDKsPath)/../Microsoft.Build.Utilities.Core.dll</HintPath></Reference>
+    <Reference Include="Microsoft.NET.StringTools"><HintPath>$(MSBuildSDKsPath)/../Microsoft.NET.StringTools.dll</HintPath></Reference>
     <EmbeddedResource Include="$(ReferenceAssembliesPath)/*.dll" LogicalName="ReferenceAssemblies/%(Filename)%(Extension)" WithCulture="false" />
   </ItemGroup>
   <ItemGroup>

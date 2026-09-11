@@ -1,0 +1,115 @@
+{
+  "testedAt": "2026-09-11T12:06:49.071Z",
+  "environment": "Actual .NET 10 browser-wasm runtime hosted by Node",
+  "runtime": {
+    "bridgeVersion": "0.2.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 170,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "passed": 20,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "PE property metadata preserves accessors, static flags and index signatures",
+      "status": "passed",
+      "ms": 1291
+    },
+    {
+      "name": "Register actual Microsoft.Build task compilation references",
+      "status": "passed",
+      "ms": 36
+    },
+    {
+      "name": "Compile a genuine Microsoft.Build.Utilities.Task inside browser WASM",
+      "status": "passed",
+      "ms": 488
+    },
+    {
+      "name": "Execute managed task with typed bool/int properties and virtual filesystem",
+      "status": "passed",
+      "ms": 138
+    },
+    {
+      "name": "ITaskItem arrays, custom metadata and output path round-trip",
+      "status": "passed",
+      "ms": 0
+    },
+    {
+      "name": "Managed task warnings and messages use structured build diagnostics",
+      "status": "passed",
+      "ms": 0
+    },
+    {
+      "name": "Task generated C# is transferred back, compiled and executed",
+      "status": "passed",
+      "ms": 135
+    },
+    {
+      "name": "Registered dependency identity resolves a task DLL",
+      "status": "passed",
+      "ms": 11
+    },
+    {
+      "name": "Adjacent task dependency DLLs resolve from hydrated project files",
+      "status": "passed",
+      "ms": 113
+    },
+    {
+      "name": "Required attribute validates task input",
+      "status": "passed",
+      "ms": 11
+    },
+    {
+      "name": "Unknown parameters are rejected before task execution",
+      "status": "passed",
+      "ms": 3
+    },
+    {
+      "name": "Logging an error fails a task that returned true",
+      "status": "passed",
+      "ms": 1
+    },
+    {
+      "name": "Task file deletions return removedFiles",
+      "status": "passed",
+      "ms": 2
+    },
+    {
+      "name": "Input path traversal and file-byte limits reject invalid workspaces",
+      "status": "passed",
+      "ms": 2
+    },
+    {
+      "name": "Output selection returns only selected attributed properties",
+      "status": "passed",
+      "ms": 5
+    },
+    {
+      "name": "RESX conversion produces genuine managed resources",
+      "status": "passed",
+      "ms": 334
+    },
+    {
+      "name": "Compile embeds raw resources, RESX and typed resource entries",
+      "status": "passed",
+      "ms": 91
+    },
+    {
+      "name": "CreateResources exposes a standalone typed .resources writer",
+      "status": "passed",
+      "ms": 1
+    },
+    {
+      "name": "Invalid duplicate manifest resource names produce compiler diagnostics",
+      "status": "passed",
+      "ms": 35
+    },
+    {
+      "name": "Unsupported serialized resource values and external XML entities reject explicitly",
+      "status": "passed",
+      "ms": 5
+    }
+  ]
+}

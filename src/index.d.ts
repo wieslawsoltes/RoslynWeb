@@ -22,6 +22,7 @@ export interface CompileOptions {
   emitPdb?: boolean;
   emitXmlDocumentation?: boolean;
   includeInspection?: boolean;
+  resources?: EmbeddedResource[];
   compilerExtensions?: string[];
   enableGenerators?: boolean;
   enableAnalyzers?: boolean;
@@ -60,15 +61,23 @@ export interface ExecutionOptions {
   maxSteps?: number;
   externals?: Record<string, JavaScriptExternal> | Map<string, JavaScriptExternal>;
   assemblies?: AssemblyModel[];
+  /** JavaScript backend only. Supplying virtual-file options rejects WebAssembly execution, including an auto-mode fallback. Each run starts with a fresh filesystem. */
+  virtualFiles?: Record<string,string|Uint8Array|number[]>;
+  /** Return a copied filesystem snapshot, including untouched input files; JavaScript backend only. */
+  captureVirtualFiles?: boolean;
+  /** Total bytes permitted in the JavaScript virtual filesystem. */
+  maxVirtualFileBytes?: number;
 }
 export interface ExecutionResult {
   success: boolean; backend?: 'wasm'|'javascript'; result?: unknown; exitCode: number;
   stdout: string; stderr: string; error?: ManagedError; elapsedMs?: number;
-  analysis?: unknown; fallback?: unknown;
+  analysis?: unknown; fallback?: unknown; virtualFiles?: Record<string,Uint8Array>;
 }
 export interface CompilerInfo { bridgeVersion: string; roslynVersion: string; runtimeVersion: string; referenceCount: number; execution: string }
 export interface CompilerEvent { type: string; stage?: string; message?: string; text?: string; [key: string]: unknown }
 export interface RoslynOptions {
+  /** Abort startup and compiler lifetime. Workers are terminated; worker:false rejects pending calls and disables later calls but cannot interrupt managed code already executing in the caller's realm. */
+  signal?: AbortSignal;
   baseUrl?: string|URL; worker?: boolean; workerUrl?: string|URL;
   timeoutMs?: number; startupTimeoutMs?: number; config?: Record<string,unknown>;
   onEvent?: (event: CompilerEvent) => void;
@@ -79,6 +88,11 @@ export interface ObjectHandle { $handle: string; typeName: string }
 export interface InvocationOptions { parameterTypes?: string[]; genericArguments?: string[]; returnHandle?: boolean; includeArguments?: boolean }
 export interface FunctionSpec { name?: string; typeName?: string; assemblyName?: string; returnType?: string; parameters?: Array<{name:string;type:string}>; usings?: string[]; body?: string; compileOptions?: CompileOptions }
 export interface CompiledFunction { success:true; assembly:CompilationResult; source:string; typeName:string; methodName:string; invoke(...args:unknown[]):Promise<ExecutionResult> }
+export interface ResourceEntry { name:string; type?:string; value:unknown }
+export interface EmbeddedResource { name:string; isPublic?:boolean; base64?:string; resx?:string; entries?:ResourceEntry[] }
+export interface ResourceResult { success:boolean; base64?:string; bytes?:Uint8Array; diagnostics?:Diagnostic[]; error?:ManagedError }
+export interface BuildTaskRequest { parameters?:Record<string,unknown>; files?:Array<{path:string;base64:string}>; workingDirectory?:string; virtualPaths?:boolean; outputProperties?:string[]; maxFileBytes?:number }
+export interface BuildTaskResult { success:boolean; outputs?:Record<string,unknown>; diagnostics?:Array<Record<string,unknown>>; files?:Array<{path:string;base64:string}>; removedFiles?:string[]; stdout?:string; stderr?:string; error?:ManagedError }
 export interface RoslynCompiler {
   readonly info: CompilerInfo;
   readonly disposed: boolean;
@@ -90,6 +104,10 @@ export interface RoslynCompiler {
   addCompilerExtension(name: string, bytes: Bytes): Promise<Record<string,unknown>>;
   compilerExtensions(): Promise<Array<Record<string,unknown>>>;
   loadCompilerReferences(): Promise<string[]>;
+  loadTaskReferences(): Promise<string[]>;
+  executeBuildTask(assembly:AssemblyInput,typeName:string,request?:BuildTaskRequest):Promise<BuildTaskResult>;
+  createResources(entries:ResourceEntry[]):Promise<ResourceResult>;
+  convertResx(xml:string):Promise<ResourceResult>;
   buildProject(options: ProjectOptions): Promise<ProjectBuildResult>;
   evaluateProject(options: ProjectOptions): Promise<ProjectEvaluation>;
   references(): Promise<ReferenceInfo[]>;
@@ -115,4 +133,3 @@ export function compileAssembly(model: AssemblyModel, options?: Record<string,un
 export function analyzeAssembly(model: AssemblyModel, options?: Record<string,unknown>): any;
 export function generateModule(model: AssemblyModel, options?: Record<string,unknown>): string;
 export default createRoslyn;
-

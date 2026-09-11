@@ -1,0 +1,39 @@
+using System;
+using System.IO;
+using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
+
+namespace BrowserTasks;
+public sealed class GenerateValue : Task
+{
+    [Required] public string InputFile { get; set; } = "";
+    public string OutputFile { get; set; } = "obj/TaskGenerated.cs";
+    public int Factor { get; set; } = 1;
+    public bool Enabled { get; set; } = true;
+    public ITaskItem[] Items { get; set; } = Array.Empty<ITaskItem>();
+    [Output] public int Value { get; private set; }
+    [Output] public ITaskItem[] Generated { get; private set; } = Array.Empty<ITaskItem>();
+    [Output] public string Label { get; private set; } = "";
+    public override bool Execute()
+    {
+        Value = Enabled ? int.Parse(File.ReadAllText(InputFile)) * Factor : 0;
+        Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(OutputFile))!);
+        File.WriteAllText(OutputFile, $"public static class TaskGenerated {{ public const int Value = {Value}; }}");
+        var generated = new TaskItem(Path.GetFullPath(OutputFile));
+        generated.SetMetadata("Generator", "ManagedITask");
+        Generated = new ITaskItem[] { generated };
+        Label = Items.Length == 0 ? "none" : Items[0].ItemSpec + ":" + Items[0].GetMetadata("Label");
+        Log.LogMessage(MessageImportance.High, "Generated value {0}", Value);
+        Log.LogWarning("BrowserTasks", "TASK001", "", InputFile, 1, 1, 1, 2, "Fixture warning");
+        return true;
+    }
+}
+public sealed class LoggedFailure : Task
+{
+    public override bool Execute() { Log.LogError("TASK002: Fixture logged failure"); return true; }
+}
+public sealed class DeleteInput : Task
+{
+    [Required] public string InputFile { get; set; } = "";
+    public override bool Execute() { File.Delete(InputFile); return true; }
+}

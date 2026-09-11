@@ -3,8 +3,8 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $dotnet = if ($env:DOTNET) { $env:DOTNET } else { 'dotnet' }
 $sdkBase = (& $dotnet --info | Select-String 'Base Path:').ToString().Split(':',2)[1].Trim()
 $packRoot = Join-Path $sdkBase '../../packs/Microsoft.NETCore.App.Ref'
-$pack = Get-ChildItem $packRoot -Directory | Where-Object Name -Like '10.*' | Sort-Object { [version]$_.Name } | Select-Object -Last 1
-$referencePath = Join-Path $pack.FullName 'ref/net10.0'
+$referencePath = Join-Path $packRoot '10.0.0/ref/net10.0'
+if (!(Test-Path $referencePath)) { throw 'The pinned .NET 10.0.0 reference pack is missing. Install .NET SDK 10.0.100.' }
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 & $dotnet run --project (Join-Path $projectRoot 'managed/PatchRoslyn/PatchRoslyn.csproj') -c Release -p:UseSharedCompilation=false -- (Join-Path $sdkBase 'Roslyn/bincore') (Join-Path $projectRoot 'managed/RoslynPatched')
 if ($LASTEXITCODE -ne 0) { throw "Roslyn browser adaptation failed ($LASTEXITCODE)" }
@@ -20,6 +20,9 @@ Copy-Item (Join-Path $projectRoot 'managed/RoslynPatched/browser-adaptation.json
 $compilerReferences = Join-Path $projectRoot 'dist/compiler-references'
 New-Item -ItemType Directory -Force $compilerReferences | Out-Null
 Copy-Item (Join-Path $projectRoot 'managed/RoslynPatched/Microsoft.CodeAnalysis.dll'), (Join-Path $projectRoot 'managed/RoslynPatched/Microsoft.CodeAnalysis.CSharp.dll') $compilerReferences -Force
+$taskReferences = Join-Path $projectRoot 'dist/task-references'
+New-Item -ItemType Directory -Force $taskReferences | Out-Null
+Copy-Item (Join-Path $sdkBase 'Microsoft.Build.Framework.dll'), (Join-Path $sdkBase 'Microsoft.Build.Utilities.Core.dll') $taskReferences -Force
 & node (Join-Path $projectRoot 'managed/prune-framework.mjs') $destination
 if ($LASTEXITCODE -ne 0) { throw "Runtime asset cleanup failed ($LASTEXITCODE)" }
 Write-Output "Browser runtime published to $destination"
