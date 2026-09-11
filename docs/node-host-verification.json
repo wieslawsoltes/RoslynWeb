@@ -1,0 +1,113 @@
+{
+  "testedAt": "2026-09-11T20:08:18.000Z",
+  "runtime": "v24.19.0",
+  "passed": true,
+  "checks": [
+    {
+      "name": "Default Node host boots bundled Roslyn WASM and preserves caller globals",
+      "passed": true,
+      "milliseconds": 494.40990999999997,
+      "evidence": {
+        "bridgeVersion": "0.8.0",
+        "roslynVersion": "5.0.0.0",
+        "runtimeVersion": "10.0.0",
+        "referenceCount": 167,
+        "execution": "dotnet-wasm-interpreter"
+      }
+    },
+    {
+      "name": "C# emits real PE and portable PDB, then runs on all execution backends",
+      "passed": true,
+      "milliseconds": 1827.32547,
+      "evidence": {
+        "peBytes": 2560,
+        "pdbBytes": 10024,
+        "results": [
+          {
+            "requested": "wasm",
+            "backend": "wasm",
+            "stdout": "node:42\n",
+            "exitCode": 3
+          },
+          {
+            "requested": "javascript",
+            "backend": "javascript",
+            "stdout": "node:42\n",
+            "exitCode": 3
+          },
+          {
+            "requested": "native-wasm",
+            "backend": "native-wasm",
+            "stdout": "node:42\n",
+            "exitCode": 3
+          },
+          {
+            "requested": "auto",
+            "backend": "javascript",
+            "stdout": "node:42\n",
+            "exitCode": 3
+          }
+        ]
+      }
+    },
+    {
+      "name": "Node host emits reusable JS and native Wasm artifacts with warm compilation caches",
+      "passed": true,
+      "milliseconds": 5.719381999999769,
+      "evidence": {
+        "emitJavaScript": {
+          "format": "javascript",
+          "cache": {
+            "emitHit": true
+          },
+          "characters": 6543
+        },
+        "emitWasm": {
+          "format": "wasm",
+          "cache": {
+            "emitHit": true
+          },
+          "bytes": 5201
+        }
+      }
+    },
+    {
+      "name": "File URL compiler references and NuGet archives work through the public Node host",
+      "passed": true,
+      "milliseconds": 1672.755921,
+      "evidence": {
+        "package": "Newtonsoft.Json",
+        "version": "13.0.3",
+        "stdout": "{\"Value\":42}\n"
+      }
+    },
+    {
+      "name": "Managed objects, Int64 values, dynamic compilation and workspace files remain available",
+      "passed": true,
+      "milliseconds": 353.34056899999996,
+      "evidence": {
+        "bigInt": true,
+        "objects": true,
+        "dynamicResult": 42,
+        "workspaceText": "NODE FILES"
+      }
+    },
+    {
+      "name": "A second compiler owns an independent runtime and reference collection",
+      "passed": true,
+      "milliseconds": 1957.9862789999997,
+      "evidence": {
+        "independentReferences": true
+      }
+    },
+    {
+      "name": "A runaway C# execution is terminated by timeout and close awaits worker exit",
+      "passed": true,
+      "milliseconds": 178.89683400000013,
+      "evidence": {
+        "milliseconds": 128.6695469999995,
+        "disposed": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "testedAt": "2026-09-11T20:10:49.082Z",
+  "runtime": "v24.19.0",
+  "passed": true,
+  "elapsedMilliseconds": 5562.803946,
+  "checks": [
+    {
+      "name": "Watch run executes edits in one persistent Roslyn Worker",
+      "passed": true,
+      "milliseconds": 2046.50765,
+      "evidence": {
+        "iterations": [
+          1,
+          2
+        ],
+        "outputs": [
+          "watch-v1",
+          "watch-v2"
+        ],
+        "compilerStartups": 1
+      }
+    },
+    {
+      "name": "Watch reports C# errors, recovers on the next edit and exits cleanly on SIGINT",
+      "passed": true,
+      "milliseconds": 553.6673040000001,
+      "evidence": {
+        "iterations": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "diagnostics": [
+          "CS1026"
+        ],
+        "recoveredOutput": "watch-recovered",
+        "exitCode": 130
+      }
+    },
+    {
+      "name": "Watch compile ignores its default DLL output and rebuilds only when source changes",
+      "passed": true,
+      "milliseconds": 2955.2909649999997,
+      "evidence": {
+        "iterations": [
+          1,
+          2
+        ],
+        "defaultOutput": "Program.dll",
+        "compilerStartups": 1,
+        "cache": {
+          "enabled": true,
+          "syntaxHits": 0,
+          "incrementalParses": 1,
+          "syntaxMisses": 0,
+          "compilationReused": true,
+          "retainedTrees": 1,
+          "retainedSourceBytes": 78,
+          "maxRetainedTrees": 64,
+          "maxRetainedSourceBytes": 16777216
+        },
+        "exitCode": 130
+      }
+    }
+  ]
+}

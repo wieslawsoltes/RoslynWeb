@@ -54,6 +54,10 @@ jobs:
         run: npm run test:wasm
       - name: Worker integration
         run: npm run test:worker
+      - name: Production Node host and command-line integration with installed package
+        run: |
+          npm run test:node
+          npm run test:cli
       - name: Managed compiler extension integration
         run: node managed/runtime-tooling-tests.mjs
       - name: Extended compatibility integration
@@ -123,6 +127,8 @@ jobs:
           name: roslynweb-source-and-wasm
           path: |
             src
+            bin
+            examples
             managed
             dist
             demo

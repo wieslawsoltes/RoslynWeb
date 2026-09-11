@@ -1,0 +1,230 @@
+{
+  "passed": 32,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "hello-managed",
+      "exitCode": 0,
+      "seconds": 2.189,
+      "stdout": "Hello from RoslynWeb CLI\nArguments: one, two\n",
+      "stderr": ""
+    },
+    {
+      "name": "hello-javascript",
+      "exitCode": 0,
+      "seconds": 2.063,
+      "stdout": "Hello from RoslynWeb CLI\nArguments: \n",
+      "stderr": ""
+    },
+    {
+      "name": "hello-native",
+      "exitCode": 0,
+      "seconds": 2.035,
+      "stdout": "Hello from RoslynWeb CLI\nArguments: \n",
+      "stderr": ""
+    },
+    {
+      "name": "compile-il",
+      "exitCode": 0,
+      "seconds": 2.015,
+      "stdout": "Wrote /tmp/roslynweb-cli-docs-njymnrmy/Hello.dll\nWrote /tmp/roslynweb-cli-docs-njymnrmy/Hello.pdb\n",
+      "stderr": ""
+    },
+    {
+      "name": "inspect",
+      "exitCode": 0,
+      "seconds": 0.612,
+      "stdout": "terCount\": 0,\n                \"returnType\": \"System.String\",\n                \"parameters\": [\n                  {\n                    \"name\": \"arg0\",\n                    \"type\": \"System.String\"\n                  },\n                  {\n                    \"name\": \"arg1\",\n                    \"type\": \"System.String\"\n                  }\n                ],\n                \"isStatic\": true\n              },\n              \"size\": 5\n            },\n            {\n              \"offset\": 31,\n              \"opcode\": \"call\",\n              \"operand\": {\n                \"token\": 167772166,\n                \"name\": \"WriteLine\",\n                \"declaringType\": \"System.Console\",\n                \"assemblyName\": \"System.Console\",\n                \"genericParameterCount\": 0,\n                \"returnType\": \"System.Void\",\n                \"parameters\": [\n                  {\n                    \"name\": \"arg0\",\n                    \"type\": \"System.String\"\n                  }\n                ],\n                \"isStatic\": true\n              },\n              \"size\": 5\n            },\n            {\n              \"offset\": 36,\n              \"opcode\": \"ret\",\n              \"operand\": null,\n              \"size\": 1\n            }\n          ],\n          \"exceptionHandlers\": [],\n          \"maxStack\": 8,\n          \"initLocals\": false,\n          \"attributes\": \"Private, Static, HideBySig\",\n          \"implementationAttributes\": \"IL\",\n          \"genericParameters\": [],\n          \"decodeError\": null\n        },\n        {\n          \"token\": 100663298,\n          \"name\": \".ctor\",\n          \"declaringType\": \"Program\",\n          \"isStatic\": false,\n          \"isAbstract\": false,\n          \"isPInvoke\": false,\n          \"isRuntime\": false,\n          \"isExternal\": false,\n          \"pinvoke\": null,\n          \"assemblyName\": \"Hello\",\n          \"returnType\": \"System.Void\",\n          \"parameters\": [],\n          \"locals\": [],\n          \"body\": [\n            {\n              \"offset\": 0,\n              \"opcode\": \"ldarg.0\",\n              \"operand\": null,\n              \"size\": 1\n            },\n            {\n              \"offset\": 1,\n              \"opcode\": \"call\",\n              \"operand\": {\n                \"token\": 167772169,\n                \"name\": \".ctor\",\n                \"declaringType\": \"System.Object\",\n                \"assemblyName\": \"System.Runtime\",\n                \"genericParameterCount\": 0,\n                \"returnType\": \"System.Void\",\n                \"parameters\": [],\n                \"isStatic\": false\n              },\n              \"size\": 5\n            },\n            {\n              \"offset\": 6,\n              \"opcode\": \"ret\",\n              \"operand\": null,\n              \"size\": 1\n            }\n          ],\n          \"exceptionHandlers\": [],\n          \"maxStack\": 8,\n          \"initLocals\": false,\n          \"attributes\": \"Public, HideBySig, SpecialName, RTSpecialName\",\n          \"implementationAttributes\": \"IL\",\n          \"genericParameters\": [],\n          \"decodeError\": null\n        }\n      ]\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "analyze-js",
+      "exitCode": 0,
+      "seconds": 0.629,
+      "stdout": ",\"execution\":\"generated-javascript-control-flow\",\"numericKinds\":[\"int32\",\"uint32\",\"int64\",\"uint64\",\"native-int-32\",\"float32\",\"float64\"],\"supported\":[\"stack-and-local-variables\",\"integer-and-floating-arithmetic\",\"checked-arithmetic\",\"branches-and-switch\",\"managed-method-calls\",\"virtual-dispatch\",\"constructors\",\"instance-and-static-fields\",\"static-initializers\",\"arrays-and-array-addresses\",\"managed-references\",\"boxing-and-unboxing\",\"type-tests\",\"value-type-copying\",\"catch-finally-and-rethrow\",\"exception-filters\",\"delegates\",\"javascript-externals\",\"portable-generated-es-modules\",\"linked-normalized-assemblies\",\"closed-generic-type-and-method-substitution\",\"per-closed-type-static-storage\",\"linked-metadata-reflection-and-invocation\",\"runtime-normalized-il-builders\",\"reflection-dynamicmethod-ilgenerator-and-delegates\",\"linked-property-and-indexer-reflection\",\"reflection-assembly-module-type-builders\",\"emitted-fields-constructors-properties-and-interface-overrides\",\"queue-stack-linkedlist-and-sorted-collections\",\"multidimensional-arrays\",\"managed-function-pointer-calli\",\"typed-references\",\"bounded-local-linear-memory\",\"local-memory-copy-and-initialization\",\"explicitly-bound-pinvoke-exports\",\"dictionary-hashset-and-selected-linq\",\"datetime-timespan-selected-tick-based-operations\",\"memory-text-and-binary-streams\",\"bounded-in-memory-virtual-filesystem\"],\"unsupported\":[\"arbitrary-native-binary-execution\",\"unrestricted-native-address-space\",\"threading-and-monitor-synchronization\",\"complete-dotnet-framework-and-nuget-api-compatibility\",\"runtime-generic-constraint-verification\",\"complete-reflection-binders-and-custom-attributes\",\"complete-reflection-emit-generics-custom-attributes-and-persistence\",\"platform-native-and-desktop-ui-assemblies\"],\"notes\":[\"JavaScript Number, BigInt and tagged numeric values preserve distinct IL numeric stack categories.\",\"Native integers use 32 bits, matching the browser-wasm target.\",\"Local pointers designate bounded byte allocations owned by an invocation and expire when it returns.\",\"calli accepts linked managed function pointers with matching signatures; native machine-code addresses are not accepted.\",\"P/Invoke executes only explicitly supplied JavaScript exports; the runtime does not load native DLL files.\",\"The IL builders produce normalized IL and generated JavaScript. Roslyn remains the PE DLL emission route.\",\"DynamicMethod and supported AssemblyBuilder/ModuleBuilder/TypeBuilder APIs generate JavaScript in the current runtime and share linked state; no native code or PE images are emitted.\",\"File/Directory APIs use an explicit in-memory virtual filesystem; host filesystem access, persistence and OS sharing semantics are not implied.\",\"Framework methods execute only when explicitly implemented or provided through externals.\",\"Unsupported instructions and unresolved framework calls produce diagnostics and throw on execution.\",\"Use the .NET WebAssembly execution tier for framework compatibility beyond these capabilities.\"]}}\n",
+      "stderr": ""
+    },
+    {
+      "name": "compile-wasm",
+      "exitCode": 0,
+      "seconds": 1.995,
+      "stdout": "Wrote /tmp/roslynweb-cli-docs-njymnrmy/Hello.wasm\n",
+      "stderr": ""
+    },
+    {
+      "name": "run-wasm",
+      "exitCode": 0,
+      "seconds": 0.135,
+      "stdout": "Hello from RoslynWeb CLI\nArguments: \n",
+      "stderr": ""
+    },
+    {
+      "name": "compile-js",
+      "exitCode": 0,
+      "seconds": 2.039,
+      "stdout": "Wrote /tmp/roslynweb-cli-docs-njymnrmy/Hello.mjs\nWrote /tmp/roslynweb-cli-docs-njymnrmy/Hello.javascript.json\n",
+      "stderr": ""
+    },
+    {
+      "name": "run-js",
+      "exitCode": 0,
+      "seconds": 0.137,
+      "stdout": "Hello from RoslynWeb CLI\nArguments: \n",
+      "stderr": ""
+    },
+    {
+      "name": "run-js-artifact",
+      "exitCode": 0,
+      "seconds": 0.147,
+      "stdout": "Hello from RoslynWeb CLI\nArguments: \n",
+      "stderr": ""
+    },
+    {
+      "name": "compile-kernel",
+      "exitCode": 0,
+      "seconds": 1.819,
+      "stdout": "Wrote /tmp/roslynweb-cli-docs-njymnrmy/Kernel.dll\n",
+      "stderr": ""
+    },
+    {
+      "name": "invoke-kernel",
+      "exitCode": 0,
+      "seconds": 0.63,
+      "stdout": "{\"success\":true,\"result\":{\"$bigint\":\"9007199254740995\"},\"exitCode\":0,\"stdout\":\"\",\"stderr\":\"\",\"elapsedMs\":36.2031}\n",
+      "stderr": ""
+    },
+    {
+      "name": "evaluate",
+      "exitCode": 0,
+      "seconds": 1.535,
+      "stdout": "{\"success\":true,\"result\":42,\"exitCode\":0,\"stdout\":\"\",\"stderr\":\"\",\"elapsedMs\":9.4514}\n",
+      "stderr": ""
+    },
+    {
+      "name": "compile-function",
+      "exitCode": 0,
+      "seconds": 1.617,
+      "stdout": "{\"success\":true,\"result\":{\"$bigint\":\"42\"},\"exitCode\":0,\"stdout\":\"\",\"stderr\":\"\",\"elapsedMs\":14.9824}\n",
+      "stderr": ""
+    },
+    {
+      "name": "project",
+      "exitCode": 0,
+      "seconds": 2.096,
+      "stdout": "Wrote /tmp/roslynweb-cli-docs-njymnrmy/Project.dll\n",
+      "stderr": ""
+    },
+    {
+      "name": "run-project",
+      "exitCode": 0,
+      "seconds": 0.636,
+      "stdout": "Built from a local project with RoslynWeb\n",
+      "stderr": ""
+    },
+    {
+      "name": "resources",
+      "exitCode": 0,
+      "seconds": 0.524,
+      "stdout": "Wrote /tmp/roslynweb-cli-docs-njymnrmy/Values.resources\n",
+      "stderr": ""
+    },
+    {
+      "name": "api",
+      "exitCode": 0,
+      "seconds": 1.888,
+      "stdout": "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\"}}}\n",
+      "stderr": ""
+    },
+    {
+      "name": "batch",
+      "exitCode": 0,
+      "seconds": 1.995,
+      "stdout": "QAAAAAIAAAAIAAAAAAAAAAAAAAAAAABAAABCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQJAAAAAAAAEgAAAACAAUAjCAAADQDAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABICA9YqAAAAEzACABYAAAABAAARFmoKFgsrCQYHalgKBxdYCwcCMfMGKjoCA1gjAAAAAAAAAEBbKgAAAEJTSkIBAAEAAAAAAAwAAAB2NC4wLjMwMzE5AAAAAAUAbAAAADABAAAjfgAAnAEAABgBAAAjU3RyaW5ncwAAAAC0AgAABAAAACNVUwC4AgAAEAAAACNHVUlEAAAAyAIAAGwAAAAjQmxvYgAAAAAAAAACAAABRxUCAAkAAAAA+gEzABYAAAEAAAAGAAAAAgAAAAMAAAAFAAAABAAAAAQAAAABAAAAAQAAAAEAAAAAAJsAAQAAAAAABgBRAM8ABgBxAM8ABgAlALwADwDvAAAABgA5AM8ABgD+AKsAAAAAAAEAAAAAAAEAAQCBARAAlAAAABkAAQABAFAgAAAAAJYACgAeAAEAWCAAAAAAlgCyACQAAwB6IAAAAACWAA4AKQAEAAAAAQAFAQAAAgAKAQAAAQAQAQAAAQAFAQAAAgAKAQkAtgABABEAtgAGABkAtgAKACkAtgABACcAIwBgAC4ACwAvAC4AEwA4AC4AGwBXABAABIAAAAAAAAAAAAAAAAAAAAAAjwAAAAoAAAAAAAAAAAAAABUAFgAAAAAAAAAAPE1vZHVsZT4AQWRkAEF2ZXJhZ2UAU3lzdGVtLlJ1bnRpbWUARGVidWdnYWJsZUF0dHJpYnV0ZQBSZWZTYWZldHlSdWxlc0F0dHJpYnV0ZQBDb21waWxhdGlvblJlbGF4YXRpb25zQXR0cmlidXRlAFJ1bnRpbWVDb21wYXRpYmlsaXR5QXR0cmlidXRlAEJhdGNoS2VybmVsAEJhdGNoS2VybmVsLmRsbABTeXN0ZW0AU3VtAC5jdG9yAFN5c3RlbS5EaWFnbm9zdGljcwBTeXN0ZW0uUnVudGltZS5Db21waWxlclNlcnZpY2VzAERlYnVnZ2luZ01vZGVzAE9iamVjdABsZWZ0AHJpZ2h0AGNvdW50AAAAAAAAAGQ83DDsqNxKtKPnlzq0jswABCABAQgDIAABBSABARERBAcCCggIsD9ffxHVCjoFAAIKCgoEAAEKCAUAAg0NDQgBAAgAAAAAAB4BAAEAVAIWV3JhcE5vbkV4Y2VwdGlvblRocm93cwEIAQACAAAAAAAIAQALAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAABCQAAAAAAAAAAAAAHiQAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAkAAAAAAAAAAAAAAAAX0NvckRsbE1haW4AbXNjb3JlZS5kbGwAAAAAAP8lACAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAADAAAADA0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==\"}}}\n{\"id\":\"sum\",\"success\":true,\"result\":{\"success\":true,\"result\":{\"$bigint\":\"9007199254740995\"},\"exitCode\":0,\"stdout\":\"\",\"stderr\":\"\",\"elapsedMs\":17.2055}}\n",
+      "stderr": ""
+    },
+    {
+      "name": "session",
+      "exitCode": 0,
+      "seconds": 1.556,
+      "stdout": "AAAAA8AwAABAAAACNVUwBAAwAAEAAAACNHVUlEAAAAUAMAAGwAAAAjQmxvYgAAAAAAAAACAAABVxWiAQkAAAAA+gEzABYAAAEAAAAHAAAAAgAAAAEAAAAEAAAAAgAAAAYAAAAHAAAAAQAAAAEAAAABAAAAAgAAAAEAAAABAAAAAADTAAEAAAAAAAYAewAVAQYAmwAVAQYATwACAQ8ANQEAAAYAYwAVAQYARAHmAAYANAAVAQAAAAABAAAAAAABAAEAAQEQAPQAAAAZAAEAAQABAA4AHQBQIAAAAACGCLkAIAABAFggAAAAAIYIwwABAAEAZCAAAAAAhgAKACQAAgCCIAAAAACGGPwABgADAAAAAQDNAAAAAQBLAQkA/AABABEA/AAGABkA/AAKACkA/AABADkA/AAGADEA/AAGACAAKwBeACEAKwBeACcAIwBjAC4ACwAtAC4AEwA2AC4AGwBVAEAAKwBeABAAAgABAAAAxwApAAIAAQADAAEAAgADAASAAAAAAAAAAAAAAAAAAAAAAO0AAAAKAAAAAAAAAAAAAAAUACUAAAAAAAAAADxNb2R1bGU+AEFkZAA8VmFsdWU+a19fQmFja2luZ0ZpZWxkAFN5c3RlbS5SdW50aW1lAENvbXBpbGVyR2VuZXJhdGVkQXR0cmlidXRlAERlYnVnZ2FibGVBdHRyaWJ1dGUAUmVmU2FmZXR5UnVsZXNBdHRyaWJ1dGUAQ29tcGlsYXRpb25SZWxheGF0aW9uc0F0dHJpYnV0ZQBSdW50aW1lQ29tcGF0aWJpbGl0eUF0dHJpYnV0ZQBnZXRfVmFsdWUAc2V0X1ZhbHVlAHZhbHVlAFNlc3Npb25Db3VudGVyLmRsbABTeXN0ZW0AU2Vzc2lvbkNvdW50ZXIALmN0b3IAU3lzdGVtLkRpYWdub3N0aWNzAFN5c3RlbS5SdW50aW1lLkNvbXBpbGVyU2VydmljZXMARGVidWdnaW5nTW9kZXMAT2JqZWN0AGFtb3VudAAAAAAAAAA3jsadlwpqQYVH1X4W9OcwAAQgAQEIAyAAAQUgAQEREQMHAQgIsD9ffxHVCjoCBggDIAAIBCABCAgDKAAICAEACAAAAAAAHgEAAQBUAhZXcmFwTm9uRXhjZXB0aW9uVGhyb3dzAQgBAAIAAAAAAAQBAAAACAEACwAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAIwkAAAAAAAAAAAAAKYkAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAACYJAAAAAAAAAAAAAAAAF9Db3JEbGxNYWluAG1zY29yZWUuZGxsAAAAAAD/JQAgABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAADAAAALg0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==\"}}}\n{\"id\":\"handle\",\"success\":true,\"result\":{\"$handle\":\"9fbd0f819a2642efad54768f89c65fce\",\"typeName\":\"Counter\",\"assemblyName\":\"SessionCounter\"}}\n{\"id\":\"set\",\"success\":true,\"result\":{\"success\":true,\"result\":null,\"exitCode\":0,\"stdout\":\"\",\"stderr\":\"\",\"elapsedMs\":3.133}}\n{\"id\":\"sum\",\"success\":true,\"result\":{\"success\":true,\"result\":42,\"exitCode\":0,\"stdout\":\"\",\"stderr\":\"\",\"elapsedMs\":2.7258}}\n{\"id\":\"value\",\"success\":true,\"result\":42}\n{\"id\":\"release\",\"success\":true,\"result\":{\"success\":true,\"handle\":\"9fbd0f819a2642efad54768f89c65fce\"}}\n",
+      "stderr": ""
+    },
+    {
+      "name": "workspace",
+      "exitCode": 0,
+      "seconds": 2.102,
+      "stdout": "ZTYWZldHlSdWxlc0F0dHJpYnV0ZQBDb21waWxhdGlvblJlbGF4YXRpb25zQXR0cmlidXRlAFJ1bnRpbWVDb21wYXRpYmlsaXR5QXR0cmlidXRlAFdvcmtzcGFjZVByb2dyYW0uZXhlAFN0cmluZwBXb3Jrc3BhY2VQcm9ncmFtAFN5c3RlbQAuY3RvcgBTeXN0ZW0uRGlhZ25vc3RpY3MAU3lzdGVtLlJ1bnRpbWUuQ29tcGlsZXJTZXJ2aWNlcwBEZWJ1Z2dpbmdNb2RlcwBhcmdzAE9iamVjdABUb1VwcGVySW52YXJpYW50AFJlYWRBbGxUZXh0AFdyaXRlQWxsVGV4dAAAE2kAbgBwAHUAdAAuAHQAeAB0AAAVbwB1AHQAcAB1AHQALgB0AHgAdAAAIVcAcgBvAHQAZQAgAG8AdQB0AHAAdQB0AC4AdAB4AHQAAAAAABAdU0vBbUNIir3I9rPVHagABCABAQgDIAABBSABARERAwcBDgQAAQ4OAyAADgUAAgEODgQAAQEOCLA/X38R1Qo6BQABAR0OCAEACAAAAAAAHgEAAQBUAhZXcmFwTm9uRXhjZXB0aW9uVGhyb3dzAQgBAAIAAAAAAAQBAAAACAEACwAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA9CQAAAAAAAAAAAAADiUAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlAAAAAAAAAAAAAAAAX0NvckV4ZU1haW4AbXNjb3JlZS5kbGwAAAAAAP8lACBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAADAAAACA1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==\"}}}\n{\"id\":\"execution\",\"success\":true,\"result\":{\"success\":true,\"result\":null,\"exitCode\":0,\"files\":{\"input.txt\":{\"$bytes\":\"SGVsbG8gZnJvbSBhIHBlcnNpc3RlbnQgd29ya3NwYWNl\"},\"output.txt\":{\"$bytes\":\"SEVMTE8gRlJPTSBBIFBFUlNJU1RFTlQgV09SS1NQQUNF\"}},\"changedFiles\":{\"output.txt\":{\"$bytes\":\"SEVMTE8gRlJPTSBBIFBFUlNJU1RFTlQgV09SS1NQQUNF\"}},\"removedFiles\":[],\"fileBytes\":66,\"workspaceId\":\"08b32e4f4de942198a7950c6deee3b20\",\"stdout\":\"Wrote output.txt\\n\",\"stderr\":\"\",\"elapsedMs\":22.4292,\"virtualFiles\":{\"input.txt\":{\"$bytes\":\"SGVsbG8gZnJvbSBhIHBlcnNpc3RlbnQgd29ya3NwYWNl\"},\"output.txt\":{\"$bytes\":\"SEVMTE8gRlJPTSBBIFBFUlNJU1RFTlQgV09SS1NQQUNF\"}},\"backend\":\"wasm\"}}\n{\"id\":\"listing\",\"success\":true,\"result\":{\"success\":true,\"workspaceId\":\"08b32e4f4de942198a7950c6deee3b20\",\"files\":null,\"entries\":[{\"path\":\"input.txt\",\"bytes\":33},{\"path\":\"output.txt\",\"bytes\":33}],\"byteCount\":66}}\n{\"id\":\"read\",\"success\":true,\"result\":{\"success\":true,\"workspaceId\":\"08b32e4f4de942198a7950c6deee3b20\",\"files\":{\"output.txt\":{\"$bytes\":\"SEVMTE8gRlJPTSBBIFBFUlNJU1RFTlQgV09SS1NQQUNF\"}},\"entries\":[{\"path\":\"output.txt\",\"bytes\":33}],\"byteCount\":66}}\n{\"id\":\"cleanup\",\"success\":true,\"result\":{\"success\":true,\"workspaceId\":\"08b32e4f4de942198a7950c6deee3b20\",\"disposed\":true}}\n",
+      "stderr": ""
+    },
+    {
+      "name": "session-function",
+      "exitCode": 0,
+      "seconds": 1.65,
+      "stdout": "AAAH3P5zZAKAAAFljWQ4mG+JNjurocPYQi49TeXN0ZW0uU2VjdXJpdHkuU2VjdXJlU3RyaW5nLmRsbAAAAZU6SNMAgAAAuTMZbWGHCEOb6qhKLnP//FN5c3RlbS5TZXJ2aWNlTW9kZWwuV2ViLmRsbAAAAYOJLM0AgAAAxWFAP8oorkiNvvlNQlT9V1N5c3RlbS5TZXJ2aWNlUHJvY2Vzcy5kbGwAAAF2512MAIAAAHeGsrbdLwRDssHQjrn5i6JTeXN0ZW0uVGV4dC5FbmNvZGluZy5Db2RlUGFnZXMuZGxsAAABXcl/3wCAAAAAGd8/uTLDQraPKxoodAF2U3lzdGVtLlRleHQuRW5jb2RpbmcuZGxsAAABzNVWvACAAAB+cVsZdYbtTL0mnV0xLP1WU3lzdGVtLlRleHQuRW5jb2RpbmcuRXh0ZW5zaW9ucy5kbGwAAAEp2KzeAIAAACQ5RxwtY3lIsJoyYvLM6Z1TeXN0ZW0uVGV4dC5FbmNvZGluZ3MuV2ViLmRsbAAAATZ+tOoAoAAAmTtWxlDznUC2/u4YeGWv81N5c3RlbS5UZXh0Lkpzb24uZGxsAAABmla4nACAAQA58DX/zZ81TYKSJ56PcE++U3lzdGVtLlRleHQuUmVndWxhckV4cHJlc3Npb25zLmRsbAAAAXt4XcwAwAAADm09mW4yVEerqOSTvlETRFN5c3RlbS5UaHJlYWRpbmcuQWNjZXNzQ29udHJvbC5kbGwAAAE/yIP0AIAAAChZ+ZnWrSRNhOy8fnn6+3xTeXN0ZW0uVGhyZWFkaW5nLkNoYW5uZWxzLmRsbAAAAejGm84AgAAAjPsXtspACkuTnLLYUi9Gd1N5c3RlbS5UaHJlYWRpbmcuZGxsAAABOD80iwDAAADiBWG5j/IFTp8mJbEguezZU3lzdGVtLlRocmVhZGluZy5PdmVybGFwcGVkLmRsbAAAAWPwk5cAgAAAvgjxJMI3B0m43d8EAap8bFN5c3RlbS5UaHJlYWRpbmcuVGFza3MuRGF0YWZsb3cuZGxsAAAB8QFc7ADAAAAOGabk7q+UT70HmN9tFxrUU3lzdGVtLlRocmVhZGluZy5UYXNrcy5kbGwAAAGLzdS8AIAAAF3ui3I3jv9Gi6kpRVZl9bJTeXN0ZW0uVGhyZWFkaW5nLlRhc2tzLkV4dGVuc2lvbnMuZGxsAAABRtI8tQCAAABXe4aqwy8YTIP56GafQPiQU3lzdGVtLlRocmVhZGluZy5UYXNrcy5QYXJhbGxlbC5kbGwAAAGuzETyAIAAAKSIM9ixAhtBtIYnB7EFe3lTeXN0ZW0uVGhyZWFkaW5nLlRocmVhZC5kbGwAAAGK2oejAKAAABmiBM0Xg2ZFrCwVDLLj5LRTeXN0ZW0uVGhyZWFkaW5nLlRocmVhZFBvb2wuZGxsAAABLSRWiQCAAAAnx80q6+zjRbLk9NLxuRkeU3lzdGVtLlRocmVhZGluZy5UaW1lci5kbGwAAAED7Gi7AIAAAG5DmXgRxDhKjHLKRxz6w+ZTeXN0ZW0uVHJhbnNhY3Rpb25zLmRsbAAAAQdblKwAgAAAsUzMagVRP0i8NnM43B1U21N5c3RlbS5UcmFuc2FjdGlvbnMuTG9jYWwuZGxsAAABzGE32gCgAABehWBhtPfvSLWxm8F12UZAU3lzdGVtLlZhbHVlVHVwbGUuZGxsAAABvDHDwACAAABXbumoJGZZSb/d50BKf33mU3lzdGVtLldlYi5kbGwAAAGaDoTYAIAAAI0z/cYKQX9Cm+2WDRsZzm1TeXN0ZW0uV2ViLkh0dHBVdGlsaXR5LmRsbAAAAU+fbPAAgAAAqBQq1fN5k0a5ft8UyssSh1N5c3RlbS5XaW5kb3dzLmRsbAAAAeEU7e8AgAAALXa6QEAPkkiBqE9lioPQ01N5c3RlbS5YbWwuZGxsAAABhiep4gCgAAC0SoXHa4kUQ65pY0SQONqLU3lzdGVtLlhtbC5MaW5xLmRsbAAAAWJuVKsAgAAAiLCeHKCbzkGns5a6UhgM1VN5c3RlbS5YbWwuUmVhZGVyV3JpdGVyLmRsbAAAASMiiKsAAAIAxYP3dZtZU0u0HvJbR4pinFN5c3RlbS5YbWwuU2VyaWFsaXphdGlvbi5kbGwAAAEDxojXAIAAAFn6A1ikuB1NnB/k+S8E1qZTeXN0ZW0uWG1sLlhEb2N1bWVudC5kbGwAAAEduNL8AMAAAPsvm8gEaodPtdlj70QZgw1TeXN0ZW0uWG1sLlhtbERvY3VtZW50LmRsbAAAAR8Q7IEAgAAAf7wySrdfokqzuZvtRnzWsFN5c3RlbS5YbWwuWG1sU2VyaWFsaXplci5kbGwAAAFoK/mOAAABANrwC/fUOq5OjlN3nF7UV/JTeXN0ZW0uWG1sLlhQYXRoLmRsbAAAAbrnoZUAgAAAJ5HULxBu4UyY3biFCyDpvFN5c3RlbS5YbWwuWFBhdGguWERvY3VtZW50LmRsbAAAAcMdh/IAgAAADa7pRUTWnUeXv+2QCLM77VdpbmRvd3NCYXNlLmRsbAAAASPbe5EAgAAAwkSFaJ9G2kGO+D7d6X/t3gYAAAAWA0wGU3lzdGVtAwGltgAAAA==\"}},\"source\":\"using System;\\nnamespace RoslynWeb.Dynamic;\\npublic static class Function { public static long Invoke(long x, long y) { return checked(x * y); } }\",\"typeName\":\"RoslynWeb.Dynamic.Function\",\"methodName\":\"Invoke\"}}\n{\"id\":\"product\",\"success\":true,\"result\":{\"success\":true,\"result\":{\"$bigint\":\"42\"},\"exitCode\":0,\"stdout\":\"\",\"stderr\":\"\",\"elapsedMs\":14.2022}}\n",
+      "stderr": ""
+    },
+    {
+      "name": "automation",
+      "exitCode": 0,
+      "seconds": 2.207,
+      "stdout": "{\n  \"info\": {\n    \"bridgeVersion\": \"0.8.0\",\n    \"roslynVersion\": \"5.0.0.0\",\n    \"runtimeVersion\": \"10.0.0\",\n    \"referenceCount\": 167,\n    \"execution\": \"dotnet-wasm-interpreter\"\n  },\n  \"exactInt64\": {\n    \"$bigint\": \"9007199254740995\"\n  },\n  \"sum\": {\n    \"$bigint\": \"500500\"\n  },\n  \"nativeBytes\": 1422,\n  \"nativeImports\": 0,\n  \"javascriptBytes\": 12441,\n  \"repeatedEmission\": {\n    \"emitHit\": true\n  }\n}\n",
+      "stderr": ""
+    },
+    {
+      "name": "node-api",
+      "exitCode": 0,
+      "stdout": "Node API running Roslyn in WebAssembly\n",
+      "stderr": ""
+    },
+    {
+      "name": "inline-compile",
+      "exitCode": 0,
+      "seconds": 1.891,
+      "stdout": "Wrote /tmp/roslynweb-cli-options-0m4hc1iu/Kernel.dll\n",
+      "stderr": ""
+    },
+    {
+      "name": "inline-native",
+      "exitCode": 0,
+      "seconds": 2.318,
+      "stdout": "Wrote /tmp/roslynweb-cli-options-0m4hc1iu/Kernel.wasm\nWrote /tmp/roslynweb-cli-options-0m4hc1iu/Kernel.manifest.json\n",
+      "stderr": ""
+    },
+    {
+      "name": "inline-javascript",
+      "exitCode": 0,
+      "seconds": 2.248,
+      "stdout": "Wrote /tmp/roslynweb-cli-options-0m4hc1iu/Kernel.mjs\n",
+      "stderr": ""
+    },
+    {
+      "name": "inline-files",
+      "exitCode": 0,
+      "seconds": 2.361,
+      "stdout": "Wrote output.txt\n",
+      "stderr": ""
+    },
+    {
+      "name": "project-direct",
+      "exitCode": 0,
+      "seconds": 2.299,
+      "stdout": "Built from a local project with RoslynWeb\n",
+      "stderr": ""
+    },
+    {
+      "name": "project-evaluate",
+      "exitCode": 0,
+      "seconds": 0.085,
+      "stdout": "{\"projectPath\":\"/App.csproj\",\"properties\":{\"Configuration\":\"Debug\",\"Platform\":\"AnyCPU\",\"RuntimeIdentifier\":\"browser-wasm\",\"Language\":\"C#\",\"NuGetPackageRoot\":\"/.nuget/packages/\",\"MSBuildRuntimeType\":\"Core\",\"MSBuildRuntimeVersion\":\"10.0\",\"IsCrossTargetingBuild\":\"false\",\"IsBrowser\":\"true\",\"TargetFramework\":\"net10.0\",\"TargetFrameworkIdentifier\":\".NETCoreApp\",\"TargetFrameworkVersion\":\"v10.0\",\"TargetFrameworkMoniker\":\".NETCoreApp,Version=v10.0\",\"TargetPlatformIdentifier\":\"\",\"AssemblyName\":\"CliProject\",\"OutputType\":\"Exe\",\"EnableDefaultItems\":\"true\",\"EnableDefaultCompileItems\":\"true\",\"EnableDefaultEmbeddedResourceItems\":\"true\",\"RootNamespace\":\"App\",\"IntermediateOutputPath\":\"obj/\",\"OutputPath\":\"bin/\",\"BuildDependsOn\":\"BeforeBuild;CoreCompile;AfterBuild\",\"MSBuildProjectFullPath\":\"/App.csproj\",\"MSBuildProjectDirectory\":\"/\",\"MSBuildProjectFile\":\"App.csproj\",\"MSBuildProjectName\":\"App\",\"Nullable\":\"enable\"},\"items\":{\"Compile\":[{\"include\":\"Program.cs\",\"path\":\"/Program.cs\",\"metadata\":{}}],\"EmbeddedResource\":[]},\"imports\":[\"/App.csproj\"],\"targets\":[\"BeforeBuild\",\"AfterBuild\",\"CoreCompile\",\"Build\"],\"usingTasks\":[],\"files\":{\"$map\":[[\"/App.csproj\",{\"$bytes\":\"PFByb2plY3QgU2RrPSJNaWNyb3NvZnQuTkVULlNkayI+CiAgPFByb3BlcnR5R3JvdXA+CiAgICA8VGFyZ2V0RnJhbWV3b3JrPm5ldDEwLjA8L1RhcmdldEZyYW1ld29yaz4KICAgIDxPdXRwdXRUeXBlPkV4ZTwvT3V0cHV0VHlwZT4KICAgIDxBc3NlbWJseU5hbWU+Q2xpUHJvamVjdDwvQXNzZW1ibHlOYW1lPgogICAgPE51bGxhYmxlPmVuYWJsZTwvTnVsbGFibGU+CiAgPC9Qcm9wZXJ0eUdyb3VwPgo8L1Byb2plY3Q+Cg==\"}],[\"/Program.cs\",{\"$bytes\":\"dXNpbmcgU3lzdGVtOwoKQ29uc29sZS5Xcml0ZUxpbmUoIkJ1aWx0IGZyb20gYSBsb2NhbCBwcm9qZWN0IHdpdGggUm9zbHluV2ViIik7Cg==\"}]]},\"diagnostics\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "name": "extensions",
+      "exitCode": 0,
+      "seconds": 0.541,
+      "stdout": "[]\n",
+      "stderr": ""
+    }
+  ],
+  "scope": "Executable CLI guide examples; local Node 24.19.0, RoslynWeb 0.8.0; durations are smoke-test observations, not a benchmark."
+}

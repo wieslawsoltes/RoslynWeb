@@ -1,0 +1,6 @@
+{"id":"counter","method":"compile","args":[{"$text":"examples/cli/Counter.cs"},{"assemblyName":"SessionCounter","outputKind":"library","emitPdb":false}]}
+{"id":"handle","method":"createObject","args":[{"$ref":"counter.assemblyId"},"Counter"]}
+{"id":"set","method":"setProperty","args":[{"$ref":"handle"},"Value",20]}
+{"id":"sum","method":"invokeObject","args":[{"$ref":"handle"},"Add",[22]]}
+{"id":"value","method":"getProperty","args":[{"$ref":"handle"},"Value"]}
+{"id":"release","method":"releaseObject","args":[{"$ref":"handle"}]}

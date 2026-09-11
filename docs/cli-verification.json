@@ -1,0 +1,211 @@
+{
+  "testedAt": "2026-09-11T20:09:56.594Z",
+  "environment": {
+    "node": "v24.19.0",
+    "platform": "linux",
+    "compiler": "Bundled Roslyn/.NET WebAssembly in the production Node Worker host",
+    "subprocess": true
+  },
+  "milliseconds": 83244,
+  "passed": 30,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "Help, version and malformed options work without loading runtime assets",
+      "passed": true,
+      "milliseconds": 189
+    },
+    {
+      "name": "Compiler information loads actual Roslyn and the complete bundled reference set",
+      "passed": true,
+      "milliseconds": 468,
+      "evidence": {
+        "bridgeVersion": "0.8.0",
+        "roslynVersion": "5.0.0.0",
+        "runtimeVersion": "10.0.0",
+        "referenceCount": 167,
+        "execution": "dotnet-wasm-interpreter"
+      }
+    },
+    {
+      "name": "C# compiles to genuine PE, portable PDB and XML documentation",
+      "passed": true,
+      "milliseconds": 1866
+    },
+    {
+      "name": "An existing PE executes through the wasm backend",
+      "passed": true,
+      "milliseconds": 634,
+      "evidence": {
+        "backend": "wasm",
+        "stdout": "cli:42\n"
+      }
+    },
+    {
+      "name": "An existing PE executes through the javascript backend",
+      "passed": true,
+      "milliseconds": 643,
+      "evidence": {
+        "backend": "javascript",
+        "stdout": "cli:42\n"
+      }
+    },
+    {
+      "name": "An existing PE executes through the native-wasm backend",
+      "passed": true,
+      "milliseconds": 658,
+      "evidence": {
+        "backend": "native-wasm",
+        "stdout": "cli:42\n"
+      }
+    },
+    {
+      "name": "An existing PE executes through the auto backend",
+      "passed": true,
+      "milliseconds": 689,
+      "evidence": {
+        "backend": "javascript",
+        "stdout": "cli:42\n"
+      }
+    },
+    {
+      "name": "C# source and a saved tagged artifact are accepted as execution inputs",
+      "passed": true,
+      "milliseconds": 2586
+    },
+    {
+      "name": "Reference listing, PE inspection and both compatibility analyzers expose their public results",
+      "passed": true,
+      "milliseconds": 2526
+    },
+    {
+      "name": "C# emits reusable JavaScript and native Wasm artifacts",
+      "passed": true,
+      "milliseconds": 4530,
+      "evidence": {
+        "standaloneArtifactsExecuteWithoutDotnet": true
+      }
+    },
+    {
+      "name": "Existing PE images emit executable JavaScript and Wasm",
+      "passed": true,
+      "milliseconds": 1615
+    },
+    {
+      "name": "Standard input compiles and program arguments remain separate from CLI arguments",
+      "passed": true,
+      "milliseconds": 2501
+    },
+    {
+      "name": "Roslyn diagnostics retain file coordinates and compilation failures exit one",
+      "passed": true,
+      "milliseconds": 1436
+    },
+    {
+      "name": "Typed managed invocation preserves integers above JavaScript safe precision",
+      "passed": true,
+      "milliseconds": 2797
+    },
+    {
+      "name": "Expression and dynamic function commands compile and invoke real C#",
+      "passed": true,
+      "milliseconds": 3430
+    },
+    {
+      "name": "Single requests, batch files and scripts expose the same managed compiler API",
+      "passed": true,
+      "milliseconds": 5413
+    },
+    {
+      "name": "DLL references are available to source compilation and runtime linking",
+      "passed": true,
+      "milliseconds": 5462
+    },
+    {
+      "name": "One session retains results, compilation caches, dynamic functions and CLR object handles",
+      "passed": true,
+      "milliseconds": 2592,
+      "evidence": {
+        "requests": 14,
+        "compilationReused": true,
+        "emissionReused": true
+      }
+    },
+    {
+      "name": "Sessions support persistent managed files and explicit workspace disposal",
+      "passed": true,
+      "milliseconds": 2049
+    },
+    {
+      "name": "Real MSBuild project evaluation and build honor references, generated sources and resources",
+      "passed": true,
+      "milliseconds": 5144
+    },
+    {
+      "name": "Resource creation and actual native WASI commands are accessible through the public protocol",
+      "passed": true,
+      "milliseconds": 685
+    },
+    {
+      "name": "Resource and native command conveniences write genuine binaries and captured files",
+      "passed": true,
+      "milliseconds": 1269
+    },
+    {
+      "name": "Compiler extension DLLs run real Roslyn source generators and analyzers from CLI flags",
+      "passed": true,
+      "milliseconds": 5251
+    },
+    {
+      "name": "Managed MSBuild tasks compile and execute with typed inputs and outputs",
+      "passed": true,
+      "milliseconds": 2481
+    },
+    {
+      "name": "An official local NuGet package compiles and executes using the managed backend",
+      "passed": true,
+      "milliseconds": 3272
+    },
+    {
+      "name": "NuGet restore resolves a genuine package from a local v3 HTTP feed",
+      "passed": true,
+      "milliseconds": 3116,
+      "evidence": {
+        "requests": 3,
+        "externalNetwork": false,
+        "cachedRestoreWithFeedStopped": true,
+        "apiHonorsOffline": true
+      }
+    },
+    {
+      "name": "Execution errors and bounded execution are machine-readable and terminate workers",
+      "passed": true,
+      "milliseconds": 3689,
+      "evidence": {
+        "timeoutExitCode": 124,
+        "workerTerminated": true
+      }
+    },
+    {
+      "name": "Standalone generated JavaScript and Wasm honor execution timeouts without Roslyn",
+      "passed": true,
+      "milliseconds": 3646
+    },
+    {
+      "name": "SIGINT stops a session and disposes its compiler worker",
+      "passed": true,
+      "milliseconds": 474
+    },
+    {
+      "name": "npm tarball installs offline and its executable loads all bundled compiler assets",
+      "passed": true,
+      "milliseconds": 12126,
+      "evidence": {
+        "files": 491,
+        "packedBytes": 46797465,
+        "version": "0.8.0",
+        "installedOffline": true
+      }
+    }
+  ]
+}

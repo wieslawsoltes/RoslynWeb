@@ -1,0 +1,2 @@
+{"id":"multiply","method":"compileFunction","args":[{"returnType":"long","parameters":[{"name":"x","type":"long"},{"name":"y","type":"long"}],"body":"return checked(x * y);"}]}
+{"id":"product","method":"invoke","target":"multiply","args":[{"$bigint":"21"},{"$bigint":"2"}]}

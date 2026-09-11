@@ -1,0 +1,9 @@
+{
+  "name": "Multiply",
+  "returnType": "long",
+  "parameters": [
+    { "name": "left", "type": "long" },
+    { "name": "right", "type": "long" }
+  ],
+  "body": "return checked(left * right);"
+}

@@ -1,6 +1,6 @@
 # RoslynWeb
 
-Compile C# to genuine MSIL DLLs in a browser, inspect the assembly, and compile MSIL directly to executable WebAssembly, or execute it through the .NET runtime or the MSIL-to-JavaScript compiler. The library exposes a small asynchronous JavaScript API and a plain HTML/JavaScript sample editor. Compilation runs locally; no compiler server is used.
+Compile C# to genuine MSIL DLLs in a browser or from a terminal, inspect the assembly, and compile MSIL directly to executable WebAssembly, or execute it through the .NET runtime or the MSIL-to-JavaScript compiler. The same asynchronous JavaScript API powers the HTML/JavaScript sample editor, the Node API and the `roslynweb` CLI. Compilation runs locally; no compiler server is used.
 
 The repository contains the complete bridge and JavaScript source, reproducible build scripts and tests. GitHub Actions builds **a runnable WebAssembly bundle**, publishes a source-and-WASM artifact, and deploys the static sample to GitHub Pages when Pages is enabled for the repository. Generated runtime binaries and downloaded test fixtures are reproduced by the build rather than committed to Git. It packages the C# compiler from **.NET SDK 10.0.100 / Roslyn 5.0**, the **.NET 10 browser runtime**, and **167 framework reference assemblies**. Roslyn receives one documented scheduling adaptation for single-thread WebAssembly, described below.
 
@@ -19,6 +19,96 @@ Open **http://localhost:8080**. Node 22 or later is sufficient to serve the supp
 The sample provides C# editing, compile/run/stop, selectable execution backends and optimization modes, DLL, native WebAssembly and generated-JavaScript downloads, MSIL inspection, source diagnostics, DLL and `.nupkg` import, NuGet restore, program arguments, and light/dark themes. Examples cover typed Int64 and floating-point kernels, tuple interface indexing and custom comparers, direct native compilation with exception filters and exact Decimal/Nullable/ValueTuple values, algorithms, LINQ and records, async and exceptions, JSON and reflection, a reusable library, Newtonsoft.Json, deliberate compiler errors, real source generators and analyzers, imported project targets, CLR objects, runtime-generated functions, browser UI controls, embedded RESX resources, managed custom build tasks, C# Reflection.Emit, dynamic type construction, managed filesystem workspaces, native WASI build tasks, original WinForms/WPF binaries, and virtual files with binary streams. Ctrl/Cmd+Enter runs the current program.
 
 The sample is a static developer tool. Package restore contacts the selected package feed; source compilation and program execution stay within the runtime. It does not provide accounts, collaborative editing or a desktop IDE.
+
+## Use from a terminal
+
+Node **22+** runs the CLI with the supplied `dist/` WebAssembly assets. A .NET installation is required to **build those assets from source**, but is not needed to use a prebuilt package. From the extracted build or a built checkout:
+
+```sh
+npm run cli -- info
+npm run cli -- run examples/cli/Hello.cs --backend wasm -- one two
+```
+
+For the shorter commands used below, link the local package once:
+
+```sh
+npm link
+roslynweb --help
+roslynweb info
+```
+
+This installs the executable from your local checkout. The project does not require a package published to the npm registry. To move a prebuilt installation to another machine, run `npm pack` after building, then `npm install -g ./roslynweb-core-<version>.tgz` on the destination. The tarball includes `dist/`, the CLI, library modules and examples. See the [CLI guide](docs/CLI.md) for installation, every command, JSON automation, watch mode and output formats.
+
+Compile, inspect and run an application:
+
+```sh
+roslynweb compile examples/cli/Hello.cs --output out/Hello.dll --pdb out/Hello.pdb
+roslynweb inspect out/Hello.dll --output out/Hello.il.json
+roslynweb analyze out/Hello.dll --backend javascript --json
+roslynweb run out/Hello.dll --backend wasm -- one two
+roslynweb run examples/cli/Hello.cs --backend javascript
+roslynweb run examples/cli/Hello.cs --backend native-wasm
+```
+
+Emit reusable code, then execute it without starting Roslyn or .NET:
+
+```sh
+roslynweb compile examples/cli/Hello.cs --target wasm --output out/Hello.wasm
+roslynweb run out/Hello.wasm
+roslynweb compile examples/cli/Hello.cs --target javascript --output out/Hello.mjs
+roslynweb run out/Hello.mjs
+```
+
+Saved JavaScript modules import the installed runtime by absolute file URL by default. For portable storage, also use `--artifact out/Hello.javascript.json` and run that artifact, or choose the deployment-specific `runtimeImport` in `--javascript-options`. Native `.wasm` embeds its RoslynWeb manifest and uses the supplied Wasm loader for declared managed services. Numeric modules with no imports also run directly through `WebAssembly.instantiate`.
+
+Use libraries, projects, packages and runtime functions:
+
+```sh
+roslynweb compile examples/cli/Kernel.cs --kind library --output out/Kernel.dll
+roslynweb invoke out/Kernel.dll --type Kernel --method Add --arguments '[{"$bigint":"9007199254740993"},{"$bigint":"2"}]' --json
+roslynweb eval '21 * 2' --return-type int --json
+roslynweb compile-function --spec examples/cli/function.json --invoke --arguments '[{"$bigint":"21"},{"$bigint":"2"}]' --json
+roslynweb build examples/cli/project/App.csproj --output out/Project.dll
+roslynweb run out/Project.dll
+roslynweb restore 'Newtonsoft.Json@[13.0.3]' --output out/packages.json
+roslynweb resources examples/cli/resources.json --output out/Values.resources
+```
+
+For program compilation, `--reference path.dll`, `--extension analyzer.dll`, `--nupkg package.nupkg` and `--package 'Package.Id@[version]'` register inputs in the same compiler instance. `--options` exposes the complete compile-options object, including defines, unsafe code, nullable analysis, additional texts, analyzer configuration, generated sources and embedded resources. `--run-options` exposes execution options, including virtual files and instruction limits. `--files-out` exports returned virtual files to a chosen local directory.
+
+NuGet archives and feed responses use a bounded persistent disk cache. `--cache-dir` selects its location; `--offline` restores only from previously cached feed/index/archive data and fails explicitly when required entries are missing. Compiler syntax and emission caches remain local to a running compiler instance.
+
+Keep one compiler alive for repeated work and persistent state:
+
+```sh
+roslynweb session examples/cli/session.jsonl
+roslynweb session examples/cli/workspace.jsonl
+roslynweb batch examples/cli/batch.json
+roslynweb script examples/cli/automation.mjs -- 1000
+roslynweb watch run examples/cli/Hello.cs --backend javascript
+roslynweb serve
+```
+
+`session` consumes JSON Lines; `api` accepts one JSON request; `batch` accepts an ordered array. Requests call the public compiler API and can refer to previous results, load local file bytes and retain CLR handles or managed workspaces. `script` receives the real compiler object, so custom package caches/fetch functions, native ABI bindings, project task adapters, event callbacks and other function-valued options remain available. `watch` reuses the compiler between changes; `serve` hosts the browser application for DOM-based UI work. See the [complete feature-to-command map](docs/CLI.md#feature-coverage).
+
+## Use the same API from Node
+
+```js
+import { createRoslyn } from '@roslynweb/core/node';
+
+const compiler = await createRoslyn(); // Uses this package's local dist/ assets.
+try {
+  const assembly = await compiler.compile('System.Console.WriteLine(42);');
+  if (!assembly.success) throw new Error(JSON.stringify(assembly.diagnostics));
+  const result = await compiler.run(assembly, { backend: 'wasm' });
+  if (!result.success) throw new Error(result.error?.message || 'Execution failed');
+  process.stdout.write(result.stdout);
+} finally {
+  await compiler.close(); // Waits for worker termination.
+}
+```
+
+The Node entry point runs the existing browser .NET bundle in an isolated `worker_threads` worker, preserving compiler APIs, cancellation and runtime disposal. It does not invoke a system C# compiler. Use `baseUrl` with a local directory or `file:` URL to select another prebuilt bundle. The Node API always uses a worker; `worker:false` is reserved for the browser API's controlled direct-host integrations. The [CLI guide](docs/CLI.md#node-api-and-javascript-automation) explains the execution and filesystem boundaries.
 
 ## Embed in an HTML/JavaScript application
 
@@ -174,7 +264,7 @@ console.log(artifact.optimization, artifact.cache);
 
 `compileToJavaScript` performs C#→PE/MSIL→JavaScript in the compiler Worker. `emitJavaScript(assembly, options)` accepts an existing DLL, and `run(assembly,{backend:'javascript'})` compiles and executes it. Registered implementation DLLs use the same exact-identity linking rules as direct Wasm. Compiled JavaScript functions are cached with their model, dependencies and options; each high-level run creates fresh runtime state.
 
-The default optimizer groups IL instructions into basic blocks and emits unboxed Int32 code for proven numeric leaf methods. Use `javascript:{optimize:'blocks'}` to retain only block grouping, or `javascript:{optimize:false}` for the reference lowering. Int64, floating point, managed calls and exception-bearing methods continue through the general compiler with their existing value semantics. Generated modules export `createAssembly()`, compiled methods, metadata, optimization statistics and diagnostics. Deploy them with the complete `src/il/` directory; their code runs without Roslyn or .NET.
+The default optimizer groups IL instructions into basic blocks and emits unboxed Int32, Int64/UInt64 and Single/Double code for proven numeric leaf methods. Use `javascript:{optimize:'blocks'}` to retain only block grouping, or `javascript:{optimize:false}` for the reference lowering. Managed calls, exception-bearing methods and numeric methods that do not satisfy the typed optimizer's proof requirements continue through the general compiler with their existing value semantics. Generated modules export `createAssembly()`, compiled methods, metadata, optimization statistics and diagnostics. Deploy them with the complete `src/il/` directory; their code runs without Roslyn or .NET.
 
 The JavaScript backend supports the documented arithmetic, control flow, objects/arrays/byrefs, closed generics, delegates, reflection, filesystem and framework services. Both JavaScript and native Wasm now use search-before-unwind exception filters and shared Decimal, Nullable and ValueTuple value semantics. They remain finite CLR/BCL implementations. `auto` chooses JavaScript only when preflight accepts the assembly; otherwise it chooses .NET WASM before any program execution. It never repeats partially executed code on another backend.
 
@@ -292,6 +382,8 @@ dotnet run --project managed/SelfTest -c Release
 npm test
 npm run test:wasm
 npm run test:worker
+npm run test:node
+npm run test:cli
 npm run test:compat
 node managed/runtime-tooling-tests.mjs
 node managed/runtime-build-tests.mjs
@@ -318,7 +410,8 @@ See `docs/VERIFICATION.md`, `docs/wasm-verification.json`, `docs/worker-verifica
 | DLL/PDB emission | Genuine PE/CLI images and portable PDBs; diagnostics and XML documentation options |
 | Managed execution | Actual .NET 10 browser WASM interpreter, dynamic assembly loading, async, LINQ, reflection and JSON exercised |
 | MSIL → native Wasm | Typed native code, structured reducible control flow, numeric intrinsics, linked methods, two-pass filters and documented managed services |
-| MSIL → JS | Basic-block generation and proven unboxed Int32 methods; linked assemblies, reusable compiled modules and explicit incompatibility diagnostics |
+| MSIL → JS | Basic-block generation and proven unboxed Int32/Int64/UInt64/Single/Double methods; linked assemblies, reusable compiled modules and explicit incompatibility diagnostics |
+| Command-line and Node API | Local C#/DLL/JS/Wasm workflows, all public compiler methods through JSON sessions or JavaScript scripts, package/project tooling, watch mode and static browser hosting |
 | Shared managed values | Exact Decimal arithmetic and invariant formats, Nullable and ValueTuple value/boxing/byref behavior within the documented surface |
 | Existing DLLs | Managed assemblies and dependencies compatible with .NET browser; original WinForms/WPF DLLs using the explicit desktop compatibility surface also execute unchanged |
 | NuGet | Managed asset import, compatible TFM/RID selection, transitive version constraints and live official-feed verification |
@@ -337,6 +430,7 @@ The archive includes the original runtime assets and omits redundant precompress
 | Path | Purpose |
 | --- | --- |
 | `src/browser.js`, `src/index.js`, `src/index.d.ts` | Lean browser API, aggregate exports and TypeScript declarations |
+| `bin/roslynweb.mjs`, `src/cli/`, `src/node/` | CLI commands, structured automation, Node worker adapter and Node API declarations |
 | `src/host.js`, `src/worker.js`, `src/execution.js` | WASM loader, worker RPC and execution selection |
 | `src/il/` | MSIL-to-JavaScript compiler, numeric/block optimizer and shared managed-value services |
 | `src/wasm/` | Direct MSIL-to-Wasm compiler, control-flow optimizer, native filter companions and module loader |
@@ -347,6 +441,7 @@ The archive includes the original runtime assets and omits redundant precompress
 | `managed/` | C# bridge, metadata inspector, Roslyn adaptation and native tests |
 | `dist/` | Prebuilt browser WASM runtime, Roslyn and framework assets |
 | `demo/` | Plain HTML/CSS/JavaScript sample editor |
+| `examples/cli/` | Runnable command-line C#, projects, JSON sessions and Node scripts |
 | `tests/`, `scripts/` | Unit/integration tests, fixtures, build and server scripts |
 | `docs/`, `licenses/` | Architecture, validation and third-party license notices |
 

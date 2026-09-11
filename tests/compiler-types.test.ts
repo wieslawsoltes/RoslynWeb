@@ -2,6 +2,15 @@
 import {createRoslyn,compileAssembly,type AssemblyModel,type JavaScriptArtifact,type JavaScriptOptimizationStats} from '@roslynweb/core';
 import {compileJavaScriptModule,generateModule,ILAssemblyBuilder,DynamicMethodBuilder,type ILAnalysis} from '@roslynweb/core/il';
 import {compileWasm,loadWasm,type WasmOptimizationStats} from '@roslynweb/core/wasm';
+import {createRoslyn as createNodeRoslyn,type NodeRoslynCompiler} from '@roslynweb/core/node';
+
+const nodeCompiler:NodeRoslynCompiler=await createNodeRoslyn({baseUrl:'./dist',worker:true,onWorkerOutput(text,stream){void[text,stream];}});
+await nodeCompiler.compile('System.Console.WriteLine(42);');
+await nodeCompiler.close();
+// @ts-expect-error Node requires a terminable worker.
+createNodeRoslyn({worker:false});
+// @ts-expect-error Node supplies its own transport rather than accepting a browser Worker constructor.
+createNodeRoslyn({Worker:globalThis.Worker});
 
 const compiler=await createRoslyn({worker:true});
 const javascript=await compiler.compileToJavaScript('public static class Math { public static int Add(int a,int b)=>a+b; }',{outputKind:'library',javascript:{optimize:true,runtimeImport:'./src/il/runtime.mjs'}});
