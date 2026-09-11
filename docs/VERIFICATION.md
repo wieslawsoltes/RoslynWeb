@@ -1,12 +1,31 @@
 # Verification report
 
-RoslynWeb version: 0.8.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`. Native CLR oracle generation records the actual installed .NET 10 servicing version.
+RoslynWeb version: 0.9.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`. Native CLR oracle generation records the actual installed .NET 10 servicing version.
+
+## netDxf and WebGPU (0.9.0)
+
+The full pinned 272-file netDxf source snapshot compiles without C# diagnostics in actual Roslyn WebAssembly. Source-mode library and bridge emission deterministically reproduce the prebuilt hashes. The full library runs on the managed .NET Wasm backend; selected geometry methods are additionally emitted as native Wasm and JavaScript. Whole-library generated-backend compatibility remains incomplete and is explicitly measured.
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| Full managed library, pinned fixtures, round trips, ownership and failed-load cleanup | 12 checks passed | `docs/netdxf-verification.json` |
+| Source/compiler provenance and emitted hashes | All 272 original source hashes verified | `vendor/netDxf/provenance.json`, `docs/netdxf-build-verification.json` |
+| Actual kernel compilation/execution and full-library rejection probes | 6 checks passed, including 179 geometry cases on each generated backend | `docs/netdxf-backends-verification.json` |
+| Geometry and WebGPU resource/camera lifecycle | 34 tests passed | `tests/dxf-renderer.test.mjs` |
+| Conservative JavaScript export selection | 12 tests passed, including implicit callbacks, reflection and MethodImpl regressions | `tests/javascript-exports.test.mjs` |
+| Argument-exception overload semantics | Six grouped scenarios matched real managed Wasm across five generated compiler modes | `tests/argument-exceptions-integration.mjs` |
+| Actual Chromium/WebGPU sample | 10 checks passed, including rendered pixels, source compilation, download/reload, three kernel backends and recovery | `docs/netdxf-browser-verification.json`; CI uploads screenshots |
+| Existing Chromium compiler lab/browser suite | 34 checks passed | `artifacts/browser-chromium/verification.json`; CI reruns it |
+| Production Node and CLI/package regression | 7 Node, 5 session, 3 watch and 30 CLI checks passed | Existing Node/CLI verification reports |
+| TypeScript public API | Strict NodeNext check passed | `tests/compiler-types.test.ts` |
+
+The original upstream text and binary DXF fixtures each retain 58 modelspace entities, seven layers and 19 blocks through both export formats. The geometry adapter produces 227 primitives, reports 25 unsupported entities and has no geometry conversion errors for these fixtures. The WebGPU test uses Chromium with Vulkan/SwiftShader and validates visible pixel output. Hardware GPU behavior, other browser engines and mobile GPU performance are not established by that test. See [NETDXF.md](NETDXF.md) for rendering and compiler limits.
 
 ## Results
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **5,408 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract, Node/CLI and transport tests |
+| JavaScript unit and real-IL fixture tests | **5,462 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract, Node/CLI and transport tests |
 | Optimized JavaScript/native public compiler APIs | **15 passed, 0 failed** | `npm run test:compilers`; `docs/compiler-v6-worker-verification.json` |
 | Typed kernels, intrinsics and tuple public APIs | **6 passed, 0 failed** | `npm run test:compilers-v7`; `docs/compiler-v7-worker-verification.json` |
 | Extended numeric five-mode compiler conformance | **448 grouped tests passed** | 2,296 independent native CLR cases × five modes = 11,480 comparisons, plus fresh-process Wasm proofs; included in unit tests |

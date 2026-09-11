@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Read and write DXF with the complete netDxf library running in .NET WebAssembly, then draw its geometry using WebGPU.">
+  <title>RoslynWeb · netDxf Studio</title>
+  <link rel="stylesheet" href="./dxf.css">
+</head>
+<body>
+  <header class="app-header">
+    <a class="brand" href="./index.html"><b class="brand-symbol">C#</b><span>RoslynWeb<small>netDxf STUDIO</small></span></a>
+    <span class="header-note">C# library · .NET WebAssembly · WebGPU</span>
+    <a class="lab-link" href="./index.html">← C# Lab</a>
+    <a class="guide-link" href="../docs/NETDXF.md" target="_blank" rel="noreferrer">Integration guide ↗</a>
+  </header>
+  <main>
+    <aside class="sidebar" aria-label="Drawing controls">
+      <div class="section-label">DRAWING</div>
+      <h1>DXF, in your browser.</h1>
+      <p class="intro">The complete netDxf library reads and writes your drawing in a .NET WebAssembly worker. WebGPU draws the extracted geometry.</p>
+      <button id="sample" class="primary" disabled>Create sample drawing</button>
+      <button id="open" class="secondary" disabled>Open DXF…</button>
+      <input id="file" type="file" accept=".dxf" hidden>
+      <p class="hint">Text or binary DXF · up to 20 MiB<br>Your drawing stays in this browser.</p>
+
+      <section class="file-details" aria-label="Current drawing">
+        <div class="section-label">CURRENT DOCUMENT</div>
+        <strong id="filename">No drawing loaded</strong>
+        <div class="metrics">
+          <div><b id="entity-count">—</b><span>entities</span></div>
+          <div><b id="layer-count">—</b><span>layers</span></div>
+          <div><b id="segment-count">—</b><span>segments</span></div>
+          <div><b id="load-time">—</b><span>load / extract</span></div>
+        </div>
+        <div class="export-actions"><button id="export-text" class="secondary" disabled>↓ Text DXF</button><button id="export-binary" class="secondary" disabled>↓ Binary DXF</button></div>
+      </section>
+
+      <section class="layer-panel" aria-label="Drawing layers">
+        <div class="section-heading"><span class="section-label">LAYERS</span><button id="show-all" class="quiet" disabled>Show all</button></div>
+        <div id="layers" class="layers"><p class="hint">Layers appear when a drawing is loaded.</p></div>
+      </section>
+
+      <details class="runtime-options">
+        <summary>Compiler &amp; runtime</summary>
+        <label class="checkbox-label"><input id="compile-source" type="checkbox">Compile netDxf from source on startup</label>
+        <p class="hint">The default loads the full precompiled library for a faster start. Source mode compiles every pinned netDxf source file with Roslyn in this browser.</p>
+        <button id="restart" class="secondary">Restart runtime</button>
+        <p id="runtime-info" class="hint">Worker initialization pending.</p>
+      </details>
+      <div class="sidebar-bottom"><a href="https://github.com/wieslawsoltes/netDxf/tree/netstandard" target="_blank" rel="noreferrer">netDxf source ↗</a><span>Managed Wasm execution · XY projection</span></div>
+    </aside>
+
+    <section class="drawing-workspace" aria-label="Drawing workspace">
+      <div class="toolbar">
+        <div class="drawing-title"><span class="document-icon" aria-hidden="true">◇</span><span id="drawing-title">Untitled drawing</span></div>
+        <div class="view-actions"><button id="zoom-out" class="secondary" aria-label="Zoom out" disabled>−</button><button id="zoom-in" class="secondary" aria-label="Zoom in" disabled>+</button><button id="fit" class="secondary" disabled>Fit drawing</button></div>
+      </div>
+      <div id="viewport" class="viewport">
+        <canvas id="drawing" aria-label="WebGPU drawing viewport. Drag to pan, scroll to zoom, or use the view buttons." tabindex="0"></canvas>
+        <div id="empty-state" class="empty-state"><div class="empty-mark" aria-hidden="true">⌁</div><h2>Preparing your drawing workspace</h2><p>The compiler and netDxf library are loading. Progress appears below.</p></div>
+        <div id="gpu-notice" class="gpu-notice" role="status" hidden></div>
+        <div class="viewport-caption"><span id="gpu-status">Checking WebGPU</span><span>Drag to pan · Scroll to zoom · F to fit</span></div>
+      </div>
+      <div class="status-bar"><span class="status-dot" aria-hidden="true"></span><span id="status" role="status" aria-live="polite">Loading application modules…</span><span id="operation-time"></span></div>
+      <div id="error" class="error-banner" role="alert" hidden></div>
+      <section id="issue-panel" class="issue-panel" aria-label="Drawing issues" hidden><div class="section-heading"><strong id="issue-title">Drawing notices</strong></div><ul id="issues"></ul></section>
+      <details class="kernel-panel"><summary>Compare compiled netDxf geometry</summary><p>Compile selected netDxf mathematics to native WebAssembly and JavaScript, then compare real results with managed Wasm. This experiment covers scalar geometry methods; the full DXF parser continues to run in .NET WebAssembly.</p><button id="compare-kernels" class="secondary" disabled>Compile &amp; compare geometry</button><div id="kernel-results" class="kernel-results" aria-live="polite">Runs on demand. The sample drawing is unchanged.</div></details>
+      <details class="activity-panel"><summary>Runtime activity <span id="activity-count">0 events</span></summary><pre id="activity" role="log" aria-live="off">Loading application modules…</pre></details>
+      <details class="usage-panel"><summary>Use this in your app</summary><p>Import the reusable library and renderer. Parsing and saving run through the complete managed netDxf assembly; the scene contains the supported display primitives and per-entity issues.</p><pre><code>import { createRoslyn } from '../src/browser.js';
+import { createNetDxf, createDxfRenderer } from '../src/dxf/index.js';
+
+const compiler = await createRoslyn();
+const dxf = await createNetDxf({ compiler });
+const document = await dxf.load(new Uint8Array(await file.arrayBuffer()));
+const renderer = await createDxfRenderer(canvas);
+renderer.setScene(document.scene);
+renderer.fit();
+const bytes = await document.export({ binary: false });
+
+// When finished: renderer.dispose(); await dxf.dispose(); compiler.dispose();</code></pre><a href="../docs/NETDXF.md" target="_blank" rel="noreferrer">API, rendering coverage, compiler experiments &amp; limitations ↗</a></details>
+    </section>
+  </main>
+  <noscript><p class="noscript">JavaScript is required to load the WebAssembly compiler and WebGPU renderer.</p></noscript>
+  <script src="./dxf-bootstrap.js" defer></script>
+</body>
+</html>

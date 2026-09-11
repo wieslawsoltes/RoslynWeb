@@ -1,10 +1,12 @@
 {
   "name": "@roslynweb/core",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "type": "module",
   "description": "Roslyn C# compilation in WebAssembly, direct MSIL-to-WebAssembly compilation and managed assembly execution",
   "license": "MIT",
-  "bin": { "roslynweb": "./bin/roslynweb.mjs" },
+  "bin": {
+    "roslynweb": "./bin/roslynweb.mjs"
+  },
   "exports": {
     "./node": {
       "types": "./src/node/index.d.ts",
@@ -37,12 +39,17 @@
     "./wasm": {
       "types": "./src/wasm/index.d.ts",
       "import": "./src/wasm/index.js"
+    },
+    "./dxf": {
+      "types": "./src/dxf/index.d.ts",
+      "import": "./src/dxf/index.js"
     }
   },
   "files": [
     "bin",
     "examples",
     "src",
+    "vendor",
     "dist",
     "demo",
     "docs",
@@ -58,7 +65,7 @@
     "cli": "node bin/roslynweb.mjs",
     "test:node": "node tests/node-host-integration.mjs",
     "test:cli": "node tests/cli-session-integration.mjs && node tests/cli-watch-integration.mjs && node tests/cli-integration.mjs",
-    "build": "node scripts/build.mjs",
+    "build": "node scripts/build.mjs && node scripts/build-netdxf.mjs",
     "serve": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "node scripts/test-browser.mjs",
@@ -78,7 +85,11 @@
     "benchmark:compilers": "node scripts/benchmark-compilers.mjs",
     "test:compilers-v7": "node tests/compiler-v7-integration.mjs",
     "benchmark:compilers-v7": "node scripts/benchmark-compilers-v7.mjs",
-    "benchmark:host-cache": "node scripts/benchmark-host-cache.mjs"
+    "benchmark:host-cache": "node scripts/benchmark-host-cache.mjs",
+    "build:netdxf": "node scripts/build-netdxf.mjs",
+    "test:netdxf": "node tests/netdxf-integration.mjs",
+    "test:netdxf-compilers": "node tests/netdxf-compilers.mjs",
+    "test:netdxf-browser": "node scripts/test-dxf-browser.mjs"
   },
   "engines": {
     "node": ">=22"

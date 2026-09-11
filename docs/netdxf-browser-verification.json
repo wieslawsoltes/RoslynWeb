@@ -1,0 +1,101 @@
+{
+  "testedAt": "2026-09-11T22:28:12.124Z",
+  "realBrowser": true,
+  "realWebGPU": true,
+  "tests": [
+    {
+      "name": "Sample starts a real compiler worker and loads the complete pinned netDxf library",
+      "passed": true,
+      "ms": 1521
+    },
+    {
+      "name": "WebGPU submits real drawing commands and produces colored geometry pixels",
+      "passed": true,
+      "ms": 428
+    },
+    {
+      "name": "Zoom, pan, fit and layer controls change the real renderer state",
+      "passed": true,
+      "ms": 288
+    },
+    {
+      "name": "Text and binary DXF downloads round-trip through the real managed library",
+      "passed": true,
+      "ms": 367
+    },
+    {
+      "name": "Invalid and over-limit uploads report errors and preserve the current drawing",
+      "passed": true,
+      "ms": 2452
+    },
+    {
+      "name": "Source mode recompiles all upstream source files in browser WebAssembly",
+      "passed": true,
+      "ms": 25920
+    },
+    {
+      "name": "Optional geometry comparison executes managed Wasm, native Wasm and generated JavaScript",
+      "passed": true,
+      "ms": 8579
+    },
+    {
+      "name": "Mobile layout stays within the viewport and keeps document actions available",
+      "passed": true,
+      "ms": 123
+    },
+    {
+      "name": "Unavailable WebGPU leaves real netDxf parsing and export usable",
+      "passed": true,
+      "ms": 1520
+    },
+    {
+      "name": "Missing startup assets surface an error and restart recovers cleanly",
+      "passed": true,
+      "ms": 2169
+    }
+  ],
+  "pageErrors": [],
+  "baseUrl": "http://127.0.0.1:42933/RoslynWeb/",
+  "browserVersion": "140.0.7339.186",
+  "library": {
+    "sourceCount": 272,
+    "mode": "prebuilt",
+    "stats": {
+      "entityCount": 12,
+      "layerCount": 5,
+      "sourceEntities": 12,
+      "renderedEntities": 24,
+      "hiddenEntities": 0,
+      "unsupportedEntities": 0,
+      "layers": 5,
+      "blocks": 2,
+      "curvePrecision": 192,
+      "layout": "Model"
+    },
+    "renderer": true,
+    "gpu": true
+  },
+  "rendering": {
+    "lineSegments": 989,
+    "triangles": 2,
+    "vertices": 1984,
+    "drawCalls": 5,
+    "frames": 4,
+    "width": 1140,
+    "height": 762,
+    "disposed": false,
+    "lost": false,
+    "screenshot": {
+      "width": 1140,
+      "height": 762,
+      "colors": 689,
+      "nonBackgroundPixels": 46531
+    }
+  },
+  "geometryComparison": [
+    ".NET Wasm0.11 s517.5",
+    "Native Wasm4.70 s517.5",
+    "JavaScript3.66 s517.5"
+  ],
+  "passed": true
+}

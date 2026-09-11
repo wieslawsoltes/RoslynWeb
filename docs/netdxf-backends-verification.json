@@ -1,0 +1,3498 @@
+{
+  "testedAt": "2026-09-11T22:25:10.570Z",
+  "upstream": {
+    "repository": "https://github.com/wieslawsoltes/netDxf",
+    "commit": "5b562312f683fc635405c149537ca488e4ec4d39"
+  },
+  "runtime": "Actual Roslyn and .NET WebAssembly in Node worker_threads; emitted JavaScript and direct native WebAssembly execute outside that worker.",
+  "sourceCount": 272,
+  "fullLibrarySupport": {
+    "javascript": {
+      "supported": false,
+      "diagnosticCount": 1019,
+      "codes": {
+        "IL_UNRESOLVED_CALL": 1016,
+        "IL_UNRESOLVED_FIELD": 3
+      },
+      "dependencies": {
+        "System.String": 186,
+        "System.Delegate": 156,
+        "System.Threading.Interlocked": 156,
+        "System.Double": 92,
+        "System.Enum": 76,
+        "System.Threading.Thread": 34,
+        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 23,
+        "System.Array": 22,
+        "System.Environment": 21,
+        "System.Globalization.CultureInfo": 19,
+        "System.Globalization.NumberFormatInfo": 16,
+        "System.Globalization.TextInfo": 15,
+        "System.EventArgs": 14,
+        "System.Math": 13,
+        "System.IO.Path": 13,
+        "System.IO.File": 10,
+        "System.Int32": 9,
+        "System.ICloneable": 9,
+        "System.Drawing.Color": 8,
+        "System.IO.FileLoadException": 8,
+        "System.Text.Encoding": 8,
+        "System.BitConverter": 7,
+        "System.Collections.Generic.IReadOnlyList`1<netDxf.Vector2>": 6,
+        "System.Int64": 6,
+        "System.DateTime": 6,
+        "System.Int16": 5,
+        "System.Collections.Hashtable": 5,
+        "System.Collections.Generic.List`1<!0>": 5,
+        "System.IO.FileInfo": 4,
+        "System.Reflection.MemberInfo": 4,
+        "System.Runtime.CompilerServices.Unsafe": 4,
+        "System.Collections.Generic.IReadOnlyList`1<System.Byte[]>": 3,
+        "System.Text.RegularExpressions.Regex": 3,
+        "System.Byte": 3,
+        "System.IO.FileNotFoundException": 3,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.XData>": 3,
+        "System.Convert": 2,
+        "System.IO.BinaryWriter": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.BlockRecord>": 2,
+        "System.TimeSpan": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Header.HeaderVariable>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Entities.AttributeDefinition>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 2,
+        "System.Collections.Generic.List`1<netDxf.Entities.EntityObject>": 2,
+        "System.Collections.Generic.Dictionary`2<!0,!1>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 2,
+        "System.StringComparer": 1,
+        "System.IO.FileSystemInfo": 1,
+        "System.Tuple`3<netDxf.Vector2,netDxf.Vector2,System.Double>": 1,
+        "System.Attribute": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.DictionaryObject>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.ImageDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.Block>": 1,
+        "System.ReadOnlySpan`1<System.Char>": 1,
+        "System.Text.StringBuilder": 1,
+        "System.Collections.Generic.List`1<netDxf.Entities.Attribute>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.Entities.AttributeDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>": 1,
+        "System.Collections.Generic.ICollection`1<System.String>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<!0,!1>": 1,
+        "System.Collections.Generic.List`1<System.String>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,!0>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Collections.DxfObjectReferences>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,!0>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.XData>": 1,
+        "System.Runtime.InteropServices.MemoryMarshal": 1
+      },
+      "examples": [
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Drawing.Color)",
+          "token": 100663314,
+          "offset": 3,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_R()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Drawing.Color)",
+          "token": 100663314,
+          "offset": 10,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_G()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Drawing.Color)",
+          "token": 100663314,
+          "offset": 17,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_B()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Int16)",
+          "token": 100663315,
+          "offset": 47,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Generic.IReadOnlyList`1<System.Byte[]>::get_Item(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::set_Index(System.Int16)",
+          "token": 100663324,
+          "offset": 53,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Generic.IReadOnlyList`1<System.Byte[]>::get_Item(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::RgbToAci(System.Byte,System.Byte,System.Byte)",
+          "token": 100663325,
+          "offset": 18,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Generic.IReadOnlyList`1<System.Byte[]>::get_Item(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToColor()",
+          "token": 100663331,
+          "offset": 22,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_White()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToColor()",
+          "token": 100663331,
+          "offset": 46,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::FromArgb(System.Int32,System.Int32,System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromColor(System.Drawing.Color)",
+          "token": 100663332,
+          "offset": 3,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_R()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromColor(System.Drawing.Color)",
+          "token": 100663332,
+          "offset": 16,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_G()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromColor(System.Drawing.Color)",
+          "token": 100663332,
+          "offset": 29,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_B()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromTrueColor(System.Int32)",
+          "token": 100663334,
+          "offset": 1,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.BitConverter::GetBytes(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToTrueColor(netDxf.AciColor)",
+          "token": 100663335,
+          "offset": 56,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 122,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentThread()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 127,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 132,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 137,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 151,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 163,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_CurrentCulture()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 168,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Int16::ToString(System.IFormatProvider)'."
+        }
+      ],
+      "message": "Assembly 'netDxf.netstandard' is not fully supported by the JavaScript tier."
+    },
+    "nativeWasm": {
+      "supported": false,
+      "diagnosticCount": 1301,
+      "codes": {
+        "WASM_UNSUPPORTED_TYPE": 529,
+        "WASM_UNRESOLVED_CALL": 670,
+        "WASM_STACK_TYPE": 99,
+        "WASM_UNRESOLVED_FIELD": 3
+      },
+      "dependencies": {
+        "System.String": 130,
+        "System.Delegate": 130,
+        "System.Threading.Interlocked": 130,
+        "System.StringComparison": 92,
+        "callvirt": 72,
+        "System.DateTime": 41,
+        "System.Enum": 38,
+        "call": 27,
+        "System.EventArgs": 27,
+        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.DxfObject>": 24,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>": 23,
+        "System.Double": 22,
+        "System.ReadOnlySpan`1<System.Object>": 18,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Vertex>": 18,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Collections.DxfObjectReferences>": 18,
+        "System.Globalization.NumberFormatInfo": 16,
+        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>": 15,
+        "System.TimeSpan": 14,
+        "System.Collections.Generic.List`1+Enumerator<System.String>": 14,
+        "System.Math": 13,
+        "System.IO.Path": 10,
+        "System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>": 9,
+        "System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>": 9,
+        "System.IO.FileMode": 9,
+        "System.IO.FileAccess": 9,
+        "System.IO.FileShare": 9,
+        "System.IO.File": 9,
+        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 9,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>": 9,
+        "System.ICloneable": 9,
+        "System.IO.FileLoadException": 8,
+        "System.Text.Encoding": 8,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.EntityObject>": 8,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Layer>": 8,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Linetype>": 8,
+        "System.Runtime.CompilerServices.Unsafe": 8,
+        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,System.String>": 8,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.LinetypeSegment>": 7,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.Layout>": 7,
+        "System.Int32": 6,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>": 6,
+        "System.BitConverter": 5,
+        "System.Array": 5,
+        "System.Environment": 5,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath>": 5,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 5,
+        "System.Int64": 5,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.Layout>": 5,
+        "System.Collections.Generic.KeyValuePair`2<System.String,System.String>": 5,
+        "System.Threading.Thread": 4,
+        "System.Collections.Generic.IEnumerator`1<!0>": 4,
+        "System.Collections.Generic.List`1<!0>": 4,
+        "System.Collections.Generic.List`1+Enumerator<!0>": 4,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,!0>": 4,
+        "System.Text.RegularExpressions.Regex": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MLineVertex>": 3,
+        "System.Collections.Generic.List`1+Enumerator<System.Int32[]>": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MeshEdge>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.DimensionStyle,System.String[]>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Image,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Underlay,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.MLine,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Leader,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Insert,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Dimension,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.Block>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,netDxf.Objects.DictionaryObject>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeSegment,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 3,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.LayerStateProperties>": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchPatternLineDefinition>": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath+Edge>": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.AttributeDefinition>": 3,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.BlockRecord>": 3,
+        "System.Collections.Generic.List`1+Enumerator<System.Double>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Int32>": 3,
+        "System.Collections.Generic.IReadOnlyList`1<System.Byte[]>": 2,
+        "System.IO.FileInfo": 2,
+        "System.StringSplitOptions": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.BlockRecord>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.ImageDefinition>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyle,System.String[]>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Image,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Underlay,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.MLine,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Leader,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Insert,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Dimension,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.DictionaryObject>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeSegment,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 2,
+        "System.Reflection.MemberInfo": 2,
+        "System.Runtime.InteropServices.MemoryMarshal": 2,
+        "System.Int16": 2,
+        "System.Globalization.CultureInfo": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Header.HeaderVariable>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.Block>": 2,
+        "System.Collections.Generic.IReadOnlyList`1<netDxf.Vector2>": 2,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Attribute>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,!0>": 2,
+        "System.Collections.Generic.Dictionary`2+ValueCollection<System.String,!0>": 2,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.XRecordEntry>": 2,
+        "System.Byte": 2,
+        "!0": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Int32>": 2,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.MLineStyleElement>": 2,
+        "System.Tuple`3<netDxf.Vector2,netDxf.Vector2,System.Double>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.DictionaryObject>": 1,
+        "System.Convert": 1,
+        "System.StringComparer": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Entities.AttributeDefinition>": 1,
+        "netDxf.Collections.ObservableCollection`1<!0>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.DxfObject>": 1,
+        "System.Collections.Generic.ICollection`1<!1>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.XData>": 1,
+        "System.Collections.Generic.Dictionary`2<!0,!1>": 1,
+        "System.Collections.Generic.Dictionary`2+ValueCollection<!0,!1>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.Group>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.Layout>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.MLineStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.UnderlayDgnDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.UnderlayDwfDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.UnderlayPdfDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.UCS>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.View>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.DimensionStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.TextStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.Layer>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.Linetype>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.ApplicationRegistry>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.VPort>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.ShapeStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.LayerState>": 1
+      },
+      "examples": [
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Units.DrawingTime::ToJulianCalendar(System.DateTime)",
+          "token": 100663936,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Units.DrawingTime::FromJulianCalendar(System.Double)",
+          "token": 100663937,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Units.DrawingTime::EditingTime(System.Double)",
+          "token": 100663938,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Tables.ShapeStyle::ContainsShapeName(System.String,System.String)",
+          "token": 100664333,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuadratic(System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
+          "token": 100665464,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuadratic(System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
+          "token": 100665464,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveCubic(System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
+          "token": 100665465,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveCubic(System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
+          "token": 100665465,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuartic(System.Double,System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
+          "token": 100665466,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuartic(System.Double,System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
+          "token": 100665466,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.Collections.Generic.IReadOnlyList`1<System.Byte[]>::get_Item(System.Int32)'.",
+          "method": "netDxf.netstandard|netDxf.AciColor::RgbToAci(System.Byte,System.Byte,System.Byte)",
+          "token": 100663325,
+          "assembly": "netDxf.netstandard",
+          "offset": 18,
+          "opcode": "callvirt"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.BitConverter::GetBytes(System.Int32)'.",
+          "method": "netDxf.netstandard|netDxf.AciColor::FromTrueColor(System.Int32)",
+          "token": 100663334,
+          "assembly": "netDxf.netstandard",
+          "offset": 1,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'.",
+          "method": "netDxf.netstandard|netDxf.AciColor::ToTrueColor(netDxf.AciColor)",
+          "token": 100663335,
+          "assembly": "netDxf.netstandard",
+          "offset": 56,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.IO.FileMode' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
+          "token": 100663452,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.IO.FileAccess' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
+          "token": 100663452,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.IO.FileShare' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
+          "token": 100663452,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
+          "token": 100663452,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_STACK_TYPE",
+          "message": "'call' expected externref, received i32.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
+          "token": 100663452,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.FileInfo::.ctor(System.String)'.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
+          "token": 100663452,
+          "assembly": "netDxf.netstandard",
+          "offset": 11,
+          "opcode": "newobj"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.FileInfo::get_DirectoryName()'.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
+          "token": 100663452,
+          "assembly": "netDxf.netstandard",
+          "offset": 25,
+          "opcode": "callvirt"
+        }
+      ],
+      "message": "Direct WebAssembly compilation is unsupported: Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+      "selection": "Default native exports: public closed static methods plus their reachable method closure."
+    }
+  },
+  "checks": [
+    {
+      "name": "All 272 unchanged pinned netDxf C# sources compile in Roslyn WebAssembly without diagnostics",
+      "passed": true,
+      "milliseconds": 22723.974611,
+      "evidence": {
+        "sources": 272,
+        "diagnostics": 0,
+        "peBytes": 767488,
+        "sha256": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd"
+      }
+    },
+    {
+      "name": "Full-library compiler probes preserve explicit unsupported diagnostics",
+      "passed": true,
+      "milliseconds": 15019.807302000001,
+      "evidence": {
+        "javascript": {
+          "supported": false,
+          "diagnostics": 1019,
+          "codes": {
+            "IL_UNRESOLVED_CALL": 1016,
+            "IL_UNRESOLVED_FIELD": 3
+          }
+        },
+        "nativeWasm": {
+          "supported": false,
+          "diagnostics": 1301,
+          "codes": {
+            "WASM_UNSUPPORTED_TYPE": 529,
+            "WASM_UNRESOLVED_CALL": 670,
+            "WASM_STACK_TYPE": 99,
+            "WASM_UNRESOLVED_FIELD": 3
+          }
+        }
+      }
+    },
+    {
+      "name": "Public kernel API compiles seven real netDxf geometry exports on all three backends",
+      "passed": true,
+      "milliseconds": 1587.2991859999966,
+      "evidence": {
+        "wasm": {
+          "backend": "wasm",
+          "methods": [
+            "Distance2",
+            "Distance3",
+            "RotateX",
+            "RotateY",
+            "CrossZ",
+            "NormalizeAngle",
+            "CubicBezierCoordinate"
+          ],
+          "assemblyBytes": 3584,
+          "artifactBytes": 3584,
+          "compiledMethods": 7,
+          "diagnostics": 0,
+          "compileMs": 221.96287500000471,
+          "scope": "Selected netDxf geometry methods; DXF document I/O runs on .NET WebAssembly."
+        },
+        "javascript": {
+          "backend": "javascript",
+          "methods": [
+            "Distance2",
+            "Distance3",
+            "RotateX",
+            "RotateY",
+            "CrossZ",
+            "NormalizeAngle",
+            "CubicBezierCoordinate"
+          ],
+          "assemblyBytes": 3584,
+          "artifactBytes": 1750920,
+          "compiledMethods": 89,
+          "diagnostics": 0,
+          "compileMs": 483.7064889999965,
+          "scope": "Selected netDxf geometry methods; DXF document I/O runs on .NET WebAssembly."
+        },
+        "native-wasm": {
+          "backend": "native-wasm",
+          "methods": [
+            "Distance2",
+            "Distance3",
+            "RotateX",
+            "RotateY",
+            "CrossZ",
+            "NormalizeAngle",
+            "CubicBezierCoordinate"
+          ],
+          "assemblyBytes": 3584,
+          "artifactBytes": 3848036,
+          "compiledMethods": 54,
+          "diagnostics": 0,
+          "compileMs": 881.0838589999985,
+          "scope": "Selected netDxf geometry methods; DXF document I/O runs on .NET WebAssembly."
+        }
+      }
+    },
+    {
+      "name": "179 deterministic geometry cases match the .NET WebAssembly oracle on both generated backends",
+      "passed": true,
+      "milliseconds": 320.5704990000013,
+      "evidence": {
+        "caseCount": 179,
+        "cases": [
+          {
+            "method": "Distance2",
+            "args": [
+              0,
+              0,
+              3,
+              4
+            ],
+            "expected": 5,
+            "javascript": 5,
+            "native-wasm": 5
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              0,
+              0,
+              0,
+              2,
+              3,
+              6
+            ],
+            "expected": 7,
+            "javascript": 7,
+            "native-wasm": 7
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              1,
+              0,
+              1.5707963267948966
+            ],
+            "expected": 6.123233995736766e-17,
+            "javascript": 6.123233995736766e-17,
+            "native-wasm": 6.123233995736766e-17
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              1,
+              0,
+              1.5707963267948966
+            ],
+            "expected": 1,
+            "javascript": 1,
+            "native-wasm": 1
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              2,
+              0,
+              0,
+              4
+            ],
+            "expected": 8,
+            "javascript": 8,
+            "native-wasm": 8
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -30
+            ],
+            "expected": 330,
+            "javascript": 330,
+            "native-wasm": 330
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              0,
+              10,
+              10,
+              0,
+              0.5
+            ],
+            "expected": 7.5,
+            "javascript": 7.5,
+            "native-wasm": 7.5
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -770.4458818770945,
+              40.60447495430708,
+              -364.19073631986976,
+              -113.23688551783562
+            ],
+            "expected": 434.4081116687874,
+            "javascript": 434.4081116687874,
+            "native-wasm": 434.4081116687874
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              845.2693703584373,
+              470.83182353526354,
+              -186.7940197698772,
+              -843.6215091496706,
+              -620.3814097680151,
+              106.04184027761221
+            ],
+            "expected": 2031.9575695254118,
+            "javascript": 2031.9575695254118,
+            "native-wasm": 2031.9575695254118
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -233.67596184834838,
+              991.7403236031532,
+              -965.7185156829655
+            ],
+            "expected": -867.2337050486957,
+            "javascript": -867.2337050486957,
+            "native-wasm": -867.2337050486957
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -140.18124248832464,
+              -710.5169328860939,
+              -725.5762796849012
+            ],
+            "expected": 722.7689565550838,
+            "javascript": 722.7689565550838,
+            "native-wasm": 722.7689565550838
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              615.1934354566038,
+              -674.7106509283185,
+              -274.1005136631429,
+              -685.3691972792149
+            ],
+            "expected": -606573.1670237805,
+            "javascript": -606573.1670237805,
+            "native-wasm": -606573.1670237805
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              309.03476057574153
+            ],
+            "expected": 309.03476057574153,
+            "javascript": 309.03476057574153,
+            "native-wasm": 309.03476057574153
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              556.9832818582654,
+              -930.6289250962436,
+              -639.4098792225122,
+              742.9230934940279,
+              0.767167046200484
+            ],
+            "expected": -36.5027078607111,
+            "javascript": -36.5027078607111,
+            "native-wasm": -36.5027078607111
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              927.2896670736372,
+              -694.7783082723618,
+              608.5588927380741,
+              -36.92921157926321
+            ],
+            "expected": 730.9957185431891,
+            "javascript": 730.9957185431891,
+            "native-wasm": 730.9957185431891
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              876.2319725938141,
+              496.3176641613245,
+              -367.92592564597726,
+              570.7500753924251,
+              241.37852201238275,
+              -943.5113929212093
+            ],
+            "expected": 699.7226492374286,
+            "javascript": 699.7226492374286,
+            "native-wasm": 699.7226492374286
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              170.8337697200477,
+              -447.32079189270735,
+              -168.98926300927997
+            ],
+            "expected": 408.4046020036381,
+            "javascript": 408.4046020036381,
+            "native-wasm": 408.4046020036381
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -380.8745760470629,
+              -781.558791641146,
+              324.4794672355056
+            ],
+            "expected": 785.8839631202676,
+            "javascript": 785.8839631202676,
+            "native-wasm": 785.8839631202676
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              657.3361256159842,
+              886.6268917918205,
+              -900.8042742498219,
+              -762.4597391113639
+            ],
+            "expected": 297484.96294526826,
+            "javascript": 297484.96294526826,
+            "native-wasm": 297484.96294526826
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -825.1083972863853
+            ],
+            "expected": 254.8916027136147,
+            "javascript": 254.8916027136147,
+            "native-wasm": 254.8916027136147
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              917.1428252011538,
+              -366.7461038567126,
+              413.61385118216276,
+              -932.2250648401678,
+              0.773041432723403
+            ],
+            "expected": -295.44959941484234,
+            "javascript": -295.44959941484234,
+            "native-wasm": -295.44959941484234
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -946.2562096305192,
+              -645.1992942020297,
+              116.95431219413877,
+              -151.3591054826975
+            ],
+            "expected": 1172.3031799466412,
+            "javascript": 1172.3031799466412,
+            "native-wasm": 1172.3031799466412
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -542.9176413454115,
+              485.1754745468497,
+              -821.0939592681825,
+              -950.4149258136749,
+              -932.2540615685284,
+              280.3035909309983
+            ],
+            "expected": 1840.7164611330072,
+            "javascript": 1840.7164611330072,
+            "native-wasm": 1840.7164611330072
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              806.8303656764328,
+              -213.43648992478848,
+              98.7438871525228
+            ],
+            "expected": -381.6090284909418,
+            "javascript": -381.6090284909418,
+            "native-wasm": -381.6090284909418
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              140.8984987065196,
+              -454.30458476766944,
+              -866.824459284544
+            ],
+            "expected": -404.0444870601835,
+            "javascript": -404.0444870601835,
+            "native-wasm": -404.0444870601835
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -510.95465989783406,
+              -333.1304965540767,
+              432.3592712171376,
+              -711.9413483887911
+            ],
+            "expected": 507801.8082435239,
+            "javascript": 507801.8082435239,
+            "native-wasm": 507801.8082435239
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              299.20909320935607
+            ],
+            "expected": 299.20909320935607,
+            "javascript": 299.20909320935607,
+            "native-wasm": 299.20909320935607
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -511.9897508993745,
+              732.0201643742621,
+              336.2410143017769,
+              46.46661086007953,
+              0.15378890978172421
+            ],
+            "expected": -48.04314375623945,
+            "javascript": -48.04314375623945,
+            "native-wasm": -48.04314375623945
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              442.2447946853936,
+              -10.99034957587719,
+              760.5081587098539,
+              -684.9875347688794
+            ],
+            "expected": 745.3615059340375,
+            "javascript": 745.3615059340375,
+            "native-wasm": 745.3615059340375
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -404.1752233169973,
+              708.5442207753658,
+              41.22206149622798,
+              -375.95204543322325,
+              893.7112097628415,
+              -876.4335606247187
+            ],
+            "expected": 936.5763195761084,
+            "javascript": 936.5763195761084,
+            "native-wasm": 936.5763195761084
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              899.6370858512819,
+              892.4625506624579,
+              699.277373496443
+            ],
+            "expected": -1101.9780112693566,
+            "javascript": -1101.9780112693566,
+            "native-wasm": -1101.9780112693566
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -857.744887471199,
+              663.3179481141269,
+              -220.27938719838858
+            ],
+            "expected": 927.4263667902582,
+            "javascript": 927.4263667902582,
+            "native-wasm": 927.4263667902582
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -74.84045205637813,
+              668.6768028885126,
+              -272.5360528565943,
+              -601.2451769784093
+            ],
+            "expected": 227235.9973377834,
+            "javascript": 227235.9973377834,
+            "native-wasm": 227235.9973377834
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              843.9259589649737
+            ],
+            "expected": 123.92595896497369,
+            "javascript": 123.92595896497369,
+            "native-wasm": 123.92595896497369
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              328.9821185171604,
+              -567.039277870208,
+              -581.8609623238444,
+              353.82384853437543,
+              0.056808813475072384
+            ],
+            "expected": 184.82062007818476,
+            "javascript": 184.82062007818476,
+            "native-wasm": 184.82062007818476
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              852.6351354084909,
+              970.901763997972,
+              730.8546700514853,
+              341.8033942580223
+            ],
+            "expected": 640.7770599452132,
+            "javascript": 640.7770599452132,
+            "native-wasm": 640.7770599452132
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              766.9632802717388,
+              26.23026166111231,
+              -601.5725913457572,
+              -145.47385089099407,
+              -389.51838621869683,
+              -619.684730656445
+            ],
+            "expected": 1002.854179892958,
+            "javascript": 1002.854179892958,
+            "native-wasm": 1002.854179892958
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -254.1599734686315,
+              842.2980718314648,
+              670.1512145809829
+            ],
+            "expected": 844.1306176361132,
+            "javascript": 844.1306176361132,
+            "native-wasm": 844.1306176361132
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -77.41364371031523,
+              -473.1609667651355,
+              213.93120847642422
+            ],
+            "expected": -474.7116654869015,
+            "javascript": -474.7116654869015,
+            "native-wasm": -474.7116654869015
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              316.9251657091081,
+              333.5878988727927,
+              -130.4928190074861,
+              -87.42249011993408
+            ],
+            "expected": 15824.438142731942,
+            "javascript": 15824.438142731942,
+            "native-wasm": 15824.438142731942
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -448.23093758895993
+            ],
+            "expected": 271.76906241104007,
+            "javascript": 271.76906241104007,
+            "native-wasm": 271.76906241104007
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              870.7456821575761,
+              428.7292850203812,
+              -914.7155042737722,
+              -352.61535504832864,
+              0.1991370632313192
+            ],
+            "expected": 521.6065406192528,
+            "javascript": 521.6065406192528,
+            "native-wasm": 521.6065406192528
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              712.4861688353121,
+              -487.6834563910961,
+              -833.1134435720742,
+              317.47413892298937
+            ],
+            "expected": 1742.744076210223,
+            "javascript": 1742.744076210223,
+            "native-wasm": 1742.744076210223
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              113.2267345674336,
+              -797.5081969052553,
+              140.68222558125854,
+              -446.32840994745493,
+              -324.4318417273462,
+              -439.2152652144432
+            ],
+            "expected": 934.4433088275842,
+            "javascript": 934.4433088275842,
+            "native-wasm": 934.4433088275842
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -317.1951253898442,
+              -743.9535846933722,
+              -868.4257897548378
+            ],
+            "expected": -795.9094496504422,
+            "javascript": -795.9094496504422,
+            "native-wasm": -795.9094496504422
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              34.44427438080311,
+              -172.05034801736474,
+              366.6023416444659
+            ],
+            "expected": 126.4051505819217,
+            "javascript": 126.4051505819217,
+            "native-wasm": 126.4051505819217
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -765.1382996700704,
+              643.8776217401028,
+              870.4628902487457,
+              -285.47276090830564
+            ],
+            "expected": -342045.4327028769,
+            "javascript": -342045.4327028769,
+            "native-wasm": -342045.4327028769
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -75.2149517647922
+            ],
+            "expected": 284.7850482352078,
+            "javascript": 284.7850482352078,
+            "native-wasm": 284.7850482352078
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -695.4503450542688,
+              -13.46551114693284,
+              792.1940973028541,
+              -648.0510211549699,
+              0.17307398468255997
+            ],
+            "expected": -342.5197198002724,
+            "javascript": -342.5197198002724,
+            "native-wasm": -342.5197198002724
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -579.156578052789,
+              -130.9473728761077,
+              -703.7006574682891,
+              -864.736458286643
+            ],
+            "expected": 744.2833127143751,
+            "javascript": 744.2833127143751,
+            "native-wasm": 744.2833127143751
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -981.0936287976801,
+              -400.3385128453374,
+              -990.9579395316541,
+              207.83701911568642,
+              386.3794836215675,
+              782.1111353114247
+            ],
+            "expected": 2275.138509119278,
+            "javascript": 2275.138509119278,
+            "native-wasm": 2275.138509119278
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              9.640194941312075,
+              817.6206331700087,
+              456.563254352659
+            ],
+            "expected": 696.976058955492,
+            "javascript": 696.976058955492,
+            "native-wasm": 696.976058955492
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -576.9126946106553,
+              869.1391446627676,
+              306.90573900938034
+            ],
+            "expected": 967.0776509075898,
+            "javascript": 967.0776509075898,
+            "native-wasm": 967.0776509075898
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              747.3605345003307,
+              765.8251086249948,
+              -488.93003491684794,
+              205.76597936451435
+            ],
+            "expected": 528216.269420065,
+            "javascript": 528216.269420065,
+            "native-wasm": 528216.269420065
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -911.0623360611498
+            ],
+            "expected": 168.93766393885016,
+            "javascript": 168.93766393885016,
+            "native-wasm": 168.93766393885016
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              437.20376025885344,
+              -938.819186296314,
+              466.06607362627983,
+              -896.6612708754838,
+              0.18511596554890275
+            ],
+            "expected": -76.27712257927597,
+            "javascript": -76.27712257927597,
+            "native-wasm": -76.27712257927597
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -222.75347961112857,
+              -263.51376809179783,
+              -782.697054091841,
+              -341.82627592235804
+            ],
+            "expected": 565.3933634956716,
+            "javascript": 565.3933634956716,
+            "native-wasm": 565.3933634956716
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              90.20628267899156,
+              -915.187805891037,
+              -510.4648326523602,
+              996.5652758255601,
+              287.8794861026108,
+              -926.2591060250998
+            ],
+            "expected": 1562.6075679108158,
+            "javascript": 1562.6075679108158,
+            "native-wasm": 1562.6075679108158
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -966.3204834796488,
+              -130.6280167773366,
+              872.509649489075
+            ],
+            "expected": -733.9014261101191,
+            "javascript": -733.9014261101191,
+            "native-wasm": -733.9014261101191
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              596.451748162508,
+              -681.753855664283,
+              135.53635496646166
+            ],
+            "expected": 356.22140225039203,
+            "javascript": 356.22140225039203,
+            "native-wasm": 356.22140225039203
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              123.38649528101087,
+              378.1935703009367,
+              -875.2588876523077,
+              172.16648813337088
+            ],
+            "expected": 352260.3032344691,
+            "javascript": 352260.3032344691,
+            "native-wasm": 352260.3032344691
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -104.20385515317321
+            ],
+            "expected": 255.7961448468268,
+            "javascript": 255.7961448468268,
+            "native-wasm": 255.7961448468268
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              550.137110054493,
+              -554.7505994327366,
+              230.61516974121332,
+              -812.4505612067878,
+              0.6008716085925698
+            ],
+            "expected": -200.8821504661725,
+            "javascript": -200.8821504661725,
+            "native-wasm": -200.8821504661725
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -899.2789597250521,
+              161.6996033117175,
+              -495.6616177223623,
+              -682.103369385004
+            ],
+            "expected": 935.3664605367998,
+            "javascript": 935.3664605367998,
+            "native-wasm": 935.3664605367998
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              361.21037183329463,
+              166.3117604330182,
+              555.1707153208554,
+              7.055392488837242,
+              349.3184274993837,
+              -272.33064267784357
+            ],
+            "expected": 918.51820182014,
+            "javascript": 918.51820182014,
+            "native-wasm": 918.51820182014
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -690.8673918806016,
+              426.66588723659515,
+              508.0884392373264
+            ],
+            "expected": -135.75885558184217,
+            "javascript": -135.75885558184217,
+            "native-wasm": -135.75885558184217
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              381.45745638757944,
+              -55.2705186419189,
+              -687.9064943641424
+            ],
+            "expected": 16.02773416940161,
+            "javascript": 16.02773416940161,
+            "native-wasm": 16.02773416940161
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              914.6044715307653,
+              480.11069279164076,
+              723.0549515224993,
+              -484.68106612563133
+            ],
+            "expected": -790437.8840466943,
+            "javascript": -790437.8840466943,
+            "native-wasm": -790437.8840466943
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              720.5431791953743
+            ],
+            "expected": 0.5431791953742504,
+            "javascript": 0.5431791953742504,
+            "native-wasm": 0.5431791953742504
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              607.4861260131001,
+              316.03790121152997,
+              -540.3499323874712,
+              500.9286901913583,
+              0.9000883582048118
+            ],
+            "expected": 243.1944693502903,
+            "javascript": 243.1944693502903,
+            "native-wasm": 243.1944693502903
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              621.0176744498312,
+              -83.30044895410538,
+              792.3406134359539,
+              -768.2845732197165
+            ],
+            "expected": 706.0841309070533,
+            "javascript": 706.0841309070533,
+            "native-wasm": 706.0841309070533
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -407.1026029996574,
+              11.877940967679024,
+              -398.1748283840716,
+              515.9199489280581,
+              125.12542167678475,
+              864.6524958312511
+            ],
+            "expected": 1568.288389945849,
+            "javascript": 1568.288389945849,
+            "native-wasm": 1568.288389945849
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              167.75945900008082,
+              285.6280552223325,
+              -489.24510134384036
+            ],
+            "expected": -101.77517075537239,
+            "javascript": -101.77517075537239,
+            "native-wasm": -101.77517075537239
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -230.17841018736362,
+              753.9188242517412,
+              -796.9264248386025
+            ],
+            "expected": 184.59152293251478,
+            "javascript": 184.59152293251478,
+            "native-wasm": 184.59152293251478
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              514.8314707912505,
+              326.05475187301636,
+              757.9973782412708,
+              58.15299693495035
+            ],
+            "expected": -217209.6541399149,
+            "javascript": -217209.6541399149,
+            "native-wasm": -217209.6541399149
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -410.6409060768783
+            ],
+            "expected": 309.3590939231217,
+            "javascript": 309.3590939231217,
+            "native-wasm": 309.3590939231217
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              417.948329821229,
+              -84.16837314143777,
+              110.83269398659468,
+              262.093982193619,
+              0.7289233896881342
+            ],
+            "expected": 144.19889568253035,
+            "javascript": 144.19889568253035,
+            "native-wasm": 144.19889568253035
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -117.42277117446065,
+              -666.0532234236598,
+              230.4166783578694,
+              793.679578229785
+            ],
+            "expected": 1500.6039233835054,
+            "javascript": 1500.6039233835054,
+            "native-wasm": 1500.6039233835054
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -27.911121491342783,
+              -287.36443165689707,
+              -808.467750903219,
+              -310.93623489141464,
+              -664.2466862685978,
+              -743.3252921327949
+            ],
+            "expected": 475.8014171805069,
+            "javascript": 475.8014171805069,
+            "native-wasm": 475.8014171805069
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              940.2486053295434,
+              -218.07789616286755,
+              362.02544858679175
+            ],
+            "expected": -840.304424369114,
+            "javascript": -840.304424369114,
+            "native-wasm": -840.304424369114
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              881.9448752328753,
+              -234.4170524738729,
+              -572.1331275999546
+            ],
+            "expected": -532.4988789656322,
+            "javascript": -532.4988789656322,
+            "native-wasm": -532.4988789656322
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              577.9176312498748,
+              817.2921435907483,
+              -322.5536639802158,
+              -165.40072299540043
+            ],
+            "expected": 168032.58141692198,
+            "javascript": 168032.58141692198,
+            "native-wasm": 168032.58141692198
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              833.6920267902315
+            ],
+            "expected": 113.69202679023147,
+            "javascript": 113.69202679023147,
+            "native-wasm": 113.69202679023147
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -306.97104427963495,
+              -505.3436136804521,
+              -606.4255088567734,
+              52.00612498447299,
+              0.4836628627963364
+            ],
+            "expected": -451.60385208780355,
+            "javascript": -451.60385208780355,
+            "native-wasm": -451.60385208780355
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -674.4719105772674,
+              -884.8176803439856,
+              -677.238626871258,
+              -153.25693506747484
+            ],
+            "expected": 731.5659770304899,
+            "javascript": 731.5659770304899,
+            "native-wasm": 731.5659770304899
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              472.292757127434,
+              -426.30651220679283,
+              624.9049338512123,
+              357.1546347811818,
+              -709.4049076549709,
+              268.2215552777052
+            ],
+            "expected": 469.7068461001663,
+            "javascript": 469.7068461001663,
+            "native-wasm": 469.7068461001663
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -43.56543207541108,
+              721.3106220588088,
+              35.318384412676096
+            ],
+            "expected": 528.9303504519321,
+            "javascript": 528.9303504519321,
+            "native-wasm": 528.9303504519321
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              805.9504553675652,
+              -846.1433579213917,
+              -300.7081588730216
+            ],
+            "expected": 87.57565413779867,
+            "javascript": 87.57565413779867,
+            "native-wasm": 87.57565413779867
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              223.9878294058144,
+              -186.12234108150005,
+              -817.6527381874621,
+              -951.8955396488309
+            ],
+            "expected": -365396.45757016726,
+            "javascript": -365396.45757016726,
+            "native-wasm": -365396.45757016726
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              549.0019754506648
+            ],
+            "expected": 189.00197545066476,
+            "javascript": 189.00197545066476,
+            "native-wasm": 189.00197545066476
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -14.677036553621292,
+              177.86652920767665,
+              -243.3346463367343,
+              -130.0577069632709,
+              0.5837264535948634
+            ],
+            "expected": -76.49653165777409,
+            "javascript": -76.49653165777409,
+            "native-wasm": -76.49653165777409
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              22.475925739854574,
+              212.4280771240592,
+              317.21087032929063,
+              -103.92919182777405
+            ],
+            "expected": 432.3778546373536,
+            "javascript": 432.3778546373536,
+            "native-wasm": 432.3778546373536
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -265.891179908067,
+              -44.10052951425314,
+              38.246233481913805,
+              283.92242826521397,
+              452.04410096630454,
+              -820.7031162455678
+            ],
+            "expected": 1134.128953639962,
+            "javascript": 1134.128953639962,
+            "native-wasm": 1134.128953639962
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -382.43270805105567,
+              -331.232737749815,
+              -700.667065102607
+            ],
+            "expected": 411.21735244993846,
+            "javascript": 411.21735244993846,
+            "native-wasm": 411.21735244993846
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              625.596028752625,
+              701.8954087980092,
+              927.4654518812895
+            ],
+            "expected": -939.7349708018776,
+            "javascript": -939.7349708018776,
+            "native-wasm": -939.7349708018776
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -96.57135093584657,
+              -955.7805443182588,
+              -138.3954039774835,
+              -137.66967505216599
+            ],
+            "expected": -118980.68804205782,
+            "javascript": -118980.68804205782,
+            "native-wasm": -118980.68804205782
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -143.7302608974278
+            ],
+            "expected": 216.2697391025722,
+            "javascript": 216.2697391025722,
+            "native-wasm": 216.2697391025722
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -140.38434531539679,
+              -780.2501651458442,
+              565.9965593367815,
+              -104.93399808183312,
+              0.10448939120396972
+            ],
+            "expected": -280.4756165900957,
+            "javascript": -280.4756165900957,
+            "native-wasm": -280.4756165900957
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -120.07647892460227,
+              171.05397209525108,
+              85.03779349848628,
+              5.359013564884663
+            ],
+            "expected": 263.67913082766495,
+            "javascript": 263.67913082766495,
+            "native-wasm": 263.67913082766495
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              684.1900353319943,
+              -109.30306650698185,
+              785.3584117256105,
+              -817.5864825025201,
+              -667.6515615545213,
+              -243.36059391498566
+            ],
+            "expected": 1904.0348064064344,
+            "javascript": 1904.0348064064344,
+            "native-wasm": 1904.0348064064344
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              679.5496041886508,
+              -222.95194026082754,
+              -606.2267082743347
+            ],
+            "expected": -698.5163553319737,
+            "javascript": -698.5163553319737,
+            "native-wasm": -698.5163553319737
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              960.5456087738276,
+              651.5802009962499,
+              6.199228577315807
+            ],
+            "expected": 568.7355807069421,
+            "javascript": 568.7355807069421,
+            "native-wasm": 568.7355807069421
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -756.91639771685,
+              205.22630587220192,
+              788.9178725890815,
+              -5.992713384330273
+            ],
+            "expected": -157370.71760059684,
+            "javascript": -157370.71760059684,
+            "native-wasm": -157370.71760059684
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -549.1101066581905
+            ],
+            "expected": 170.8898933418095,
+            "javascript": 170.8898933418095,
+            "native-wasm": 170.8898933418095
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              971.8507211655378,
+              293.78401255235076,
+              -694.3703526630998,
+              -339.1306004486978,
+              0.05471203848719597
+            ],
+            "expected": 858.0416294110272,
+            "javascript": 858.0416294110272,
+            "native-wasm": 858.0416294110272
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              583.861745428294,
+              943.9449766650796,
+              484.41938729956746,
+              652.7807582169771
+            ],
+            "expected": 307.67740361407147,
+            "javascript": 307.67740361407147,
+            "native-wasm": 307.67740361407147
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              363.70705952867866,
+              -34.60208047181368,
+              444.138600025326,
+              275.3431014716625,
+              -51.886935252696276,
+              -628.7655485793948
+            ],
+            "expected": 1076.675562730723,
+            "javascript": 1076.675562730723,
+            "native-wasm": 1076.675562730723
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              497.3868285305798,
+              -717.1041909605265,
+              618.6773753724992
+            ],
+            "expected": -331.83138972608646,
+            "javascript": -331.83138972608646,
+            "native-wasm": -331.83138972608646
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              430.3778549656272,
+              -828.827393706888,
+              554.6259880065918
+            ],
+            "expected": 537.9260672392024,
+            "javascript": 537.9260672392024,
+            "native-wasm": 537.9260672392024
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -705.1773821003735,
+              -909.8046785220504,
+              -160.38097022101283,
+              337.6788143068552
+            ],
+            "expected": -384038.8193166494,
+            "javascript": -384038.8193166494,
+            "native-wasm": -384038.8193166494
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -699.4799361564219
+            ],
+            "expected": 20.5200638435781,
+            "javascript": 20.5200638435781,
+            "native-wasm": 20.5200638435781
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              631.405177526176,
+              175.2577037550509,
+              -698.5211782157421,
+              507.9663875512779,
+              0.11168736824765801
+            ],
+            "expected": 466.4188177839092,
+            "javascript": 466.4188177839092,
+            "native-wasm": 466.4188177839092
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              305.4008116014302,
+              -241.93318374454975,
+              639.4635490141809,
+              -463.9412248507142
+            ],
+            "expected": 401.1053263713869,
+            "javascript": 401.1053263713869,
+            "native-wasm": 401.1053263713869
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              704.8413106240332,
+              454.7024145722389,
+              8.751801680773497,
+              64.82863519340754,
+              -643.8687476329505,
+              844.9822086840868
+            ],
+            "expected": 1521.7608605617556,
+            "javascript": 1521.7608605617556,
+            "native-wasm": 1521.7608605617556
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              483.04582526907325,
+              324.44194983690977,
+              208.6882279254496
+            ],
+            "expected": -207.03490864412055,
+            "javascript": -207.03490864412055,
+            "native-wasm": -207.03490864412055
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -755.276445299387,
+              -52.97601642087102,
+              568.4029953554273
+            ],
+            "expected": -117.07194146022492,
+            "javascript": -117.07194146022492,
+            "native-wasm": -117.07194146022492
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -532.0200617425144,
+              -221.13601304590702,
+              50.02070730552077,
+              -810.036332346499
+            ],
+            "expected": 442016.9593319434,
+            "javascript": 442016.9593319434,
+            "native-wasm": 442016.9593319434
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              746.0368894971907
+            ],
+            "expected": 26.036889497190714,
+            "javascript": 26.036889497190714,
+            "native-wasm": 26.036889497190714
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -474.3737429380417,
+              -482.32799815014005,
+              -538.9849161729217,
+              604.5432132668793,
+              0.38209949899464846
+            ],
+            "expected": -435.1523432744031,
+            "javascript": -435.1523432744031,
+            "native-wasm": -435.1523432744031
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -190.7359198667109,
+              -234.8801912739873,
+              521.7556119896472,
+              -267.8169868886471
+            ],
+            "expected": 713.252420586416,
+            "javascript": 713.252420586416,
+            "native-wasm": 713.252420586416
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              402.03512040898204,
+              -19.065293483436108,
+              -185.49957079812884,
+              -200.94680972397327,
+              -516.3198509253561,
+              -827.7255827561021
+            ],
+            "expected": 1011.5846743595253,
+            "javascript": 1011.5846743595253,
+            "native-wasm": 1011.5846743595253
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              546.4988448657095,
+              -538.113959133625,
+              334.30904848501086
+            ],
+            "expected": 664.6049564963089,
+            "javascript": 664.6049564963089,
+            "native-wasm": 664.6049564963089
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              241.06545839458704,
+              -45.72980431839824,
+              69.60286386311054
+            ],
+            "expected": 72.59324546849118,
+            "javascript": 72.59324546849118,
+            "native-wasm": 72.59324546849118
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              179.10768976435065,
+              -300.5590485408902,
+              421.8634204007685,
+              681.9785349071026
+            ],
+            "expected": 248942.46810594827,
+            "javascript": 248942.46810594827,
+            "native-wasm": 248942.46810594827
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              792.952190618962
+            ],
+            "expected": 72.95219061896205,
+            "javascript": 72.95219061896205,
+            "native-wasm": 72.95219061896205
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -782.7740265056491,
+              -464.33336986228824,
+              -30.334079638123512,
+              638.2262981496751,
+              0.5505317668430507
+            ],
+            "expected": -131.91007382709907,
+            "javascript": -131.91007382709907,
+            "native-wasm": -131.91007382709907
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -749.4551963172853,
+              -438.5140836238861,
+              817.0918966643512,
+              361.4311749115586
+            ],
+            "expected": 1758.9719188158053,
+            "javascript": 1758.9719188158053,
+            "native-wasm": 1758.9719188158053
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -301.4443921856582,
+              745.2331129461527,
+              -380.5373595096171,
+              523.798200301826,
+              -328.5066573880613,
+              928.247082978487
+            ],
+            "expected": 1883.3106880575313,
+            "javascript": 1883.3106880575313,
+            "native-wasm": 1883.3106880575313
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              947.930711787194,
+              840.1735248044133,
+              308.51101176813245
+            ],
+            "expected": 264.86472496093035,
+            "javascript": 264.86472496093035,
+            "native-wasm": 264.86472496093035
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              763.9992963522673,
+              400.8967033587396,
+              -942.7058482542634
+            ],
+            "expected": 217.79153856403195,
+            "javascript": 217.79153856403195,
+            "native-wasm": 217.79153856403195
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -979.9294820986688,
+              -649.0543410181999,
+              -704.847373533994,
+              397.7042743936181
+            ],
+            "expected": -847206.3911824805,
+            "javascript": -847206.3911824805,
+            "native-wasm": -847206.3911824805
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -820.5290171317756
+            ],
+            "expected": 259.4709828682244,
+            "javascript": 259.4709828682244,
+            "native-wasm": 259.4709828682244
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -590.1053231209517,
+              -590.8319563604891,
+              -90.02499748021364,
+              -386.79480692371726,
+              0.9230706226080656
+            ],
+            "expected": -331.87288742615857,
+            "javascript": -331.87288742615857,
+            "native-wasm": -331.87288742615857
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -271.67067350819707,
+              -155.68528603762388,
+              421.3941697962582,
+              -397.38393761217594
+            ],
+            "expected": 734.0007596709869,
+            "javascript": 734.0007596709869,
+            "native-wasm": 734.0007596709869
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              973.3820385299623,
+              -790.1799688115716,
+              159.549864474684,
+              -789.6993309259415,
+              193.3264429681003,
+              -830.3825771436095
+            ],
+            "expected": 2248.489941338984,
+            "javascript": 2248.489941338984,
+            "native-wasm": 2248.489941338984
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -87.08402095362544,
+              942.1581123024225,
+              204.01613553985953
+            ],
+            "expected": -89.95716559847463,
+            "javascript": -89.95716559847463,
+            "native-wasm": -89.95716559847463
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              430.14543037861586,
+              294.6369112469256,
+              976.8292345106602
+            ],
+            "expected": -200.38393358292808,
+            "javascript": -200.38393358292808,
+            "native-wasm": -200.38393358292808
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -846.2901976890862,
+              -719.1724805161357,
+              -100.99517507478595,
+              -521.6554123908281
+            ],
+            "expected": 368838.9114991205,
+            "javascript": 368838.9114991205,
+            "native-wasm": 368838.9114991205
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -3.173897508531809
+            ],
+            "expected": 356.8261024914682,
+            "javascript": 356.8261024914682,
+            "native-wasm": 356.8261024914682
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -559.6144432201982,
+              241.03484535589814,
+              998.1019720435143,
+              157.15167624875903,
+              0.18302195565775037
+            ],
+            "expected": -133.91463271812626,
+            "javascript": -133.91463271812626,
+            "native-wasm": -133.91463271812626
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              713.6183795519173,
+              105.35960085690022,
+              161.7522775195539,
+              -818.1258188560605
+            ],
+            "expected": 1075.8166735066054,
+            "javascript": 1075.8166735066054,
+            "native-wasm": 1075.8166735066054
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -406.4954384230077,
+              652.4948887526989,
+              526.8370318226516,
+              -117.46945511549711,
+              -372.64017714187503,
+              -418.7211338430643
+            ],
+            "expected": 1424.260568509379,
+            "javascript": 1424.260568509379,
+            "native-wasm": 1424.260568509379
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              676.8258190713823,
+              -31.37426171451807,
+              -770.8444125019014
+            ],
+            "expected": -245.1790466190398,
+            "javascript": -245.1790466190398,
+            "native-wasm": -245.1790466190398
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              676.4162182807922,
+              177.8697813861072,
+              -830.0023442134261
+            ],
+            "expected": -249.4884526256289,
+            "javascript": -249.4884526256289,
+            "native-wasm": -249.4884526256289
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              820.1340925879776,
+              172.60094918310642,
+              -932.925044093281,
+              -586.8834229186177
+            ],
+            "expected": -320299.3553830952,
+            "javascript": -320299.3553830952,
+            "native-wasm": -320299.3553830952
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              342.6023335196078
+            ],
+            "expected": 342.6023335196078,
+            "javascript": 342.6023335196078,
+            "native-wasm": 342.6023335196078
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              621.3376708328724,
+              558.6790326051414,
+              -311.11698132008314,
+              478.80413429811597,
+              0.46188925858587027
+            ],
+            "expected": 261.00988588637443,
+            "javascript": 261.00988588637443,
+            "native-wasm": 261.00988588637443
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -91.56876290217042,
+              -22.933789528906345,
+              606.1203428544104,
+              935.8256831765175
+            ],
+            "expected": 1185.744413772968,
+            "javascript": 1185.744413772968,
+            "native-wasm": 1185.744413772968
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -282.57466154173017,
+              -116.36680271476507,
+              -980.1528486423194,
+              -448.25041107833385,
+              456.63578202947974,
+              147.2185654565692
+            ],
+            "expected": 1275.4398149012868,
+            "javascript": 1275.4398149012868,
+            "native-wasm": 1275.4398149012868
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -545.1974584721029,
+              -327.42733135819435,
+              -506.59305276349187
+            ],
+            "expected": 615.2695775353016,
+            "javascript": 615.2695775353016,
+            "native-wasm": 615.2695775353016
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -329.0152056142688,
+              437.01085494831204,
+              -34.53121520578861
+            ],
+            "expected": -428.20626721370786,
+            "javascript": -428.20626721370786,
+            "native-wasm": -428.20626721370786
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              401.1455303989351,
+              -763.876766897738,
+              496.71548837795854,
+              -179.571732878685
+            ],
+            "expected": 307395.0232999099,
+            "javascript": 307395.0232999099,
+            "native-wasm": 307395.0232999099
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              833.4660525433719
+            ],
+            "expected": 113.46605254337192,
+            "javascript": 113.46605254337192,
+            "native-wasm": 113.46605254337192
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -446.75429817289114,
+              773.969714064151,
+              410.4385767132044,
+              -255.96050778403878,
+              0.40395835926756263
+            ],
+            "expected": 341.51085071355396,
+            "javascript": 341.51085071355396,
+            "native-wasm": 341.51085071355396
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -951.9443749450147,
+              -738.5694049298763,
+              -766.6049567051232,
+              -643.423649482429
+            ],
+            "expected": 208.33486202065868,
+            "javascript": 208.33486202065868,
+            "native-wasm": 208.33486202065868
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -278.0187944881618,
+              -761.7594618350267,
+              803.9249978028238,
+              -270.896309055388,
+              793.305526021868,
+              -647.1625044941902
+            ],
+            "expected": 2126.953874812449,
+            "javascript": 2126.953874812449,
+            "native-wasm": 2126.953874812449
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              304.34275371953845,
+              594.2709604278207,
+              -657.4579360894859
+            ],
+            "expected": -649.716728099747,
+            "javascript": -649.716728099747,
+            "native-wasm": -649.716728099747
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -698.9334058016539,
+              344.8439477942884,
+              -155.66176641732454
+            ],
+            "expected": -638.2444514786437,
+            "javascript": -638.2444514786437,
+            "native-wasm": -638.2444514786437
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -429.6098514460027,
+              134.15778800845146,
+              -535.7792866416276,
+              455.0387905910611
+            ],
+            "expected": -123610.1832714077,
+            "javascript": -123610.1832714077,
+            "native-wasm": -123610.1832714077
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -84.95546830818057
+            ],
+            "expected": 275.04453169181943,
+            "javascript": 275.04453169181943,
+            "native-wasm": 275.04453169181943
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -28.749728575348854,
+              -169.8209368623793,
+              -722.7949062362313,
+              280.8330827392638,
+              0.5795912593603134
+            ],
+            "expected": -305.87976700144645,
+            "javascript": -305.87976700144645,
+            "native-wasm": -305.87976700144645
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -245.89060293510556,
+              -583.7146108970046,
+              909.4326090998948,
+              -214.2020519822836
+            ],
+            "expected": 1212.976197401489,
+            "javascript": 1212.976197401489,
+            "native-wasm": 1212.976197401489
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -198.43986490741372,
+              356.0009328648448,
+              924.9128014780581,
+              953.016210347414,
+              -220.33552499487996,
+              482.39384312182665
+            ],
+            "expected": 1361.557135930854,
+            "javascript": 1361.557135930854,
+            "native-wasm": 1361.557135930854
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -916.1416958086193,
+              -284.07989628612995,
+              382.7702752314508
+            ],
+            "expected": -939.4124202030018,
+            "javascript": -939.4124202030018,
+            "native-wasm": -939.4124202030018
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -835.484423674643,
+              -238.18108951672912,
+              94.10811215639114
+            ],
+            "expected": -119.55079316010523,
+            "javascript": -119.55079316010523,
+            "native-wasm": -119.55079316010523
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -222.47693734243512,
+              48.006028868258,
+              -292.662117164582,
+              -938.4374301880598
+            ],
+            "expected": 222830.23140099325,
+            "javascript": 222830.23140099325,
+            "native-wasm": 222830.23140099325
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -91.34783456102014
+            ],
+            "expected": 268.65216543897986,
+            "javascript": 268.65216543897986,
+            "native-wasm": 268.65216543897986
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -282.1867363527417,
+              -405.19160171970725,
+              921.2834499776363,
+              -193.29002918675542,
+              0.6931519308127463
+            ],
+            "expected": 255.611183465948,
+            "javascript": 255.611183465948,
+            "native-wasm": 255.611183465948
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              907.4081187136471,
+              -29.062220826745033,
+              -320.9856920875609,
+              -236.9861016049981
+            ],
+            "expected": 1245.8666439922868,
+            "javascript": 1245.8666439922868,
+            "native-wasm": 1245.8666439922868
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -818.6381137929857,
+              865.7746762037277,
+              65.04395557567477,
+              -237.7094542607665,
+              -857.2174566797912,
+              585.0560162216425
+            ],
+            "expected": 1891.1881293677961,
+            "javascript": 1891.1881293677961,
+            "native-wasm": 1891.1881293677961
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              837.5372751615942,
+              205.0742981955409,
+              -231.66012158617377
+            ],
+            "expected": 423.14944311292584,
+            "javascript": 423.14944311292584,
+            "native-wasm": 423.14944311292584
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              408.2527197897434,
+              -669.4560316391289,
+              171.0718246176839
+            ],
+            "expected": 307.25518199634365,
+            "javascript": 307.25518199634365,
+            "native-wasm": 307.25518199634365
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -198.9923040382564,
+              807.2566669434309,
+              -624.3200399912894,
+              157.56944473832846
+            ],
+            "expected": 472631.4077348491,
+            "javascript": 472631.4077348491,
+            "native-wasm": 472631.4077348491
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              752.1390118636191
+            ],
+            "expected": 32.13901186361909,
+            "javascript": 32.13901186361909,
+            "native-wasm": 32.13901186361909
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              660.8582362532616,
+              -472.1645941026509,
+              701.1372307315469,
+              921.1193737573922,
+              0.8488697344437242
+            ],
+            "expected": 767.3108746306491,
+            "javascript": 767.3108746306491,
+            "native-wasm": 767.3108746306491
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              2,
+              3,
+              9,
+              20,
+              0
+            ],
+            "expected": 2,
+            "javascript": 2,
+            "native-wasm": 2
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              2,
+              3,
+              9,
+              20,
+              1
+            ],
+            "expected": 20,
+            "javascript": 20,
+            "native-wasm": 20
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -1e+100,
+              1e+100,
+              1e+100,
+              -1e+100
+            ],
+            "expected": 2.82842712474619e+100,
+            "javascript": 2.82842712474619e+100,
+            "native-wasm": 2.82842712474619e+100
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -720
+            ],
+            "expected": 0,
+            "javascript": 0,
+            "native-wasm": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "Real Bezier parameter validation throws ArgumentOutOfRangeException across all backends",
+      "passed": true,
+      "milliseconds": 14.517221000001882,
+      "evidence": {
+        "parameters": [
+          -0.01,
+          1.01
+        ],
+        "exception": "System.ArgumentOutOfRangeException"
+      }
+    },
+    {
+      "name": "The full managed library round-trips ASCII and binary DXF documents",
+      "passed": true,
+      "milliseconds": 17993.089164999998,
+      "evidence": {
+        "managed": {
+          "supported": true
+        },
+        "javascript": {
+          "supported": false,
+          "diagnostics": 1021,
+          "codes": {
+            "IL_UNRESOLVED_CALL": 1018,
+            "IL_UNRESOLVED_FIELD": 3
+          }
+        },
+        "nativeWasm": {
+          "supported": false,
+          "diagnostics": 1265,
+          "codes": {
+            "WASM_UNRESOLVED_CALL": 630,
+            "WASM_UNSUPPORTED_TYPE": 548,
+            "WASM_STACK_TYPE": 84,
+            "WASM_UNRESOLVED_FIELD": 3
+          }
+        }
+      }
+    }
+  ],
+  "compiler": {
+    "bridgeVersion": "0.9.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 167,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "documentIo": {
+    "managed": {
+      "supported": true,
+      "formats": [
+        "ASCII",
+        "binary"
+      ],
+      "entities": [
+        "LINE",
+        "CIRCLE"
+      ]
+    },
+    "javascript": {
+      "supported": false,
+      "diagnosticCount": 1021,
+      "codes": {
+        "IL_UNRESOLVED_CALL": 1018,
+        "IL_UNRESOLVED_FIELD": 3
+      },
+      "dependencies": {
+        "System.String": 186,
+        "System.Delegate": 156,
+        "System.Threading.Interlocked": 156,
+        "System.Double": 92,
+        "System.Enum": 76,
+        "System.Threading.Thread": 34,
+        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 23,
+        "System.Array": 22,
+        "System.Environment": 21,
+        "System.Globalization.CultureInfo": 19,
+        "System.Globalization.NumberFormatInfo": 16,
+        "System.Globalization.TextInfo": 15,
+        "System.EventArgs": 14,
+        "System.Math": 13,
+        "System.IO.Path": 13,
+        "System.IO.File": 10,
+        "System.Text.Encoding": 9,
+        "System.Int32": 9,
+        "System.ICloneable": 9,
+        "System.Drawing.Color": 8,
+        "System.IO.FileLoadException": 8,
+        "System.BitConverter": 7,
+        "System.Collections.Generic.IReadOnlyList`1<netDxf.Vector2>": 6,
+        "System.Int64": 6,
+        "System.DateTime": 6,
+        "System.Int16": 5,
+        "System.Collections.Hashtable": 5,
+        "System.Collections.Generic.List`1<!0>": 5,
+        "System.IO.FileInfo": 4,
+        "System.Reflection.MemberInfo": 4,
+        "System.Runtime.CompilerServices.Unsafe": 4,
+        "System.Collections.Generic.IReadOnlyList`1<System.Byte[]>": 3,
+        "System.Text.RegularExpressions.Regex": 3,
+        "System.Byte": 3,
+        "System.IO.FileNotFoundException": 3,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.XData>": 3,
+        "System.Convert": 2,
+        "System.IO.BinaryWriter": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.BlockRecord>": 2,
+        "System.TimeSpan": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Header.HeaderVariable>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Entities.AttributeDefinition>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 2,
+        "System.Collections.Generic.List`1<netDxf.Entities.EntityObject>": 2,
+        "System.Collections.Generic.Dictionary`2<!0,!1>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 2,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 2,
+        "System.Text.CodePagesEncodingProvider": 1,
+        "System.StringComparer": 1,
+        "System.IO.FileSystemInfo": 1,
+        "System.Tuple`3<netDxf.Vector2,netDxf.Vector2,System.Double>": 1,
+        "System.Attribute": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.DictionaryObject>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.ImageDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.Block>": 1,
+        "System.ReadOnlySpan`1<System.Char>": 1,
+        "System.Text.StringBuilder": 1,
+        "System.Collections.Generic.List`1<netDxf.Entities.Attribute>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.Entities.AttributeDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>": 1,
+        "System.Collections.Generic.ICollection`1<System.String>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<!0,!1>": 1,
+        "System.Collections.Generic.List`1<System.String>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,!0>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Collections.DxfObjectReferences>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,!0>": 1,
+        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.XData>": 1,
+        "System.Runtime.InteropServices.MemoryMarshal": 1
+      },
+      "examples": [
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "NetDxfIoProbe::RoundTrip(System.Boolean)",
+          "token": 100663297,
+          "offset": 0,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Text.CodePagesEncodingProvider::get_Instance()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "NetDxfIoProbe::RoundTrip(System.Boolean)",
+          "token": 100663297,
+          "offset": 5,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Drawing.Color)",
+          "token": 100663314,
+          "offset": 3,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_R()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Drawing.Color)",
+          "token": 100663314,
+          "offset": 10,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_G()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Drawing.Color)",
+          "token": 100663314,
+          "offset": 17,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_B()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::.ctor(System.Int16)",
+          "token": 100663315,
+          "offset": 47,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Generic.IReadOnlyList`1<System.Byte[]>::get_Item(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::set_Index(System.Int16)",
+          "token": 100663324,
+          "offset": 53,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Generic.IReadOnlyList`1<System.Byte[]>::get_Item(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::RgbToAci(System.Byte,System.Byte,System.Byte)",
+          "token": 100663325,
+          "offset": 18,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Generic.IReadOnlyList`1<System.Byte[]>::get_Item(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToColor()",
+          "token": 100663331,
+          "offset": 22,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_White()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToColor()",
+          "token": 100663331,
+          "offset": 46,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::FromArgb(System.Int32,System.Int32,System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromColor(System.Drawing.Color)",
+          "token": 100663332,
+          "offset": 3,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_R()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromColor(System.Drawing.Color)",
+          "token": 100663332,
+          "offset": 16,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_G()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromColor(System.Drawing.Color)",
+          "token": 100663332,
+          "offset": 29,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Drawing.Color::get_B()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::FromTrueColor(System.Int32)",
+          "token": 100663334,
+          "offset": 1,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.BitConverter::GetBytes(System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToTrueColor(netDxf.AciColor)",
+          "token": 100663335,
+          "offset": 56,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 122,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentThread()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 127,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 132,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 137,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.AciColor::ToString()",
+          "token": 100663336,
+          "offset": 151,
+          "opcode": "call",
+          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
+        }
+      ],
+      "message": "Assembly 'NetDxfIoProbe' is not fully supported by the JavaScript tier."
+    },
+    "nativeWasm": {
+      "supported": false,
+      "diagnosticCount": 1265,
+      "codes": {
+        "WASM_UNRESOLVED_CALL": 630,
+        "WASM_UNSUPPORTED_TYPE": 548,
+        "WASM_STACK_TYPE": 84,
+        "WASM_UNRESOLVED_FIELD": 3
+      },
+      "dependencies": {
+        "System.Delegate": 130,
+        "System.Threading.Interlocked": 130,
+        "System.String": 112,
+        "System.StringComparison": 84,
+        "callvirt": 61,
+        "System.DateTime": 49,
+        "System.Enum": 41,
+        "System.EventArgs": 27,
+        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.DxfObject>": 24,
+        "call": 23,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Vertex>": 21,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>": 20,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Collections.DxfObjectReferences>": 18,
+        "System.ReadOnlySpan`1<System.Object>": 18,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>": 17,
+        "System.TimeSpan": 16,
+        "System.Globalization.NumberFormatInfo": 16,
+        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>": 15,
+        "System.Collections.Generic.List`1+Enumerator<System.String>": 14,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>": 12,
+        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,System.String>": 11,
+        "System.Collections.Hashtable": 10,
+        "System.IO.Path": 10,
+        "System.Text.Encoding": 9,
+        "System.Double": 9,
+        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 9,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.EntityObject>": 8,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Layer>": 8,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Linetype>": 8,
+        "System.Runtime.CompilerServices.Unsafe": 8,
+        "System.Collections.Generic.KeyValuePair`2<System.String,System.String>": 7,
+        "System.Int32": 7,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.LinetypeSegment>": 7,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.Layout>": 7,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinitionReactor>": 6,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.DxfObjectReference>": 6,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Vector2>": 6,
+        "System.Collections.Generic.List`1+Enumerator<System.Double>": 6,
+        "System.Int64": 6,
+        "System.Array": 6,
+        "System.BitConverter": 6,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Header.HeaderVariable>": 5,
+        "System.Environment": 5,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.Layout>": 5,
+        "System.Collections.Generic.List`1+Enumerator<System.Int32[]>": 5,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MeshEdge>": 5,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath>": 5,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.Block>": 5,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 5,
+        "System.Collections.Generic.IEnumerator`1<!0>": 4,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,!0>": 4,
+        "System.Reflection.MemberInfo": 4,
+        "System.Collections.Generic.List`1<!0>": 4,
+        "System.Collections.Generic.List`1+Enumerator<!0>": 4,
+        "System.Collections.Generic.IReadOnlyList`1<netDxf.Vector2>": 4,
+        "System.Threading.Thread": 4,
+        "System.Math": 4,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.DictionaryObject>": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MLineVertex>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.DimensionStyle,System.String[]>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Image,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Underlay,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.MLine,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Leader,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Insert,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Dimension,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,netDxf.Objects.DictionaryObject>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeSegment,System.String>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 3,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 3,
+        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Int32>": 3,
+        "System.Int16": 3,
+        "System.IO.FileMode": 3,
+        "System.IO.FileAccess": 3,
+        "System.IO.FileShare": 3,
+        "System.IO.File": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.AttributeDefinition>": 3,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.BlockRecord>": 3,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchPatternLineDefinition>": 3,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Header.HeaderVariable>": 2,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Tables.VPort>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,!0>": 2,
+        "System.Collections.Generic.Dictionary`2+ValueCollection<System.String,!0>": 2,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Tables.ShapeStyle>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.BlockRecord>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.ImageDefinition>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyle,System.String[]>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Image,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Underlay,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.MLine,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Leader,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Insert,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Dimension,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.DictionaryObject>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeSegment,System.String>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 2,
+        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinition>": 2,
+        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Int32>": 2,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Attribute>": 2,
+        "System.Convert": 2,
+        "System.IO.BinaryWriter": 2,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.MLineStyleElement>": 2,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Blocks.Block>": 2,
+        "System.Collections.Generic.IReadOnlyList`1<System.Byte[]>": 2,
+        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.XRecordEntry>": 2,
+        "System.Byte": 2,
+        "!0": 2,
+        "System.Text.RegularExpressions.Regex": 2,
+        "System.Globalization.CultureInfo": 2,
+        "System.Runtime.InteropServices.MemoryMarshal": 2,
+        "System.Text.CodePagesEncodingProvider": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.XData>": 1,
+        "System.Collections.Generic.ICollection`1<!1>": 1,
+        "System.StringSplitOptions": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.DictionaryObject>": 1,
+        "System.StringComparer": 1,
+        "netDxf.Collections.ObservableCollection`1<!0>": 1,
+        "System.Collections.Generic.Dictionary`2<!0,!1>": 1,
+        "System.Collections.Generic.Dictionary`2+ValueCollection<!0,!1>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.DxfObject>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Entities.AttributeDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.Group>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.Layout>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.MLineStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.UnderlayDgnDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.UnderlayDwfDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.UnderlayPdfDefinition>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.UCS>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.View>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.DimensionStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.TextStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.Layer>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.Linetype>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.ApplicationRegistry>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.VPort>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.ShapeStyle>": 1,
+        "System.Collections.Generic.Dictionary`2<System.String,netDxf.Objects.LayerState>": 1
+      },
+      "examples": [
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.Text.CodePagesEncodingProvider::get_Instance()'.",
+          "method": "NetDxfIoProbe|NetDxfIoProbe::RoundTrip(System.Boolean)",
+          "token": 100663297,
+          "assembly": "NetDxfIoProbe",
+          "offset": 0,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'.",
+          "method": "NetDxfIoProbe|NetDxfIoProbe::RoundTrip(System.Boolean)",
+          "token": 100663297,
+          "assembly": "NetDxfIoProbe",
+          "offset": 5,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
+          "token": 100664928,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Header.HeaderVariable>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
+          "token": 100664928,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Objects.DictionaryObject>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
+          "token": 100664928,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinitionReactor>' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
+          "token": 100664928,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.Collections.Generic.Dictionary`2<System.String,netDxf.Header.HeaderVariable>::.ctor(System.Collections.Generic.IEqualityComparer`1<System.String>)'.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 12,
+          "opcode": "newobj"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::get_WindowsCodePage()'.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 68,
+          "opcode": "callvirt"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.Environment::get_UserName()'.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 108,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1112,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.DateTime::get_Now()'.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1112,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1117,
+          "opcode": "box"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1145,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1150,
+          "opcode": "box"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1178,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.DateTime::get_Now()'.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1178,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1183,
+          "opcode": "box"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1211,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1216,
+          "opcode": "box"
+        }
+      ],
+      "message": "Direct WebAssembly compilation is unsupported: No native WebAssembly implementation or supported runtime service for 'System.Text.CodePagesEncodingProvider::get_Instance()'.; No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Header.HeaderVariable>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Objects.DictionaryObject>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinitionReactor>' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.Collections.Generic.Dictionary`2<System.String,netDxf.Header.HeaderVariable>::.ctor(System.Collections.Generic.IEqualityComparer`1<System.String>)'."
+    }
+  },
+  "passed": true,
+  "note": "Passing verification confirms the explicitly tested geometry exports and managed DXF I/O. It does not claim complete netDxf support in the JavaScript or native-Wasm backends."
+}

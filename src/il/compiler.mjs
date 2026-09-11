@@ -10,6 +10,7 @@ import { isCollectionsBuiltin } from './collections-extra.mjs';
 import { isIoBuiltin } from './io.mjs';
 import { isJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isStandardValueBuiltin, isStandardValueField } from './standard-values.mjs';
+import { selectJavaScriptExports } from './reachability.mjs';
 
 // This is JavaScript source serialization, including exact 64-bit metadata constants.
 const literal = value => {
@@ -105,6 +106,18 @@ export function isBuiltinCandidate(ref) {
   if (type === 'System.MathF') return exact['System.Math'].includes(name);
   if (exact[type]?.includes(name)) return true;
   if (numeric(type)) return name === 'ToString' && (n === 0 || n === 1 && p[0] === 'System.String') || ['Equals', 'CompareTo', 'IsNaN', 'IsInfinity'].includes(name) && n === 1;
+  if (['System.ArgumentException', 'System.ArgumentNullException', 'System.ArgumentOutOfRangeException'].includes(type)) {
+    if (ref.isStatic !== false || (ref.genericParameterCount ?? 0) !== 0 || ref.genericArguments?.length) return false;
+    if (name === '.ctor' && ref.returnType === 'System.Void') {
+      const signatures = ['', 'System.String', 'System.String,System.Exception', 'System.String,System.String'];
+      if (type === 'System.ArgumentException') signatures.push('System.String,System.String,System.Exception');
+      if (type === 'System.ArgumentOutOfRangeException') signatures.push('System.String,System.Object,System.String');
+      return signatures.includes(p.join(','));
+    }
+    return n === 0 && (['get_Message', 'get_ParamName', 'ToString'].includes(name) && ref.returnType === 'System.String'
+      || name === 'get_InnerException' && ref.returnType === 'System.Exception'
+      || type === 'System.ArgumentOutOfRangeException' && name === 'get_ActualValue' && ref.returnType === 'System.Object');
+  }
   if (/^System\..*Exception$/.test(type)) return name === '.ctor' && (n === 0 || n === 1 && p[0] === 'System.String' || n === 2 && p[0] === 'System.String' && p[1] === 'System.Exception') || ['get_Message', 'get_InnerException', 'ToString'].includes(name) && n === 0;
   if (/^System\.(Action|Func|Predicate|Comparison)(`\d+)?$/.test(type)) return name === '.ctor' && n === 2 || name === 'Invoke';
   if (type.includes('Enumerator') || type === 'System.IDisposable') return ['MoveNext', 'get_Current', 'Dispose'].includes(name);
@@ -121,6 +134,14 @@ function externalExists(externals, ref) {
 }
 
 export function analyzeAssembly(model, options = {}) {
+  if (options.exports !== undefined) {
+    const selected = selectJavaScriptExports(model, options);
+    const analysis = analyzeAssembly(selected.model, {...options, exports:undefined, assemblies:selected.assemblies});
+    analysis.diagnostics.unshift(...selected.diagnostics);
+    analysis.supported = analysis.executable = !analysis.diagnostics.some(d => d.severity === 'error');
+    analysis.selection = selected.selection;
+    return analysis;
+  }
   const diagnostics = [];
   if (!model || !Array.isArray(model.types)) throw new ILCompilationError('Expected a normalized assembly model with a types array.');
   const methods = allMethods(model), linked = [...methods, ...(options.assemblies ?? []).flatMap(allMethods)];
@@ -304,7 +325,13 @@ function methodPlan(method, options) {
 export function generateMethod(method, options = {}) { return methodPlan(method, options).source; }
 
 function prepareSources(model, options) {
-  const analysis = analyzeAssembly(model, options);
+  const selected = selectJavaScriptExports(model, options);
+  model = selected.model;
+  const sourceOptions = {...options, exports:undefined, assemblies:selected.assemblies};
+  const analysis = analyzeAssembly(model, sourceOptions);
+  analysis.diagnostics.unshift(...selected.diagnostics);
+  analysis.supported = analysis.executable = !analysis.diagnostics.some(d => d.severity === 'error');
+  if (selected.selection) analysis.selection = selected.selection;
   if (options.strict && !analysis.supported) throw new ILCompilationError(`Assembly '${model.name}' is not fully supported by the JavaScript tier.`, analysis.diagnostics);
   const optimization = { enabled: options.optimize !== false, mode: options.optimize === false ? 'reference' : options.optimize === 'blocks' ? 'blocks' : 'numeric', methods: 0, numericMethods: 0, basicBlocks: 0, instructions: 0, generatedSourceBytes: 0 };
   const generatedMap = assembly => `\n{${allMethods(assembly).map(method => {
@@ -314,7 +341,7 @@ function prepareSources(model, options) {
     optimization.generatedSourceBytes += plan.source.length * 2;
     return `${literal(String(method.token))}:${plan.source}`;
   }).join(',\n')}\n}`;
-  const source = generatedMap(model), linked = (options.assemblies ?? []).map(assembly => ({ model: assembly, source: generatedMap(assembly) }));
+  const source = generatedMap(model), linked = selected.assemblies.map(assembly => ({ model: assembly, source: generatedMap(assembly) }));
   return { model, source, linked, analysis, optimization };
 }
 
@@ -339,10 +366,10 @@ export function compileJavaScriptModule(model, options = {}) {
   const linked = prepared.linked.map(item => ({ model: item.model, compiledMethods: compile(item.source) }));
   let source;
   const blueprint = {
-    model, compiledMethods, linked, analysis: prepared.analysis, optimization: prepared.optimization, generatedSourceBytes: prepared.optimization.generatedSourceBytes,
+    model:prepared.model, compiledMethods, linked, analysis: prepared.analysis, optimization: prepared.optimization, generatedSourceBytes: prepared.optimization.generatedSourceBytes,
     get source() { return source ??= moduleSource(prepared, options); },
     createRuntime(runtimeOptions = {}) {
-      const runtime = createRuntime(model, { ...options, ...runtimeOptions, compiledMethods });
+      const runtime = createRuntime(prepared.model, { ...options, ...runtimeOptions, compiledMethods });
       for (const item of linked) runtime.addAssembly(item.model, item.compiledMethods);
       runtime.analysis = prepared.analysis; runtime.diagnostics = prepared.analysis.diagnostics; runtime.optimization = prepared.optimization;
       Object.defineProperty(runtime, 'source', { configurable: true, enumerable: true, get: () => blueprint.source });

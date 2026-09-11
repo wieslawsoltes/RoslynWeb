@@ -200,6 +200,12 @@ export function analyzeWasmAssembly(model, options = {}) {
   };
   const noteServiceCall = ref => {
     const type = String(ref.declaringType ?? ''), name = ref.name;
+    if (/^System\..*Exception$/.test(type) && ['get_Message', 'ToString'].includes(name) && ref.isStatic === false
+      && ref.returnType === 'System.String' && ref.parameters?.length === 0) {
+      serviceCallbacks.set('ToString|0', { name: 'ToString', count: 0 });
+      retainServiceCallbacks();
+      return;
+    }
     const structural = ['System.Collections.IStructuralEquatable','System.Collections.IStructuralComparable','System.Collections.IEqualityComparer','System.Collections.IComparer'].includes(type);
     if (!structural && !isStandardValueType(type) && !['System.IComparable','System.IComparable`1','System.IEquatable`1'].includes(genericDefinitionName(type))) return;
     const callback = name === 'CompareTo' || name === 'Compare' ? {name:'Compare',count:2} : name === 'Equals' ? {name:'Equals',count:2} : name === 'GetHashCode' ? {name:'GetHashCode',count:1} : null;

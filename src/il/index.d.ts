@@ -7,6 +7,7 @@ export interface ILAnalysis {
   totalInstructions: number; supportedInstructions: number; opcodes: Record<string,number>;
   dependencies: Array<{method:ILMethodReference;kind:'builtin'|'unresolved';overloadValidatedAtRuntime?:boolean}>;
   diagnostics: ILDiagnostic[]; capabilities: typeof capabilities;
+  selection?: {exports:string[];retainedMethods:number;totalMethods:number;retainsAll:boolean};
 }
 export type JavaScriptOptimization = boolean | 'blocks';
 export interface JavaScriptOptimizationStats {
@@ -23,6 +24,8 @@ export interface JavaScriptRuntimeOptions {
   [key:string]: unknown;
 }
 export interface JavaScriptCompileOptions extends JavaScriptRuntimeOptions {
+  /** Emit a conservative closure of selected root methods; omitted selects the full library. */
+  exports?: Array<string|number|{token?:number;type?:string;declaringType?:string;name?:string;method?:string;parameters?:string[]}>;
   /** true (default) specializes eligible Int32/Int64/Single/Double leaf methods; 'blocks' groups IL blocks; false retains reference instruction dispatch. */
   optimize?: JavaScriptOptimization;
   /** Reject unresolved or unsupported IL before generating methods. */

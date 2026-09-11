@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "upstream": {
+    "repository": "https://github.com/wieslawsoltes/netDxf",
+    "branch": "netstandard",
+    "commit": "5b562312f683fc635405c149537ca488e4ec4d39"
+  },
+  "sourceCount": 272,
+  "sourceBytes": 3549957,
+  "compilation": {
+    "assemblyName": "netDxf.netstandard",
+    "defines": [
+      "NETSTANDARD",
+      "TRACE"
+    ],
+    "sourceChanges": false,
+    "target": "net10.0 reference assemblies bundled with RoslynWeb",
+    "signed": false,
+    "notes": "All upstream C# source is compiled unchanged. This browser build preserves the NETSTANDARD conditional source path while retargeting references to the bundled .NET 10 runtime. Upstream MSBuild signing and SDK-generated assembly metadata are not reproduced; the resulting library is unsigned."
+  },
+  "compiler": {
+    "bridgeVersion": "0.9.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 167,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "library": {
+    "file": "netDxf.netstandard.dll",
+    "bytes": 767488,
+    "sha256": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd"
+  },
+  "bridge": {
+    "file": "RoslynWeb.NetDxfBridge.dll",
+    "bytes": 31744,
+    "sha256": "472e743ca0bdfa3bd8e913c0e8664bb80f9f6325bdff830f4bd33b5fde5c51cd"
+  },
+  "sourceBundle": {
+    "file": "source-bundle.json",
+    "bytes": 3730669,
+    "sha256": "61176c90e05641468097d1fad03b5bc174310dc617fdc926f61f3ad35eccae50"
+  },
+  "testedAt": "2026-09-11T22:26:59.034Z",
+  "elapsedMs": 24485.479499,
+  "performance": {
+    "library": {
+      "parseMs": 2432.6216,
+      "compilationMs": 45.3363,
+      "extensionsMs": 4.0818,
+      "emitMs": 20290.7704,
+      "cache": {
+        "enabled": true,
+        "syntaxHits": 0,
+        "incrementalParses": 0,
+        "syntaxMisses": 272,
+        "compilationReused": false,
+        "retainedTrees": 64,
+        "retainedSourceBytes": 1079564,
+        "maxRetainedTrees": 64,
+        "maxRetainedSourceBytes": 16777216
+      }
+    },
+    "bridge": {
+      "parseMs": 20.7184,
+      "compilationMs": 1.1846,
+      "extensionsMs": 0.074,
+      "emitMs": 830.1513,
+      "cache": {
+        "enabled": true,
+        "syntaxHits": 0,
+        "incrementalParses": 0,
+        "syntaxMisses": 1,
+        "compilationReused": false,
+        "retainedTrees": 64,
+        "retainedSourceBytes": 1120774,
+        "maxRetainedTrees": 64,
+        "maxRetainedSourceBytes": 16777216
+      }
+    }
+  },
+  "diagnostics": {
+    "library": [],
+    "bridge": []
+  }
+}

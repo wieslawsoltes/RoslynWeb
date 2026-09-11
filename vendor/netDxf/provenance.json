@@ -1,0 +1,1408 @@
+{
+  "repository": "https://github.com/wieslawsoltes/netDxf",
+  "branch": "netstandard",
+  "commit": "5b562312f683fc635405c149537ca488e4ec4d39",
+  "sourceRoot": "netDxf",
+  "license": "MIT",
+  "sourceCount": 272,
+  "sourceBytes": 3549957,
+  "sources": [
+    {
+      "path": "AciColor.cs",
+      "sha256": "45d978b5f00777f2bea194549f930288e4469860168f05260715bdca6b137451",
+      "bytes": 36309
+    },
+    {
+      "path": "BezierCurve.cs",
+      "sha256": "ed915f80d0485e82218ba7027324406133dd830a0d93692c302a7802aa3d3eec",
+      "bytes": 3835
+    },
+    {
+      "path": "BezierCurveCubic.cs",
+      "sha256": "79930f5478da9d9530049c1a4c910e0b202d340c92879dc2328badc1c8a57d7c",
+      "bytes": 13165
+    },
+    {
+      "path": "BezierCurveQuadratic.cs",
+      "sha256": "ad1dc134fa737e199ba98714f069e3208a9d0be646b8dfa7cc55c1b9dc6352c9",
+      "bytes": 6729
+    },
+    {
+      "path": "Blocks/Block.cs",
+      "sha256": "96b7eff0631f6f66e5d45fdef698cb230d06822f197baf28180801ddc30ab5d8",
+      "bytes": 33616
+    },
+    {
+      "path": "Blocks/BlockAttributeDefinitionChangeEventArgs.cs",
+      "sha256": "de609f434f314ea67a483f8f62154e0e5b07e23483af841739fbf6a09df1582e",
+      "bytes": 2369
+    },
+    {
+      "path": "Blocks/BlockEntityChangeEventArgs.cs",
+      "sha256": "9d2716e052ded9d510d14eb13756448b87b74de5b2a90c660bd351d7c70fc2f0",
+      "bytes": 2267
+    },
+    {
+      "path": "Blocks/BlockRecord.cs",
+      "sha256": "544d8157b33988080265e2428d693d8eb7917eab0d19139750a6afa42ccab54c",
+      "bytes": 5641
+    },
+    {
+      "path": "Blocks/BlockTypeFlags.cs",
+      "sha256": "ada78dd449f67c5106eeaa50e3ed6dbf00b2b2cf241281d03b378bc02dd39c97",
+      "bytes": 2870
+    },
+    {
+      "path": "Blocks/EndBlock.cs",
+      "sha256": "ccf097cde283187e5f66f22e8c194d224a14e954ff369cd99e82a8112361ea2f",
+      "bytes": 1689
+    },
+    {
+      "path": "BoundingRectangle.cs",
+      "sha256": "eae8359972c647566c62f3d44bdd2a5bd93c183559e8d7a9bb50d7fa56730434",
+      "bytes": 9885
+    },
+    {
+      "path": "ClippingBoundary.cs",
+      "sha256": "dd806214f6f2796e94ec337fe5abf407c6f625d32293ee94079ae1e6d2b69440",
+      "bytes": 4874
+    },
+    {
+      "path": "ClippingBoundaryType.cs",
+      "sha256": "326ea88e17c1be28871aaba3302d07c21915d1daedf830df118baca40728f362",
+      "bytes": 1577
+    },
+    {
+      "path": "Collections/ApplicationRegistries.cs",
+      "sha256": "a9c4604c66c0b7432ab6cf3ec66dadf74c05d0cd5c6b4fe2df83ad375968a098",
+      "bytes": 6205
+    },
+    {
+      "path": "Collections/AttributeCollection.cs",
+      "sha256": "dff18781e84d154acf19bb5f119ba72fcac4cd38f940c4a72a7b0c9bda75a947",
+      "bytes": 6397
+    },
+    {
+      "path": "Collections/AttributeDefinitionDictionary.cs",
+      "sha256": "a4fcbd60c504025d6756903287b7fe6b32a7d5e49ce1a84ab4b7f142baf6f1fb",
+      "bytes": 14719
+    },
+    {
+      "path": "Collections/AttributeDefinitionDictionaryEventArgs.cs",
+      "sha256": "4031b49e0df69a98cba7cccd1acc16b4c14bbb4da329518a1e5235f3d34fb08c",
+      "bytes": 2884
+    },
+    {
+      "path": "Collections/BlockRecords.cs",
+      "sha256": "b2ddae090a59103a30e92d8c2d99f5fccf3f7aa7a579f286fa0d0fe00dff2036",
+      "bytes": 9114
+    },
+    {
+      "path": "Collections/DimensionStyleOverrideDictionary.cs",
+      "sha256": "4008d498a8c969fae4bbbb3f4830d70207e8bad9d9544c48f28091268dcf3bbb",
+      "bytes": 15472
+    },
+    {
+      "path": "Collections/DimensionStyleOverrideDictionaryEventArgs.cs",
+      "sha256": "0ff68ea126b1174d93ff05900545e397aab0b2cbc81e21ea41d09b19a05db6c1",
+      "bytes": 2827
+    },
+    {
+      "path": "Collections/DimensionStyles.cs",
+      "sha256": "ff5f747c309623d245ad0c4248a72b6a5cab8998c271fb5a712263e6bdb90114",
+      "bytes": 10054
+    },
+    {
+      "path": "Collections/DrawingEntities.cs",
+      "sha256": "b5481f3418773ab6c8378acc7ada885b3313180244a557de0b433cf2dd729a50",
+      "bytes": 16691
+    },
+    {
+      "path": "Collections/DxfObjectReferences.cs",
+      "sha256": "567ceed6cadc1102b83a6fc7bb8a8383cb259c276c7576e47138569595c7c3b8",
+      "bytes": 3159
+    },
+    {
+      "path": "Collections/EntityCollection.cs",
+      "sha256": "69500767716272efa7f0736a4a859a69484255f9bd5ea9b661009e91ca24b6fb",
+      "bytes": 13982
+    },
+    {
+      "path": "Collections/EntityCollectionEventArgs.cs",
+      "sha256": "637bba0a0ff9cdb81601b7627041918e4b3b6fd2a0ddca6d5c254124e53566f2",
+      "bytes": 2762
+    },
+    {
+      "path": "Collections/Groups.cs",
+      "sha256": "bbf80009d7276278f5e91958e046d1640e1985bdbe13f3ada0520ae81f98ba4c",
+      "bytes": 8113
+    },
+    {
+      "path": "Collections/ImageDefinitions.cs",
+      "sha256": "63c53f96953673f1a3879fe662f9c59f47e057c66e8ae73c83c10caf2d5931ac",
+      "bytes": 6081
+    },
+    {
+      "path": "Collections/LayerStateManager.cs",
+      "sha256": "b8ff6a97bf0da2fad6e3951f7ea763af643c84d718ef84bd4716e1dba2afb354",
+      "bytes": 11978
+    },
+    {
+      "path": "Collections/Layers.cs",
+      "sha256": "bf9cc1a1308b8b71fa7711c239e937eebd76c599964a52bd48e7dcef0cfb0f3d",
+      "bytes": 6925
+    },
+    {
+      "path": "Collections/Layouts.cs",
+      "sha256": "09394cce29e2b458587471b090683de4a8bb82b22113181abbf96ee786edcc14",
+      "bytes": 12227
+    },
+    {
+      "path": "Collections/Linetypes.cs",
+      "sha256": "77435ea636ce0b47747aa0bddbb8c32982edb408dc11df5fe9cd4e78e043e73e",
+      "bytes": 14586
+    },
+    {
+      "path": "Collections/MLineStyles.cs",
+      "sha256": "7af05bd24ca31fdf62127eb7f77bbf0ba69450f34956ee9b02a639f2b4cb1a7b",
+      "bytes": 7666
+    },
+    {
+      "path": "Collections/ObservableCollection.cs",
+      "sha256": "c55f89da73140539392a673a7b4b6ccadfbf28d32052aef3dc67e58762a0b134",
+      "bytes": 14846
+    },
+    {
+      "path": "Collections/ObservableCollectionEventArgs.cs",
+      "sha256": "8a74e9448d989d9fdbd636194b2877c835f8904c3468b892cd64163538dcd985",
+      "bytes": 2701
+    },
+    {
+      "path": "Collections/ObservableDictionary.cs",
+      "sha256": "0b9f7c972241063b8ee51b0f53465f4af386d1fbe27f583938804676809d90fb",
+      "bytes": 8491
+    },
+    {
+      "path": "Collections/ObservableDictionaryEventArgs.cs",
+      "sha256": "9c53b5992d6a424b018917476f469a860030e99368cdc0ffa17f6052d9632ad7",
+      "bytes": 2897
+    },
+    {
+      "path": "Collections/ShapeStyles.cs",
+      "sha256": "faa3018fe496d8433f1ece60b33d56ceeec584ccccf4afcc454830b944e279ec",
+      "bytes": 6312
+    },
+    {
+      "path": "Collections/SupportFolders.cs",
+      "sha256": "5c727cc80bc772a9ba2dba7030ec7f1ef507cba7837081819b630358d125a9f1",
+      "bytes": 10404
+    },
+    {
+      "path": "Collections/TableObjects.cs",
+      "sha256": "e4b667c1a67f823e368eb2ab0452f9c20fd98dd137c4b8e14e3a1a9d0b34e87a",
+      "bytes": 11362
+    },
+    {
+      "path": "Collections/TextStyles.cs",
+      "sha256": "896cb78ebf9b3a35ec2dcef43293932accb5f7811dd69b46c08c82053fd245e6",
+      "bytes": 5768
+    },
+    {
+      "path": "Collections/UCSs.cs",
+      "sha256": "95f9cbf1d52a291f2a2ab9d4bb3762a99b521a81087e51c5214de49e0fa92143",
+      "bytes": 5982
+    },
+    {
+      "path": "Collections/UnderlayDgnDefinitions.cs",
+      "sha256": "61c666caa7468ea76a22cf5da815f7992257f72ebda762e796bb33b3c169e0fe",
+      "bytes": 6166
+    },
+    {
+      "path": "Collections/UnderlayDwfDefinitions.cs",
+      "sha256": "ae811d01865593cf78d6b86c54f4bf42ae479592b157965c69e7699422aa3949",
+      "bytes": 6165
+    },
+    {
+      "path": "Collections/UnderlayPdfDefinitions.cs",
+      "sha256": "ce7e9a03748b93c8f1a75387a091729240ad33095d3ebe7c54819ab0c5fc0d1d",
+      "bytes": 6165
+    },
+    {
+      "path": "Collections/VPorts.cs",
+      "sha256": "a7c262dfa3f733d7dc26a6960694bf405bd07698bd2ec3dd8361c7066d138069",
+      "bytes": 4258
+    },
+    {
+      "path": "Collections/Views.cs",
+      "sha256": "a6d9e1723eec294440fd0c08871f29c6bb476e9cd329863e395bb1debb13ca5a",
+      "bytes": 5587
+    },
+    {
+      "path": "Collections/XDataDictionary.cs",
+      "sha256": "e15a1edaeebe991a639350f47502bde6aef09922cb26e7189300e51b0203a158",
+      "bytes": 13436
+    },
+    {
+      "path": "CoordinateSystem.cs",
+      "sha256": "4e56fdaca53eb0dd533d698619ef3c69b80ed59d479873ac75056799638bf8b8",
+      "bytes": 1588
+    },
+    {
+      "path": "DxfDocument.cs",
+      "sha256": "3beea04a191134d2362966b06fcff95e22a5e6fb251589f9e2e16b50f84a1ca5",
+      "bytes": 81590
+    },
+    {
+      "path": "DxfObject.cs",
+      "sha256": "a2aca3e06133b3fce99c8bbd715fb159804fe931772af5d432aa85aadcf3460a",
+      "bytes": 6253
+    },
+    {
+      "path": "DxfObjectCode.cs",
+      "sha256": "933d3037daf7b44e90e3a87a9ea71adbc26ef426c8790abdd429e7116074cc21",
+      "bytes": 14015
+    },
+    {
+      "path": "DxfObjectReference.cs",
+      "sha256": "028b82671f40be750e4bab3a656ca70fb1f384956f36ead6c92a42e953b97724",
+      "bytes": 2344
+    },
+    {
+      "path": "Entities/AlignedDimension.cs",
+      "sha256": "decb230ca104b798e975ec1f0bbb85ed6f8a21af0218795a4dbe82436123fbdd",
+      "bytes": 17555
+    },
+    {
+      "path": "Entities/Angular2LineDimension.cs",
+      "sha256": "0f6a85d919d897561bbc11b5dd73f1a85d3e0ad6a2f91b89f0fd17a49d7ca143",
+      "bytes": 26715
+    },
+    {
+      "path": "Entities/Angular3PointDimension.cs",
+      "sha256": "66edd0d08e1573704cae7d388170c6bb6f4d035d4af20056b6db0da71772995b",
+      "bytes": 17331
+    },
+    {
+      "path": "Entities/Arc.cs",
+      "sha256": "ec682b9cc176497d0747e9f0665ff5545b4a271376330d1d2fb71448e8e0dc1e",
+      "bytes": 12976
+    },
+    {
+      "path": "Entities/ArcLengthDimension.cs",
+      "sha256": "e7db98aa4e460e97ff398a4f917a4e24e1c38914a03785db5cc27c32c6ed3661",
+      "bytes": 22401
+    },
+    {
+      "path": "Entities/Attribute.cs",
+      "sha256": "18013f874695db9e64a027af7aacfbf21e25c7fdfbdb1fd1045f0e2ce031d9ed",
+      "bytes": 26548
+    },
+    {
+      "path": "Entities/AttributeChangeEventArgs.cs",
+      "sha256": "3a73d66c42acf79acdf35375fdba15b3475686b7fca9a4529fe8c81a671c9b29",
+      "bytes": 2087
+    },
+    {
+      "path": "Entities/AttributeDefinition.cs",
+      "sha256": "650ec1ad652257ba1e7d5e2db1ff2ab22a944f201adac9672cb2954bb76edd39",
+      "bytes": 27197
+    },
+    {
+      "path": "Entities/AttributeFlags.cs",
+      "sha256": "0c103df1b46313320c3b14808c1b56007144fb989149fa6c2f5f46e354566589",
+      "bytes": 2085
+    },
+    {
+      "path": "Entities/Circle.cs",
+      "sha256": "58be34ebbb75bc46307ed849c483db0b41f7ebc15ed5fe8498fd386dc4221b32",
+      "bytes": 9419
+    },
+    {
+      "path": "Entities/DatumReferenceValue.cs",
+      "sha256": "c586e9a8673bd00f99089c1afb26e28a79a639777fb37e88bc066b6261e41f69",
+      "bytes": 3533
+    },
+    {
+      "path": "Entities/DiametricDimension.cs",
+      "sha256": "a4c61b866327056b992ace71c03c8d8fb7f09fd7b3f312d4468567a4847b67e1",
+      "bytes": 17187
+    },
+    {
+      "path": "Entities/Dimension.cs",
+      "sha256": "c88e431d11d26a1bb662cfe6619c572d5fe5b22adf516385047ef82857b991d6",
+      "bytes": 15409
+    },
+    {
+      "path": "Entities/DimensionArrowhead.cs",
+      "sha256": "b2c56b5db84b507bbcddc482b7718a4007d9e0de3524b99898761713e4b845ad",
+      "bytes": 24676
+    },
+    {
+      "path": "Entities/DimensionBlock.cs",
+      "sha256": "23dc94c388b2680b93ec443ceb63cfbab195749382e9d949febc6ad716b2d395",
+      "bytes": 78782
+    },
+    {
+      "path": "Entities/DimensionType.cs",
+      "sha256": "3e1793250ec0127fe3d85c81a1bad97b085ecbd4b54710c6ae3b6cd5172332f8",
+      "bytes": 2207
+    },
+    {
+      "path": "Entities/DimensionTypeFlags.cs",
+      "sha256": "d61a3802d7563334d6c784375b310bd514ee09cd4761d4074485dc6b041ee632",
+      "bytes": 2730
+    },
+    {
+      "path": "Entities/Ellipse.cs",
+      "sha256": "e7553fe0d6ca44b7635be9c3c1aa8b5f339ca0bdbd032f2cd601a05fd5c28d27",
+      "bytes": 27465
+    },
+    {
+      "path": "Entities/EndSequence.cs",
+      "sha256": "751038ad0902922bf826ce71b41e7ab743bd84b1791bbd0239a828783c3d804d",
+      "bytes": 1773
+    },
+    {
+      "path": "Entities/EntityChangeEventArgs.cs",
+      "sha256": "1c1e53047d346ed914db0127e0d7d0f61634718ab25e53d7f93d7a0d7b436706",
+      "bytes": 2236
+    },
+    {
+      "path": "Entities/EntityObject.cs",
+      "sha256": "0a872f20e6f371e820e1bb7260363dd239d70d9a72912fb907e115fa14f8d21d",
+      "bytes": 10444
+    },
+    {
+      "path": "Entities/EntityType.cs",
+      "sha256": "630d3c9074a2305cb6b1c4d75d29780336246ca379b18b336df34bae8345b13a",
+      "bytes": 4240
+    },
+    {
+      "path": "Entities/Face3D.cs",
+      "sha256": "c721c219a07610872fcc02c5eff92134deec940fa9ea97997b22e874257dd1c7",
+      "bytes": 8851
+    },
+    {
+      "path": "Entities/Face3DEdgeFlags.cs",
+      "sha256": "db04813df9dc88ad2f6c034de34e34d33774cbb1e9d5b952adfce6e2df3caef6",
+      "bytes": 1957
+    },
+    {
+      "path": "Entities/Hatch.cs",
+      "sha256": "cc09c568f18e549a373b3972f5e86831dd7323c5f3fda93cce24527405bf9e12",
+      "bytes": 24791
+    },
+    {
+      "path": "Entities/HatchBoundaryPath.cs",
+      "sha256": "d8973899e8e928907784991d772019c34edb68a5dbc124927b5eff7e9de276d4",
+      "bytes": 38913
+    },
+    {
+      "path": "Entities/HatchBoundaryPathTypeFlags.cs",
+      "sha256": "c5b977f187a85b2682e4f9ffaa6ba19620ab0ed31db80e5d41454e4e87112db4",
+      "bytes": 2021
+    },
+    {
+      "path": "Entities/HatchFillType.cs",
+      "sha256": "f865276719009aa877f19844a5667caf14bd87724fee0d3cf9607e99389327e1",
+      "bytes": 1618
+    },
+    {
+      "path": "Entities/HatchGradientPattern.cs",
+      "sha256": "ff09232aafd02f06347b006ca5084044f6727ea7af4b5e949a435e4a8fab9191",
+      "bytes": 10107
+    },
+    {
+      "path": "Entities/HatchGradientPatternType.cs",
+      "sha256": "a761dc3c7ea8eb12c774f450463567a940a3534f86d06f265300532aea20d123",
+      "bytes": 2672
+    },
+    {
+      "path": "Entities/HatchPattern.cs",
+      "sha256": "8718a385a2d0204f5b2e901f95160c8b178bab25f1413a1b53c58e2dd9b36c98",
+      "bytes": 19353
+    },
+    {
+      "path": "Entities/HatchPatternLineDefinition.cs",
+      "sha256": "dba4133aca76921cb244e45146768013e0b8d1005c5cb79d115e2ce9746c4db6",
+      "bytes": 4502
+    },
+    {
+      "path": "Entities/HatchStyle.cs",
+      "sha256": "83453771692ee469926ff18e8be177a3aecd316122b2fa1e493c5ce625f5fd9c",
+      "bytes": 1738
+    },
+    {
+      "path": "Entities/HatchType.cs",
+      "sha256": "e90b0cb30e9760080023fbed5fbaf4a574006bc5c5ce804aa2905171d01b3198",
+      "bytes": 1701
+    },
+    {
+      "path": "Entities/Image.cs",
+      "sha256": "3f82b3081b37181bc907eb00630e2d79274dbc571f0abdc4d6360e2197955aea",
+      "bytes": 17020
+    },
+    {
+      "path": "Entities/ImageDisplayFlags.cs",
+      "sha256": "5cdedec790d37d3fffdb0ecf845f0ed901e40f1a82dcaaa8fa49115bbf6539e4",
+      "bytes": 1926
+    },
+    {
+      "path": "Entities/Insert.cs",
+      "sha256": "5792000356c918052bcef627a1894f31814f7046d06b33268f77df92db375a3d",
+      "bytes": 30540
+    },
+    {
+      "path": "Entities/Leader.cs",
+      "sha256": "493756ae822ee8ad6792ba67bee494ce7c3addf37accdfbf35243eb459ad09e2",
+      "bytes": 43261
+    },
+    {
+      "path": "Entities/LeaderPathType.cs",
+      "sha256": "d6fd0126ff67c35f6b7dadacc3e30e7375e6c11170ffd0a42a01d9bf0781077a",
+      "bytes": 1663
+    },
+    {
+      "path": "Entities/Line.cs",
+      "sha256": "a23693e1d642b0aeb5102c45e270879d16ce35e66cdcf3162c45be95d8d88ec2",
+      "bytes": 6355
+    },
+    {
+      "path": "Entities/LinearDimension.cs",
+      "sha256": "bd4799f929044da2402dbfbf2979d36e51bac301c0d2d2b05916b465a32691f2",
+      "bytes": 19991
+    },
+    {
+      "path": "Entities/MLine.cs",
+      "sha256": "8f13a36cdfad96430a3956eb03f995ea033147a0d69c5b2291464cafce60446d",
+      "bytes": 33635
+    },
+    {
+      "path": "Entities/MLineFlags.cs",
+      "sha256": "b108a75687b77b8df0191a4a2776dd8790cf1d99a8b0b52344cbfe5a08067e5c",
+      "bytes": 1886
+    },
+    {
+      "path": "Entities/MLineJustification.cs",
+      "sha256": "2788b3856f0abdc185bc6d1207f5ed1a0b567394a33f6ac023635a9969af8474",
+      "bytes": 1676
+    },
+    {
+      "path": "Entities/MLineVertex.cs",
+      "sha256": "6be6beda692ecca8f38ab34063ac51b46eaad4aa6e0300661476fb9f4ebeca57",
+      "bytes": 5049
+    },
+    {
+      "path": "Entities/MText.cs",
+      "sha256": "aa7564a9f3550338ca85625a237ebba10b0a6572b32b5bd27e8b63af0b93fa31",
+      "bytes": 41839
+    },
+    {
+      "path": "Entities/MTextAttachmentPoint.cs",
+      "sha256": "e787a01c3a9daff6d16c6d775ac4f716657ace0192fc0e6da666408fbcace82b",
+      "bytes": 2346
+    },
+    {
+      "path": "Entities/MTextDrawingDirection.cs",
+      "sha256": "bd7994139aaf5412d2f2ec85e5a41251f7bd4039b852fc25d31c02f6711da044",
+      "bytes": 1738
+    },
+    {
+      "path": "Entities/MTextFormattingOptions.cs",
+      "sha256": "5321b8ab3e6b93200929cced2ee48ca41887efa3c77a6ac9c77a0993ac44e9b0",
+      "bytes": 9824
+    },
+    {
+      "path": "Entities/MTextLineSpacingStyle.cs",
+      "sha256": "98454b8da5b0a8b668ee002a2e9af5798acc8ac2f4c48cb9fceae187f92549fd",
+      "bytes": 2557
+    },
+    {
+      "path": "Entities/MTextParagraphAlignment.cs",
+      "sha256": "1e87f37164a5d2e2f4cff8a4ee52f3769e601046455135ce30cd89e13091cc7c",
+      "bytes": 1934
+    },
+    {
+      "path": "Entities/MTextParagraphOptions.cs",
+      "sha256": "7a33a3731509d52fddb45018f58978becaf880dfec86969b791b71fcb2f63699",
+      "bytes": 9452
+    },
+    {
+      "path": "Entities/MTextParagraphVerticalAlignment.cs",
+      "sha256": "002fe475ede9306d4fef93ea3d90242a28815e8a1086d100699832556117587b",
+      "bytes": 1666
+    },
+    {
+      "path": "Entities/Mesh.cs",
+      "sha256": "9580069cf5c48d0040cfe069004e8921c4c265071d982fc63b5aad78eaaeffee",
+      "bytes": 8467
+    },
+    {
+      "path": "Entities/MeshEdge.cs",
+      "sha256": "9db8d759b58bd1de150fa0737e2ca5fc3f8337971ec385fdd06ac91235723692",
+      "bytes": 6488
+    },
+    {
+      "path": "Entities/OrdinateDimension.cs",
+      "sha256": "12a964e97ba1ea284106f3be4e7736498bdc3241fccca23a5bc7686d3e60dc5d",
+      "bytes": 18635
+    },
+    {
+      "path": "Entities/OrdinateDimensionAxis.cs",
+      "sha256": "abc1bf740730c28ec0e111f00462d3f411d19c47d5c68839fd05bd5822d3a1f9",
+      "bytes": 1794
+    },
+    {
+      "path": "Entities/Point.cs",
+      "sha256": "a962957480ff678003953e82e8a6dd2a67932a236ef8b42028413bbf31e80886",
+      "bytes": 6531
+    },
+    {
+      "path": "Entities/PolyfaceMesh.cs",
+      "sha256": "e2eefb73cf91ab78ef1d30aee9c083a0c1963c6c3e95326ae6fa34051c2b14a1",
+      "bytes": 13792
+    },
+    {
+      "path": "Entities/PolyfaceMeshFace.cs",
+      "sha256": "cfbbfbc2b50d1279d38de1fd4792695b196d0459d8533ac0915465e1eb0a12d8",
+      "bytes": 6057
+    },
+    {
+      "path": "Entities/PolygonMesh.cs",
+      "sha256": "5c781a31878a0f111fff001b1195c382535233337d7f811a64dc3e450fae895a",
+      "bytes": 23635
+    },
+    {
+      "path": "Entities/Polyline.cs",
+      "sha256": "aa9e4473005be60dafe570de2be48c1d3241524bb67fe5d2089b9834f05d4a3f",
+      "bytes": 6105
+    },
+    {
+      "path": "Entities/Polyline2D.cs",
+      "sha256": "1078d1a3344437e9662987ab8eda45f495b8bd3487e7ef04220927537d15daf6",
+      "bytes": 28225
+    },
+    {
+      "path": "Entities/Polyline2DVertex.cs",
+      "sha256": "57469dc2919e51cb7830f5ca4703223fccfe06215c537973522dba5d22a3f550",
+      "bytes": 6608
+    },
+    {
+      "path": "Entities/Polyline3D.cs",
+      "sha256": "9a4e7a0089cb0cbda2f8d4049ac55c8c27c3ebed8562cd65919e2d58111badf2",
+      "bytes": 15023
+    },
+    {
+      "path": "Entities/PolylineSmoothType.cs",
+      "sha256": "08a4aaefee7ff0cac6bd66f3c9ab35e6dcb11e14baa5f5e82cb1c7add675c1b8",
+      "bytes": 1956
+    },
+    {
+      "path": "Entities/PolylineTypeFlags.cs",
+      "sha256": "4e8dbabf8c7f625856f321030f22ac1783737704ba0b4092081eff54eaeaea75",
+      "bytes": 2722
+    },
+    {
+      "path": "Entities/RadialDimension.cs",
+      "sha256": "2eecb86e68b87e976980510c4d73e7a2d403d99438e5c777dd4f13eee7b88a55",
+      "bytes": 17055
+    },
+    {
+      "path": "Entities/Ray.cs",
+      "sha256": "b0db6c4409776c80620aa01688e790ef59ad0d0a491c911ec47ee1e9a521207a",
+      "bytes": 6284
+    },
+    {
+      "path": "Entities/Shape.cs",
+      "sha256": "362c35880ba7c9b4d6e478809a9513b650334464882de22aaa85f92604faed81",
+      "bytes": 12862
+    },
+    {
+      "path": "Entities/Solid.cs",
+      "sha256": "a29c727fa5413e5013017034f63751b31361dc5980a1b99beb002743884c1883",
+      "bytes": 9123
+    },
+    {
+      "path": "Entities/Spline.cs",
+      "sha256": "8d8752e081fe6931fd5d8d3324f577fdc929953bf9c87aa09a95314383f52459",
+      "bytes": 36527
+    },
+    {
+      "path": "Entities/SplineCreationMethod.cs",
+      "sha256": "8f7b9d1b5b10ae052aa3aa7f50986d54d6be89ae683b4ab79c2d29be5611d0f2",
+      "bytes": 1712
+    },
+    {
+      "path": "Entities/SplineKnotParameterization.cs",
+      "sha256": "79f02ececfb3babe095b04f76934b419a04145c7da5f063d00ab7efac41acec6",
+      "bytes": 2717
+    },
+    {
+      "path": "Entities/SplineTypeFlags.cs",
+      "sha256": "286e48381896d5bca3c4d8b8281f0cd2188ee48dede5db984183521178b91e63",
+      "bytes": 2659
+    },
+    {
+      "path": "Entities/Text.cs",
+      "sha256": "a8acc1a445cb322d8db60fe5afab3507e198a53e3e5d6b84709bb210755281ef",
+      "bytes": 20906
+    },
+    {
+      "path": "Entities/TextAligment.cs",
+      "sha256": "6c46c31646985004d5015339365d826b63ba1cffb2e75fd0e86cd176f363de56",
+      "bytes": 3207
+    },
+    {
+      "path": "Entities/Tolerance.cs",
+      "sha256": "f81485bd052d7c0d7cb4043175b329ba2b87381cc12a79b409e85c64c8f3815d",
+      "bytes": 29151
+    },
+    {
+      "path": "Entities/ToleranceEntry.cs",
+      "sha256": "30daf0a33ca2375cee8fdd3d1da60d57046adc8531a0bd5b564d8560a2005f75",
+      "bytes": 4778
+    },
+    {
+      "path": "Entities/ToleranceGeometricSymbol.cs",
+      "sha256": "237b1076c758b3cb45593b3fdb97d6b6bef991db124eec70ee131840ce9b9bb4",
+      "bytes": 3098
+    },
+    {
+      "path": "Entities/ToleranceMaterialCondition.cs",
+      "sha256": "d478b3b7564fc0d6c45c8864e6e9a8a1c832db5bbffea496e4bf9b3de9bfe7ce",
+      "bytes": 2018
+    },
+    {
+      "path": "Entities/ToleranceValue.cs",
+      "sha256": "d0afbb168ae76d49add843f27017b1699305f47e33f0b7bdb668c42b79ac8f3d",
+      "bytes": 4217
+    },
+    {
+      "path": "Entities/Trace.cs",
+      "sha256": "b64cadcf3d4b01c3cc0ffba71ff0fc5c113bac95abb7f9f5ac32c0fb1860df12",
+      "bytes": 9130
+    },
+    {
+      "path": "Entities/Underlay.cs",
+      "sha256": "c783aa907f41820323ccd4b0a25cc995050b4c160471272fb526cbe7632e6409",
+      "bytes": 13707
+    },
+    {
+      "path": "Entities/UnderlayDisplayFlags.cs",
+      "sha256": "4e8e02894704ad6ba9c524108256ea9fe95b17ff2a019737efa3d675855200b9",
+      "bytes": 1943
+    },
+    {
+      "path": "Entities/Vertex.cs",
+      "sha256": "9e6b6819bd891ee35a7b6ae90ff37f1b2e667b9b3e3c2efb7b7ae520b1b975de",
+      "bytes": 5479
+    },
+    {
+      "path": "Entities/VertexTypeFlags.cs",
+      "sha256": "700e2da30818e7a7d62beef7bc9709691e06c1d472c5d847b650d0037513d648",
+      "bytes": 2691
+    },
+    {
+      "path": "Entities/Viewport.cs",
+      "sha256": "3266f76e6c6d8a1be9298b3156a427395ada1e7111c304ed0c102173b2ebdcb3",
+      "bytes": 23312
+    },
+    {
+      "path": "Entities/ViewportStatusFlags.cs",
+      "sha256": "c8feedd7adfd30bc44f564eadf3e058ffaab7de8e52b3ccbe368f3b10651d2ba",
+      "bytes": 4240
+    },
+    {
+      "path": "Entities/Wipeout.cs",
+      "sha256": "9e3d31ec4883d7cd914d02ba16abedb802396af5b2ece2d311876a851d44dcf5",
+      "bytes": 7607
+    },
+    {
+      "path": "Entities/XLine.cs",
+      "sha256": "bc212d18cbbcf838c487f2c7fe2b4d16bae753b9f988f6c713ea79f0d965d72f",
+      "bytes": 6397
+    },
+    {
+      "path": "GTE/BSplineCurve.cs",
+      "sha256": "9253a89377a6f14809e1400ece9a40758050c8954ac1707ca908939fa24d98dc",
+      "bytes": 5457
+    },
+    {
+      "path": "GTE/BSplineCurveFit.cs",
+      "sha256": "2f4c525f696a8d3d84ec08b8dbf17e8373daaa498a0098e5f30341a2c5746bcc",
+      "bytes": 10116
+    },
+    {
+      "path": "GTE/BSplineReduction.cs",
+      "sha256": "7a0d82a8d11dcb7f14bab031d32a5b2298b33d0252f20f95920413999e09eb75",
+      "bytes": 11702
+    },
+    {
+      "path": "GTE/BSplineSurface.cs",
+      "sha256": "3664f504409133792f320bd45d75626d16f5f6105258f5892dcffb21ac598ff2",
+      "bytes": 7198
+    },
+    {
+      "path": "GTE/BSplineSurfaceFit.cs",
+      "sha256": "b43dc3198b5238405cad14cc078c1dd013e789e8b65b61ea9d0799adeab662db",
+      "bytes": 10973
+    },
+    {
+      "path": "GTE/BandedMatrix.cs",
+      "sha256": "e9b7ca69e84fbd3721b93802c97e000edbf9cd9ef4b346787e27a132ba476952",
+      "bytes": 17394
+    },
+    {
+      "path": "GTE/BasisFunction.cs",
+      "sha256": "394d2163dcc8c074091fd33f327d733130f772ee70d2c454b4a8c3ee86e47cd8",
+      "bytes": 19245
+    },
+    {
+      "path": "GTE/BezierCurve.cs",
+      "sha256": "9dfe813308e9415f87a6b5cb624a1dd25866167551ee1000c1ba80521b4560e9",
+      "bytes": 7329
+    },
+    {
+      "path": "GTE/GMatrix.cs",
+      "sha256": "a9d84ff4d0ee4a12c8c52754c8480971dcd8986dafa1ae5b29c7854f9e796948",
+      "bytes": 22402
+    },
+    {
+      "path": "GTE/GTE.cs",
+      "sha256": "7e79f368e486e5683f198bbb0828110db627adfc598198c4efe5c1866d77316b",
+      "bytes": 1356
+    },
+    {
+      "path": "GTE/GVector.cs",
+      "sha256": "46a3cf03e24655425ffbbb32661a4e2ce5d606e180911585001339b32c5aa941",
+      "bytes": 18501
+    },
+    {
+      "path": "GTE/GaussianElimination.cs",
+      "sha256": "7c17f22a3c8700aadcb2f1d23091eaac93e1c4c74b63d115ccc859297123471a",
+      "bytes": 9628
+    },
+    {
+      "path": "GTE/Integration.cs",
+      "sha256": "7f24d966b909d861d7214c968baf97795873fc568fa63cd696173aec84baa386",
+      "bytes": 9686
+    },
+    {
+      "path": "GTE/IntrIntervals.cs",
+      "sha256": "113b6008ec762fc9bc68a343cfa40871291e01f4b101b625179a6552f30c8989",
+      "bytes": 23035
+    },
+    {
+      "path": "GTE/LexicoArray2.cs",
+      "sha256": "a061862a1ec1c87801d2e87191ecb1fbcd9074bd0c49d5c6f2c9663bf2742da2",
+      "bytes": 2972
+    },
+    {
+      "path": "GTE/NURBSCurve.cs",
+      "sha256": "79e12869f3dfd28ae921d4ae67ac163a06bc135037841d65b2adaec3a5a9a0be",
+      "bytes": 7278
+    },
+    {
+      "path": "GTE/NURBSSurface.cs",
+      "sha256": "212155f2aee33204210751417bc4669b8351c81ea80fb98b181dd840d63133a4",
+      "bytes": 8943
+    },
+    {
+      "path": "GTE/ParametricCurve.cs",
+      "sha256": "3ca24e67e06ecbe74dd182df168272619690d49c8e41f0de9db46658e397b5f2",
+      "bytes": 12098
+    },
+    {
+      "path": "GTE/ParametricSurface.cs",
+      "sha256": "ce0ac1150b089230634e23dcd64b3117acc3b5d9b2217cf18777a61ef5bb2b69",
+      "bytes": 4630
+    },
+    {
+      "path": "GTE/RootBisection.cs",
+      "sha256": "8090ec68e19346dfc6e6197e88c70c141b5f2cc944be010d52410bccbeabd8f1",
+      "bytes": 6892
+    },
+    {
+      "path": "GTE/RootsPolynominal.cs",
+      "sha256": "9bd623d763c9d92a06ca059165abb3e6a44303694ef25281bdae47a8579e6e87",
+      "bytes": 41279
+    },
+    {
+      "path": "Header/AttMode.cs",
+      "sha256": "ecf1c7747c91eb59bbb3a136a689dd1eb57704c4103769b127d451288e359bf2",
+      "bytes": 1682
+    },
+    {
+      "path": "Header/DxfVersion.cs",
+      "sha256": "742569dedaeea56317756ab51f41f68f59ef71d9a61b18f4347362fddfec3a9c",
+      "bytes": 4541
+    },
+    {
+      "path": "Header/HeaderVariable.cs",
+      "sha256": "c92638e504dadb38782161d6c5636364aabf63ed92720b4178a11aa4f13a4884",
+      "bytes": 4705
+    },
+    {
+      "path": "Header/HeaderVariableCode.cs",
+      "sha256": "191c316645cf532249c3136de5eebeeba518b6beb9894693d40c753a321b9f95",
+      "bytes": 10110
+    },
+    {
+      "path": "Header/HeaderVariables.cs",
+      "sha256": "574e96fba69f04db3e4b292d335d2b618f80ab460bec773c1f987b6bf2eb9f83",
+      "bytes": 34843
+    },
+    {
+      "path": "Header/PointShape.cs",
+      "sha256": "8ce77f329dbb02bd894c775e89ab0318ca60d17c298c6c25949091552a60bd7d",
+      "bytes": 3642
+    },
+    {
+      "path": "IO/BinaryCodeValueReader.cs",
+      "sha256": "12e9f76049b02c84d3039d444438e48a2fc23cce04566d4761bf36199978c7d5",
+      "bytes": 12550
+    },
+    {
+      "path": "IO/BinaryCodeValueWriter.cs",
+      "sha256": "51a29f9dbcddd1d612b24aa2fd67e17589157bf2bd591a45ca079d83bf27dfc0",
+      "bytes": 14091
+    },
+    {
+      "path": "IO/DxfReader.cs",
+      "sha256": "66f21a53f2026b78f6540b82164b687994c57e1057cfceda38751de3b9cfe695",
+      "bytes": 510950
+    },
+    {
+      "path": "IO/DxfVersionNotSupportedException.cs",
+      "sha256": "5757186284321651f268f3a1d1696fcff1784bc1008b0e8f161156960c9ce055",
+      "bytes": 2781
+    },
+    {
+      "path": "IO/DxfWriter.cs",
+      "sha256": "5dcffadc502c8696d0c252d78c961b6da87bc6f908d2d67ac88cd8b3aec3b781",
+      "bytes": 239257
+    },
+    {
+      "path": "IO/ICodeValueReader.cs",
+      "sha256": "fa59d1eaa3890bc6ae4df83c3bfde63f663e0a3f98d175180eb92036088c2bb5",
+      "bytes": 1919
+    },
+    {
+      "path": "IO/ICodeValueWriter.cs",
+      "sha256": "2d2fc17e72028efff3d8f0a61312c5656862512667ffc8b895fecbd9dce649e0",
+      "bytes": 2031
+    },
+    {
+      "path": "IO/TextCodeValueReader.cs",
+      "sha256": "27fec870e739803c4db9d419f90172dd0b9bbba29081104656fac55946b06d8e",
+      "bytes": 14979
+    },
+    {
+      "path": "IO/TextCodeValueWriter.cs",
+      "sha256": "77a54d70b70d31624242f6b45f0e5426d73b95a7fbb75ac60cac599815eb628f",
+      "bytes": 13967
+    },
+    {
+      "path": "Lineweight.cs",
+      "sha256": "c29ee41263466e100249d1175d069e560c2d63c551405472723806ab374ae090",
+      "bytes": 4428
+    },
+    {
+      "path": "MathHelper.cs",
+      "sha256": "5a72db2024ece3a748f1d419780f11d3d6e4cb5a57d312ac95a186c49aecb10d",
+      "bytes": 28795
+    },
+    {
+      "path": "Matrix2.cs",
+      "sha256": "6a552e039eaa19a0c54359dcc237cca38fba8f435b1adce5bdd42f2837158c7b",
+      "bytes": 21620
+    },
+    {
+      "path": "Matrix3.cs",
+      "sha256": "2094b2ea2360bead16735f5b03fa3bf292b4620ee3e2f3505b0733fc140e7c29",
+      "bytes": 33768
+    },
+    {
+      "path": "Matrix4.cs",
+      "sha256": "4be655b67a3b461afc134a93ebc75b0f0a33ebaa6f099984b9b3e94c3fb6a7db",
+      "bytes": 47261
+    },
+    {
+      "path": "Objects/DictionaryCloningFlags.cs",
+      "sha256": "332da738acb8b9504d8f96fa77798c378c44938711961508b1c10fb714b25fe7",
+      "bytes": 2021
+    },
+    {
+      "path": "Objects/DictionaryObject.cs",
+      "sha256": "1cc56dfee0ca93f7566a8c30168520492f2ab949c2a3b1877003f8cc158b3d24",
+      "bytes": 2819
+    },
+    {
+      "path": "Objects/Group.cs",
+      "sha256": "d3940033fa36727c1e4ba980bde7b5bf470fd20245d7d2e266979e2eebd43741",
+      "bytes": 11612
+    },
+    {
+      "path": "Objects/GroupEntityChangeEventArgs.cs",
+      "sha256": "b227d758d8c34642b4eaf1a4dc9db8bd2989c755e65318f297696f64ee8c4d1a",
+      "bytes": 2117
+    },
+    {
+      "path": "Objects/ImageDefinition.cs",
+      "sha256": "7ae08991fd385771bd00af5864614dbedc7a028b71e097f2d6a56852a70daa8f",
+      "bytes": 17257
+    },
+    {
+      "path": "Objects/ImageDefinitionReactor.cs",
+      "sha256": "3d6cc2ba97ff61caaced2f582d78bdcf2f3ec3e89457d258e50cecfb3c4caf3d",
+      "bytes": 1824
+    },
+    {
+      "path": "Objects/ImageDisplayQuality.cs",
+      "sha256": "4f61229fef9b1d3f8d1c2a234f756250056dd58734c3a52c7fb85045c4eb1ad1",
+      "bytes": 1627
+    },
+    {
+      "path": "Objects/LayerPropertiesFlags.cs",
+      "sha256": "4d8126b8f9ae20a0d3db4b579d7cd2103e946d88b57ac2ecb378b698bc0b141c",
+      "bytes": 2561
+    },
+    {
+      "path": "Objects/LayerPropertiesRestoreFlags.cs",
+      "sha256": "937398344786172a848c148d84169cc01e6ba2bc887700528f2304be12e3c58c",
+      "bytes": 3334
+    },
+    {
+      "path": "Objects/LayerState.cs",
+      "sha256": "7740c245e87e02ee22b94b16aea89703482164b2166744682962e5762fc8bc88",
+      "bytes": 17108
+    },
+    {
+      "path": "Objects/LayerStateProperties.cs",
+      "sha256": "cae1863484db7a6670d7f63c5e40b443e975251ab049a68ff448ad059d9c48e5",
+      "bytes": 11643
+    },
+    {
+      "path": "Objects/Layout.cs",
+      "sha256": "b6c8fdbf5c9f4bd3672196ec8295b0cd18cb4339f9e1a10999bc4825e9bf2eb3",
+      "bytes": 14976
+    },
+    {
+      "path": "Objects/MLineStyle.cs",
+      "sha256": "2017d437ee64586780531cfa15ff04eb07c8bef0f85dfe194ac0998f3db7c39e",
+      "bytes": 15179
+    },
+    {
+      "path": "Objects/MLineStyleElement.cs",
+      "sha256": "616350103eb5e1a8c22d649df08c93dd464f7389f9163ca6329095a97df97167",
+      "bytes": 8288
+    },
+    {
+      "path": "Objects/MLineStyleElementChangeEventArgs.cs",
+      "sha256": "2a86a24d8f45c18e280e98cbe7d0d7f56ed275e758ad042c14b241265fb47270",
+      "bytes": 2176
+    },
+    {
+      "path": "Objects/MLineStyleFlags.cs",
+      "sha256": "8f68481f56ee042cf56b804737494fbcd374ba692041604a49d44129006e7a54",
+      "bytes": 2461
+    },
+    {
+      "path": "Objects/PaperMargin.cs",
+      "sha256": "5d6506500f34d55fe7b50e16189130e26149a2fb8a42c9c385cf1771ad620866",
+      "bytes": 3372
+    },
+    {
+      "path": "Objects/PlotFlags.cs",
+      "sha256": "ef96a8fb23414f360c3630ef0b2b3bf701ef75d91c8831ea00e5523f45e230e9",
+      "bytes": 3045
+    },
+    {
+      "path": "Objects/PlotPaperUnits.cs",
+      "sha256": "c50e0ae926e8b8a75d3d0a5acb63f06e6e5cb6227360030af444b2e8ccaa4a89",
+      "bytes": 1729
+    },
+    {
+      "path": "Objects/PlotRotation.cs",
+      "sha256": "f290914c254ca73d7df44b019a717e23ada7ad9052971eb4c5c35d912865f44e",
+      "bytes": 1829
+    },
+    {
+      "path": "Objects/PlotSettings.cs",
+      "sha256": "b770b28fbce5b8d8f096b6c5a3bb4bbfccac5809c6914f0da61bb2f90a8441ac",
+      "bytes": 12617
+    },
+    {
+      "path": "Objects/PlotType.cs",
+      "sha256": "6b5a8d700edffa937d8f9d543bf1618e70ace9118464b1b92571445c8a5c1779",
+      "bytes": 2096
+    },
+    {
+      "path": "Objects/RasterVariables.cs",
+      "sha256": "9fe51daa594892496a4970e596e227b2e5147184dc17818388d225e78d38a6e3",
+      "bytes": 3247
+    },
+    {
+      "path": "Objects/ShadePlotMode.cs",
+      "sha256": "9633da6d670b9acde478db33285f1ab834034092aed3d4012b8b5d12ca7f4514",
+      "bytes": 1753
+    },
+    {
+      "path": "Objects/ShadePlotResolutionMode.cs",
+      "sha256": "ad9d6e7b4e44d895719867c14c07d380686c9ba433d4f9098bfe762d140bdd25",
+      "bytes": 1974
+    },
+    {
+      "path": "Objects/SupportedImageFormats.cs",
+      "sha256": "701ee96d6eb3fb9bd51d9d169e624e1d45cc9c720205812453c092fbb4505ce4",
+      "bytes": 1929
+    },
+    {
+      "path": "Objects/UnderlayDefinition.cs",
+      "sha256": "0712bf6a53a4e9850323d137952e2a4b4b27d5348771ed8ba06d9d7168340f99",
+      "bytes": 6256
+    },
+    {
+      "path": "Objects/UnderlayDgnDefinition.cs",
+      "sha256": "6d78541dc161d68142587d9ea8a19f871c98b0e09604620bd64996e2ae6558b0",
+      "bytes": 5758
+    },
+    {
+      "path": "Objects/UnderlayDwfDefinition.cs",
+      "sha256": "ed0ac54a9de7c4634cd228d8a36bc43f6837dcc0f5f229041465362db3e94e0e",
+      "bytes": 5348
+    },
+    {
+      "path": "Objects/UnderlayPdfDefinition.cs",
+      "sha256": "b977bb18dc7edf0a0794049039b383acd9ff98d667dc56056e08066430d67d21",
+      "bytes": 5782
+    },
+    {
+      "path": "Objects/UnderlayType.cs",
+      "sha256": "670a8d2d920b86231cf25c38eb44cde85e13fac2f5a40cf2eaf0d1f12909f79c",
+      "bytes": 1636
+    },
+    {
+      "path": "Objects/XRecord.cs",
+      "sha256": "72927c12380da6b373761a08b95227498502bf17f311bc215bd60aa4225ae017",
+      "bytes": 2637
+    },
+    {
+      "path": "Objects/XRecordEntry.cs",
+      "sha256": "078c36c841c2005356191cbcb80d718d2474a34b73f58234ecb43cd0a6d853eb",
+      "bytes": 6231
+    },
+    {
+      "path": "StringEnum.cs",
+      "sha256": "e70bf7fdc5cb656b3e7144a848f028f63977830ac992bc9486e8858e9805933a",
+      "bytes": 9701
+    },
+    {
+      "path": "SubclassMarker.cs",
+      "sha256": "0028f180f1c8d2db21505597fb486271ca919ad1f914d4bb28e091829b08cec5",
+      "bytes": 5824
+    },
+    {
+      "path": "Symbols.cs",
+      "sha256": "f08840068d8e68d5e6fd934da086cf0e61b1ee0f4d3f756453ad99e87b7bca90",
+      "bytes": 2064
+    },
+    {
+      "path": "Tables/ApplicationRegistry.cs",
+      "sha256": "57fed42b3ad20fc34bf7f2c241af3cb8b1104ce269002604a00f23f947578661",
+      "bytes": 7443
+    },
+    {
+      "path": "Tables/DimensionStyle.cs",
+      "sha256": "d45986424f769f55b495166c5a4adacf0261ddcb0b3d7776815ad9ab1f8606b9",
+      "bytes": 48066
+    },
+    {
+      "path": "Tables/DimensionStyleAlternateUnits.cs",
+      "sha256": "8d2b95de95582cf2e809fb8f9caf0dcf6500571b492af1e7218c00b86b7c1a89",
+      "bytes": 10021
+    },
+    {
+      "path": "Tables/DimensionStyleFitOptions.cs",
+      "sha256": "f2e29a4f76ae97eb8be987497f0ff0bb7e1bc14b0e278354d7ec73a03de78a9f",
+      "bytes": 1968
+    },
+    {
+      "path": "Tables/DimensionStyleFitTextMove.cs",
+      "sha256": "26f2eaea88a830b25fd47919e0a17cf4dcb4b3e766f26f352c1d8584489f99e6",
+      "bytes": 1923
+    },
+    {
+      "path": "Tables/DimensionStyleOverride.cs",
+      "sha256": "f99b44d639ac5eea61f827c89f48db9fcb7c0a062a389f8565453239f0aa7934",
+      "bytes": 38498
+    },
+    {
+      "path": "Tables/DimensionStyleOverrideChangeEventArgs.cs",
+      "sha256": "67785fc298ca8a547df1904461d7fc3cc9c1d2a4f8692c9ba4b201ec1ac31176",
+      "bytes": 2189
+    },
+    {
+      "path": "Tables/DimensionStyleOverrideType.cs",
+      "sha256": "42d7fe1b389e1acc504ea432c8a17e87b28bb0f9a5c0b0a4a9dd55afd56e4fc6",
+      "bytes": 14154
+    },
+    {
+      "path": "Tables/DimensionStyleTextDirection.cs",
+      "sha256": "0eeac6611a312faf11e6dc3f624c961bb0ec84caa6ddee0636fc169d6afe3e7b",
+      "bytes": 1703
+    },
+    {
+      "path": "Tables/DimensionStyleTextHorizontalPlacement.cs",
+      "sha256": "d3ab6df467bd3a522e1054796ff0ad1852053994187c2b45de83d67d4304cba0",
+      "bytes": 2243
+    },
+    {
+      "path": "Tables/DimensionStyleTextVerticalPlacement.cs",
+      "sha256": "8a3bc34d6970ce12128b9b1d1085f765586de977540280c294031448fc11283f",
+      "bytes": 2186
+    },
+    {
+      "path": "Tables/DimensionStyleTolerances.cs",
+      "sha256": "862b477d6e16937de22e23a7bff079ac5d25154f8041447fa9f44b36c8c15274",
+      "bytes": 10450
+    },
+    {
+      "path": "Tables/DimensionStyleTolerancesDisplayMethod.cs",
+      "sha256": "66f1769c6981f0a6f6f6a8faf87654c9fd770f4073ea6d1d5ed9d0101357d038",
+      "bytes": 2333
+    },
+    {
+      "path": "Tables/DimensionStyleTolerancesVerticalPlacement.cs",
+      "sha256": "f7566418fd793e78e84b35633f3c61e1b934dbc7bc4538e2bcf57d2ee6e22104",
+      "bytes": 1895
+    },
+    {
+      "path": "Tables/FontStyle.cs",
+      "sha256": "226f8f8f9776dba1a81a102fbe312d773bb7e49101fa4b1ba92ea3e16b8dedba",
+      "bytes": 1724
+    },
+    {
+      "path": "Tables/Layer.cs",
+      "sha256": "0c430c4a89ba42c9eac2861eca28c7d876745ee8cb266bb2e5572a3f3e2aff61",
+      "bytes": 10780
+    },
+    {
+      "path": "Tables/LayerFlags.cs",
+      "sha256": "065ecbab431175ac878088d7838e1474cb941c8cb09ea7eed95b3b7a555154bc",
+      "bytes": 2645
+    },
+    {
+      "path": "Tables/Linetype.cs",
+      "sha256": "bbff201d2593f523e3ed269f5a74db6f5ca34ecc2853ec001a38c6fb56e8b572",
+      "bytes": 33287
+    },
+    {
+      "path": "Tables/LinetypeSegment.cs",
+      "sha256": "dd1142fac54ec559b29feb5b68b263a3a64543516f5ad371cec31d4554611a90",
+      "bytes": 3193
+    },
+    {
+      "path": "Tables/LinetypeSegmentChangeEventArgs.cs",
+      "sha256": "857aa859c79d00271a65c394c83d551aaeec01ee6e8615b339b6903851f44f6b",
+      "bytes": 2159
+    },
+    {
+      "path": "Tables/LinetypeSegmentRotationType.cs",
+      "sha256": "1a8bebbf7cfe539388e11a0be0886d9ac2a14a39afc7e77aedb3b77efb0134d9",
+      "bytes": 2129
+    },
+    {
+      "path": "Tables/LinetypeSegmentType.cs",
+      "sha256": "3da2bc286efbef8d452d83e8db9eeeb3d33094e97df000112520fbd6f69aa468",
+      "bytes": 1775
+    },
+    {
+      "path": "Tables/LinetypeShapeSegment.cs",
+      "sha256": "0e148b3ab1d19cfdc9e26b405b96840cb5d82b3c1d9da02096bba4560e59f1fa",
+      "bytes": 9947
+    },
+    {
+      "path": "Tables/LinetypeSimpleSegment.cs",
+      "sha256": "c97748b1db0a4813a8e96b5fe02718837a3bbf7b23bfe361db154d6060a2dfa2",
+      "bytes": 2516
+    },
+    {
+      "path": "Tables/LinetypeTextSegment.cs",
+      "sha256": "712bbbfaea2e95a59028a7603baba700cff8f1f26e156f95fa546d74b623ad5d",
+      "bytes": 7045
+    },
+    {
+      "path": "Tables/ShapeStyle.cs",
+      "sha256": "6c0e30f4540a425aaacf824446c19fddf2273daad8b947e043829a804e293316",
+      "bytes": 29910
+    },
+    {
+      "path": "Tables/TableObject.cs",
+      "sha256": "9cb4bb824b7799e7c9d0be5c2cb923798ba68f63c506118bf316e0c94fe1c0e2",
+      "bytes": 15235
+    },
+    {
+      "path": "Tables/TableObjectChangedEventArgs.cs",
+      "sha256": "964ae88d2e6c53ba82bb2af3b08c3b868d057c48bee57e10f2dd8f03d3047dd1",
+      "bytes": 2605
+    },
+    {
+      "path": "Tables/TextStyle.cs",
+      "sha256": "d9d67cb962168e1c9853910b75f340c07d9fe2cd34bb3d9ba44404041d6e69c6",
+      "bytes": 18925
+    },
+    {
+      "path": "Tables/UCS.cs",
+      "sha256": "5698ad6d39818786321830418c70ae7f39f554c73ea6d766e22164d82b031a39",
+      "bytes": 14898
+    },
+    {
+      "path": "Tables/VPort.cs",
+      "sha256": "17140d0ceb321c5ea90889aacb20524f7df523adf0c3fc9646d9a2767eac7a3b",
+      "bytes": 9594
+    },
+    {
+      "path": "Tables/View.cs",
+      "sha256": "2cac9bfb33eb03b959454d96ad1927ba13af6181c4e11c2f2aa7ef692af2a504",
+      "bytes": 7163
+    },
+    {
+      "path": "Tables/ViewMode.cs",
+      "sha256": "9850861735eb2d7a0a2b8c83161f7a349da263b52db7dfbb46d5e449e3fb2a9e",
+      "bytes": 2333
+    },
+    {
+      "path": "Transparency.cs",
+      "sha256": "340376c70c1ecbdbb9bcac5ce983492c7d3801526dfa7a974ade20d90793f856",
+      "bytes": 7997
+    },
+    {
+      "path": "Units/AngleDirection.cs",
+      "sha256": "40fafd3731f245ca52746f558a70a9dbbb1ac99f6bf77988da61e02e0300f631",
+      "bytes": 1612
+    },
+    {
+      "path": "Units/AngleUnitFormat.cs",
+      "sha256": "0960a90e0b9aef517a7b7b5c23d07e547e922b4270631735ceec067883dad8e8",
+      "bytes": 7003
+    },
+    {
+      "path": "Units/AngleUnitType.cs",
+      "sha256": "3784e98d69d6a2dd1803b557156bf84f555317e0413362d844646e6ff16f51f4",
+      "bytes": 1901
+    },
+    {
+      "path": "Units/DrawingTime.cs",
+      "sha256": "51c7ee4c8adfa5119d6233d94a5dccd5c9ff64a032f55151684fbd5a947d70a8",
+      "bytes": 5570
+    },
+    {
+      "path": "Units/DrawingUnits.cs",
+      "sha256": "a962033d9ad8a8e79a7e2878cc47960bda041531dbeda6bdc437e97350943370",
+      "bytes": 3766
+    },
+    {
+      "path": "Units/FractionFormatType.cs",
+      "sha256": "81347f9775ddff23cd69c03614e5cd31ae1034fb57429ca795e0636863863c19",
+      "bytes": 1768
+    },
+    {
+      "path": "Units/ImageResolutionUnits.cs",
+      "sha256": "b5c52ee046aa95760b3406ff3c636795d880bda2e55de38fefd4404ee6bccb3a",
+      "bytes": 1673
+    },
+    {
+      "path": "Units/ImageUnits.cs",
+      "sha256": "71aed0403da510aafe817f389ab06d854c4670505f2c4023881a2b89e2f7dfae",
+      "bytes": 2355
+    },
+    {
+      "path": "Units/LinearUnitFormat.cs",
+      "sha256": "1cedee75bf41f2df88f2236ccaf3260a22eb40d954a70301348b5cdc97eeb277",
+      "bytes": 13120
+    },
+    {
+      "path": "Units/LinearUnitType.cs",
+      "sha256": "353760ea85751f56ee36ba7fc7fd93a7fe063ddea7a7392af27a4018a9cae540",
+      "bytes": 2082
+    },
+    {
+      "path": "Units/UnitHelper.cs",
+      "sha256": "bac12389ab93e2ea3f35305408ed02de50d71d391f9eacb160412882d691ec10",
+      "bytes": 6056
+    },
+    {
+      "path": "Units/UnitStyleFormat.cs",
+      "sha256": "e5ec559478dd851860b2870116e04de64ac83c5a875ba53d1916f311cf3ceaa0",
+      "bytes": 9843
+    },
+    {
+      "path": "Vector2.cs",
+      "sha256": "dc89e032ad389f48f14c496ec3e21359393765dc611bbcdf6eab7708c7456d7f",
+      "bytes": 26823
+    },
+    {
+      "path": "Vector3.cs",
+      "sha256": "c165e1b632c8d6c00686d3b7da9bebe42deab3ae654fe81c58c82a18d4454a00",
+      "bytes": 27911
+    },
+    {
+      "path": "Vector4.cs",
+      "sha256": "d72bd961cd3270d2d3a9ed11efbed290a11aae9087d5df1c63d5ffda8f699d77",
+      "bytes": 23064
+    },
+    {
+      "path": "XData.cs",
+      "sha256": "bb6438313112191dbbec5dd99c8123079410f496b44fac025ba52fcd939eb6e2",
+      "bytes": 4249
+    },
+    {
+      "path": "XDataCode.cs",
+      "sha256": "ce1999b4e5449274c98a74dbebab35bcb9d1cbed9e35d64df9f134c6cbffd867",
+      "bytes": 6596
+    },
+    {
+      "path": "XDataRecord.cs",
+      "sha256": "65254c61195f251e99fa77964082c94596813eadef55ce4160db59d4f4d22d66",
+      "bytes": 8334
+    }
+  ],
+  "compilation": {
+    "assemblyName": "netDxf.netstandard",
+    "defines": [
+      "NETSTANDARD",
+      "TRACE"
+    ],
+    "sourceChanges": false,
+    "target": "net10.0 reference assemblies bundled with RoslynWeb",
+    "signed": false,
+    "notes": "All upstream C# source is compiled unchanged. This browser build preserves the NETSTANDARD conditional source path while retargeting references to the bundled .NET 10 runtime. Upstream MSBuild signing and SDK-generated assembly metadata are not reproduced; the resulting library is unsigned."
+  },
+  "fixtures": [
+    {
+      "path": "fixtures/sample.dxf",
+      "upstreamPath": "TestDxfDocument/sample.dxf",
+      "bytes": 478838,
+      "sha256": "d00cf10b426389adf34e339a20b5dc9613b1db1950691d7c32304fa5e04e6f6c"
+    },
+    {
+      "path": "fixtures/sample-binary.dxf",
+      "upstreamPath": "TestDxfDocument/sample binary.dxf",
+      "bytes": 263065,
+      "sha256": "c073b4292103a15077da4f44c662aa066b5c12908fe729c7931353d4943b1f02"
+    }
+  ],
+  "licenses": [
+    {
+      "path": "LICENSE",
+      "license": "MIT"
+    },
+    {
+      "path": "source/GTE/README.md",
+      "license": "BSL-1.0",
+      "notice": "Geometric Tools source retains its upstream source notices.",
+      "licenseText": "BOOST-LICENSE-1.0.txt"
+    }
+  ]
+}

@@ -1,12 +1,12 @@
 {
-  "testedAt": "2026-09-11T20:08:18.000Z",
+  "testedAt": "2026-09-11T22:16:03.272Z",
   "runtime": "v24.19.0",
   "passed": true,
   "checks": [
     {
       "name": "Default Node host boots bundled Roslyn WASM and preserves caller globals",
       "passed": true,
-      "milliseconds": 494.40990999999997,
+      "milliseconds": 435.043456,
       "evidence": {
         "bridgeVersion": "0.8.0",
         "roslynVersion": "5.0.0.0",
@@ -18,7 +18,7 @@
     {
       "name": "C# emits real PE and portable PDB, then runs on all execution backends",
       "passed": true,
-      "milliseconds": 1827.32547,
+      "milliseconds": 1713.9226209999997,
       "evidence": {
         "peBytes": 2560,
         "pdbBytes": 10024,
@@ -53,7 +53,7 @@
     {
       "name": "Node host emits reusable JS and native Wasm artifacts with warm compilation caches",
       "passed": true,
-      "milliseconds": 5.719381999999769,
+      "milliseconds": 5.513241000000107,
       "evidence": {
         "emitJavaScript": {
           "format": "javascript",
@@ -74,7 +74,7 @@
     {
       "name": "File URL compiler references and NuGet archives work through the public Node host",
       "passed": true,
-      "milliseconds": 1672.755921,
+      "milliseconds": 1331.433102,
       "evidence": {
         "package": "Newtonsoft.Json",
         "version": "13.0.3",
@@ -84,7 +84,7 @@
     {
       "name": "Managed objects, Int64 values, dynamic compilation and workspace files remain available",
       "passed": true,
-      "milliseconds": 353.34056899999996,
+      "milliseconds": 315.782565,
       "evidence": {
         "bigInt": true,
         "objects": true,
@@ -95,7 +95,7 @@
     {
       "name": "A second compiler owns an independent runtime and reference collection",
       "passed": true,
-      "milliseconds": 1957.9862789999997,
+      "milliseconds": 1768.0532299999995,
       "evidence": {
         "independentReferences": true
       }
@@ -103,9 +103,9 @@
     {
       "name": "A runaway C# execution is terminated by timeout and close awaits worker exit",
       "passed": true,
-      "milliseconds": 178.89683400000013,
+      "milliseconds": 167.74004800000057,
       "evidence": {
-        "milliseconds": 128.6695469999995,
+        "milliseconds": 120.2898069999992,
         "disposed": true
       }
     }

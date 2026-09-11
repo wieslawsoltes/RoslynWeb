@@ -1,0 +1,5614 @@
+{
+  "success": true,
+  "schemaVersion": 1,
+  "name": "ArgumentExceptionsFixture",
+  "entryPoint": null,
+  "assemblyIdentity": "ArgumentExceptionsFixture, Version=0.0.0.0, Culture=neutral",
+  "version": "0.0.0.0",
+  "culture": "",
+  "publicKeyToken": "null",
+  "moduleVersionId": "7fec5645-5d4b-476e-8074-823d17d5cf39",
+  "references": [
+    {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    }
+  ],
+  "valueTypes": [
+    "ArgumentExceptionsFixture+MutableStruct"
+  ],
+  "types": [
+    {
+      "token": 33554433,
+      "name": "<Module>",
+      "attributes": "NotPublic",
+      "baseType": null,
+      "isValueType": false,
+      "isEnum": false,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554434,
+      "name": "ArgumentExceptionsFixture",
+      "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663297,
+          "name": "Snapshot",
+          "declaringType": "ArgumentExceptionsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [
+            {
+              "name": "exception",
+              "type": "System.ArgumentException"
+            }
+          ],
+          "locals": [
+            "System.ArgumentOutOfRangeException",
+            "System.Object"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "isinst",
+              "operand": {
+                "token": 16777226,
+                "name": "System.ArgumentOutOfRangeException"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "brfalse.s",
+              "operand": 18,
+              "size": 2
+            },
+            {
+              "offset": 10,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772167,
+                "name": "get_ActualValue",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 16,
+              "opcode": "br.s",
+              "operand": 19,
+              "size": 2
+            },
+            {
+              "offset": 18,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.s",
+              "operand": 10,
+              "size": 2
+            },
+            {
+              "offset": 22,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 27,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 30,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772168,
+                "name": "GetType",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 35,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772169,
+                "name": "get_FullName",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 40,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 41,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 42,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 43,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 48,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 49,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 50,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 51,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772170,
+                "name": "get_ParamName",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 57,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "brtrue.s",
+              "operand": 66,
+              "size": 2
+            },
+            {
+              "offset": 60,
+              "opcode": "pop",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "ldstr",
+              "operand": "<null>",
+              "size": 5
+            },
+            {
+              "offset": 66,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 67,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 68,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 69,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 74,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 75,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 76,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 77,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 78,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_Message",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 83,
+              "opcode": "ldstr",
+              "operand": "\n",
+              "size": 5
+            },
+            {
+              "offset": 88,
+              "opcode": "ldstr",
+              "operand": "<LF>",
+              "size": 5
+            },
+            {
+              "offset": 93,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772172,
+                "name": "Replace",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 98,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 99,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 100,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 101,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 106,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 107,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 108,
+              "opcode": "ldc.i4.6",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 109,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 110,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772173,
+                "name": "get_InnerException",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Exception",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 115,
+              "opcode": "brfalse.s",
+              "operand": 130,
+              "size": 2
+            },
+            {
+              "offset": 117,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 118,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772173,
+                "name": "get_InnerException",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Exception",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 123,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_Message",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 128,
+              "opcode": "br.s",
+              "operand": 135,
+              "size": 2
+            },
+            {
+              "offset": 130,
+              "opcode": "ldstr",
+              "operand": "<null>",
+              "size": 5
+            },
+            {
+              "offset": 135,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 136,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 137,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 138,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 143,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 144,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 145,
+              "opcode": "ldc.i4.8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 146,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 147,
+              "opcode": "brfalse.s",
+              "operand": 178,
+              "size": 2
+            },
+            {
+              "offset": 149,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 150,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772168,
+                "name": "GetType",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 155,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772169,
+                "name": "get_FullName",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 160,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 165,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 166,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772174,
+                "name": "ToString",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 171,
+              "opcode": "call",
+              "operand": {
+                "token": 167772175,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 176,
+              "opcode": "br.s",
+              "operand": 183,
+              "size": 2
+            },
+            {
+              "offset": 178,
+              "opcode": "ldstr",
+              "operand": "<null>",
+              "size": 5
+            },
+            {
+              "offset": 183,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 184,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 185,
+              "opcode": "ldc.i4.s",
+              "operand": 9,
+              "size": 2
+            },
+            {
+              "offset": 187,
+              "opcode": "ldstr",
+              "operand": "\n",
+              "size": 5
+            },
+            {
+              "offset": 192,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 193,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 198,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 6,
+          "initLocals": true,
+          "attributes": "Private, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663298,
+          "name": "Argument",
+          "declaringType": "ArgumentExceptionsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "System.InvalidOperationException"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldstr",
+              "operand": "inner",
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772177,
+                "name": ".ctor",
+                "declaringType": "System.InvalidOperationException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "ldc.i4.s",
+              "operand": 13,
+              "size": 2
+            },
+            {
+              "offset": 13,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 18,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772178,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 25,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 30,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 31,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772179,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 39,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 44,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 45,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 47,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 52,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772179,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 57,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 62,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 64,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 65,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 70,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772179,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 75,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 80,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 81,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 82,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 83,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 88,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 93,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772180,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 98,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 103,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 104,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 105,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 106,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 107,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 112,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772180,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 117,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 122,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 123,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 124,
+              "opcode": "ldc.i4.6",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 125,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 130,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 135,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772180,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 140,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 145,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 146,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 147,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 148,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 153,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 158,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772180,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 163,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 168,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 169,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 170,
+              "opcode": "ldc.i4.8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 171,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 176,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 177,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772180,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 182,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 187,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 188,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 189,
+              "opcode": "ldc.i4.s",
+              "operand": 9,
+              "size": 2
+            },
+            {
+              "offset": 191,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 196,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 197,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772181,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 202,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 207,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 208,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 209,
+              "opcode": "ldc.i4.s",
+              "operand": 10,
+              "size": 2
+            },
+            {
+              "offset": 211,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 212,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 213,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772181,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 218,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 223,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 224,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 225,
+              "opcode": "ldc.i4.s",
+              "operand": 11,
+              "size": 2
+            },
+            {
+              "offset": 227,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 232,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 237,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 238,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772182,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 243,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 248,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 249,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 250,
+              "opcode": "ldc.i4.s",
+              "operand": 12,
+              "size": 2
+            },
+            {
+              "offset": 252,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 253,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 254,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 255,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772182,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 260,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 265,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 266,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 271,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 6,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663299,
+          "name": "Null",
+          "declaringType": "ArgumentExceptionsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "System.InvalidOperationException"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldstr",
+              "operand": "inner",
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772177,
+                "name": ".ctor",
+                "declaringType": "System.InvalidOperationException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "ldc.i4.s",
+              "operand": 11,
+              "size": 2
+            },
+            {
+              "offset": 13,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 18,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772183,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 25,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 30,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 31,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772184,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 39,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 44,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 45,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 47,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 52,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772184,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 57,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 62,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 64,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 65,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 70,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772184,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 75,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 80,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 81,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 82,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 83,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 88,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 93,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772185,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 98,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 103,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 104,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 105,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 106,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 111,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 112,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772185,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 117,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 122,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 123,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 124,
+              "opcode": "ldc.i4.6",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 125,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 130,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 135,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772185,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 140,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 145,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 146,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 147,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 148,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 153,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 158,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772185,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 163,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 168,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 169,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 170,
+              "opcode": "ldc.i4.8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 171,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 172,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 177,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772185,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 182,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 187,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 188,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 189,
+              "opcode": "ldc.i4.s",
+              "operand": 9,
+              "size": 2
+            },
+            {
+              "offset": 191,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 196,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 197,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772186,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 202,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 207,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 208,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 209,
+              "opcode": "ldc.i4.s",
+              "operand": 10,
+              "size": 2
+            },
+            {
+              "offset": 211,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 212,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 213,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772186,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentNullException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 218,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 223,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 224,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 229,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 5,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663300,
+          "name": "Range",
+          "declaringType": "ArgumentExceptionsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "System.InvalidOperationException"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldstr",
+              "operand": "inner",
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772177,
+                "name": ".ctor",
+                "declaringType": "System.InvalidOperationException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "ldc.i4.s",
+              "operand": 17,
+              "size": 2
+            },
+            {
+              "offset": 13,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 18,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772187,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 25,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 30,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 31,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772188,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 39,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 44,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 45,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 46,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 47,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 52,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772188,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 57,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 62,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 64,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 65,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 70,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772188,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 75,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 80,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 81,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 82,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 83,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 88,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 93,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772189,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 98,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 103,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 104,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 105,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 106,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 111,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 112,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772189,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 117,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 122,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 123,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 124,
+              "opcode": "ldc.i4.6",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 125,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 130,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 135,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772189,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 140,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 145,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 146,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 147,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 148,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 153,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 158,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772189,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 163,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 168,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 169,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 170,
+              "opcode": "ldc.i4.8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 171,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 172,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 177,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772189,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 182,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 187,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 188,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 189,
+              "opcode": "ldc.i4.s",
+              "operand": 9,
+              "size": 2
+            },
+            {
+              "offset": 191,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 196,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 197,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772190,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 202,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 207,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 208,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 209,
+              "opcode": "ldc.i4.s",
+              "operand": 10,
+              "size": 2
+            },
+            {
+              "offset": 211,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 212,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 213,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772190,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Exception"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 218,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 223,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 224,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 225,
+              "opcode": "ldc.i4.s",
+              "operand": 11,
+              "size": 2
+            },
+            {
+              "offset": 227,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 232,
+              "opcode": "ldc.i4.s",
+              "operand": 42,
+              "size": 2
+            },
+            {
+              "offset": 234,
+              "opcode": "box",
+              "operand": {
+                "token": 16777234,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 239,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 244,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 249,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 254,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 255,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 256,
+              "opcode": "ldc.i4.s",
+              "operand": 12,
+              "size": 2
+            },
+            {
+              "offset": 258,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 263,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 264,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 269,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 274,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 279,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 280,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 281,
+              "opcode": "ldc.i4.s",
+              "operand": 13,
+              "size": 2
+            },
+            {
+              "offset": 283,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 284,
+              "opcode": "ldc.i4.s",
+              "operand": -4,
+              "size": 2
+            },
+            {
+              "offset": 286,
+              "opcode": "conv.i8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 287,
+              "opcode": "box",
+              "operand": {
+                "token": 16777235,
+                "name": "System.Int64"
+              },
+              "size": 5
+            },
+            {
+              "offset": 292,
+              "opcode": "ldnull",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 293,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 298,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 303,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 304,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 305,
+              "opcode": "ldc.i4.s",
+              "operand": 14,
+              "size": 2
+            },
+            {
+              "offset": 307,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 312,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 317,
+              "opcode": "ldstr",
+              "operand": "",
+              "size": 5
+            },
+            {
+              "offset": 322,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 327,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 332,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 333,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 334,
+              "opcode": "ldc.i4.s",
+              "operand": 15,
+              "size": 2
+            },
+            {
+              "offset": 336,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 341,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 342,
+              "opcode": "box",
+              "operand": {
+                "token": 16777236,
+                "name": "System.Boolean"
+              },
+              "size": 5
+            },
+            {
+              "offset": 347,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 352,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 357,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 362,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 363,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 364,
+              "opcode": "ldc.i4.s",
+              "operand": 16,
+              "size": 2
+            },
+            {
+              "offset": 366,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 371,
+              "opcode": "ldc.i4.s",
+              "operand": 120,
+              "size": 2
+            },
+            {
+              "offset": 373,
+              "opcode": "box",
+              "operand": {
+                "token": 16777237,
+                "name": "System.Char"
+              },
+              "size": 5
+            },
+            {
+              "offset": 378,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 383,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 388,
+              "opcode": "call",
+              "operand": {
+                "token": 100663297,
+                "name": "Snapshot",
+                "declaringType": "ArgumentExceptionsFixture",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.ArgumentException"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 393,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 394,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 399,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 6,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663301,
+          "name": "MutableActualValue",
+          "declaringType": "ArgumentExceptionsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "ArgumentExceptionsFixture+MutableValue",
+            "System.ArgumentOutOfRangeException",
+            "System.String",
+            "System.Boolean"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "newobj",
+              "operand": {
+                "token": 100663305,
+                "name": ".ctor",
+                "declaringType": "ArgumentExceptionsFixture+MutableValue",
+                "assemblyName": "ArgumentExceptionsFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 6,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108865,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableValue",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 13,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 24,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 29,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 30,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 31,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_Message",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 36,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 38,
+              "opcode": "ldc.i4.s",
+              "operand": 9,
+              "size": 2
+            },
+            {
+              "offset": 40,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108865,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableValue",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 45,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 46,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 62,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 64,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 65,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 66,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_Message",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 71,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 72,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 73,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 74,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 79,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 80,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 81,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 82,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 83,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 84,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772167,
+                "name": "get_ActualValue",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 89,
+              "opcode": "ceq",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 91,
+              "opcode": "stloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 92,
+              "opcode": "ldloca.s",
+              "operand": 3,
+              "size": 2
+            },
+            {
+              "offset": 94,
+              "opcode": "call",
+              "operand": {
+                "token": 167772192,
+                "name": "ToString",
+                "declaringType": "System.Boolean",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 99,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 100,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 105,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 5,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663302,
+          "name": "BoxedActualValue",
+          "declaringType": "ArgumentExceptionsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "System.ArgumentOutOfRangeException",
+            "System.String",
+            "System.String",
+            "ArgumentExceptionsFixture+MutableStruct"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldstr",
+              "operand": "parameter",
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "ldloca.s",
+              "operand": 3,
+              "size": 2
+            },
+            {
+              "offset": 7,
+              "opcode": "initobj",
+              "operand": {
+                "token": 33554436,
+                "name": "ArgumentExceptionsFixture+MutableStruct"
+              },
+              "size": 6
+            },
+            {
+              "offset": 13,
+              "opcode": "ldloca.s",
+              "operand": 3,
+              "size": 2
+            },
+            {
+              "offset": 15,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 16,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108866,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableStruct",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 21,
+              "opcode": "ldloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 22,
+              "opcode": "box",
+              "operand": {
+                "token": 33554436,
+                "name": "ArgumentExceptionsFixture+MutableStruct"
+              },
+              "size": 5
+            },
+            {
+              "offset": 27,
+              "opcode": "ldstr",
+              "operand": "message",
+              "size": 5
+            },
+            {
+              "offset": 32,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 37,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 38,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 39,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_Message",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 44,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 45,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 46,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_Message",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 58,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 62,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 64,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 69,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 70,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 71,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 72,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 73,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 74,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 75,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 76,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 81,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 82,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 83,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 84,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 85,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772167,
+                "name": "get_ActualValue",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 90,
+              "opcode": "unbox.any",
+              "operand": {
+                "token": 33554436,
+                "name": "ArgumentExceptionsFixture+MutableStruct"
+              },
+              "size": 5
+            },
+            {
+              "offset": 95,
+              "opcode": "stloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 96,
+              "opcode": "ldloca.s",
+              "operand": 3,
+              "size": 2
+            },
+            {
+              "offset": 98,
+              "opcode": "ldflda",
+              "operand": {
+                "token": 67108866,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableStruct",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 103,
+              "opcode": "call",
+              "operand": {
+                "token": 167772193,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 108,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 109,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 114,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663303,
+          "name": "CatchHierarchy",
+          "declaringType": "ArgumentExceptionsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "System.SystemException",
+            "System.ArgumentException",
+            "System.ArgumentOutOfRangeException",
+            "System.String"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldstr",
+              "operand": "radius",
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "ldc.r8",
+              "operand": -3,
+              "operandBits": "c008000000000000",
+              "size": 9
+            },
+            {
+              "offset": 14,
+              "opcode": "box",
+              "operand": {
+                "token": 16777238,
+                "name": "System.Double"
+              },
+              "size": 5
+            },
+            {
+              "offset": 19,
+              "opcode": "ldstr",
+              "operand": "Must be positive.",
+              "size": 5
+            },
+            {
+              "offset": 24,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772191,
+                "name": ".ctor",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Object"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 29,
+              "opcode": "throw",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 30,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "castclass",
+              "operand": {
+                "token": 16777225,
+                "name": "System.ArgumentException"
+              },
+              "size": 5
+            },
+            {
+              "offset": 37,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 38,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 39,
+              "opcode": "castclass",
+              "operand": {
+                "token": 16777226,
+                "name": "System.ArgumentOutOfRangeException"
+              },
+              "size": 5
+            },
+            {
+              "offset": 44,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 45,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 46,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772170,
+                "name": "get_ParamName",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 59,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 62,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 67,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 68,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 69,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 70,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 71,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772167,
+                "name": "get_ActualValue",
+                "declaringType": "System.ArgumentOutOfRangeException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 76,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772174,
+                "name": "ToString",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 81,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 82,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 83,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 84,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 89,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 90,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 91,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 92,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 93,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_Message",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 98,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 99,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 104,
+              "opcode": "stloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 105,
+              "opcode": "leave.s",
+              "operand": 107,
+              "size": 2
+            },
+            {
+              "offset": 107,
+              "opcode": "ldloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 108,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [
+            {
+              "kind": "catch",
+              "tryOffset": 0,
+              "tryLength": 30,
+              "handlerOffset": 30,
+              "handlerLength": 77,
+              "filterOffset": null,
+              "catchType": "System.SystemException"
+            }
+          ],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554435,
+      "name": "ArgumentExceptionsFixture+MutableValue",
+      "attributes": "NestedPublic, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108865,
+          "name": "Value",
+          "declaringType": "ArgumentExceptionsFixture+MutableValue",
+          "type": "System.Int32",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663304,
+          "name": "ToString",
+          "declaringType": "ArgumentExceptionsFixture+MutableValue",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldstr",
+              "operand": "value:",
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 6,
+              "opcode": "ldflda",
+              "operand": {
+                "token": 67108865,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableValue",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 11,
+              "opcode": "call",
+              "operand": {
+                "token": 167772193,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 16,
+              "opcode": "call",
+              "operand": {
+                "token": 167772194,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 21,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Virtual, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663305,
+          "name": ".ctor",
+          "declaringType": "ArgumentExceptionsFixture+MutableValue",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772195,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554436,
+      "name": "ArgumentExceptionsFixture+MutableStruct",
+      "attributes": "NestedPublic, SequentialLayout, Sealed, BeforeFieldInit",
+      "baseType": "System.ValueType",
+      "isValueType": true,
+      "isEnum": false,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108866,
+          "name": "Value",
+          "declaringType": "ArgumentExceptionsFixture+MutableStruct",
+          "type": "System.Int32",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663306,
+          "name": "ToString",
+          "declaringType": "ArgumentExceptionsFixture+MutableStruct",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "ArgumentExceptionsFixture",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108866,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableStruct",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 9,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108866,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableStruct",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 14,
+              "opcode": "ldstr",
+              "operand": "struct:",
+              "size": 5
+            },
+            {
+              "offset": 19,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "ldflda",
+              "operand": {
+                "token": 67108866,
+                "name": "Value",
+                "declaringType": "ArgumentExceptionsFixture+MutableStruct",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "assemblyName": "ArgumentExceptionsFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 25,
+              "opcode": "call",
+              "operand": {
+                "token": 167772193,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 30,
+              "opcode": "call",
+              "operand": {
+                "token": 167772194,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 35,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Virtual, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    }
+  ]
+}

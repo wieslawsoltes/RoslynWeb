@@ -80,6 +80,11 @@ jobs:
         run: npm run test:compilers
       - name: Typed numeric kernels, native intrinsics and tuple interfaces through Worker
         run: npm run test:compilers-v7
+      - name: Full netDxf library in managed Wasm and generated compiler backends
+        run: |
+          npm run test:netdxf
+          npm run test:netdxf-compilers
+          node tests/argument-exceptions-integration.mjs
       - name: TypeScript public API contract
         run: npx --yes --package typescript@5.9.3 tsc --strict --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 tests/compiler-types.test.ts
       - name: Roslyn cache semantics and actual WebAssembly compilation latency
@@ -114,12 +119,16 @@ jobs:
         run: npm run test:browser
         env:
           BROWSER_ENGINE: chromium
+      - name: Real WebGPU netDxf browser integration
+        run: npm run test:netdxf-browser
       - name: Upload browser verification and screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: browser-verification
-          path: artifacts/browser-*
+          path: |
+            artifacts/browser-*
+            artifacts/dxf-browser
           if-no-files-found: ignore
       - name: Upload complete runnable project artifact
         uses: actions/upload-artifact@v4
@@ -129,6 +138,7 @@ jobs:
             src
             bin
             examples
+            vendor
             managed
             dist
             demo
@@ -180,10 +190,16 @@ jobs:
           BROWSER_ENGINE: chromium
           BROWSER_BASE_URL: ${{ steps.deployment.outputs.page_url }}
           BROWSER_FULL_DEMO: '1'
+      - name: Verify the deployed netDxf WebGPU sample
+        run: npm run test:netdxf-browser
+        env:
+          DXF_BROWSER_BASE_URL: ${{ steps.deployment.outputs.page_url }}
       - name: Upload deployed-site browser verification
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: deployed-browser-verification
-          path: artifacts/browser-*
+          path: |
+            artifacts/browser-*
+            artifacts/dxf-browser
           if-no-files-found: ignore

@@ -1007,6 +1007,52 @@ export class ILRuntime {
       if (name === 'Clear' && args[0]?.$array && args.length === 3) { const arr = args[0], start = Number(a[1]), count = Number(a[2]); if (start < 0 || count < 0 || start + count > arr.items.length) throw managedError('System.IndexOutOfRangeException', 'Index was outside the bounds of the array.'); for (let i = start; i < start + count; i++) arr.items[i] = this.defaultValue(arr.elementType); return done(); }
     }
     if (type.startsWith('System.') && type.endsWith('Exception')) {
+      const argumentException = ['System.ArgumentException', 'System.ArgumentNullException', 'System.ArgumentOutOfRangeException'].includes(type);
+      if (argumentException) {
+        const signature = (ref.parameters ?? []).map(parameter => parameter.type ?? parameter).join(',');
+        if (ref.isStatic !== false || (ref.genericParameterCount ?? 0) !== 0 || ref.genericArguments?.length) return { handled: false };
+        if (name === '.ctor') {
+          if (ref.returnType !== 'System.Void') return { handled: false };
+          let message, paramName = null, actualValue = null, innerException = null;
+          const defaultMessage = type === 'System.ArgumentNullException' ? 'Value cannot be null.'
+            : type === 'System.ArgumentOutOfRangeException' ? 'Specified argument was out of the range of valid values.'
+            : 'Value does not fall within the expected range.';
+          if (signature === '') message = defaultMessage;
+          else if (signature === 'System.String') {
+            message = type === 'System.ArgumentException' ? args[0] : defaultMessage;
+            if (type !== 'System.ArgumentException') paramName = args[0];
+          } else if (signature === 'System.String,System.Exception') { message = args[0]; innerException = args[1]; }
+          else if (signature === 'System.String,System.String') {
+            message = args[type === 'System.ArgumentException' ? 0 : 1];
+            paramName = args[type === 'System.ArgumentException' ? 1 : 0];
+          } else if (type === 'System.ArgumentException' && signature === 'System.String,System.String,System.Exception') {
+            [message, paramName, innerException] = args;
+          } else if (type === 'System.ArgumentOutOfRangeException' && signature === 'System.String,System.Object,System.String') {
+            [paramName, actualValue, message] = args;
+          } else return { handled: false };
+          self.paramName = paramName ?? null;
+          self.actualValue = actualValue ?? null;
+          self.innerException = innerException ?? null;
+          // ActualValue is retained by reference, and .NET formats it each time Message is read.
+          Object.defineProperty(self, 'message', { configurable: true, get: () => {
+            let result = message == null ? defaultMessage : String(message);
+            if (self.paramName) result += ` (Parameter '${self.paramName}')`;
+            if (self.actualValue != null) {
+              const toString = this.findVirtual({ declaringType: 'System.Object', name: 'ToString', parameters: [], returnType: 'System.String', isStatic: false }, self.actualValue);
+              const receiver = toString && self.actualValue.$box ? this.unbox(self.actualValue, self.actualValue.$type) : self.actualValue;
+              const value = toString ? this.invokeManaged(toString, [], receiver) : this.format(self.actualValue);
+              result += `\nActual value was ${value ?? ''}.`;
+            }
+            return result;
+          } });
+          return done();
+        }
+        if (signature !== '') return { handled: false };
+        if (name === 'get_ParamName' && ref.returnType === 'System.String') return done(nullCheck(self).paramName ?? null);
+        if (name === 'get_ActualValue' && type === 'System.ArgumentOutOfRangeException' && ref.returnType === 'System.Object') return done(nullCheck(self).actualValue ?? null);
+        if (!(['get_Message', 'ToString'].includes(name) && ref.returnType === 'System.String'
+          || name === 'get_InnerException' && ref.returnType === 'System.Exception')) return { handled: false };
+      }
       if (name === '.ctor') { self.message = String(a[0] ?? ''); self.innerException = args[1] ?? null; return done(); }
       if (name === 'get_Message') return done(nullCheck(self).message);
       if (name === 'get_InnerException') return done(nullCheck(self).innerException);

@@ -20,6 +20,39 @@ The sample provides C# editing, compile/run/stop, selectable execution backends 
 
 The sample is a static developer tool. Package restore contacts the selected package feed; source compilation and program execution stay within the runtime. It does not provide accounts, collaborative editing or a desktop IDE.
 
+## netDxf and WebGPU CAD sample
+
+![netDxf drawing rendered by the RoslynWeb WebGPU sample](docs/images/netdxf-studio.png)
+
+The [netDxf sample](demo/dxf.html) compiles the **complete 272-file netDxf library** from the pinned [`netstandard` branch](https://github.com/wieslawsoltes/netDxf/tree/5b562312f683fc635405c149537ca488e4ec4d39), executes its reader/writer in the .NET WebAssembly runtime, and renders extracted CAD geometry with WebGPU. Open it from the compiler lab or at `/demo/dxf.html`. It supports text/binary DXF import and export, a generated drawing, layer controls, fit, pan/zoom, runtime source compilation, and explicit viewer issue reports.
+
+```js
+import { createRoslyn } from '@roslynweb/core/browser';
+import { createNetDxf, createDxfRenderer } from '@roslynweb/core/dxf';
+
+const compiler = await createRoslyn();
+const dxf = await createNetDxf({ compiler }); // Full prebuilt netDxf DLL in managed Wasm.
+const drawing = await dxf.createSample();   // Or dxf.load(Uint8Array DXF bytes).
+const renderer = await createDxfRenderer(document.querySelector('canvas'));
+renderer.setScene(drawing.scene);
+renderer.fit();
+const binaryDxf = await drawing.export({ binary: true });
+console.log(drawing.stats, drawing.issues, binaryDxf.length);
+// At application teardown:
+renderer.dispose();
+await dxf.dispose();
+compiler.dispose();
+```
+
+Use `createNetDxf({compiler, compile:true})` to compile every vendored C# source in the browser. The default prebuilt path reduces startup work. The same document API works through the Node host and CLI:
+
+```sh
+node bin/roslynweb.mjs script examples/cli/netdxf.mjs -- - out/sample.dxf text
+node bin/roslynweb.mjs script examples/cli/netdxf.mjs -- drawing.dxf out/binary.dxf binary
+```
+
+The full-library path uses .NET's Wasm runtime. Direct MSIL→native Wasm and JavaScript are separate, strictly checked experiments with selected netDxf geometry exports; they do not yet support the whole reader/writer. The renderer is a top/XY viewer with an explicit entity surface; entities it cannot draw remain in the managed document for export. See the [netDxf API, build, performance and compatibility guide](docs/NETDXF.md) for exact behavior and reproducible tests.
+
 ## Use from a terminal
 
 Node **22+** runs the CLI with the supplied `dist/` WebAssembly assets. A .NET installation is required to **build those assets from source**, but is not needed to use a prebuilt package. From the extracted build or a built checkout:
@@ -411,6 +444,7 @@ See `docs/VERIFICATION.md`, `docs/wasm-verification.json`, `docs/worker-verifica
 | Managed execution | Actual .NET 10 browser WASM interpreter, dynamic assembly loading, async, LINQ, reflection and JSON exercised |
 | MSIL → native Wasm | Typed native code, structured reducible control flow, numeric intrinsics, linked methods, two-pass filters and documented managed services |
 | MSIL → JS | Basic-block generation and proven unboxed Int32/Int64/UInt64/Single/Double methods; linked assemblies, reusable compiled modules and explicit incompatibility diagnostics |
+| netDxf and WebGPU | Complete pinned source compiled by Roslyn WASM, managed DXF reader/writer sessions, text/binary import/export and a reusable WebGPU CAD viewport |
 | Command-line and Node API | Local C#/DLL/JS/Wasm workflows, all public compiler methods through JSON sessions or JavaScript scripts, package/project tooling, watch mode and static browser hosting |
 | Shared managed values | Exact Decimal arithmetic and invariant formats, Nullable and ValueTuple value/boxing/byref behavior within the documented surface |
 | Existing DLLs | Managed assemblies and dependencies compatible with .NET browser; original WinForms/WPF DLLs using the explicit desktop compatibility surface also execute unchanged |
@@ -437,6 +471,7 @@ The archive includes the original runtime assets and omits redundant precompress
 | `src/compiler-cache.mjs`, `src/javascript-host.mjs` | Shared inspection/linking cache infrastructure and reusable JavaScript compilation host |
 | `src/packages/` | ZIP/NuGet reader, dependency resolver and caches |
 | `src/projects/` | Virtual project filesystem, evaluation and supported target/task execution |
+| `src/dxf/`, `vendor/netDxf/` | Full pinned netDxf source, managed DXF bridge, session API, CAD geometry and WebGPU renderer |
 | `src/hosting/` | Native WASM ABI, DOM control host and remote-host transport |
 | `managed/` | C# bridge, metadata inspector, Roslyn adaptation and native tests |
 | `dist/` | Prebuilt browser WASM runtime, Roslyn and framework assets |
