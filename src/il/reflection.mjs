@@ -145,7 +145,7 @@ function invokeMember(runtime, member, object, supplied, constructor = false) {
   try {
     const method = runtime.resolveMethod(member) ?? member;
     const resolved = !constructor && member.isVirtual && instance ? runtime.findVirtual(method, instance) ?? method : method;
-    const result = runtime.invokeManaged(resolved, args, instance);
+    const result = runtime.withExceptionBoundary(() => runtime.invokeManaged(resolved, args, instance));
     return constructor ? boxResult(runtime, instance, member.declaringType) : boxResult(runtime, result, member.returnType);
   } catch (e) { if (e?.runtimeLimitation) throw e; throw new ManagedException('System.Reflection.TargetInvocationException', 'Exception has been thrown by the target of an invocation.', e); }
   finally { args.forEach((v, i) => { if (v?.$byref) items[i] = boxResult(runtime, v.get(), p[i].slice(0, -1)); }); }

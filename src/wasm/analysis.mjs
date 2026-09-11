@@ -1,16 +1,20 @@
 import { isBuiltinCandidate } from '../il/compiler.mjs';
 import { genericDefinitionName, matchesMethodReference, splitTypeArguments, substituteType } from '../il/generics.mjs';
 import { buildExceptionPlan } from './exceptions.mjs';
+import { nativeIntrinsic } from './intrinsics.mjs';
+import { isStandardValueType, isStandardValueBuiltin, isStandardValueField } from '../il/standard-values.mjs';
 
 const primitiveKinds = new Map([
   ...['Boolean','Byte','SByte','Char','Int16','UInt16','Int32','UInt32','IntPtr','UIntPtr'].map(t => [`System.${t}`, 'i32']),
   ['System.Int64','i64'], ['System.UInt64','i64'], ['System.Single','f32'], ['System.Double','f64'],
   ['int','i32'], ['uint','i32'], ['long','i64'], ['ulong','i64'], ['float','f32'], ['double','f64'], ['bool','i32'],
 ]);
+export const nativeFrameworkEnums = new Map([['System.MidpointRounding','System.Int32'],['System.Globalization.NumberStyles','System.Int32']]);
 const unsupportedValueTypes = /^System\.(?:Decimal|DateTime|DateTimeOffset|TimeSpan|DateOnly|TimeOnly|Guid|Nullable`1|ValueTuple(?:`\d+)?|Collections\.Generic\.KeyValuePair`2)(?:<|$)/;
 const forbiddenReferences = /(?:System\.(?:Span|ReadOnlySpan|Memory|ReadOnlyMemory)`1|methodptr\(|\*)/;
 const numericKinds = new Set(['i32','i64','f32','f64']);
 const integralKinds = new Set(['i32','i64']);
+const floatKind = kind => kind === 'f32' || kind === 'f64';
 const conditionalBranch = /^(?:brtrue|brfalse|beq|bne\.un|bge(?:\.un)?|bgt(?:\.un)?|ble(?:\.un)?|blt(?:\.un)?)(?:\.s)?$/;
 const unconditionalBranch = /^br(?:\.s)?$/;
 const leaveBranch = /^leave(?:\.s)?$/;
@@ -30,7 +34,9 @@ export function wasmType(type, context = {}) {
   if (forbiddenReferences.test(type)) throw new TypeError(`Pointer or byref-like type '${type}' is not supported by native WebAssembly emission.`);
   if (type.endsWith('&')) { wasmType(type.slice(0, -1), context); return 'externref'; }
   if (primitiveKinds.has(type)) return primitiveKinds.get(type);
+  if (nativeFrameworkEnums.has(type)) return primitiveKinds.get(nativeFrameworkEnums.get(type));
   if (/\[[,]*\]$/.test(type)) { const element = type.replace(/\[[,]*\]$/, ''); if (!context.validatingTypes?.has(element)) wasmType(element, context); return 'externref'; }
+  if (isStandardValueType(type)) { for (const argument of splitTypeArguments(type)) wasmType(argument,context); return 'externref'; }
   const definition = context.types?.get?.(genericDefinitionName(type));
   if (definition?.isEnum) return wasmType(definition.fields?.find(f => f.name === 'value__')?.type ?? 'System.Int32', context);
   if (definition?.isValueType) {
@@ -52,7 +58,7 @@ export function isNativeWasmBuiltin(ref) {
   const name = String(ref.declaringType ?? '');
   if (/^System\.Reflection\.Emit(?:\.|$)/.test(name) || name.startsWith('System.Linq.Expressions.') && ref.name === 'Compile') return false;
   if (forbiddenReferences.test([name, ref.returnType, ...(ref.parameters ?? []).map(typeName)].join('|'))) return false;
-  return isBuiltinCandidate(ref);
+  return !!nativeIntrinsic(ref) || isStandardValueBuiltin(ref) || isBuiltinCandidate(ref);
 }
 
 function instantiateReference(ref, typeArguments, methodArguments) {
@@ -182,6 +188,31 @@ export function analyzeWasmAssembly(model, options = {}) {
     return target.id;
   };
   const resolveCall = (ref, descriptor, instruction) => {
+    const constrainedType = instruction.constrainedType;
+    if (constrainedType) {
+      const type = contextFor(descriptor.assemblyName).types.get(genericDefinitionName(constrainedType));
+      const value = primitiveKinds.has(constrainedType) || type?.isValueType || isStandardValueType(constrainedType);
+      if (type) {
+        const arguments_ = splitTypeArguments(constrainedType);
+        const override = (type.methodOverrides ?? []).map(item => ({declaration:instantiateReference(item.declaration,arguments_,ref.genericArguments ?? []),body:instantiateReference(item.body,arguments_,ref.genericArguments ?? [])})).find(item => item.declaration?.declaringType === ref.declaringType && item.declaration?.name === ref.name && item.declaration.parameters?.map(typeName).join(',') === ref.parameters.map(typeName).join(','));
+        let matches = definitions.filter(candidate => candidate.assemblyName === type.assemblyName && candidate.declaringType === type.name && !candidate.isStatic && !candidate.isAbstract && (override ? candidate.token === override.body?.token || candidate.name === override.body?.name : candidate.name === ref.name || candidate.name.endsWith(`.${ref.name}`)) && candidate.parameters?.length === ref.parameters?.length && candidate.parameters.every((p,i) => substituteType(typeName(p),arguments_,ref.genericArguments ?? []) === typeName(ref.parameters[i])) && substituteType(candidate.returnType,arguments_,ref.genericArguments ?? []) === ref.returnType);
+        if (override) matches = matches.filter(candidate => candidate.token === override.body?.token || candidate.name === override.body?.name);
+        else { const explicit = matches.filter(candidate => candidate.name === `${ref.declaringType}.${ref.name}` || candidate.name === `${ref.declaringType.replaceAll('+','.')}.${ref.name}`); if (explicit.length) matches = explicit; else matches = matches.filter(candidate => candidate.name === ref.name); }
+        if (matches.length > 1) { report('WASM_CONSTRAINED_CALL', `Constrained call '${methodSignature(ref)}' has ambiguous implementations on '${constrainedType}'.`,descriptor,instruction); return null; }
+        if (matches.length === 1) {
+          const implementation = matches[0], concrete = {...ref,assemblyName:implementation.assemblyName,declaringType:constrainedType,name:implementation.name,token:implementation.token,isStatic:false};
+          const call = resolveCall(concrete,descriptor,{...instruction,opcode:value?'call':'callvirt',constrainedType:null});
+          if (call) Object.assign(call,{constrainedType,constrainedMode:value?'direct-value':'reference',...(value?{virtual:false}:{})});
+          return call;
+        }
+      }
+      let targetRef = ref;
+      if (value && isNativeWasmBuiltin({...ref,declaringType:constrainedType})) targetRef = {...ref,declaringType:constrainedType};
+      if (value && !isNativeWasmBuiltin(targetRef)) { report('WASM_CONSTRAINED_CALL', `No unboxed implementation or verified boxed runtime service for '${methodSignature(ref)}' on '${constrainedType}'.`,descriptor,instruction); return null; }
+      const call = resolveCall(targetRef,descriptor,{...instruction,constrainedType:null});
+      if (call) Object.assign(call,{constrainedType,constrainedMode:value?'boxed-value':'reference'});
+      return call;
+    }
     const definition = findDefinition(ref, descriptor);
     const resolvedRef = typeof ref === 'number' && definition ? definition : ref;
     if (!resolvedRef || typeof resolvedRef !== 'object' || !Array.isArray(resolvedRef.parameters)) { report('WASM_METHOD_SIGNATURE', 'Call operands require resolved parameter metadata.', descriptor, instruction); return null; }
@@ -190,7 +221,7 @@ export function analyzeWasmAssembly(model, options = {}) {
     const isDelegate = /^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(resolvedRef.declaringType) || ['System.Delegate','System.MulticastDelegate'].includes(declaringDefinition?.baseType);
     if (isDelegate && opcodeOf(instruction) === 'newobj' && resolvedRef.name === '.ctor' && params.length === 2) params[1] = 'externref';
     const result = opcodeOf(instruction) === 'newobj' ? kind(resolvedRef.declaringType, descriptor, instruction) : kind(resolvedRef.returnType, descriptor, instruction, true);
-    const derivedFrom = (type, base, seen = new Set()) => { if (!type || seen.has(`${type.assemblyName}|${type.name}`)) return false; if (type.name === genericDefinitionName(base)) return true; seen.add(`${type.assemblyName}|${type.name}`); return derivedFrom(typesByAssembly.get(`${type.assemblyName}|${genericDefinitionName(type.baseType)}`) ?? types.get(genericDefinitionName(type.baseType)), base, seen) || (type.interfaces ?? []).some(name => genericDefinitionName(name) === genericDefinitionName(base)); };
+    const derivedFrom = (type, base, seen = new Set()) => { if (!type || seen.has(`${type.assemblyName}|${type.name}`)) return false; if (type.name === genericDefinitionName(base) || genericDefinitionName(type.baseType) === genericDefinitionName(base)) return true; seen.add(`${type.assemblyName}|${type.name}`); return derivedFrom(typesByAssembly.get(`${type.assemblyName}|${genericDefinitionName(type.baseType)}`) ?? types.get(genericDefinitionName(type.baseType)), base, seen) || (type.interfaces ?? []).some(name => genericDefinitionName(name) === genericDefinitionName(base)); };
     const virtualImplementations = () => definitions.filter(m => !m.isStatic && !m.isAbstract && !m.isPInvoke && !m.isRuntime && !m.isExternal && (m.name === resolvedRef.name || m.name.endsWith(`.${resolvedRef.name}`)) && m.parameters?.length === resolvedRef.parameters.length && m.parameters.every((p,i) => typeName(p) === typeName(resolvedRef.parameters[i])) && derivedFrom(m.$type,resolvedRef.declaringType)).map(m => enqueue(m, { ...resolvedRef, declaringType:m.declaringType }));
     if (opcodeOf(instruction) === 'callvirt' && (definition?.isAbstract || !definition && types.get(genericDefinitionName(resolvedRef.declaringType))?.attributes?.includes('Interface'))) {
       const targets = virtualImplementations();
@@ -218,6 +249,12 @@ export function analyzeWasmAssembly(model, options = {}) {
     catch (error) { report(error.code ?? 'WASM_EXCEPTION_REGIONS', error.message, descriptor); descriptor.exceptionPlan = { handlers:[], handlerEntries:[] }; }
     if (method.isPInvoke || method.isRuntime || method.isExternal || method.isAbstract || !instructions.length) { report('WASM_METHOD_BODY', 'A selected method has no managed IL body that can be emitted to WebAssembly.', descriptor); continue; }
     if (method.isStatic && method.name !== '.cctor') ensureInitializer(method.declaringType, descriptor.assemblyName, descriptor);
+    for (let index = 0; index < instructions.length; index++) if (opcodeOf(instructions[index]) === 'constrained.') {
+      let next = index + 1;
+      while (['readonly.','tail.','volatile.'].includes(opcodeOf(instructions[next] ?? {}))) next++;
+      if (opcodeOf(instructions[next] ?? {}) !== 'callvirt') report('WASM_CONSTRAINED_CALL','constrained. must prefix an instance callvirt instruction.',descriptor,instructions[index]);
+      else instructions[next].constrainedType = typeName(instructions[index].operand);
+    }
     const byOffset = new Map(instructions.map((i,index) => [i.offset,{ instruction:i,index }]));
     if (byOffset.size !== instructions.length) report('WASM_DUPLICATE_OFFSET', 'IL instruction offsets must be unique.', descriptor);
     const leaders = new Set([instructions[0].offset, ...descriptor.exceptionPlan.handlerEntries.map(entry => entry.offset)]), successors = new Map();
@@ -238,17 +275,27 @@ export function analyzeWasmAssembly(model, options = {}) {
     }
     const work = [instructions[0].offset]; descriptor.stackBefore.set(instructions[0].offset, []);
     for (const entry of descriptor.exceptionPlan.handlerEntries) { descriptor.stackBefore.set(entry.offset,[...entry.stack]); work.push(entry.offset); }
-    const processed = new Set();
     for (let workIndex = 0; workIndex < work.length; workIndex++) {
-      const offset = work[workIndex]; if (processed.has(offset) || !byOffset.has(offset)) continue; processed.add(offset);
+      const offset = work[workIndex]; if (!byOffset.has(offset)) continue;
       const { instruction } = byOffset.get(offset), op = opcodeOf(instruction), operand = instruction.operand, stack = [...descriptor.stackBefore.get(offset)];
       instruction.before = [...stack];
+      instruction.coercions = []; instruction.operandTypes = [...stack];
       const fail = message => report('WASM_STACK_TYPE', message, descriptor, instruction);
       const pop = expected => { const actual = stack.pop(); if (!actual) { fail(`Evaluation stack underflow at '${op}'.`); return expected ?? 'i32'; } if (expected && actual !== expected && !(['f32','f64'].includes(expected) && ['f32','f64'].includes(actual))) fail(`'${op}' expected ${expected}, received ${actual}.`); return actual; };
       const push = value => { if (value) stack.push(value); };
-      const binary = (integral = false, shift = false) => { const right = pop(), left = pop(); if (!(integral ? integralKinds : numericKinds).has(left) || !(shift ? integralKinds : integral ? integralKinds : numericKinds).has(right)) fail(`'${op}' requires ${integral ? 'integral' : 'numeric'} operands.`); if (!shift && left !== right) fail(`'${op}' requires matching native numeric kinds, received ${left} and ${right}.`); push(left); };
+      const harmonize = (left, right) => {
+        if (left === right) return left;
+        if (floatKind(left) && floatKind(right)) {
+          for (const slot of [instruction.before.length - 2,instruction.before.length - 1]) if (instruction.before[slot] === 'f32') {
+            instruction.coercions.push({slot,from:'f32',to:'f64'}); instruction.operandTypes[slot] = 'f64';
+          }
+          return 'f64';
+        }
+        fail(`'${op}' requires matching native numeric kinds, received ${left} and ${right}.`); return left;
+      };
+      const binary = (integral = false, shift = false) => { const right = pop(), left = pop(); if (!(integral ? integralKinds : numericKinds).has(left) || !(shift ? integralKinds : integral ? integralKinds : numericKinds).has(right)) fail(`'${op}' requires ${integral ? 'integral' : 'numeric'} operands.`); push(shift ? left : harmonize(left,right)); };
       if (['nop','break','readonly.','volatile.','tail.','constrained.'].includes(op)) {
-        if (op === 'constrained.') report('WASM_CONSTRAINED_CALL', 'Constrained generic/value-type dispatch requires a specialized lowering not implemented by this backend.', descriptor, instruction);
+        if (op === 'constrained.') kind(typeName(operand), descriptor, instruction);
       } else if (op === 'ldnull' || op === 'ldstr' || op === 'ldtoken') push('externref');
       else if (/^ldc\.i4(?:\.(?:m1|[0-8]|s))?$/.test(op)) push('i32');
       else if (op === 'ldc.i8') push('i64');
@@ -267,11 +314,11 @@ export function analyzeWasmAssembly(model, options = {}) {
       else if (/^(?:shl|shr|shr\.un)$/.test(op)) binary(true,true);
       else if (op === 'neg' || op === 'not') { const value = pop(); if (!(op === 'not' ? integralKinds : numericKinds).has(value)) fail(`'${op}' requires a numeric value.`); push(value); }
       else if (/^conv\.(?:r\.un|(?:ovf\.)?(?:i1|u1|i2|u2|i4|u4|i8|u8|i|u|r4|r8)(?:\.un)?)$/.test(op)) { const value = pop(); if (!numericKinds.has(value)) fail(`'${op}' requires a numeric value.`); push(/\.(?:i8|u8)(?:\.un)?$/.test(op) ? 'i64' : /\.r4$/.test(op) ? 'f32' : /\.(?:r8|r\.un)$/.test(op) ? 'f64' : 'i32'); }
-      else if (/^c(?:eq|gt|lt)(?:\.un)?$/.test(op)) { const right = pop(), left = pop(); if (left !== right) fail(`Comparison requires matching native kinds, received ${left} and ${right}.`); if (left === 'externref' && !['ceq','cgt.un'].includes(op)) fail('Only equality/non-null comparisons are supported for managed references.'); push('i32'); }
+      else if (/^c(?:eq|gt|lt)(?:\.un)?$/.test(op)) { const right = pop(), left = pop(); harmonize(left,right); if (left === 'externref' && !['ceq','cgt.un'].includes(op)) fail('Only equality/non-null comparisons are supported for managed references.'); push('i32'); }
       else if (unconditionalBranch.test(op)) {}
       else if (leaveBranch.test(op)) stack.length = 0;
       else if (/^br(?:true|false)(?:\.s)?$/.test(op)) { const value = pop(); if (!integralKinds.has(value) && value !== 'externref') fail('Conditional branch requires an integer or managed reference.'); }
-      else if (conditionalBranch.test(op)) { const right = pop(), left = pop(); if (left !== right) fail('Conditional comparison requires matching native kinds.'); if (left === 'externref' && !/^(?:beq|bne\.un)/.test(op)) fail('Ordered managed-reference comparisons are not supported.'); }
+      else if (conditionalBranch.test(op)) { const right = pop(), left = pop(); harmonize(left,right); if (left === 'externref' && !/^(?:beq|bne\.un)/.test(op)) fail('Ordered managed-reference comparisons are not supported.'); }
       else if (op === 'switch') pop('i32');
       else if (['call','callvirt','newobj'].includes(op)) {
         const call = resolveCall(operand, descriptor, instruction); instruction.call = call;
@@ -287,7 +334,7 @@ export function analyzeWasmAssembly(model, options = {}) {
         const fieldType = kind(operand?.type, descriptor, instruction), declaring = typesByAssembly.get(`${operand?.assemblyName ?? descriptor.assemblyName}|${genericDefinitionName(operand?.declaringType)}`) ?? types.get(genericDefinitionName(operand?.declaringType));
         const known = declaring?.fields?.some(f => f.name === operand?.name);
         if (declaring) checkLinkedIdentity(declaring.assemblyName,descriptor);
-        if (!known && !(op === 'ldsfld' && ['System.String::Empty','System.Type::EmptyTypes','System.IntPtr::Zero','System.UIntPtr::Zero'].includes(`${operand?.declaringType}::${operand?.name}`))) report('WASM_UNRESOLVED_FIELD', `No linked storage for '${operand?.declaringType}::${operand?.name}'.`, descriptor, instruction);
+        if (!known && !isStandardValueField(operand) && !(op === 'ldsfld' && ['System.String::Empty','System.Type::EmptyTypes','System.IntPtr::Zero','System.UIntPtr::Zero'].includes(`${operand?.declaringType}::${operand?.name}`))) report('WASM_UNRESOLVED_FIELD', `No linked storage for '${operand?.declaringType}::${operand?.name}'.`, descriptor, instruction);
         if (op.startsWith('st')) pop(fieldType); if (!op.includes('sf')) pop('externref'); if (op.startsWith('ld')) push(op.endsWith('a') ? 'externref' : fieldType);
         if (op.includes('sf')) ensureInitializer(operand?.declaringType, operand?.assemblyName ?? declaring?.assemblyName, descriptor, instruction);
       } else if (/^(?:ldind|stind)\.(?:i1|u1|i2|u2|i4|u4|i8|i|r4|r8|ref)$/.test(op)) {
@@ -300,10 +347,11 @@ export function analyzeWasmAssembly(model, options = {}) {
       else if (op === 'ldftn' || op === 'ldvirtftn') { instruction.call = resolveCall(operand, descriptor, { ...instruction, opcode:'call' }); if (op === 'ldvirtftn') pop('externref'); push('externref'); }
       else if (op === 'throw') { pop('externref'); stack.length = 0; }
       else if (op === 'rethrow' || op === 'endfinally') {
-        const expected = op === 'rethrow' ? ['catch'] : ['finally','fault'];
+        const expected = op === 'rethrow' ? ['catch','filter'] : ['finally','fault'];
         if (!descriptor.exceptionPlan.handlers.some(h => expected.includes(h.kind) && offset >= h.handlerOffset && offset < h.handlerOffset + h.handlerLength)) report('WASM_EXCEPTION_OPCODE', `${op} appears outside a matching exception handler.`, descriptor, instruction);
         if (stack.length) fail(`${op} requires an empty evaluation stack.`);
       }
+      else if (op === 'endfilter') { pop('i32'); if (stack.length) fail('endfilter requires an otherwise empty evaluation stack.'); if (!descriptor.exceptionPlan.handlers.some(h => h.kind === 'filter' && offset >= h.filterOffset && offset < h.handlerOffset)) report('WASM_EXCEPTION_OPCODE', 'endfilter appears outside an exception filter.', descriptor, instruction); }
       else if (op === 'ckfinite') { const value = pop(); if (!['f32','f64'].includes(value)) fail('ckfinite requires a floating point value.'); push(value); }
       else if (op === 'sizeof') { const value = kind(typeName(operand), descriptor, instruction); if (!numericKinds.has(value)) report('WASM_SIZEOF_TYPE', 'sizeof is supported only for primitive numeric types.', descriptor, instruction); push('i32'); }
       else report('WASM_UNSUPPORTED_OPCODE', `Opcode '${op}' is not implemented by the native WebAssembly backend.`, descriptor, instruction);
@@ -314,8 +362,18 @@ export function analyzeWasmAssembly(model, options = {}) {
       for (const next of nextOffsets) {
         const existing = descriptor.stackBefore.get(next);
         if (!existing) { descriptor.stackBefore.set(next,[...stack]); work.push(next); }
-        else if (existing.length !== stack.length || existing.some((value,i) => value !== stack[i])) report('WASM_STACK_MERGE', `Incompatible evaluation stack at branch target ${next}: [${existing.join(', ')}] versus [${stack.join(', ')}].`, descriptor, instruction);
+        else if (existing.length !== stack.length || existing.some((value,i) => value !== stack[i] && !(floatKind(value) && floatKind(stack[i])))) report('WASM_STACK_MERGE', `Incompatible evaluation stack at branch target ${next}: [${existing.join(', ')}] versus [${stack.join(', ')}].`, descriptor, instruction);
+        else { const merged = existing.map((value,i) => value !== stack[i] ? 'f64' : value); if (merged.some((value,i) => value !== existing[i])) { descriptor.stackBefore.set(next,merged); work.push(next); } }
       }
+    }
+    for (const instruction of instructions) {
+      if (!instruction.after) continue;
+      const conversions = new Map();
+      for (const successor of successors.get(instruction.offset) ?? []) {
+        const expected = descriptor.stackBefore.get(successor);
+        if (expected) expected.forEach((to,slot) => { const from = instruction.after[slot]; if (from === 'f32' && to === 'f64') conversions.set(slot,{slot,from,to}); });
+      }
+      instruction.edgeCoercions = [...conversions.values()];
     }
     let block;
     for (const instruction of instructions) {

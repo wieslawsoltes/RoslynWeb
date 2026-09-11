@@ -39,6 +39,8 @@ jobs:
           DOTNET=dotnet node tests/il-collections-verify-native.mjs
           DOTNET=dotnet node tests/projects-v4-verify-native.mjs
           DOTNET=dotnet node tests/wasm-native-verify-native.mjs
+          DOTNET=dotnet node tests/compiler-v6-verify-native.mjs
+          DOTNET=dotnet node tests/standard-values-verify-native.mjs
       - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
         run: bash scripts/prepare-desktop-fixtures.sh --check
       - name: JavaScript and project tests

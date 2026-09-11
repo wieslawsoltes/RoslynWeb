@@ -53,14 +53,16 @@ for (const [index, item] of baseline.cases.entries()) {
 }
 
 for (const item of baseline.unsupportedCases) {
-  test(`real CLR fixture ${item.method} is rejected explicitly before unsupported Wasm execution`, () => {
-    assert.equal(decodeNativeValue(item.nativeResult), 42);
-    assert.throws(() => compileWasm(model, {exports: [{type: item.type, method: item.method}]}), error => {
-      assert.equal(error.code, 'WASM_UNSUPPORTED');
-      const expectedCode = item.method === 'ExceptionFilter' ? 'WASM_EXCEPTION_REGIONS' : 'WASM_UNSUPPORTED_TYPE';
-      assert.ok(error.diagnostics.some(diagnostic => diagnostic.severity === 'error' && diagnostic.code === expectedCode));
-      return true;
-    });
+  if(!['ExceptionFilter','DecimalValue'].includes(item.method)){
+    test(`real CLR ${item.method} fixture is rejected before unsupported native storage`,()=>{
+      assert.throws(()=>compileWasm(model,{exports:[{type:item.type,method:item.method}]}),error=>error.code==='WASM_UNSUPPORTED'&&error.diagnostics.some(d=>d.code==='WASM_UNSUPPORTED_TYPE'));
+    });continue;
+  }
+
+  test(`formerly unsupported genuine C# ${item.method} executes direct native Wasm`,async()=>{
+    const artifact=compileWasm(model,{exports:[{type:item.type,method:item.method}]});
+    const program=await loadWasm(artifact.bytes);
+    assert.equal(program.invoke(`${item.type}::${item.method}`),decodeNativeValue(item.nativeResult));program.dispose();
   });
 }
 

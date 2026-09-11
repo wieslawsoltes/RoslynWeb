@@ -36,6 +36,15 @@ public static class IlInspector
                 isByRefLike = type.GetCustomAttributes().Any(h => CustomAttributeTypeName(reader, provider, h) == "System.Runtime.CompilerServices.IsByRefLikeAttribute"),
                 genericParameters = type.GetGenericParameters().Select(p => reader.GetString(reader.GetGenericParameter(p).Name)).ToArray(),
                 interfaces = type.GetInterfaceImplementations().Select(i => provider.GetTypeName(reader, reader.GetInterfaceImplementation(i).Interface)).ToArray(),
+                methodOverrides = type.GetMethodImplementations().Select(h =>
+                {
+                    var implementation = reader.GetMethodImplementation(h);
+                    return new
+                    {
+                        declaration = DescribeToken(pe, reader, provider, MetadataTokens.GetToken(implementation.MethodDeclaration)),
+                        body = DescribeToken(pe, reader, provider, MetadataTokens.GetToken(implementation.MethodBody))
+                    };
+                }).ToArray(),
                 fields = type.GetFields().Select(fieldHandle => DescribeField(pe, reader, provider, fieldHandle)).ToArray(),
                 properties = type.GetProperties().Select(propertyHandle => DescribeProperty(pe, reader, provider, propertyHandle, typeName)).ToArray(),
                 methods = type.GetMethods().Select(methodHandle => DescribeMethod(pe, reader, provider, methodHandle)).ToArray()
