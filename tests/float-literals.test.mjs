@@ -12,7 +12,10 @@ test('floating literal regression uses the same real PE for native execution and
   const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
   assert.equal(hash(Buffer.from(fixture.peBase64,'base64')),fixture.assemblySha256);
   assert.equal(hash(await readFile(new URL('./float-literals-fixture.cs',import.meta.url))),fixture.sourceSha256);
-  assert.equal(fixture.sdk,'10.0.100');assert.equal(fixture.runtime,'10.0.0');
+  assert.equal(fixture.sdk,'10.0.100');
+  // The pinned SDK can execute on a newer installed .NET 10 servicing runtime.
+  // The fixture records the actual native oracle version; compare every result.
+  assert.match(fixture.runtime,/^10\.0\.\d+$/);
   const methods=fixture.model.types.flatMap(type=>type.methods);
   for(const item of fixture.cases){
     const method=methods.find(method=>method.name===item.method);
