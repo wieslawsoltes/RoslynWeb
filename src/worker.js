@@ -1,7 +1,9 @@
 import { bootManaged } from './host.js';
 let host;
 let queue = Promise.resolve();
-self.onmessage = ({ data }) => {
+// Keep Worker.onmessage unset: .NET uses it to distinguish an application
+// sidecar from one of its own pthread workers before resolving startup promises.
+const receive = ({ data }) => {
   queue = queue.then(async () => {
     const { id, method, args } = data;
     try {
@@ -20,3 +22,5 @@ self.onmessage = ({ data }) => {
     }
   });
 };
+
+self.addEventListener('message', receive);
