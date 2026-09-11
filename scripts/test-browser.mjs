@@ -7,7 +7,7 @@ import { readFile, stat, mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { resolve, extname, sep } from 'node:path';
 
-const root = fileURLToPath(new URL('../', import.meta.url));
+const root = resolve(fileURLToPath(new URL('../', import.meta.url)));
 const engine = process.env.BROWSER_ENGINE || 'chromium';
 if (!['chromium', 'firefox', 'webkit'].includes(engine)) throw new Error(`Unknown BROWSER_ENGINE: ${engine}`);
 const { [engine]: browserType } = await import('playwright');
@@ -150,7 +150,8 @@ try {
   if (!external) {
     const harness = await pageFor('browser-suite');
     await test('Direct browser runtime, Worker protocol, package decompression and timeout suite', async () => {
-      await harness.goto(new URL('tests/browser.html', baseUrl).href, { waitUntil: 'domcontentloaded', timeout });
+      const response = await harness.goto(new URL('tests/browser.html', baseUrl).href, { waitUntil: 'domcontentloaded', timeout });
+      assert.equal(response.status(), 200, 'Browser test harness must be served successfully');
       await waitFor(harness, () => document.documentElement.dataset.complete === 'true' || document.querySelector('#status')?.textContent === 'BOOT FAILED', 'Browser API suite did not complete');
       report.browserSuite = await harness.locator('body').innerText();
       console.log(report.browserSuite);
