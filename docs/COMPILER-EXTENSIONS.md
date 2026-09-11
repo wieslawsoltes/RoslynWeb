@@ -1,6 +1,8 @@
 # Compiler extensions and persistent CLR objects
 
-RoslynWeb 0.3 runs real Roslyn `ISourceGenerator`, `IIncrementalGenerator`, and `DiagnosticAnalyzer` implementations inside the .NET WebAssembly runtime. Their output joins the actual C# compilation: generated source is parsed and emitted, analyzer diagnostics are reported, and unsuppressed analyzer errors make compilation fail. These APIs are available through the normal JavaScript worker interface.
+RoslynWeb runs real Roslyn `ISourceGenerator`, `IIncrementalGenerator`, and `DiagnosticAnalyzer` implementations inside the .NET WebAssembly runtime. Their output joins the actual C# compilation: generated source is parsed and emitted, analyzer diagnostics are reported, and unsuppressed analyzer errors make compilation fail. These APIs are available through the normal JavaScript worker interface.
+
+`compileToWasm` and `compileToJavaScript` accept the same source files, references, resources, generator/analyzer selection and C# options as `compile`. Extensions always run in the real Roslyn/.NET compilation phase. The generated application's reachable IL is then checked against the selected generated backend; extension compatibility does not imply application compatibility. Generator/analyzer work and fresh PE emission still run on compilation-cache hits. Use the nested `wasm` or `javascript` option for backend-specific optimization; native export selection belongs under `wasm`, and generated JavaScript module paths belong under `javascript`. See [native Wasm](NATIVE-WASM.md), [JavaScript compilation](JAVASCRIPT-COMPILER.md), and [cache semantics](COMPILATION-PERFORMANCE.md).
 
 ## Compile and register an extension
 

@@ -216,6 +216,7 @@ public static class IlInspector
             if (code == 0xFE) code = (ushort)(0xFE00 | bytes[position++]);
             if (!Opcodes.TryGetValue(code, out var instruction)) throw new BadImageFormatException($"Unknown IL opcode 0x{code:X4} at {offset}.");
             object? operand = null;
+            string? operandBits = null;
             switch (instruction.OperandType)
             {
                 case OperandType.InlineNone: break;
@@ -223,9 +224,14 @@ public static class IlInspector
                 case OperandType.InlineI: operand = I32(); break;
                 case OperandType.InlineI8:
                     operand = BinaryPrimitives.ReadInt64LittleEndian(bytes.AsSpan(position, 8)).ToString(System.Globalization.CultureInfo.InvariantCulture); position += 8; break;
-                case OperandType.ShortInlineR: operand = BitConverter.Int32BitsToSingle(I32()); break;
+                case OperandType.ShortInlineR:
+                    var singleBits = I32();
+                    operand = BitConverter.Int32BitsToSingle(singleBits);
+                    operandBits = unchecked((uint)singleBits).ToString("x8", System.Globalization.CultureInfo.InvariantCulture); break;
                 case OperandType.InlineR:
-                    operand = BitConverter.Int64BitsToDouble(BinaryPrimitives.ReadInt64LittleEndian(bytes.AsSpan(position, 8))); position += 8; break;
+                    var doubleBits = BinaryPrimitives.ReadInt64LittleEndian(bytes.AsSpan(position, 8)); position += 8;
+                    operand = BitConverter.Int64BitsToDouble(doubleBits);
+                    operandBits = unchecked((ulong)doubleBits).ToString("x16", System.Globalization.CultureInfo.InvariantCulture); break;
                 case OperandType.ShortInlineVar: operand = (int)bytes[position++]; break;
                 case OperandType.InlineVar: operand = (int)U16(); break;
                 case OperandType.ShortInlineBrTarget:
@@ -249,7 +255,10 @@ public static class IlInspector
                     operand = DescribeToken(pe, reader, provider, I32()); break;
                 default: throw new BadImageFormatException($"Unsupported operand representation {instruction.OperandType}.");
             }
-            result.Add(new { offset, opcode = instruction.Name, operand, size = position - offset });
+            // JSON named floating values cannot retain a NaN sign or payload.
+            // Keep the exact PE bits beside floating operands for either compiler.
+            if (operandBits is null) result.Add(new { offset, opcode = instruction.Name, operand, size = position - offset });
+            else result.Add(new { offset, opcode = instruction.Name, operand, operandBits, size = position - offset });
         }
         return result;
     }

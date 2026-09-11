@@ -35,6 +35,50 @@ public static class Program
         finally { Console.WriteLine("Native finally handler executed"); }
     }
 }` },
+  { name: 'Decimal, nullable and tuples', preferredBackend:'native-wasm', description:'Exact decimal arithmetic, nullable values and tuple copies work in both compilers. Switch between native WebAssembly and JavaScript to compare generated code and cached compilation.', source:`using System;
+using System.Globalization;
+
+public static class Program
+{
+    public static void Main()
+    {
+        decimal first = 0.1m, second = 0.2m;
+        Console.WriteLine("Exact decimal sum: " + (first + second).ToString(CultureInfo.InvariantCulture));
+        decimal wide = 79228162514264337593543950330m;
+        Console.WriteLine("96-bit decimal: " + (wide + 5m).ToString(CultureInfo.InvariantCulture));
+        Console.WriteLine("Round to even: " + decimal.Round(2.345m, 2, MidpointRounding.ToEven).ToString(CultureInfo.InvariantCulture));
+        decimal? missing = null;
+        Console.WriteLine("Nullable fallback: " + missing.GetValueOrDefault(42m).ToString(CultureInfo.InvariantCulture));
+        var original = (3, "value", 0.1m);
+        var copy = original;
+        copy.Item1 = 99;
+        Console.WriteLine("Original tuple: " + original.ToString());
+        Console.WriteLine("Copied tuple: " + copy.ToString());
+    }
+}` },
+  { name: 'Exception filters → WebAssembly', preferredBackend:'native-wasm', description:'CLR exception filters search callers before finally blocks unwind. The filter and handler bodies are compiled into WebAssembly. The same program also runs through generated JavaScript.', source:`using System;
+
+public static class Program
+{
+    private static bool Accept(Exception error)
+    {
+        Console.WriteLine("Filter searched before finally");
+        return error is InvalidOperationException;
+    }
+    private static void ThrowFromCallee()
+    {
+        try { throw new InvalidOperationException("Example failure"); }
+        finally { Console.WriteLine("Callee finally executed"); }
+    }
+    public static void Main()
+    {
+        try { ThrowFromCallee(); }
+        catch (Exception error) when (Accept(error))
+        {
+            Console.WriteLine("Filtered handler: 42");
+        }
+    }
+}` },
   { name: 'Algorithms → JavaScript', preferredBackend:'javascript', description: 'Recursion, loops, arrays, integer arithmetic and method calls. Try the JavaScript backend.', source: `using System;
 
 public static class Program

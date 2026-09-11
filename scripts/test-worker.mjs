@@ -67,7 +67,7 @@ try {
     assert.equal(result.backend, 'javascript');
     assert.equal(result.stdout.trim(), '42');
     assert.equal(result.exitCode, 7);
-    assert.ok(NodeBrowserWorker.instances[0].sent.some(entry => entry.method === '$runJS'));
+    assert.ok(NodeBrowserWorker.instances[0].sent.some(entry => entry.method === '$javascript'));
     return { backend: result.backend, stdout: result.stdout, exitCode: result.exitCode };
   });
   await check('Asynchronous C# Main yields and resumes without blocking the worker', async () => {

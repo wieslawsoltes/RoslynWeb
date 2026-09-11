@@ -1,0 +1,527 @@
+{
+  "measuredAt": "2026-09-11T15:29:19.107Z",
+  "environment": {
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "platform": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "logicalProcessors": 9
+  },
+  "methodology": "The bundled .NET WebAssembly Roslyn compiles the same genuine C# into one PE. Both JavaScript and native Wasm consume its unchanged inspector model. Uncached IL emission, JS function construction, WebAssembly engine compilation, instantiation, public compilation caches, generated code sizes and execution are reported separately. Execution samples alternate configurations after warm-up and validate every aggregate result. Timings are wall-clock measurements in this environment; same-byte WebAssembly.compile may benefit from V8 internal caching. The initial runtime startup includes filesystem loading under Node, not browser network transfer.",
+  "source": "public static class CompilerBenchmark {\n  public static int Polynomial(int count) { int sum = 0; for (int i = 0; i < count; i++) sum = unchecked(sum + i * (i + 1)); return sum; }\n  public static long WidePolynomial(int count) { long sum = 0; for (int i = 0; i < count; i++) sum += (long)i * (i + 1); return sum; }\n  public static int Fibonacci(int n) => n < 2 ? n : Fibonacci(n - 1) + Fibonacci(n - 2);\n}",
+  "sourceSha256": "9107ade37a6c88192f1c2ceb1a0c7ff2f3b33e337c6f19c1f228f14ff516aa1b",
+  "phases": {
+    "roslynRuntimeStartup": {
+      "samples": 1,
+      "firstMs": 417.67349900000005,
+      "minimumMs": 417.67349900000005,
+      "medianMs": 417.67349900000005,
+      "maximumMs": 417.67349900000005,
+      "totalMs": 417.67349900000005
+    },
+    "firstCSharpToPE": {
+      "samples": 1,
+      "firstMs": 1094.602245,
+      "minimumMs": 1094.602245,
+      "medianMs": 1094.602245,
+      "maximumMs": 1094.602245,
+      "totalMs": 1094.602245
+    },
+    "inspectPE": {
+      "samples": 5,
+      "firstMs": 127.59466199999997,
+      "minimumMs": 3.697454000000107,
+      "medianMs": 4.167629000000034,
+      "maximumMs": 127.59466199999997,
+      "totalMs": 145.05340700000033
+    },
+    "javascript.reference.emitESModule": {
+      "samples": 7,
+      "firstMs": 3.598549000000048,
+      "minimumMs": 0.3390400000000682,
+      "medianMs": 0.42727100000001883,
+      "maximumMs": 3.598549000000048,
+      "totalMs": 6.026530999999977
+    },
+    "javascript.reference.emitAndConstructFunctions": {
+      "samples": 7,
+      "firstMs": 0.6550560000000587,
+      "minimumMs": 0.17153300000018135,
+      "medianMs": 0.25394500000015796,
+      "maximumMs": 0.6550560000000587,
+      "totalMs": 2.319071000000349
+    },
+    "javascript.reference.instantiateFreshRuntime": {
+      "samples": 7,
+      "firstMs": 0.26765500000010434,
+      "minimumMs": 0.009033000000044922,
+      "medianMs": 0.018045999999912965,
+      "maximumMs": 0.26765500000010434,
+      "totalMs": 0.38500599999997576
+    },
+    "wasm.reference.emitBinary": {
+      "samples": 7,
+      "firstMs": 11.107385999999906,
+      "minimumMs": 0.7391500000001088,
+      "medianMs": 1.4703790000000936,
+      "maximumMs": 11.107385999999906,
+      "totalMs": 18.99705499999982
+    },
+    "wasm.reference.engineCompileSameBytes": {
+      "samples": 7,
+      "firstMs": 4.012019000000009,
+      "minimumMs": 0.059306999999989785,
+      "medianMs": 0.07576200000016797,
+      "maximumMs": 4.012019000000009,
+      "totalMs": 4.505776000000196
+    },
+    "wasm.reference.instantiateModule": {
+      "samples": 7,
+      "firstMs": 1.0866029999999682,
+      "minimumMs": 0.10540500000001884,
+      "medianMs": 0.1318340000000262,
+      "maximumMs": 1.0866029999999682,
+      "totalMs": 1.8902370000002975
+    },
+    "javascript.blocks.emitESModule": {
+      "samples": 7,
+      "firstMs": 1.4831369999999424,
+      "minimumMs": 0.2282070000001113,
+      "medianMs": 0.2872740000000249,
+      "maximumMs": 1.4831369999999424,
+      "totalMs": 3.5649000000000797
+    },
+    "javascript.blocks.emitAndConstructFunctions": {
+      "samples": 7,
+      "firstMs": 0.31772899999987203,
+      "minimumMs": 0.1101730000000316,
+      "medianMs": 0.15933500000005552,
+      "maximumMs": 0.33453400000007605,
+      "totalMs": 1.361549999999852
+    },
+    "javascript.blocks.instantiateFreshRuntime": {
+      "samples": 7,
+      "firstMs": 0.029012999999849853,
+      "minimumMs": 0.007000000000061846,
+      "medianMs": 0.012107999999898311,
+      "maximumMs": 0.031416999999919426,
+      "totalMs": 0.1263079999994261
+    },
+    "javascript.optimized.emitESModule": {
+      "samples": 7,
+      "firstMs": 1.7589950000001409,
+      "minimumMs": 0.27800000000002,
+      "medianMs": 0.48187099999995553,
+      "maximumMs": 1.9878919999998743,
+      "totalMs": 6.176973000000089
+    },
+    "javascript.optimized.emitAndConstructFunctions": {
+      "samples": 7,
+      "firstMs": 0.4131400000001122,
+      "minimumMs": 0.17171300000018164,
+      "medianMs": 0.2892060000001493,
+      "maximumMs": 0.42579799999998613,
+      "totalMs": 2.0590380000005553
+    },
+    "javascript.optimized.instantiateFreshRuntime": {
+      "samples": 7,
+      "firstMs": 0.023605000000088694,
+      "minimumMs": 0.004226000000016938,
+      "medianMs": 0.004616999999825566,
+      "maximumMs": 0.026088999999956286,
+      "totalMs": 0.0752629999999499
+    },
+    "wasm.optimized.emitBinary": {
+      "samples": 7,
+      "firstMs": 1.8066550000000916,
+      "minimumMs": 0.8800779999999122,
+      "medianMs": 1.0159380000000056,
+      "maximumMs": 1.8066550000000916,
+      "totalMs": 8.137463000000253
+    },
+    "wasm.optimized.engineCompileSameBytes": {
+      "samples": 7,
+      "firstMs": 0.19755099999997583,
+      "minimumMs": 0.042863000000124885,
+      "medianMs": 0.062442000000146436,
+      "maximumMs": 0.19755099999997583,
+      "totalMs": 0.6154880000003686
+    },
+    "wasm.optimized.instantiateModule": {
+      "samples": 7,
+      "firstMs": 0.19176200000015342,
+      "minimumMs": 0.0712149999999383,
+      "medianMs": 0.12433400000008987,
+      "maximumMs": 0.19176200000015342,
+      "totalMs": 0.9113350000002356
+    },
+    "javascript.reference.execute.Polynomial": {
+      "samples": 7,
+      "firstMs": 146.9925569999998,
+      "minimumMs": 137.31775600000037,
+      "medianMs": 146.11453800000027,
+      "maximumMs": 149.61913100000038,
+      "totalMs": 1009.9226410000008
+    },
+    "wasm.reference.execute.Polynomial": {
+      "samples": 7,
+      "firstMs": 1.0308509999999842,
+      "minimumMs": 0.42496799999980794,
+      "medianMs": 0.4462079999998423,
+      "maximumMs": 1.0308509999999842,
+      "totalMs": 3.9034889999998086
+    },
+    "javascript.blocks.execute.Polynomial": {
+      "samples": 7,
+      "firstMs": 144.39270199999964,
+      "minimumMs": 128.06611699999985,
+      "medianMs": 138.48492699999997,
+      "maximumMs": 151.80039399999987,
+      "totalMs": 979.2538519999989
+    },
+    "javascript.optimized.execute.Polynomial": {
+      "samples": 7,
+      "firstMs": 17.98528299999998,
+      "minimumMs": 16.47047799999973,
+      "medianMs": 17.093336999999792,
+      "maximumMs": 25.47680799999989,
+      "totalMs": 128.6092449999992
+    },
+    "wasm.optimized.execute.Polynomial": {
+      "samples": 7,
+      "firstMs": 0.8426429999999527,
+      "minimumMs": 0.25877200000013545,
+      "medianMs": 0.2727319999999054,
+      "maximumMs": 0.8426429999999527,
+      "totalMs": 2.627977000000101
+    },
+    "javascript.reference.execute.WidePolynomial": {
+      "samples": 7,
+      "firstMs": 248.62333200000012,
+      "minimumMs": 233.13728699999956,
+      "medianMs": 240.00702100000035,
+      "maximumMs": 281.6516550000015,
+      "totalMs": 1714.7362980000016
+    },
+    "wasm.reference.execute.WidePolynomial": {
+      "samples": 7,
+      "firstMs": 0.8767849999994723,
+      "minimumMs": 0.4293440000001283,
+      "medianMs": 0.4863980000000083,
+      "maximumMs": 0.8767849999994723,
+      "totalMs": 3.8717470000001413
+    },
+    "javascript.blocks.execute.WidePolynomial": {
+      "samples": 7,
+      "firstMs": 231.41088499999933,
+      "minimumMs": 221.41081499999927,
+      "medianMs": 231.41088499999933,
+      "maximumMs": 237.82262199999968,
+      "totalMs": 1601.345105999998
+    },
+    "javascript.optimized.execute.WidePolynomial": {
+      "samples": 7,
+      "firstMs": 236.41121999999996,
+      "minimumMs": 227.00686599999972,
+      "medianMs": 236.41121999999996,
+      "maximumMs": 275.82667500000025,
+      "totalMs": 1692.2007840000006
+    },
+    "wasm.optimized.execute.WidePolynomial": {
+      "samples": 7,
+      "firstMs": 0.8205519999992248,
+      "minimumMs": 0.27263200000015786,
+      "medianMs": 0.42082099999970524,
+      "maximumMs": 0.8205519999992248,
+      "totalMs": 3.2416739999980564
+    },
+    "javascript.reference.execute.Fibonacci": {
+      "samples": 7,
+      "firstMs": 367.02635400000145,
+      "minimumMs": 292.9926259999993,
+      "medianMs": 317.1192680000004,
+      "maximumMs": 367.02635400000145,
+      "totalMs": 2224.0292769999996
+    },
+    "wasm.reference.execute.Fibonacci": {
+      "samples": 7,
+      "firstMs": 0.7925199999990582,
+      "minimumMs": 0.47436999999990803,
+      "medianMs": 0.49629300000015064,
+      "maximumMs": 0.8806700000004639,
+      "totalMs": 4.169955999999729
+    },
+    "javascript.blocks.execute.Fibonacci": {
+      "samples": 7,
+      "firstMs": 384.76848400000017,
+      "minimumMs": 297.7517029999999,
+      "medianMs": 321.90390599999955,
+      "maximumMs": 391.924629000001,
+      "totalMs": 2343.277833
+    },
+    "javascript.optimized.execute.Fibonacci": {
+      "samples": 7,
+      "firstMs": 350.65434900000037,
+      "minimumMs": 290.3181889999996,
+      "medianMs": 315.3062769999997,
+      "maximumMs": 361.414589,
+      "totalMs": 2253.2962449999977
+    },
+    "wasm.optimized.execute.Fibonacci": {
+      "samples": 7,
+      "firstMs": 1.3468690000008792,
+      "minimumMs": 0.46988299999975425,
+      "medianMs": 0.49268800000027113,
+      "maximumMs": 1.3468690000008792,
+      "totalMs": 4.275503000002573
+    },
+    "cachedRoslynCSharpToPE": {
+      "samples": 7,
+      "firstMs": 30.025084999999308,
+      "minimumMs": 24.41038500000286,
+      "medianMs": 28.716051999999763,
+      "maximumMs": 30.025084999999308,
+      "totalMs": 195.0861060000043
+    },
+    "public.javascript.firstPipeline": {
+      "samples": 1,
+      "firstMs": 40.76080799999909,
+      "minimumMs": 40.76080799999909,
+      "medianMs": 40.76080799999909,
+      "maximumMs": 40.76080799999909,
+      "totalMs": 40.76080799999909
+    },
+    "public.javascript.cachedPipeline": {
+      "samples": 7,
+      "firstMs": 27.412107000000105,
+      "minimumMs": 23.28050699999949,
+      "medianMs": 27.34938399999737,
+      "maximumMs": 39.99008999999933,
+      "totalMs": 203.84677899999224
+    },
+    "public.wasm.firstPipeline": {
+      "samples": 1,
+      "firstMs": 39.30707099999927,
+      "minimumMs": 39.30707099999927,
+      "medianMs": 39.30707099999927,
+      "maximumMs": 39.30707099999927,
+      "totalMs": 39.30707099999927
+    },
+    "public.wasm.cachedPipeline": {
+      "samples": 7,
+      "firstMs": 23.178256000002875,
+      "minimumMs": 21.09250500000053,
+      "medianMs": 27.229968999999983,
+      "maximumMs": 37.014125999998214,
+      "totalMs": 194.382370000003
+    }
+  },
+  "backends": {
+    "javascript.reference": {
+      "optimization": {
+        "enabled": false,
+        "mode": "reference",
+        "methods": 3,
+        "numericMethods": 0,
+        "basicBlocks": 62,
+        "instructions": 62,
+        "generatedSourceBytes": 12882
+      },
+      "esModuleUtf8Bytes": 13681,
+      "generatedMethodUtf8Bytes": 6441
+    },
+    "wasm.reference": {
+      "optimization": {
+        "enabled": false,
+        "structuredMethods": 0,
+        "dispatcherMethods": 3,
+        "nativeLoops": 0,
+        "directBranches": 0,
+        "eliminatedDispatches": 0,
+        "localTeeRewrites": 0,
+        "intrinsicCalls": 0,
+        "functionBodyBytes": 666
+      },
+      "wasmBytes": 3746,
+      "nativeCodeSectionBytes": 673,
+      "moduleImports": []
+    },
+    "javascript.blocks": {
+      "optimization": {
+        "enabled": true,
+        "mode": "blocks",
+        "methods": 3,
+        "numericMethods": 0,
+        "basicBlocks": 11,
+        "instructions": 62,
+        "generatedSourceBytes": 10204
+      },
+      "esModuleUtf8Bytes": 12338,
+      "generatedMethodUtf8Bytes": 5102
+    },
+    "javascript.optimized": {
+      "optimization": {
+        "enabled": true,
+        "mode": "numeric",
+        "methods": 3,
+        "numericMethods": 1,
+        "basicBlocks": 11,
+        "instructions": 62,
+        "generatedSourceBytes": 15600
+      },
+      "esModuleUtf8Bytes": 15037,
+      "generatedMethodUtf8Bytes": 7800
+    },
+    "wasm.optimized": {
+      "optimization": {
+        "enabled": true,
+        "structuredMethods": 3,
+        "dispatcherMethods": 0,
+        "nativeLoops": 2,
+        "directBranches": 8,
+        "eliminatedDispatches": 10,
+        "localTeeRewrites": 17,
+        "intrinsicCalls": 0,
+        "functionBodyBytes": 553
+      },
+      "wasmBytes": 3633,
+      "nativeCodeSectionBytes": 560,
+      "moduleImports": []
+    },
+    "javascript.public": {
+      "firstTimings": {
+        "inspectionMs": 5.478950000000623,
+        "linkMs": 0.14956099999835715,
+        "javascriptMs": 0.8799900000012713,
+        "totalMs": 38.22896000000037,
+        "sourceMs": 0.40233400000215624,
+        "csharpMs": 30.63072000000102
+      },
+      "cachedTimings": {
+        "inspectionMs": 0.12348199999905773,
+        "linkMs": 0.011496999999508262,
+        "javascriptMs": 0.014121000000159256,
+        "totalMs": 37.94619099999909,
+        "sourceMs": 0.09507099999973434,
+        "csharpMs": 37.51901100000032
+      },
+      "cache": {
+        "emitHit": true
+      }
+    },
+    "wasm.public": {
+      "firstTimings": {
+        "analysisMs": 0.5253449999981967,
+        "emissionMs": 0.7198430000025837,
+        "totalMs": 37.41556800000035,
+        "inspectionMs": 4.10003499999948,
+        "linkMs": 0.025196999999025138,
+        "emitMs": 1.498061999998754,
+        "csharpMs": 31.50762399999803
+      },
+      "cachedTimings": {
+        "analysisMs": 0,
+        "emissionMs": 0,
+        "totalMs": 21.06541500000094,
+        "inspectionMs": 0.11936599999899045,
+        "linkMs": 0.03591299999970943,
+        "emitMs": 0.062051000000792556,
+        "csharpMs": 20.711262000000715
+      },
+      "cache": {
+        "emitHit": true
+      }
+    }
+  },
+  "managedRuntime": {
+    "bridgeVersion": "0.6.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 167,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "peBytes": 2560,
+  "firstRoslynPerformance": {
+    "parseMs": 51.7854,
+    "compilationMs": 46.1866,
+    "extensionsMs": 8.2899,
+    "emitMs": 871.9857,
+    "cache": {
+      "enabled": false,
+      "syntaxHits": 0,
+      "incrementalParses": 0,
+      "syntaxMisses": 1,
+      "compilationReused": false,
+      "retainedTrees": 0,
+      "retainedSourceBytes": 0,
+      "maxRetainedTrees": 64,
+      "maxRetainedSourceBytes": 16777216
+    }
+  },
+  "workloads": [
+    {
+      "method": "Polynomial",
+      "argument": 500,
+      "calls": 200,
+      "expected": "41666500",
+      "resultType": "System.Int32",
+      "managedReference": {
+        "success": true,
+        "result": 41666500,
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "",
+        "elapsedMs": 12.8008
+      }
+    },
+    {
+      "method": "WidePolynomial",
+      "argument": 500,
+      "calls": 200,
+      "expected": "41666500",
+      "resultType": "System.Int64",
+      "managedReference": {
+        "success": true,
+        "result": "41666500",
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "",
+        "elapsedMs": 0.5217
+      }
+    },
+    {
+      "method": "Fibonacci",
+      "argument": 12,
+      "calls": 200,
+      "expected": "144",
+      "resultType": "System.Int32",
+      "managedReference": {
+        "success": true,
+        "result": 144,
+        "exitCode": 0,
+        "stdout": "",
+        "stderr": "",
+        "elapsedMs": 0.6225
+      }
+    }
+  ],
+  "cachedRoslynPerformance": {
+    "parseMs": 0.0606,
+    "compilationMs": 0.2515,
+    "extensionsMs": 0.0741,
+    "emitMs": 22.6191,
+    "cache": {
+      "enabled": true,
+      "syntaxHits": 1,
+      "incrementalParses": 0,
+      "syntaxMisses": 0,
+      "compilationReused": true,
+      "retainedTrees": 1,
+      "retainedSourceBytes": 808,
+      "maxRetainedTrees": 64,
+      "maxRetainedSourceBytes": 16777216
+    }
+  },
+  "passed": true
+}

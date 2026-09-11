@@ -1,3 +1,4 @@
+import {floatNumberFromBits} from './float-bits.mjs';
 import { ILExecutionError, capabilities } from './capabilities.mjs';
 import { splitTypeArguments, genericDefinitionName, substituteType, substituteMetadata, matchesMethodReference } from './generics.mjs';
 import { invokeExtendedBuiltin } from './framework.mjs';
@@ -37,6 +38,13 @@ export const i4 = value => new Numeric('i4', Number(value) | 0);
 export const i8 = value => new Numeric('i8', BigInt.asIntN(64, BigInt(value)));
 export const r4 = value => new Numeric('r4', Math.fround(Number(value)));
 export const r8 = value => new Numeric('r8', Number(value));
+export function floatLiteral(kind, bits) {
+  const value = new Numeric(kind, floatNumberFromBits(kind,bits));
+  // JS promotes Single values to double and quiets signaling NaNs. Retain the
+  // original bits through non-arithmetic transfers and BitConverter intrinsics.
+  value.floatBits = BigInt.asUintN(kind==='r4'?32:64,bits);
+  return value;
+}
 const raw = value => value instanceof Numeric ? value.value : value;
 const truth = value => { value = raw(value); return value !== null && value !== undefined && value !== false && value !== 0 && value !== 0n; };
 const isRef = value => value && value.$byref === true;
@@ -131,6 +139,7 @@ export function binary(opcode, left, right) {
 
 export function unary(op, value) {
   if (!(value instanceof Numeric)) throw managedError('System.InvalidProgramException', 'Unary operand must be numeric.');
+  if (op === 'neg' && typeof value.floatBits === 'bigint') return floatLiteral(value.kind,value.floatBits ^ (1n << BigInt(value.kind==='r4'?31:63)));
   const result = op === 'neg' ? -value.value : ~value.value;
   return value.kind === 'i8' ? i8(result) : value.kind === 'r4' ? r4(result) : value.kind === 'r8' ? r8(result) : i4(result);
 }
@@ -169,8 +178,8 @@ export function convert(opcode, value) {
   const unsignedInput = opcode.endsWith('.un'), checked = opcode.includes('.ovf.');
   const suffix = opcode.replace(/^conv\.(ovf\.)?/, '').replace(/\.un$/, '');
   if (opcode === 'conv.r.un') { v = value.kind === 'i8' ? BigInt.asUintN(64, BigInt(v)) : Number(v) >>> 0; return r8(v); }
-  if (suffix === 'r4') return r4(v);
-  if (suffix === 'r8') return r8(v);
+  if (suffix === 'r4') return value instanceof Numeric && value.kind === 'r4' ? value : r4(v);
+  if (suffix === 'r8') return value instanceof Numeric && value.kind === 'r8' ? value : r8(v);
   if (unsignedInput && value instanceof Numeric && !value.kind.startsWith('r')) v = value.kind === 'i8' ? BigInt.asUintN(64, v) : v >>> 0;
   // conv.u8 widens an i4 evaluation-stack value by zero extension. Roslyn
   // emits it for uint -> ulong; signed int -> ulong first uses conv.i8.
@@ -306,7 +315,7 @@ export class ILRuntime {
     if (name === 'System.SByte' || name === 'sbyte') return convert('conv.i1', value);
     if (name === 'System.Int16' || name === 'short') return convert('conv.i2', value);
     if (['System.UInt16', 'System.Char', 'ushort', 'char'].includes(name)) return convert('conv.u2', value);
-    if (name === 'System.Single' || name === 'float') return r4(raw(value));
+    if (name === 'System.Single' || name === 'float') return value instanceof Numeric && value.kind === 'r4' ? value : r4(raw(value));
     return copyValue(value);
   }
 
@@ -1079,5 +1088,5 @@ const defaultInstructionTick = ILRuntime.prototype.tick;
 ILRuntime.prototype.hasDefaultInstructionTick = function () { return this.tick === defaultInstructionTick; };
 
 // Helpers are shared by generated methods and remain ordinary, importable JavaScript.
-Object.assign(ILRuntime.prototype, { i4, i8, r4, r8, raw, truth, binary, unary, compare, convert, copy: copyValue, nullCheck });
+Object.assign(ILRuntime.prototype, { i4, i8, r4, r8, floatLiteral, raw, truth, binary, unary, compare, convert, copy: copyValue, nullCheck });
 export function createRuntime(model, options = {}) { return new ILRuntime(model, options); }

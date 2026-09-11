@@ -1,17 +1,17 @@
 {
-  "validatedAt": "2026-09-11T14:23:30.794Z",
+  "validatedAt": "2026-09-11T15:31:14.511Z",
   "passed": true,
   "runtime": "Actual .NET WebAssembly running in Node worker_threads",
   "protocol": "Unmodified src/worker.js with scripts/node-worker.mjs browser-worker adapter",
   "browserEngineValidated": false,
-  "elapsedMilliseconds": 3521,
+  "elapsedMilliseconds": 3065,
   "checks": [
     {
       "name": "Default worker startup loads actual .NET WebAssembly and Roslyn",
       "passed": true,
-      "milliseconds": 413,
+      "milliseconds": 386,
       "evidence": {
-        "bridgeVersion": "0.5.0",
+        "bridgeVersion": "0.6.0",
         "roslynVersion": "5.0.0.0",
         "runtimeVersion": "10.0.0",
         "referenceCount": 167,
@@ -21,7 +21,7 @@
     {
       "name": "C# compilation returns PE and portable PDB through the worker",
       "passed": true,
-      "milliseconds": 1681,
+      "milliseconds": 1438,
       "evidence": {
         "peBytes": 2560,
         "pdbBytes": 10092
@@ -30,7 +30,7 @@
     {
       "name": "Emitted MSIL executes in the worker .NET WASM runtime",
       "passed": true,
-      "milliseconds": 90,
+      "milliseconds": 76,
       "evidence": {
         "backend": "wasm",
         "stdout": "42\n",
@@ -50,7 +50,7 @@
     {
       "name": "Asynchronous C# Main yields and resumes without blocking the worker",
       "passed": true,
-      "milliseconds": 439,
+      "milliseconds": 359,
       "evidence": {
         "stdout": "async-worker\n",
         "exitCode": 9
@@ -93,7 +93,7 @@
     {
       "name": "Official Newtonsoft.Json NuGet DLL compiles and executes in the worker",
       "passed": true,
-      "milliseconds": 528,
+      "milliseconds": 434,
       "evidence": {
         "package": "Newtonsoft.Json 13.0.3",
         "assembly": "lib/net6.0/Newtonsoft.Json.dll",
@@ -103,7 +103,7 @@
     {
       "name": "Managed execution exceptions retain their error type and message",
       "passed": true,
-      "milliseconds": 47,
+      "milliseconds": 44,
       "evidence": {
         "type": "System.InvalidOperationException",
         "message": "worker-failure",
@@ -113,7 +113,7 @@
     {
       "name": "Worker preserves Int64 arguments and results as BigInt",
       "passed": true,
-      "milliseconds": 76,
+      "milliseconds": 79,
       "evidence": {
         "value": "9007199254740993",
         "jsType": "bigint"
@@ -122,7 +122,7 @@
     {
       "name": "Timeout terminates actual runaway C# code in its worker",
       "passed": true,
-      "milliseconds": 151,
+      "milliseconds": 152,
       "evidence": {
         "requestedTimeoutMs": 100,
         "observedMilliseconds": 101,
@@ -155,7 +155,7 @@
         },
         {
           "id": 4,
-          "method": "$runJS"
+          "method": "$javascript"
         },
         {
           "id": 5,

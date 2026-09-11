@@ -6,9 +6,9 @@ import {compatibilityExamples,nativeTaskProject} from './compatibility-workflows
 const examples=[...baseExamples,...workflowExamples,...advancedExamples,...compatibilityExamples];
 const $ = id => document.getElementById(id);
 const source = $('source');
-let compiler, artifact, wasmArtifact, jsSource = '', busy = false, sourceVersion = 0, compiledVersion = -1;
+let compiler, artifact, wasmArtifact, javascriptArtifact, jsSource = '', busy = false, sourceVersion = 0, compiledVersion = -1;
 let initializationController, initializationVersion = 0, desktopHost, desktopCompatibility;
-window.lab = { get compiler() { return compiler; }, get artifact() { return artifact; }, get wasmArtifact() { return wasmArtifact; } };
+window.lab = { get compiler() { return compiler; }, get artifact() { return artifact; }, get wasmArtifact() { return wasmArtifact; }, get javascriptArtifact() { return javascriptArtifact; } };
 function log(message, append = true) { $('console').textContent = (append ? $('console').textContent : '') + message + '\n'; }
 function status(text) { $('status').textContent = text; }
 function controls() {
@@ -17,8 +17,14 @@ function controls() {
   $('stop').disabled = !ready; $('restore').disabled = !ready || busy; $('upload').disabled = !ready || busy;
   $('download-wasm').disabled = !wasmArtifact?.success || busy;
   $('download').disabled = !artifact?.success; $('download-js').disabled = !jsSource || !artifact?.success;
+  $('optimization').disabled = busy || $('backend').value === 'wasm';
+  $('optimization').querySelector('[value="blocks"]').disabled = $('backend').value === 'native-wasm';
 }
-function dirty() { sourceVersion++; $('dirty').hidden = false; artifact = null; wasmArtifact = null; jsSource = ''; controls(); }
+function dirty() { sourceVersion++; $('dirty').hidden = false; artifact = null; wasmArtifact = null; javascriptArtifact = null; jsSource = ''; controls(); }
+function optimizationOptions(backend = $('backend').value) {
+  const mode = $('optimization').value;
+  return {optimize: mode === 'reference' ? false : mode === 'blocks' && backend !== 'native-wasm' ? 'blocks' : true};
+}
 function lines() { $('line-numbers').textContent = Array.from({ length: source.value.split('\n').length }, (_, i) => i + 1).join('\n'); position(); }
 function position() { const prefix = source.value.slice(0, source.selectionStart).split('\n'); $('position').textContent = `Ln ${prefix.length}, Col ${prefix.at(-1).length + 1}`; }
 function tab(name) {
@@ -82,11 +88,12 @@ function operationContext() {
 async function compile(context) {
   const activeCompiler = context.compiler;
   const version = sourceVersion, text = source.value;
+  const backend = $('backend').value, optimization = optimizationOptions(backend);
   const started = performance.now(); status('Compiling'); diagnostics([]); log('Compiling Program.cs…', false);
   const example = examples[Number($('example').value)];
   const extensionOptions = await prepareExample(activeCompiler, example); context.check();
-  let compiled, nativeResult;
-  wasmArtifact = null;
+  let compiled, nativeResult, javascriptResult;
+  wasmArtifact = null; javascriptArtifact = null; jsSource = '';
   if (example?.kind === 'desktop-binary') {
     if (!desktopCompatibility) {
       desktopHost?.dispose(); desktopHost = null;
@@ -118,9 +125,12 @@ async function compile(context) {
   } else if (example?.kind === 'dynamic') {
     const fn = await activeCompiler.compileFunction({name:'Multiply',returnType:'long',parameters:[{name:'value',type:'long'},{name:'factor',type:'long'}],body:text}); context.check();
     compiled = fn.assembly || fn;
-  } else if ($('backend').value === 'native-wasm') {
-    nativeResult = await activeCompiler.compileToWasm(text,{assemblyName:'BrowserWasmProgram',nullable:'enable',includeInspection:true,...extensionOptions}); context.check();
+  } else if (backend === 'native-wasm') {
+    nativeResult = await activeCompiler.compileToWasm(text,{assemblyName:'BrowserWasmProgram',nullable:'enable',includeInspection:true,...extensionOptions,wasm:optimization}); context.check();
     compiled = nativeResult.assembly;
+  } else if (backend === 'javascript' && !['objects','desktop'].includes(example?.kind)) {
+    javascriptResult = await activeCompiler.compileToJavaScript(text,{assemblyName:'BrowserJavaScriptProgram',nullable:'enable',includeInspection:true,...extensionOptions,javascript:{...optimization,runtimeImport:'../src/il/runtime.mjs'}}); context.check();
+    compiled = javascriptResult.assembly;
   } else {
     compiled = await activeCompiler.compile(text, {optimization:'release',nullable:'enable',emitPdb:true,includeInspection:true,...extensionOptions,outputKind:['objects','desktop'].includes(example?.kind) ? 'library' : 'console'}); context.check();
   }
@@ -132,10 +142,14 @@ async function compile(context) {
   if (!compiled.success) { if (compiled.error) log(compiled.error.message); status('Compilation failed'); log('Compilation failed. Select a diagnostic to jump to the source.'); return false; }
   $('dirty').hidden = sourceVersion === version;
   log(`${compiled.originalReferenceFixture?'Loaded':'Emitted'} ${compiled.assemblyName}.dll · ${compiled.pe.length.toLocaleString()} bytes`);
+  if (compiled.performance) {
+    const p = compiled.performance, c = p.cache;
+    log(`Roslyn parse ${(p.parseMs || 0).toFixed(1)} ms · compilation ${(p.compilationMs || 0).toFixed(1)} ms · emit ${(p.emitMs || 0).toFixed(1)} ms${c?.compilationReused ? ' · compilation reused' : ''}${c?.syntaxHits ? ` · ${c.syntaxHits} syntax cache hits` : ''}`);
+  }
   const model = compiled.inspection || await activeCompiler.inspect(compiled); context.check();
   $('panel-il').textContent = ilText(model);
-  if ($('backend').value === 'native-wasm') {
-    const result = nativeResult || await activeCompiler.emitWasm(compiled); context.check();
+  if (backend === 'native-wasm') {
+    const result = nativeResult || await activeCompiler.emitWasm(compiled, optimization); context.check();
     if (!result.success) {
       diagnostics(result.diagnostics); log(result.error?.message || 'Native WebAssembly compilation failed.');
       $('panel-wasm').textContent = JSON.stringify(result.diagnostics || result.error, null, 2);
@@ -145,13 +159,18 @@ async function compile(context) {
     $('panel-js').textContent = 'Select MSIL → JavaScript and compile to generate JavaScript.';
   } else {
   try {
-    const result = await activeCompiler.emitJavaScript(compiled, {runtimeImport:'../src/il/runtime.mjs'}); context.check();
-    jsSource = result.source;
-    $('panel-js').textContent = jsSource;
+    const result = javascriptResult || await activeCompiler.emitJavaScript(compiled, {...optimization,runtimeImport:'../src/il/runtime.mjs'}); context.check();
+    if (!result.success) {
+      diagnostics(result.diagnostics); log(result.error?.message || 'JavaScript compilation failed.');
+      $('panel-js').textContent = JSON.stringify(result.diagnostics || result.error, null, 2);
+      status('JavaScript compilation failed'); controls(); return false;
+    }
+    showJavaScript(result);
   } catch (error) {
     context.check();
     jsSource = '';
     $('panel-js').textContent = 'This assembly needs capabilities outside the JavaScript backend. Use .NET WebAssembly to execute it.\n\n' + error.message + '\n\n' + (error.diagnostics ? JSON.stringify(error.diagnostics, null, 2) : '');
+    if (backend === 'javascript') { diagnostics(error.diagnostics); status('JavaScript compilation failed'); controls(); return false; }
   }
   }
   status('Compiled'); controls(); return true;
@@ -161,7 +180,13 @@ function showWasm(result) {
   $('panel-wasm').textContent = JSON.stringify({format:result.format,bytes:result.bytes.length,exports:result.exports,imports:result.imports,cache:result.cache,timings:result.timings},null,2);
   const t = result.timings;
   log(`Emitted ${result.bytes.length.toLocaleString()} bytes of native WebAssembly · ${result.exports.length} exports · ${result.imports.length} runtime imports`);
-  log(`C# + inspection ${(t.csharpMs || 0).toFixed(1)} ms · MSIL → Wasm ${t.emitMs.toFixed(1)} ms${result.cache.emitHit ? ' (cached)' : ''}`);
+  log(`C# ${(t.csharpMs || 0).toFixed(1)} ms · inspection ${(t.inspectionMs || 0).toFixed(1)} ms · MSIL → Wasm ${(t.emitMs || 0).toFixed(1)} ms${result.cache?.emitHit ? ' (cached)' : ''}`);
+}
+function showJavaScript(result) {
+  javascriptArtifact = result; jsSource = result.source; $('panel-js').textContent = jsSource;
+  const t = result.timings || {};
+  log(`Emitted ${new TextEncoder().encode(jsSource).length.toLocaleString()} bytes of JavaScript · C# ${(t.csharpMs || 0).toFixed(1)} ms · inspection ${(t.inspectionMs || 0).toFixed(1)} ms · MSIL → JavaScript ${(t.javascriptMs || 0).toFixed(1)} ms${result.cache?.emitHit ? ' (cached)' : ''}`);
+  if (result.optimization) log('JavaScript optimization: ' + JSON.stringify(result.optimization));
 }
 async function operation(action) {
   if (busy) return;
@@ -186,7 +211,7 @@ $('run').onclick = () => operation(async context => {
   const started = performance.now();
   let result;
   if (backend === 'native-wasm') {
-    if (!wasmArtifact) { const emitted = await activeCompiler.emitWasm(runningArtifact); context.check(); showWasm(emitted); }
+    if (!wasmArtifact) { const emitted = await activeCompiler.emitWasm(runningArtifact, optimizationOptions(backend)); context.check(); showWasm(emitted); }
     result = await activeCompiler.run(wasmArtifact,{backend,args,timeoutMs:30000}); context.check();
   } else if (example?.kind === 'objects') {
     const handle = await activeCompiler.createObject(runningArtifact.assemblyId, 'Counter', [10]); context.check();
@@ -208,18 +233,20 @@ $('run').onclick = () => operation(async context => {
     if (result.success) { await showDesktop(result.result, runningArtifact.assemblyId, context); context.check(); tab('host'); }
     result = {...result,backend:'wasm',stdout:'Browser controls connected to the managed DesktopDemo class.\n'};
   } else if (example?.kind === 'managed-files') {
-    result = await activeCompiler.run(runningArtifact, {backend,args,virtualFiles:{'input.txt':'Hello from JavaScript file input!'},captureVirtualFiles:true,timeoutMs:30000}); context.check();
+    result = await activeCompiler.run(backend === 'javascript' && javascriptArtifact ? javascriptArtifact : runningArtifact, {backend,args,javascript:optimizationOptions(backend),virtualFiles:{'input.txt':'Hello from JavaScript file input!'},captureVirtualFiles:true,timeoutMs:30000}); context.check();
     if(result.success) for(const [path,bytes] of Object.entries(result.virtualFiles||{})) log(`File ${path}: ${new TextDecoder().decode(bytes)}`);
-  } else { result = await activeCompiler.run(runningArtifact, {backend,args,timeoutMs:30000}); context.check(); }
+  } else { result = await activeCompiler.run(backend === 'javascript' && javascriptArtifact ? javascriptArtifact : runningArtifact, {backend,args,javascript:optimizationOptions(backend),timeoutMs:30000}); context.check(); }
   if (result.stdout) log(result.stdout.trimEnd());
   if (result.stderr) log(result.stderr.trimEnd());
   if (!result.success) { log(`${result.error?.type || 'Error'}: ${result.error?.message || JSON.stringify(result.error)}`); status('Execution failed'); }
   else { status('Finished'); log(`Process exited with code ${result.exitCode ?? 0} · ${result.backend}`); }
   if (result.fallback) log('Auto selected .NET WebAssembly after checking JavaScript compatibility.');
+  if (result.cache) log(`Compiled module cache: ${result.cache.moduleHit ? 'hit' : 'miss'}`);
+  if (backend === 'native-wasm' && result.timings) log(`WebAssembly compilation ${(result.timings.nativeCompilationMs || 0).toFixed(2)} ms · instantiation ${(result.timings.instantiationMs || 0).toFixed(2)} ms`);
   $('timing').textContent = `Execution ${(performance.now() - started).toFixed(0)} ms`;
 });
-$('restart').onclick = () => { busy = false; artifact = null; wasmArtifact = null; jsSource = ''; initialize(); };
-$('stop').onclick = () => { compiler?.dispose(); busy = false; artifact = null; wasmArtifact = null; jsSource = ''; controls(); log('Worker terminated. Starting a fresh compiler instance…'); initialize(); };
+$('restart').onclick = () => { busy = false; artifact = null; wasmArtifact = null; javascriptArtifact = null; jsSource = ''; initialize(); };
+$('stop').onclick = () => { compiler?.dispose(); busy = false; artifact = null; wasmArtifact = null; javascriptArtifact = null; jsSource = ''; controls(); log('Worker terminated. Starting a fresh compiler instance…'); initialize(); };
 $('clear').onclick = () => { log('', false); diagnostics([]); };
 function download(name, bytes, type = 'application/octet-stream') { const a = document.createElement('a'); const url = URL.createObjectURL(new Blob([bytes], { type })); a.href = url; a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
 $('download').onclick = () => download(artifact.assemblyName + '.dll', artifact.pe);
@@ -235,7 +262,7 @@ $('file').onchange = () => operation(async context => {
     if (/\.nupkg$/i.test(file.name)) { const p = await activeCompiler.importPackage(bytes); context.check(); recordPackage(`${p.id} ${p.version}`); for (const warning of p.warnings || []) log(String(warning)); if (p.dependencies?.length) log('This local package declares dependencies. Restore those packages separately before running.'); }
     else { await activeCompiler.addDll(file.name, bytes); context.check(); recordPackage(file.name); }
   }
-  artifact = null; wasmArtifact = null; jsSource = ''; status('References loaded'); $('file').value = '';
+  artifact = null; wasmArtifact = null; javascriptArtifact = null; jsSource = ''; status('References loaded'); $('file').value = '';
 });
 $('restore').onclick = () => operation(async context => {
   const id = $('package-id').value.trim(), version = $('package-version').value.trim();
@@ -244,11 +271,13 @@ $('restore').onclick = () => operation(async context => {
   const result = await context.compiler.restore([{ id, version: version.startsWith('[') || version.startsWith('(') ? version : `[${version}]` }], {signal:context.signal}); context.check();
   for (const p of result.packages) recordPackage(`${p.id} ${p.version}`);
   for (const warning of result.warnings || []) log(typeof warning === 'string' ? warning : JSON.stringify(warning));
-  artifact = null; wasmArtifact = null; jsSource = ''; status('Package restored'); log('Compile and run to use the restored package.');
+  artifact = null; wasmArtifact = null; javascriptArtifact = null; jsSource = ''; status('Package restored'); log('Compile and run to use the restored package.');
 });
 for (const [index, example] of examples.entries()) { const option = document.createElement('option'); option.value = index; option.textContent = example.name; $('example').append(option); }
-function choose() { const e = examples[Number($('example').value)]; source.value = e.source; $('backend').value=e.preferredBackend || 'wasm'; $('example-description').textContent = e.description; dirty(); lines(); tab('source'); if (e.name.includes('NuGet:')) { $('package-id').value = 'Newtonsoft.Json'; $('package-version').value = '13.0.3'; } }
+function choose() { const e = examples[Number($('example').value)]; source.value = e.source; $('backend').value=e.preferredBackend || 'wasm'; $('optimization').value='optimized'; $('example-description').textContent = e.description; dirty(); lines(); tab('source'); if (e.name.includes('NuGet:')) { $('package-id').value = 'Newtonsoft.Json'; $('package-version').value = '13.0.3'; } }
 $('example').onchange = choose;
+$('backend').onchange = () => { if ($('backend').value === 'native-wasm' && $('optimization').value === 'blocks') $('optimization').value = 'optimized'; dirty(); };
+$('optimization').onchange = dirty;
 source.oninput = () => { dirty(); lines(); try { localStorage.setItem('roslyn-browser-source', source.value); } catch {} };
 source.onscroll = () => { $('line-numbers').scrollTop = source.scrollTop; };
 source.onkeyup = position; source.onclick = position;

@@ -1,0 +1,928 @@
+{
+  "runtime": "10.0.0",
+  "cases": [
+    {
+      "method": "DoubleNaN",
+      "kind": "i64",
+      "value": "-2251799813685248",
+      "patchedBits": null
+    },
+    {
+      "method": "SingleNaN",
+      "kind": "i32",
+      "value": "-4194304",
+      "patchedBits": null
+    },
+    {
+      "method": "DoubleNegativeZero",
+      "kind": "i64",
+      "value": "-9223372036854775808",
+      "patchedBits": null
+    },
+    {
+      "method": "SingleNegativeZero",
+      "kind": "i32",
+      "value": "-2147483648",
+      "patchedBits": null
+    },
+    {
+      "method": "DoublePositiveInfinity",
+      "kind": "i64",
+      "value": "9218868437227405312",
+      "patchedBits": null
+    },
+    {
+      "method": "SingleNegativeInfinity",
+      "kind": "i32",
+      "value": "-8388608",
+      "patchedBits": null
+    },
+    {
+      "method": "DoublePayloadPositive",
+      "kind": "i64",
+      "value": "9221120237041090626",
+      "patchedBits": "7ff8000000000042"
+    },
+    {
+      "method": "DoublePayloadNegative",
+      "kind": "i64",
+      "value": "-2251799813610683",
+      "patchedBits": "fff8000000012345"
+    },
+    {
+      "method": "SinglePayloadPositive",
+      "kind": "i32",
+      "value": "2143289410",
+      "patchedBits": "7fc00042"
+    },
+    {
+      "method": "SinglePayloadNegative",
+      "kind": "i32",
+      "value": "-4119739",
+      "patchedBits": "ffc12345"
+    },
+    {
+      "method": "DoubleSignaling",
+      "kind": "i64",
+      "value": "9218868437227405378",
+      "patchedBits": "7ff0000000000042"
+    },
+    {
+      "method": "SingleSignaling",
+      "kind": "i32",
+      "value": "2143289410",
+      "patchedBits": "7f800042"
+    },
+    {
+      "method": "SingleArray",
+      "kind": "i32",
+      "value": "-4194304",
+      "patchedBits": null
+    }
+  ],
+  "model": {
+    "success": true,
+    "schemaVersion": 1,
+    "name": "FloatLiteralFixture",
+    "entryPoint": null,
+    "assemblyIdentity": "FloatLiteralFixture, Version=1.0.0.0, Culture=neutral",
+    "version": "1.0.0.0",
+    "culture": "",
+    "publicKeyToken": "null",
+    "moduleVersionId": "043121c8-ca0b-41b6-8bf2-4a914bc72cdd",
+    "references": [
+      {
+        "name": "System.Runtime",
+        "version": "10.0.0.0",
+        "culture": "",
+        "publicKeyToken": "b03f5f7f11d50a3a",
+        "assemblyIdentity": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+      }
+    ],
+    "valueTypes": [],
+    "types": [
+      {
+        "token": 33554433,
+        "name": "<Module>",
+        "attributes": "NotPublic",
+        "baseType": null,
+        "isValueType": false,
+        "isEnum": false,
+        "isByRefLike": false,
+        "genericParameters": [],
+        "interfaces": [],
+        "methodOverrides": [],
+        "fields": [],
+        "properties": [],
+        "methods": []
+      },
+      {
+        "token": 33554434,
+        "name": "FloatLiteralFixture",
+        "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+        "baseType": "System.Object",
+        "isValueType": false,
+        "isEnum": false,
+        "isByRefLike": false,
+        "genericParameters": [],
+        "interfaces": [],
+        "methodOverrides": [],
+        "fields": [],
+        "properties": [],
+        "methods": [
+          {
+            "token": 100663297,
+            "name": "DoubleNaN",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int64",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r8",
+                "operand": "NaN",
+                "operandBits": "fff8000000000000",
+                "size": 9
+              },
+              {
+                "offset": 9,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772172,
+                  "name": "DoubleToInt64Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int64",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Double"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 14,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663298,
+            "name": "SingleNaN",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int32",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r4",
+                "operand": "NaN",
+                "operandBits": "ffc00000",
+                "size": 5
+              },
+              {
+                "offset": 5,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772173,
+                  "name": "SingleToInt32Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int32",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Single"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 10,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663299,
+            "name": "DoubleNegativeZero",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int64",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r8",
+                "operand": 0,
+                "operandBits": "8000000000000000",
+                "size": 9
+              },
+              {
+                "offset": 9,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772172,
+                  "name": "DoubleToInt64Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int64",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Double"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 14,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663300,
+            "name": "SingleNegativeZero",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int32",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r4",
+                "operand": 0,
+                "operandBits": "80000000",
+                "size": 5
+              },
+              {
+                "offset": 5,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772173,
+                  "name": "SingleToInt32Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int32",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Single"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 10,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663301,
+            "name": "DoublePositiveInfinity",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int64",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r8",
+                "operand": "Infinity",
+                "operandBits": "7ff0000000000000",
+                "size": 9
+              },
+              {
+                "offset": 9,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772172,
+                  "name": "DoubleToInt64Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int64",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Double"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 14,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663302,
+            "name": "SingleNegativeInfinity",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int32",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r4",
+                "operand": "-Infinity",
+                "operandBits": "ff800000",
+                "size": 5
+              },
+              {
+                "offset": 5,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772173,
+                  "name": "SingleToInt32Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int32",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Single"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 10,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663303,
+            "name": "DoublePayloadPositive",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int64",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r8",
+                "operand": "NaN",
+                "operandBits": "7ff8000000000042",
+                "size": 9
+              },
+              {
+                "offset": 9,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772172,
+                  "name": "DoubleToInt64Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int64",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Double"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 14,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663304,
+            "name": "DoublePayloadNegative",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int64",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r8",
+                "operand": "NaN",
+                "operandBits": "fff8000000012345",
+                "size": 9
+              },
+              {
+                "offset": 9,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772172,
+                  "name": "DoubleToInt64Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int64",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Double"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 14,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663305,
+            "name": "SinglePayloadPositive",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int32",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r4",
+                "operand": "NaN",
+                "operandBits": "7fc00042",
+                "size": 5
+              },
+              {
+                "offset": 5,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772173,
+                  "name": "SingleToInt32Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int32",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Single"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 10,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663306,
+            "name": "SinglePayloadNegative",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int32",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r4",
+                "operand": "NaN",
+                "operandBits": "ffc12345",
+                "size": 5
+              },
+              {
+                "offset": 5,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772173,
+                  "name": "SingleToInt32Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int32",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Single"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 10,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663307,
+            "name": "DoubleSignaling",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int64",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r8",
+                "operand": "NaN",
+                "operandBits": "7ff0000000000042",
+                "size": 9
+              },
+              {
+                "offset": 9,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772172,
+                  "name": "DoubleToInt64Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int64",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Double"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 14,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663308,
+            "name": "SingleSignaling",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int32",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.r4",
+                "operand": "NaN",
+                "operandBits": "7f800042",
+                "size": 5
+              },
+              {
+                "offset": 5,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772173,
+                  "name": "SingleToInt32Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int32",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Single"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 10,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          },
+          {
+            "token": 100663309,
+            "name": "SingleArray",
+            "declaringType": "FloatLiteralFixture",
+            "isStatic": true,
+            "isAbstract": false,
+            "isPInvoke": false,
+            "isRuntime": false,
+            "isExternal": false,
+            "pinvoke": null,
+            "assemblyName": "FloatLiteralFixture",
+            "returnType": "System.Int32",
+            "parameters": [],
+            "locals": [],
+            "body": [
+              {
+                "offset": 0,
+                "opcode": "ldc.i4.1",
+                "operand": null,
+                "size": 1
+              },
+              {
+                "offset": 1,
+                "opcode": "newarr",
+                "operand": {
+                  "token": 16777231,
+                  "name": "System.Single"
+                },
+                "size": 5
+              },
+              {
+                "offset": 6,
+                "opcode": "dup",
+                "operand": null,
+                "size": 1
+              },
+              {
+                "offset": 7,
+                "opcode": "ldc.i4.0",
+                "operand": null,
+                "size": 1
+              },
+              {
+                "offset": 8,
+                "opcode": "ldc.r4",
+                "operand": "NaN",
+                "operandBits": "ffc00000",
+                "size": 5
+              },
+              {
+                "offset": 13,
+                "opcode": "stelem.r4",
+                "operand": null,
+                "size": 1
+              },
+              {
+                "offset": 14,
+                "opcode": "ldc.i4.0",
+                "operand": null,
+                "size": 1
+              },
+              {
+                "offset": 15,
+                "opcode": "ldelem.r4",
+                "operand": null,
+                "size": 1
+              },
+              {
+                "offset": 16,
+                "opcode": "call",
+                "operand": {
+                  "token": 167772173,
+                  "name": "SingleToInt32Bits",
+                  "declaringType": "System.BitConverter",
+                  "assemblyName": "System.Runtime",
+                  "genericParameterCount": 0,
+                  "returnType": "System.Int32",
+                  "parameters": [
+                    {
+                      "name": "arg0",
+                      "type": "System.Single"
+                    }
+                  ],
+                  "isStatic": true
+                },
+                "size": 5
+              },
+              {
+                "offset": 21,
+                "opcode": "ret",
+                "operand": null,
+                "size": 1
+              }
+            ],
+            "exceptionHandlers": [],
+            "maxStack": 8,
+            "initLocals": false,
+            "attributes": "Public, Static, HideBySig",
+            "implementationAttributes": "IL",
+            "genericParameters": [],
+            "decodeError": null
+          }
+        ]
+      }
+    ]
+  },
+  "sdk": "10.0.100",
+  "sourceSha256": "f1f77a883470e637a117e0ff3fd60a1559684c7b4d0bc8300ee59a87ba74a483",
+  "assemblySha256": "69d54503be8b7f875f8a1991c3c059fe318b53305ffdacf0e4048c8d774e9063",
+  "peBase64": "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b21wYXRpYmlsaXR5QXR0cmlidXRlAERvdWJsZVBheWxvYWROZWdhdGl2ZQBTaW5nbGVQYXlsb2FkTmVnYXRpdmUARG91YmxlUGF5bG9hZFBvc2l0aXZlAFNpbmdsZVBheWxvYWRQb3NpdGl2ZQBEb3VibGVTaWduYWxpbmcAU2luZ2xlU2lnbmFsaW5nAFN5c3RlbS5SdW50aW1lLlZlcnNpb25pbmcARmxvYXRMaXRlcmFsRml4dHVyZS5kbGwAU3lzdGVtAFN5c3RlbS5SZWZsZWN0aW9uAERvdWJsZU5lZ2F0aXZlWmVybwBTaW5nbGVOZWdhdGl2ZVplcm8AQml0Q29udmVydGVyAC5jdG9yAFN5c3RlbS5EaWFnbm9zdGljcwBTeXN0ZW0uUnVudGltZS5Db21waWxlclNlcnZpY2VzAERlYnVnZ2luZ01vZGVzAFNpbmdsZVRvSW50MzJCaXRzAERvdWJsZVRvSW50NjRCaXRzAE9iamVjdABTaW5nbGVBcnJheQBTaW5nbGVOZWdhdGl2ZUluZmluaXR5AERvdWJsZVBvc2l0aXZlSW5maW5pdHkAAAAAAAAAAMghMQQLyrZBi/JKkUvHLN0ABCABAQgDIAABBSABARERBCABAQ4EAAEKDQQAAQgMCLA/X38R1Qo6AwAACgMAAAgIAQAIAAAAAAAeAQABAFQCFldyYXBOb25FeGNlcHRpb25UaHJvd3MBCAEAAgAAAAAAPwEAGS5ORVRDb3JlQXBwLFZlcnNpb249djEwLjABAFQOFEZyYW1ld29ya0Rpc3BsYXlOYW1lCS5ORVQgMTAuMBgBABNGbG9hdExpdGVyYWxGaXh0dXJlAAAMAQAHUmVsZWFzZQAADAEABzEuMC4wLjAAAAoBAAUxLjAuMAAACAEACwAAAAAAAAAAAH7RWpgAAU1QAgAAAF0AAAAUKAAAFAoAAAAAAAAAAAAAAQAAABMAAAAnAAAAcSgAAHEKAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAUlNEU7sy7tF2HA1LiSjH+OVwb1wBAAAAL18vZmxvYXQtbGl0ZXJhbC1maXh0dXJlL29iai9SZWxlYXNlL25ldDEwLjAvRmxvYXRMaXRlcmFsRml4dHVyZS5wZGIAU0hBMjU2ALsy7tF2HA37ySjH+OVwb1x+0VqY/2vOHK5w52sukXWAwCgAAAAAAAAAAAAA2igAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMwoAAAAAAAAAAAAAAAAX0NvckRsbE1haW4AbXNjb3JlZS5kbGwAAAAAAP8lACAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABABAAAAAYAACAAAAAAAAAAAAAAAAAAAABAAEAAAAwAACAAAAAAAAAAAAAAAAAAAABAAAAAABIAAAAWEAAACQDAAAAAAAAAAAAACQDNAAAAFYAUwBfAFYARQBSAFMASQBPAE4AXwBJAE4ARgBPAAAAAAC9BO/+AAABAAAAAQAAAAAAAAABAAAAAAA/AAAAAAAAAAQAAAACAAAAAAAAAAAAAAAAAAAARAAAAAEAVgBhAHIARgBpAGwAZQBJAG4AZgBvAAAAAAAkAAQAAABUAHIAYQBuAHMAbABhAHQAaQBvAG4AAAAAAAAAsASEAgAAAQBTAHQAcgBpAG4AZwBGAGkAbABlAEkAbgBmAG8AAABgAgAAAQAwADAAMAAwADAANABiADAAAABIABQAAQBDAG8AbQBwAGEAbgB5AE4AYQBtAGUAAAAAAEYAbABvAGEAdABMAGkAdABlAHIAYQBsAEYAaQB4AHQAdQByAGUAAABQABQAAQBGAGkAbABlAEQAZQBzAGMAcgBpAHAAdABpAG8AbgAAAAAARgBsAG8AYQB0AEwAaQB0AGUAcgBhAGwARgBpAHgAdAB1AHIAZQAAADAACAABAEYAaQBsAGUAVgBlAHIAcwBpAG8AbgAAAAAAMQAuADAALgAwAC4AMAAAAFAAGAABAEkAbgB0AGUAcgBuAGEAbABOAGEAbQBlAAAARgBsAG8AYQB0AEwAaQB0AGUAcgBhAGwARgBpAHgAdAB1AHIAZQAuAGQAbABsAAAAKAACAAEATABlAGcAYQBsAEMAbwBwAHkAcgBpAGcAaAB0AAAAIAAAAFgAGAABAE8AcgBpAGcAaQBuAGEAbABGAGkAbABlAG4AYQBtAGUAAABGAGwAbwBhAHQATABpAHQAZQByAGEAbABGAGkAeAB0AHUAcgBlAC4AZABsAGwAAABIABQAAQBQAHIAbwBkAHUAYwB0AE4AYQBtAGUAAAAAAEYAbABvAGEAdABMAGkAdABlAHIAYQBsAEYAaQB4AHQAdQByAGUAAAAwAAYAAQBQAHIAbwBkAHUAYwB0AFYAZQByAHMAaQBvAG4AAAAxAC4AMAAuADAAAAA4AAgAAQBBAHMAcwBlAG0AYgBsAHkAIABWAGUAcgBzAGkAbwBuAAAAMQAuADAALgAwAC4AMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAMAAAA7DgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+  "methodology": "Pinned SDK Roslyn release compilation. Six named methods have their real PE floating-literal bytes deliberately patched to exact documented IEEE payloads, then that same PE is inspected and independently executed on native .NET."
+}

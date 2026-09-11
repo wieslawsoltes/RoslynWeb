@@ -1,5 +1,5 @@
 {
-  "validatedAt": "2026-09-11T14:25:01.816Z",
+  "validatedAt": "2026-09-11T15:27:28.649Z",
   "passed": true,
   "runtime": "Actual .NET WebAssembly plus emitted direct WebAssembly in Node worker_threads",
   "protocol": "Unmodified browser Worker src/worker.js through the Node browser-worker adapter",
@@ -8,9 +8,9 @@
     {
       "name": "Start actual .NET WebAssembly and Roslyn through the browser Worker protocol",
       "passed": true,
-      "milliseconds": 440.914572,
+      "milliseconds": 1334.147725,
       "evidence": {
-        "bridgeVersion": "0.5.0",
+        "bridgeVersion": "0.6.0",
         "roslynVersion": "5.0.0.0",
         "runtimeVersion": "10.0.0",
         "referenceCount": 167,
@@ -20,25 +20,25 @@
     {
       "name": "One-call C# → PE/MSIL → direct native Wasm returns both binary formats",
       "passed": true,
-      "milliseconds": 1805.7518010000001,
+      "milliseconds": 2611.910167,
       "evidence": {
         "peBytes": 2560,
-        "wasmBytes": 10021,
+        "wasmBytes": 9945,
         "timings": {
-          "analysisMs": 6.553530000000137,
-          "emissionMs": 4.98262399999976,
-          "totalMs": 1788.9613249999998,
-          "inspectionMs": 0.15083300000014788,
-          "linkMs": 0.12402299999985189,
-          "emitMs": 12.75829500000009,
-          "csharpMs": 1775.224307
+          "analysisMs": 8.881176999999752,
+          "emissionMs": 7.7586019999998825,
+          "totalMs": 2583.417279,
+          "inspectionMs": 141.30542600000035,
+          "linkMs": 0.19160199999987526,
+          "emitMs": 17.571912999999768,
+          "csharpMs": 2423.24993
         }
       }
     },
     {
       "name": "Returned Wasm artifact executes with arguments and Console inside its Worker",
       "passed": true,
-      "milliseconds": 10.773049000000356,
+      "milliseconds": 12.544515000000047,
       "evidence": {
         "backend": "native-wasm",
         "stdout": "Direct WebAssembly\n2660\n144\nworker\n",
@@ -48,9 +48,9 @@
     {
       "name": "Existing PE can emit direct Wasm and execute without C# recompilation",
       "passed": true,
-      "milliseconds": 11.762608,
+      "milliseconds": 4.069505999999819,
       "evidence": {
-        "wasmBytes": 10021,
+        "wasmBytes": 9945,
         "cache": {
           "emitHit": true
         }
@@ -59,9 +59,9 @@
     {
       "name": "Pure numerical export instantiates without imports and preserves 64-bit arithmetic",
       "passed": true,
-      "milliseconds": 5.000744999999824,
+      "milliseconds": 3.825746999999865,
       "evidence": {
-        "bytes": 1343,
+        "bytes": 1344,
         "imports": 0,
         "exactResult": "9007199254740995"
       }
@@ -69,16 +69,16 @@
     {
       "name": "Repeated identical source uses compiler and native emission caches",
       "passed": true,
-      "milliseconds": 63.70220500000005,
+      "milliseconds": 47.45622299999923,
       "evidence": {
         "cache": {
           "emitHit": true
         },
         "compilationPerformance": {
-          "parseMs": 0.8693,
-          "compilationMs": 1.8742,
-          "extensionsMs": 0.1082,
-          "emitMs": 51.1668,
+          "parseMs": 1.0067,
+          "compilationMs": 1.9118,
+          "extensionsMs": 0.1001,
+          "emitMs": 39.2259,
           "cache": {
             "enabled": true,
             "syntaxHits": 1,
@@ -96,7 +96,7 @@
     {
       "name": "Changed C# invalidates caches and changes native output",
       "passed": true,
-      "milliseconds": 74.29289600000038,
+      "milliseconds": 88.26285599999937,
       "evidence": {
         "cache": {
           "emitHit": false
@@ -106,7 +106,7 @@
     {
       "name": "Real compiled DLL dependencies link into native Wasm through addDll",
       "passed": true,
-      "milliseconds": 100.29604900000004,
+      "milliseconds": 95.58101999999963,
       "evidence": {
         "peBytes": 2048,
         "stdout": "18014398509481986\n"
@@ -115,12 +115,12 @@
     {
       "name": "Compiler diagnostics return before native emission for invalid C#",
       "passed": true,
-      "milliseconds": 41.37659799999983
+      "milliseconds": 55.553269
     },
     {
       "name": "Native execution reports checked overflow with its managed exception type",
       "passed": true,
-      "milliseconds": 33.09571800000003,
+      "milliseconds": 43.65679899999941,
       "evidence": {
         "type": "System.OverflowException",
         "message": "unreachable",
@@ -130,12 +130,12 @@
     {
       "name": "Native try/catch handles an exception thrown by a compiled callee",
       "passed": true,
-      "milliseconds": 63.38857800000005
+      "milliseconds": 77.00692499999968
     },
     {
       "name": "Saved Wasm remains executable after its Roslyn Worker is disposed",
       "passed": true,
-      "milliseconds": 11.79265200000009,
+      "milliseconds": 13.166992000000391,
       "evidence": {
         "roslynDisposed": true,
         "backend": "native-wasm"

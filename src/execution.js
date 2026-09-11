@@ -1,6 +1,6 @@
 import { compileAssembly } from './il/index.js';
 import { VirtualFileSystem } from './il/io.mjs';
-export async function executeJavaScript(model, options = {}) {
+export async function executeJavaScript(model, options = {}, compiledModule) {
   let stdout = '';
   const virtualFileSystem = options.virtualFiles !== undefined || options.captureVirtualFiles !== undefined || options.maxVirtualFileBytes !== undefined || options.workingDirectory !== undefined
     ? new VirtualFileSystem({files: options.virtualFiles, maxBytes: options.maxVirtualFileBytes}) : undefined;
@@ -8,7 +8,8 @@ export async function executeJavaScript(model, options = {}) {
     const path = virtualFileSystem.normalize(options.workingDirectory || '/');
     virtualFileSystem.mkdir(path); virtualFileSystem.cwd = path;
   }
-  const executable = compileAssembly(model, {
+  const runtimeOptions = {
+    ...options,
     externals: options.externals,
     assemblies: options.assemblies,
     virtualFiles: options.virtualFiles,
@@ -16,7 +17,8 @@ export async function executeJavaScript(model, options = {}) {
     maxVirtualFileBytes: options.maxVirtualFileBytes,
     output: (text, meta) => { stdout += String(text) + (meta?.newline ? '\n' : ''); },
     maxInstructions: options.maxInstructions ?? options.maxSteps ?? 10000000
-  });
+  };
+  const executable = compiledModule ? compiledModule.createRuntime(runtimeOptions) : compileAssembly(model, runtimeOptions);
   const fileResult = () => options.captureVirtualFiles ? {virtualFiles: (executable.$virtualFileSystem || virtualFileSystem)?.snapshot() || {}} : {};
   try {
     const result = await executable.run(options.args || []);
