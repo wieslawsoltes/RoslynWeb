@@ -6,7 +6,7 @@ RoslynWeb version: 0.3.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 br
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **183 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| JavaScript unit and real-IL fixture tests | **184 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
 | Actual .NET WebAssembly through the public JS API | **21 passed, 0 failed** | `npm run test:wasm`; `docs/wasm-verification.json` |
 | Actual WebAssembly and worker RPC in Node worker threads | **12 passed, 0 failed** | `npm run test:worker`; `docs/worker-verification.json` |
 | Native managed bridge assertions | **55 passed** | `managed/SelfTest` |
@@ -16,7 +16,9 @@ RoslynWeb version: 0.3.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 br
 | Build/resource/dynamic-code public API through Worker | **11 passed, 0 failed** | `npm run test:build`; `docs/build-api-verification.json` |
 | Project builds through the actual WASM task bridge | **6 passed, 0 failed** | `npm run test:projects-wasm`; `docs/wasm-projects-verification.json` |
 | Live official NuGet v3 restore | **Passed** | `tests/fixtures/newtonsoft-validation.json` |
-| Chromium staged Pages application and browser API suite | **See the commit’s CI result and attached browser report** | `npm run test:browser`; CI uploads `artifacts/browser-chromium/verification.json` and screenshots |
+| Chromium staged Pages application and browser API suite | **15 checks passed, including 16 browser API tests** | `npm run test:browser`; [Chromium verification run](https://github.com/wieslawsoltes/RoslynWeb/actions/runs/34599672536); CI uploads the JSON report and screenshots |
+
+The local server integration test starts the actual `npm run serve` server on an ephemeral port and requests the root page, demo directory and browser module; it also checks missing paths and encoded traversal rejection.
 
 These counts describe separate checks, with intentional overlap across layers; they are not a count of unique supported .NET features. No full CLR conformance suite, exhaustive Roslyn language suite, exhaustive NuGet restore suite, or cross-browser certification was run.
 
