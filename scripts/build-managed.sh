@@ -9,8 +9,11 @@ if ! command -v "$dotnet_cmd" >/dev/null 2>&1; then
   fi
 fi
 sdk_base="$($dotnet_cmd --info | sed -n 's/^ Base Path: *//p' | head -1 | tr -d '\r')"
-ref_path="$(cd "$sdk_base/../../packs/Microsoft.NETCore.App.Ref" && ls -d 10.* | sort -V | tail -1)"
-ref_path="$sdk_base/../../packs/Microsoft.NETCore.App.Ref/$ref_path/ref/net10.0"
+ref_path="$sdk_base/../../packs/Microsoft.NETCore.App.Ref/10.0.0/ref/net10.0"
+if [[ ! -d "$ref_path" ]]; then
+  echo 'The pinned .NET 10.0.0 reference pack is missing. Install .NET SDK 10.0.100.' >&2
+  exit 1
+fi
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 "$dotnet_cmd" run --project "$project_root/managed/PatchRoslyn/PatchRoslyn.csproj" -c Release -p:UseSharedCompilation=false -- "$sdk_base/Roslyn/bincore" "$project_root/managed/RoslynPatched"
 build_flags=()

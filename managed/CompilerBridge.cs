@@ -79,7 +79,7 @@ public static partial class CompilerBridge
     public static string Version()
     {
         Initialize();
-        return Serialize(new { bridgeVersion = "0.2.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
+        return Serialize(new { bridgeVersion = "0.3.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
     }
 
     [JSExport]

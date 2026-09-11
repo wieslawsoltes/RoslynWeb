@@ -31,10 +31,10 @@ jobs:
         run: node scripts/prepare-fixtures.mjs
       - name: Build compiler WebAssembly
         run: npm run build
+      - name: Native managed assertions and real IL fixture generation
+        run: dotnet run --project managed/SelfTest/SelfTest.csproj -c Release
       - name: JavaScript and project tests
         run: npm test
-      - name: Native managed assertions
-        run: dotnet run --project managed/SelfTest/SelfTest.csproj -c Release
       - name: Actual WebAssembly integration
         run: npm run test:wasm
       - name: Worker integration

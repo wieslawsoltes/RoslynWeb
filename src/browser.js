@@ -107,7 +107,7 @@ export async function createRoslyn(options = {}) {
   let disposed = false;
   // Serialize package/reference mutations and compiler calls, even in direct mode.
   let queue = Promise.resolve();
-  const ensureActive = () => { if (disposed || host.closed) throw host.error || new RoslynError('Compiler was disposed', 'DISPOSED'); };
+  const ensureActive = () => { if (disposed || host.closed) throw host.error?.code === 'ABORTED' ? host.error : new RoslynError('Compiler was disposed', 'DISPOSED'); };
   const serial = fn => { const next = queue.then(() => { ensureActive(); return fn(); }); queue = next.catch(() => {}); return next; };
   const api = {
     info,

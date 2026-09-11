@@ -3,8 +3,8 @@ $projectRoot = Split-Path -Parent $PSScriptRoot
 $dotnet = if ($env:DOTNET) { $env:DOTNET } else { 'dotnet' }
 $sdkBase = (& $dotnet --info | Select-String 'Base Path:').ToString().Split(':',2)[1].Trim()
 $packRoot = Join-Path $sdkBase '../../packs/Microsoft.NETCore.App.Ref'
-$pack = Get-ChildItem $packRoot -Directory | Where-Object Name -Like '10.*' | Sort-Object { [version]$_.Name } | Select-Object -Last 1
-$referencePath = Join-Path $pack.FullName 'ref/net10.0'
+$referencePath = Join-Path $packRoot '10.0.0/ref/net10.0'
+if (!(Test-Path $referencePath)) { throw 'The pinned .NET 10.0.0 reference pack is missing. Install .NET SDK 10.0.100.' }
 $env:DOTNET_CLI_TELEMETRY_OPTOUT = '1'
 & $dotnet run --project (Join-Path $projectRoot 'managed/PatchRoslyn/PatchRoslyn.csproj') -c Release -p:UseSharedCompilation=false -- (Join-Path $sdkBase 'Roslyn/bincore') (Join-Path $projectRoot 'managed/RoslynPatched')
 if ($LASTEXITCODE -ne 0) { throw "Roslyn browser adaptation failed ($LASTEXITCODE)" }
