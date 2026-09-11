@@ -1,0 +1,214 @@
+{
+  "testedAt": "2026-09-11T16:41:44.518Z",
+  "checks": [
+    {
+      "name": "Initialize Roslyn and compile genuine baseline assemblies in its Worker",
+      "passed": true,
+      "milliseconds": 470.17726000000005,
+      "evidence": {
+        "bridgeVersion": "0.7.0",
+        "roslynVersion": "5.0.0.0",
+        "runtimeVersion": "10.0.0",
+        "referenceCount": 167,
+        "execution": "dotnet-wasm-interpreter"
+      }
+    },
+    {
+      "name": "Int64 and floating-point kernels: every compiler mode matches .NET WASM",
+      "passed": true,
+      "milliseconds": 2565.948377,
+      "evidence": {
+        "stdout": "Int64 sum of squares:\n333833500\nDouble sum:\n250\nSingle sum:\n250\nClamped value:\n10\nFinite double: True\nSubnormal double: True\n",
+        "results": [
+          {
+            "backend": "javascript",
+            "optimize": false,
+            "optimization": {
+              "enabled": false,
+              "mode": "reference",
+              "methods": 4,
+              "numericMethods": 0,
+              "basicBlocks": 98,
+              "instructions": 98,
+              "generatedSourceBytes": 27688
+            }
+          },
+          {
+            "backend": "javascript",
+            "optimize": "blocks",
+            "optimization": {
+              "enabled": true,
+              "mode": "blocks",
+              "methods": 4,
+              "numericMethods": 0,
+              "basicBlocks": 13,
+              "instructions": 98,
+              "generatedSourceBytes": 23082
+            }
+          },
+          {
+            "backend": "javascript",
+            "optimize": true,
+            "optimization": {
+              "enabled": true,
+              "mode": "numeric",
+              "methods": 4,
+              "numericMethods": 3,
+              "basicBlocks": 13,
+              "instructions": 98,
+              "generatedSourceBytes": 38026
+            }
+          },
+          {
+            "backend": "native-wasm",
+            "optimize": false,
+            "optimization": {
+              "enabled": false,
+              "structuredMethods": 0,
+              "dispatcherMethods": 3,
+              "nativeLoops": 0,
+              "directBranches": 0,
+              "eliminatedDispatches": 0,
+              "localTeeRewrites": 0,
+              "intrinsicCalls": 3,
+              "functionBodyBytes": 1076
+            }
+          },
+          {
+            "backend": "native-wasm",
+            "optimize": true,
+            "optimization": {
+              "enabled": true,
+              "structuredMethods": 4,
+              "dispatcherMethods": 0,
+              "nativeLoops": 3,
+              "directBranches": 9,
+              "eliminatedDispatches": 12,
+              "localTeeRewrites": 35,
+              "intrinsicCalls": 3,
+              "functionBodyBytes": 921
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tuple interfaces and comparers: every compiler mode matches .NET WASM",
+      "passed": true,
+      "milliseconds": 841.1485989999996,
+      "evidence": {
+        "stdout": "Tuple length: 9\nNinth item: 9\nStructural equality: True\nStructural comparison: 0\nEqual tuple hashes: True\nNullable NaN hash: True\n",
+        "results": [
+          {
+            "backend": "javascript",
+            "optimize": false,
+            "optimization": {
+              "enabled": false,
+              "mode": "reference",
+              "methods": 5,
+              "numericMethods": 0,
+              "basicBlocks": 130,
+              "instructions": 130,
+              "generatedSourceBytes": 41866
+            }
+          },
+          {
+            "backend": "javascript",
+            "optimize": "blocks",
+            "optimization": {
+              "enabled": true,
+              "mode": "blocks",
+              "methods": 5,
+              "numericMethods": 0,
+              "basicBlocks": 8,
+              "instructions": 130,
+              "generatedSourceBytes": 35114
+            }
+          },
+          {
+            "backend": "javascript",
+            "optimize": true,
+            "optimization": {
+              "enabled": true,
+              "mode": "numeric",
+              "methods": 5,
+              "numericMethods": 0,
+              "basicBlocks": 8,
+              "instructions": 130,
+              "generatedSourceBytes": 35114
+            }
+          },
+          {
+            "backend": "native-wasm",
+            "optimize": false,
+            "optimization": {
+              "enabled": false,
+              "structuredMethods": 0,
+              "dispatcherMethods": 1,
+              "nativeLoops": 0,
+              "directBranches": 0,
+              "eliminatedDispatches": 0,
+              "localTeeRewrites": 0,
+              "intrinsicCalls": 0,
+              "functionBodyBytes": 1214
+            }
+          },
+          {
+            "backend": "native-wasm",
+            "optimize": true,
+            "optimization": {
+              "enabled": true,
+              "structuredMethods": 4,
+              "dispatcherMethods": 0,
+              "nativeLoops": 0,
+              "directBranches": 3,
+              "eliminatedDispatches": 4,
+              "localTeeRewrites": 37,
+              "intrinsicCalls": 0,
+              "functionBodyBytes": 1115
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Native numeric classification and clamp emit an import-free standalone Wasm module",
+      "passed": true,
+      "milliseconds": 173.03676599999972,
+      "evidence": {
+        "imports": 0,
+        "optimization": {
+          "enabled": true,
+          "structuredMethods": 3,
+          "dispatcherMethods": 0,
+          "nativeLoops": 0,
+          "directBranches": 6,
+          "eliminatedDispatches": 8,
+          "localTeeRewrites": 9,
+          "intrinsicCalls": 5,
+          "functionBodyBytes": 466
+        },
+        "bytes": 3641
+      }
+    },
+    {
+      "name": "Numeric intrinsic exceptions remain catchable and execute finally on both backends",
+      "passed": true,
+      "milliseconds": 269.570882,
+      "evidence": {
+        "stdout": "clamp\nfinally\nsign\n",
+        "modes": 5
+      }
+    },
+    {
+      "name": "Concurrent PE emission retains cache isolation and produces executable artifacts",
+      "passed": true,
+      "milliseconds": 115.69727899999998,
+      "evidence": {
+        "concurrentPerBackend": 4,
+        "isolated": true
+      }
+    }
+  ],
+  "passed": true
+}

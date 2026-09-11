@@ -1,13 +1,17 @@
 # Verification report
 
-RoslynWeb version: 0.6.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`.
+RoslynWeb version: 0.7.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`. Native CLR oracle generation records the actual installed .NET 10 servicing version.
 
 ## Results
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **3,912 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| JavaScript unit and real-IL fixture tests | **5,332 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
 | Optimized JavaScript/native public compiler APIs | **15 passed, 0 failed** | `npm run test:compilers`; `docs/compiler-v6-worker-verification.json` |
+| Typed kernels, intrinsics and tuple public APIs | **6 passed, 0 failed** | `npm run test:compilers-v7`; `docs/compiler-v7-worker-verification.json` |
+| Extended numeric five-mode compiler conformance | **448 grouped tests passed** | 2,296 independent native CLR cases × five modes = 11,480 comparisons, plus fresh-process Wasm proofs; included in unit tests |
+| Tuple interfaces, structural comparers and hashing | **844 checks passed** | 168 native cases × five modes plus four provenance/reachability/hash checks; included in unit tests |
+| Concurrent inspection and preparation reuse | **29 checks passed** | Affected-dependency invalidation, mutation, disposal, hot/cold await gaps and bounded memo retention; included in unit tests |
 | Five-mode C# compiler conformance | **1,193 checks passed** | 238 native-.NET oracle cases, three JS modes and two Wasm modes; included in unit tests |
 | Exact standard-value native CLR oracle | **1,783 cases passed** | Decimal operations, scale/sign, formatting/parsing and binary conversions; included in unit tests |
 | TypeScript public API contract | **Passed with TypeScript 5.9.3** | Strict NodeNext package-consumer compilation, including rejected invalid calls |
@@ -114,3 +118,13 @@ The new public suite validates both one-call pipelines against actual Roslyn/.NE
 The comparative benchmark records startup, C# emission, inspection, JavaScript function construction, native binary emission, engine compilation/instantiation, cached public pipelines and execution separately. See [the measured results and limitations](COMPILATION-PERFORMANCE.md#recorded-060-measurements). Browser verification adds optimizer selection, both new examples in JavaScript and native Wasm, artifact/cache isolation, exact values, cross-call filters, and standalone JavaScript after Worker disposal. GitHub Actions runs these checks against both the staged Pages subpath and the deployed site. Reports and screenshots belong to the associated workflow run.
 
 Floating-literal coverage adds **69 checks** against the same real PE executed by native .NET. The fixture covers signed zero, infinities, quiet NaNs with custom sign/payload, signaling NaNs and Single array transfers across all five compiler modes. The raw operand bits survive inspection; Single signaling loads reproduce CLR quieting. Both rebuilt public Worker pipelines also match .NET for NaN literal bit reinterpretation.
+
+## Added version 0.7 coverage
+
+The new numeric corpus executes one genuine Roslyn PE on native .NET and compares all 2,296 cases across both Wasm modes and all three JavaScript modes. It covers typed signed/unsigned 64-bit and floating loops, checked conversions, division/remainder, bit operations, floating predicates, Clamp/Sign, and BitIncrement/BitDecrement. Seventy-four dedicated intrinsic tests and fifteen typed optimizer tests add exact-signature, user-method precedence, budget, callback, module isolation and raw-bit regressions. Ten independent conversion-barrier tests retain the distinction between direct integer-to-Single rounding and explicit/intervening Double rounding, including alternate control-flow predecessors.
+
+The value-interface fixture verifies tuple indexing, nested Rest, nullable/Decimal/custom values, structural array rank/lower-bound errors, null comparers, explicit generic comparer implementations, callback order and hashing. Native callbacks are compiled Wasm. Export-closure tests exclude unrelated unsupported overloads and unused instance overrides on static method containers. A native random-seed record verifies exact tuple hash combination at arities 0–16; separate equality-contract tests avoid comparing unrelated runtime seeds.
+
+Twenty-nine new cache tests verify shared same-PE inspection, separate returned models, failure retry, disposal, dependency changes, previously missing dependencies, relevant versus unrelated replacements, mutation before awaited work and both hot/cold preparation gaps. The six new real Worker checks compare both sample programs with .NET WASM in every compiler mode, execute import-free native numeric artifacts, catch intrinsic exceptions and test concurrent emission isolation. All fifteen previous compiler Worker checks also pass.
+
+The browser runner adds the typed numeric example in all five compiler modes and tuple interfaces in both backends. CI runs the resulting 34 staged checks and 33 deployed-site checks; actual reports and screenshots are attached to the relevant workflow run. Performance is observational, with separate reports for typed execution, historical native service elimination and warm emission host reuse. No performance threshold substitutes for semantic validation.

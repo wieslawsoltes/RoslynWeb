@@ -87,7 +87,7 @@ async function runExample(page, label, backend, expected) {
   await page.locator('#example').selectOption({ label });
   await page.locator('#backend').selectOption(backend);
   await page.locator('#run').click();
-  await waitFor(page, () => ['Finished', 'Compilation failed', 'Native compilation failed', 'Execution failed', 'Error', 'Runtime unavailable'].includes(document.querySelector('#status')?.textContent), `Example did not finish: ${label}`);
+  await waitFor(page, () => ['Finished', 'Compilation failed', 'JavaScript compilation failed', 'Native compilation failed', 'Execution failed', 'Error', 'Runtime unavailable'].includes(document.querySelector('#status')?.textContent), `Example did not finish: ${label}`);
   const output = await page.locator('#console').innerText();
   assert.equal(await page.locator('#status').innerText(), 'Finished', `${label}: ${output}`);
   for (const text of expected) assert.ok(output.includes(text), `${label}: missing ${JSON.stringify(text)} in ${output}`);
@@ -140,6 +140,32 @@ try {
     for(const backend of ['javascript','native-wasm'])await runExample(page,'Decimal, nullable and tuples',backend,[
       'Exact decimal sum: 0.3','96-bit decimal: 79228162514264337593543950335','Round to even: 2.34',
       'Nullable fallback: 42','Original tuple: (3, value, 0.1)','Copied tuple: (99, value, 0.1)'
+    ]);
+  });
+
+  await test('Demo compiles typed Int64 and floating kernels in all five compiler modes',async()=>{
+    const results=[];
+    for(const [backend,mode] of [['javascript','reference'],['javascript','blocks'],['javascript','optimized'],['native-wasm','reference'],['native-wasm','optimized']]){
+      await page.locator('#example').selectOption({label:'Int64 and floating-point kernels'});
+      await page.locator('#backend').selectOption(backend);
+      await page.locator('#optimization').selectOption(mode);
+      await page.locator('#run').click();
+      await waitFor(page,()=>['Finished','Compilation failed','JavaScript compilation failed','Native compilation failed','Execution failed','Error'].includes(document.querySelector('#status')?.textContent),'Typed numeric example did not finish');
+      const output=await page.locator('#console').innerText();
+      assert.equal(await page.locator('#status').innerText(),'Finished',output);
+      for(const expected of ['Int64 sum of squares:\n333833500','Double sum:\n250','Single sum:\n250','Clamped value:\n10','Finite double: True','Subnormal double: True'])assert(output.includes(expected),`${backend}/${mode}: ${output}`);
+      const optimization=await page.evaluate(backend=>window.lab[backend==='javascript'?'javascriptArtifact':'wasmArtifact'].optimization,backend);
+      if(backend==='javascript'&&mode==='optimized')assert(optimization.numericMethods>=3);
+      if(backend==='native-wasm')assert(optimization.intrinsicCalls>=3);
+      results.push({backend,mode,optimization});
+    }
+    report.typedNumericModes=results;
+  });
+
+  await test('Demo runs tuple interface indexing, managed comparers and hash contracts on both compilers',async()=>{
+    for(const backend of ['javascript','native-wasm'])await runExample(page,'Tuple interfaces and comparers',backend,[
+      'Tuple length: 9','Ninth item: 9','Structural equality: True','Structural comparison: 0',
+      'Equal tuple hashes: True','Nullable NaN hash: True'
     ]);
   });
 

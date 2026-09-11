@@ -32,11 +32,11 @@ test('standard value defaults, nested copies and nullable boxing retain CLR sema
   const tup='System.ValueTuple`2<System.Decimal,System.Int32>',value=rt.defaultValue(tup),copy=rt.copy(value);copy.fields[tup+'::Item1'].coefficient=123n;
   assert.equal(value.fields[tup+'::Item1'].coefficient,0n);
 });
-test('nullable equality retains the boxed underlying type identity and unsupported hashes are rejected',()=>{
+test('nullable equality retains boxed underlying type identity and floating hashes are supported',()=>{
   const rt=createRuntime({name:'Values',types:[]}),type='System.Nullable`1<System.Int32>';
   const value=invokeStandardValueBuiltin(rt,{declaringType:type,name:'.ctor',parameters:[{type:'System.Int32'}]},[i4(42)],null,'newobj').constructed;
   const ref={declaringType:type,name:'Equals',parameters:[{type:'System.Object'}]};
   assert.equal(invokeStandardValueBuiltin(rt,ref,[rt.box(i4(42),'System.Int32')],value).value.value,1);
   assert.equal(invokeStandardValueBuiltin(rt,ref,[rt.box(i8(42),'System.Int64')],value).value.value,0);
-  assert.equal(isStandardValueBuiltin({declaringType:'System.Nullable`1<System.Double>',name:'GetHashCode',parameters:[]}),false);
+  assert.equal(isStandardValueBuiltin({declaringType:'System.Nullable`1<System.Double>',name:'GetHashCode',parameters:[]}),true);
 });

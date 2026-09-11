@@ -81,6 +81,8 @@ The shared assembly-host implementation keys inspection/linkage by exact input a
 
 The JavaScript host keeps reusable compiled functions in its Worker and creates independent runtime state for each `compiler.run`. It reports `cache.emitHit` for emission and `cache.moduleHit` for execution preparation. Its 16-entry / 64-MiB accounting includes cache keys, model/source data and generated source; engine-compiled code and runtime heap overhead are additional. Each native host uses separately bounded inspection and emission caches, and `loadWasm` maintains its own exact-byte native module cache. Common host code does not mean the two backends share one execution instance or one engine-code cache.
 
+Both hosts also retain a preparation memo, independently bounded to 16 entries / 64 MiB of identity and dependency data. An unchanged PE request can find its already compiled module without cloning decoded IL, re-inspecting dependencies or re-serializing the full model. The memo checks relevant registered DLL identities and exact bytes, including previously unresolved references. Concurrent inspections of the same PE share one bridge request and return separate caller-owned models. A changed relevant inspection invalidates affected cached modules and in-flight preparations; unrelated updates remain valid. Affected in-flight work rejects with `COMPILATION_INVALIDATED` and can be retried. Disposal rejects pending work and prevents late cache insertion.
+
 For repeated execution, create one standalone `compileJavaScriptModule(...).createRuntime()` or `loadWasm(...)` instance and invoke it repeatedly. High-level `compiler.run` deliberately creates fresh runtime state while reusing generated code. Keep a compiler alive across edits, retain stable source paths and assembly names, and omit PDBs when no debugging symbols are needed.
 
 ## Cross-backend benchmark methodology
@@ -124,3 +126,16 @@ These reference numbers use the current compiler with optimization disabled. The
 A separate historical comparison loads the exact previous source tree `61dd2be16868fc4821f2132ea5122714a8c7fc13` and compiles the same Clamp/Sign loop fixture with each compiler. For 25 calls of 500 iterations, native Clamp changed from 43.724 to 0.062 ms and Sign from 38.884 to 0.099 ms. The previous module called two JavaScript services; the new module has zero imports. These deliberately service-heavy kernels measure the benefit of eliminating a boundary crossing in every iteration. They do not predict general application speedups. Module size changed from 5,795 to 2,939 bytes, while native function bodies grew from 496 to 559 bytes as the intrinsic implementations moved into Wasm.
 
 Run `npm run benchmark:compilers-v7` for current-mode measurements. Its optional `ROSLYNWEB_BASELINE_DIR` comparison accepts an isolated checkout of the previous source plus a `benchmark-baseline.json` provenance record; that record is included in the results. No timing threshold is a correctness test. Results vary by engine, hardware and workload, and exclude browser downloads and Roslyn startup.
+
+## Warm emission host measurements
+
+[host-performance-v7.json](host-performance-v7.json) isolates the three host/cache files changed since v0.6.0 while holding the current compiler engines constant. The bundled Roslyn emits one real PE containing 120 C# methods. Seven alternating samples each measure 30 complete warm emissions, divided by 30; returned artifact cloning is included.
+
+| Warm emission, per request | Previous host | Current host |
+| --- | ---: | ---: |
+| JavaScript | 4.461 ms | 2.180 ms |
+| Native Wasm | 2.477 ms | 0.503 ms |
+
+Both hosts perform one bridge inspection. Across 215 requests, decoded-model inspection and linking fall from 215 calls each to one each. These measurements exclude C# compilation, initial inspection/emission, network loading and program execution; they describe prepared PE emission, not the complete source-to-execution pipeline. Node/V8, CPU, PE hash and compared source-file hashes are recorded in the report.
+
+Run `npm run benchmark:host-cache` in a checkout containing the recorded v0.6.0 commit. A source archive can instead use `npm run benchmark:host-cache -- --baseline-root /path/to/extracted-v0.6-project`. The baseline directory supplies only the three host/cache files; both implementations use the current engines. CI fetches history to reproduce this comparison and uploads its own measurement.

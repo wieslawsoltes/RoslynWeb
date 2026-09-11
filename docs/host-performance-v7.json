@@ -1,0 +1,104 @@
+{
+  "measuredAt": "2026-09-11T16:39:27.778Z",
+  "environment": {
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "baseline": "3de8b8f0dace93cada45462d16daaa4010339fd9",
+  "baselineFiles": {
+    "src/compiler-cache.mjs": "3cd9d968428628bff471b38210a2617b7b1b937eeb9020b8a961a0d33a55512c",
+    "src/javascript-host.mjs": "6c591bace2052dc139f3bb8378566800920b7115b052511ef65e066500c37d24",
+    "src/wasm/host.mjs": "d2bab81bcc36a6fb6fb8ea00418d787de7f71b55e4f8270b1bc8f1df08095c75"
+  },
+  "methodology": "120 independent C# integer-loop methods compiled by the bundled Roslyn .NET WASM runtime into one real PE. Baseline and current host implementations import the exact same current compiler engines. Warm direct-host same-PE emit requests alternate baseline/current ordering; each sample is 30 complete host emits, divided by 30. Seven samples follow five warm-up emits per host. Artifact generation and returned artifact cloning are included; C# compilation, initial inspection/emission and execution are excluded from the timed warm-emit phase. Pending same-PE managed inspection coalescing is independently verified by tests.",
+  "source": "public static class HostBenchmark {\npublic static int Method0(int n) { int sum=0; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method1(int n) { int sum=1; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method2(int n) { int sum=2; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method3(int n) { int sum=3; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method4(int n) { int sum=4; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method5(int n) { int sum=5; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method6(int n) { int sum=6; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method7(int n) { int sum=7; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method8(int n) { int sum=8; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method9(int n) { int sum=9; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method10(int n) { int sum=10; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method11(int n) { int sum=11; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method12(int n) { int sum=12; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method13(int n) { int sum=13; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method14(int n) { int sum=14; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method15(int n) { int sum=15; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method16(int n) { int sum=16; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method17(int n) { int sum=17; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method18(int n) { int sum=18; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method19(int n) { int sum=19; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method20(int n) { int sum=20; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method21(int n) { int sum=21; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method22(int n) { int sum=22; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method23(int n) { int sum=23; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method24(int n) { int sum=24; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method25(int n) { int sum=25; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method26(int n) { int sum=26; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method27(int n) { int sum=27; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method28(int n) { int sum=28; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method29(int n) { int sum=29; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method30(int n) { int sum=30; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method31(int n) { int sum=31; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method32(int n) { int sum=32; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method33(int n) { int sum=33; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method34(int n) { int sum=34; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method35(int n) { int sum=35; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method36(int n) { int sum=36; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method37(int n) { int sum=37; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method38(int n) { int sum=38; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method39(int n) { int sum=39; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method40(int n) { int sum=40; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method41(int n) { int sum=41; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method42(int n) { int sum=42; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method43(int n) { int sum=43; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method44(int n) { int sum=44; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method45(int n) { int sum=45; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method46(int n) { int sum=46; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method47(int n) { int sum=47; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method48(int n) { int sum=48; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method49(int n) { int sum=49; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method50(int n) { int sum=50; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method51(int n) { int sum=51; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method52(int n) { int sum=52; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method53(int n) { int sum=53; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method54(int n) { int sum=54; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method55(int n) { int sum=55; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method56(int n) { int sum=56; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method57(int n) { int sum=57; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method58(int n) { int sum=58; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method59(int n) { int sum=59; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method60(int n) { int sum=60; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method61(int n) { int sum=61; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method62(int n) { int sum=62; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method63(int n) { int sum=63; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method64(int n) { int sum=64; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method65(int n) { int sum=65; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method66(int n) { int sum=66; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method67(int n) { int sum=67; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method68(int n) { int sum=68; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method69(int n) { int sum=69; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method70(int n) { int sum=70; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method71(int n) { int sum=71; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method72(int n) { int sum=72; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method73(int n) { int sum=73; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method74(int n) { int sum=74; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method75(int n) { int sum=75; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method76(int n) { int sum=76; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method77(int n) { int sum=77; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method78(int n) { int sum=78; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method79(int n) { int sum=79; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method80(int n) { int sum=80; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method81(int n) { int sum=81; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method82(int n) { int sum=82; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method83(int n) { int sum=83; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method84(int n) { int sum=84; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method85(int n) { int sum=85; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method86(int n) { int sum=86; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method87(int n) { int sum=87; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method88(int n) { int sum=88; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method89(int n) { int sum=89; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method90(int n) { int sum=90; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method91(int n) { int sum=91; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method92(int n) { int sum=92; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method93(int n) { int sum=93; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method94(int n) { int sum=94; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method95(int n) { int sum=95; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method96(int n) { int sum=96; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method97(int n) { int sum=97; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method98(int n) { int sum=98; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method99(int n) { int sum=99; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method100(int n) { int sum=100; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method101(int n) { int sum=101; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method102(int n) { int sum=102; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method103(int n) { int sum=103; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method104(int n) { int sum=104; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method105(int n) { int sum=105; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method106(int n) { int sum=106; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method107(int n) { int sum=107; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method108(int n) { int sum=108; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method109(int n) { int sum=109; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method110(int n) { int sum=110; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method111(int n) { int sum=111; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method112(int n) { int sum=112; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method113(int n) { int sum=113; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method114(int n) { int sum=114; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method115(int n) { int sum=115; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method116(int n) { int sum=116; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method117(int n) { int sum=117; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method118(int n) { int sum=118; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\npublic static int Method119(int n) { int sum=119; for (int k=0;k<n;k++) sum=unchecked(sum+k*(k+1)); return sum; }\n}",
+  "phases": {
+    "javascript.baseline": {
+      "samples": 7,
+      "medianMs": 4.460685333333322,
+      "minMs": 4.325999133333335,
+      "maxMs": 4.6896115999999894,
+      "valuesMs": [
+        4.635221866666658,
+        4.458489800000007,
+        4.325999133333335,
+        4.460685333333322,
+        4.6896115999999894,
+        4.502929199999986,
+        4.4055746
+      ],
+      "bridgeInspections": 1,
+      "hostInspections": 215,
+      "hostLinks": 215
+    },
+    "javascript.current": {
+      "samples": 7,
+      "medianMs": 2.179511866666674,
+      "minMs": 2.153672866666678,
+      "maxMs": 2.4624418999999915,
+      "valuesMs": [
+        2.179511866666674,
+        2.153672866666678,
+        2.239706766666662,
+        2.1551059666666634,
+        2.3911116333333364,
+        2.4624418999999915,
+        2.1731505000000046
+      ],
+      "bridgeInspections": 1,
+      "hostInspections": 1,
+      "hostLinks": 1
+    },
+    "javascript.improvement": {
+      "speedup": 2.046644205775972,
+      "reductionPercent": 51.139528933371366
+    },
+    "wasm.baseline": {
+      "samples": 7,
+      "medianMs": 2.476711899999979,
+      "minMs": 2.4391112333333393,
+      "maxMs": 2.5622798666666617,
+      "valuesMs": [
+        2.5622798666666617,
+        2.476711899999979,
+        2.4632337666666597,
+        2.4902628666666713,
+        2.4391112333333393,
+        2.5189894666666683,
+        2.461827999999999
+      ],
+      "bridgeInspections": 1,
+      "hostInspections": 215,
+      "hostLinks": 215
+    },
+    "wasm.current": {
+      "samples": 7,
+      "medianMs": 0.5031214333333386,
+      "minMs": 0.47044033333331753,
+      "maxMs": 0.7572324000000056,
+      "valuesMs": [
+        0.7572324000000056,
+        0.47309756666666847,
+        0.5175510000000031,
+        0.48310699999998785,
+        0.5057092333333154,
+        0.47044033333331753,
+        0.5031214333333386
+      ],
+      "bridgeInspections": 1,
+      "hostInspections": 1,
+      "hostLinks": 1
+    },
+    "wasm.improvement": {
+      "speedup": 4.922692089643209,
+      "reductionPercent": 79.68591206214406
+    }
+  },
+  "peBytes": 10240,
+  "peSha256": "3f132716652d4ff4db667956159ad315f4a058546c8a4e4393157b2812c42ca3",
+  "modelBytes": 207572,
+  "baselineRemoteCommit": "5f664631159c673ca3e5bf7a99e7866fa04040b2",
+  "baselineSourceTree": "61dd2be16868fc4821f2132ea5122714a8c7fc13",
+  "baselineIdentityNote": "The local baseline commit has the exact source tree of the recorded remote v0.6.0 merge commit; per-file hashes above identify the three compared host implementations."
+}
