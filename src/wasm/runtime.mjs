@@ -15,7 +15,8 @@ const typeName = type => String(type?.type ?? type?.name ?? type ?? 'System.Void
 const methodKey = method => `${method.declaringType ?? method.type ?? ''}::${method.name}${(method.genericArguments??method.$methodArguments)?.length?`<${(method.genericArguments??method.$methodArguments).join(',')}>`:''}(${(method.parameters ?? []).map(typeName).join(',')})`;
 const methodReference = descriptor => ({...descriptor,declaringType:descriptor.type??descriptor.declaringType,parameters:descriptor.parameters.map(type=>({type:typeName(type)}))});
 const voidType = type => !type || type === 'void' || type === 'System.Void';
-const wasmType = type => /&$/.test(typeName(type)) ? 'externref' : /^(?:System\.)?(?:Int64|UInt64|long|ulong)$/.test(typeName(type)) ? 'i64' : /^(?:System\.)?(?:Single|float)$/.test(typeName(type)) ? 'f32' : /^(?:System\.)?(?:Double|double)$/.test(typeName(type)) ? 'f64' : /^(?:System\.)?(?:Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|IntPtr|UIntPtr|bool|byte|sbyte|char|short|ushort|int|uint|nint|nuint)$/.test(typeName(type)) ? 'i32' : voidType(typeName(type)) ? null : 'externref';
+const frameworkEnums = new Map([['System.MidpointRounding','System.Int32'],['System.Globalization.NumberStyles','System.Int32']]);
+const wasmType = type => /&$/.test(typeName(type)) ? 'externref' : frameworkEnums.has(typeName(type)) ? 'i32' : /^(?:System\.)?(?:Int64|UInt64|long|ulong)$/.test(typeName(type)) ? 'i64' : /^(?:System\.)?(?:Single|float)$/.test(typeName(type)) ? 'f32' : /^(?:System\.)?(?:Double|double)$/.test(typeName(type)) ? 'f64' : /^(?:System\.)?(?:Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|IntPtr|UIntPtr|bool|byte|sbyte|char|short|ushort|int|uint|nint|nuint)$/.test(typeName(type)) ? 'i32' : voidType(typeName(type)) ? null : 'externref';
 
 export class NativeWasmError extends Error {
   constructor(message, code = 'NATIVE_WASM_ERROR', details, options) {
@@ -156,8 +157,8 @@ export async function loadWasm(input, options = {}) {
   if(options.signal?.aborted)throw abortError(options.signal);
   const manifest = decodeManifest(compiled.module);
   const enumTypes=new Map([manifest.model,...(manifest.assemblies??[])].filter(Boolean).flatMap(model=>(model.types??[]).filter(type=>type.isEnum).map(type=>[`${model.name}|${type.name}`,type.fields?.find(field=>field.name==='value__')?.type??'System.Int32'])));
-  const publicType=(type,assembly=manifest.assemblyName??manifest.assembly)=>{type=typeName(type);if(type.endsWith('[]'))return publicType(type.slice(0,-2),assembly)+'[]';if(type.endsWith('&'))return publicType(type.slice(0,-1),assembly)+'&';return enumTypes.get(`${assembly}|${type}`)??type;};
-  let stdout='', stderr='', disposed=false, instance, runtime, helpers, activeDepth=0;
+  const publicType=(type,assembly=manifest.assemblyName??manifest.assembly)=>{type=typeName(type);if(type.endsWith('[]'))return publicType(type.slice(0,-2),assembly)+'[]';if(type.endsWith('&'))return publicType(type.slice(0,-1),assembly)+'&';return enumTypes.get(`${assembly}|${type}`)??frameworkEnums.get(type)??type;};
+  let stdout='', stderr='', disposed=false, instance, runtime, helpers, standardValues, exceptionContext, exceptionServices, activeDepth=0;
   const capturedOutput = (text, meta) => { const part=String(text)+(meta?.newline?'\n':''); stdout += part; options.output?.(String(text),meta); };
   const imports={};
   const assertActive=()=>{if(disposed)throw new NativeWasmError('The native WebAssembly instance has been disposed.','DISPOSED');if(options.signal?.aborted)throw abortError(options.signal);};
@@ -175,6 +176,7 @@ export async function loadWasm(input, options = {}) {
   const defaultModel=()=>({name:manifest.assemblyName??manifest.assembly??'NativeAssembly',entryPoint:manifest.entryPointToken??manifest.entryPoint,types:[...new Set(manifest.methods.map(m=>m.type??m.declaringType))].map(name=>({name,methods:manifest.methods.filter(m=>(m.type??m.declaringType)===name).map(m=>({...m,declaringType:name,parameters:m.parameters.map(type=>({type:typeName(type)}))}))}))});
   if(manifest.imports.length){
     helpers=await import('../il/runtime.mjs');
+    standardValues=await import('../il/standard-values.mjs');
     const runtimeOptions={...options,output:capturedOutput};
     if(options.virtualFiles!==undefined||options.captureVirtualFiles||options.workingDirectory!==undefined){
       const {VirtualFileSystem}=await import('../il/io.mjs');
@@ -221,7 +223,10 @@ export async function loadWasm(input, options = {}) {
     const callBuiltin=runtime.callBuiltin.bind(runtime);
     runtime.callBuiltin=(ref,...args)=>{if(/^System\.Reflection\.Emit(?:\.|$)/.test(ref.declaringType??'')||(ref.declaringType??'').startsWith('System.Linq.Expressions.')&&ref.name==='Compile')throw new NativeWasmError('Runtime IL generation is not available in a precompiled native Wasm module.','WASM_DYNAMIC_CODE_UNSUPPORTED');return callBuiltin(ref,...args);};
     const exceptions=manifest.imports.some(descriptor=>descriptor.kind==='exception_tag'||descriptor.kind.startsWith('eh_'))?await import('./exceptions.mjs'):null;
-    const serviceContext={runtime,helpers,manifest,exceptions,nativeToManaged,managedToNative,assertActive};
+    exceptionServices=exceptions;
+    if(manifest.nativeFilters?.length)exceptionContext=exceptions.createExceptionContext({evaluateFilter:(frame,handler,error)=>{const name=frame.plan.filterExports?.[handler.order];if(!name||typeof instance.exports[name]!=='function')throw new NativeWasmError('Native exception filter export is missing.','WASM_MANIFEST_INVALID');try{return instance.exports[name](frame,error);}catch(cause){throw normalizeError(cause,instance.exports.__fuel,instance.exports.__status);}}});
+    if(exceptionContext){const boundary=runtime.withExceptionBoundary.bind(runtime);runtime.withExceptionBoundary=callback=>{exceptionContext.filterBoundaries.push(exceptionContext.frames.length);try{return boundary(callback);}finally{exceptionContext.filterBoundaries.pop();}};}
+    const serviceContext={runtime,helpers,manifest,exceptions,exceptionContext,nativeToManaged,managedToNative,assertActive};
     imports.clr=Object.fromEntries(manifest.imports.map(descriptor=>[descriptor.name,descriptor.kind==='exception_tag'?exceptions.requireExceptionTag():createService(descriptor,serviceContext)]));
   }
   const instantiateStart=now();
@@ -232,7 +237,7 @@ export async function loadWasm(input, options = {}) {
   const maxInstructions=options.maxInstructions??10_000_000;
   if(!Number.isSafeInteger(maxInstructions)||maxInstructions<1||maxInstructions>2147483647)throw new NativeWasmError('maxInstructions must be an integer between 1 and 2147483647.','WASM_ARGUMENT_RANGE');
   const begin=()=>{assertActive();if(activeDepth++===0){if(fuel instanceof WebAssembly.Global)fuel.value=typeof fuel.value==='bigint'?BigInt(maxInstructions):maxInstructions;if(status instanceof WebAssembly.Global)status.value=0;}};
-  const finish=()=>{activeDepth--;};
+  const finish=()=>{if(--activeDepth===0&&exceptionContext)exceptionServices.resetExceptionContext(exceptionContext);};
   const select=(selector,invokeOptions={})=>{
     const selected=typeof selector==='object'?selector:null;
     const signature=selected?.parameters??invokeOptions.parameterTypes;
@@ -260,6 +265,7 @@ export async function loadWasm(input, options = {}) {
     const kind=kindOverride??(runtime?.types.get(type)?.isEnum?wasmType(runtime.types.get(type).fields?.find(f=>f.name==='value__')?.type??'System.Int32'):wasmType(type));
     if(kind!=='externref')return nativeToManaged(publicNumeric(value,scalarTypeOverride??publicType(type),kind),type,kind);
     if(type.endsWith('[]')&&(Array.isArray(value)||ArrayBuffer.isView(value))){const element=type.slice(0,-2);const array=runtime.newArray(element,helpers.i4(value.length));array.items=Array.from(value,v=>toManagedArgument(v,element));return array;}
+    if(standardValues.isStandardValueType(type))return standardValues.standardValueFromJS(runtime,value,type);
     if(type==='System.String'&&value!==null&&typeof value!=='string')throw new NativeWasmError('Expected a string or null.','WASM_ARGUMENT_TYPE');
     return value??null;
   };
@@ -313,9 +319,13 @@ function createService(descriptor, context) {
   const type=typeName(operand?.type??operand);
   const valueType=descriptor.valueType??descriptor.returnType??operand?.type??type;
   const handlerBlock=offset=>{const block=operand?.blocks?.indexOf(offset);if(block===undefined||block<0)throw new NativeWasmError(`Exception continuation IL_${offset} is not a native block boundary.`,'WASM_EXCEPTION_REGIONS');return block;};
-  const exceptionFrame=()=>{const state=exceptions.createExceptionFrame(operand,{normalize:error=>error?.$type?error:new h.ManagedException('System.Exception',error?.message??String(error),error)});const frameworkMatch=state.isInstance;state.isInstance=(error,target)=>rt.isInstance(error,target)||frameworkMatch(error,target);return state;};
+  const exceptionFrame=()=>{const state=exceptions.createExceptionFrame(operand,{context:context.exceptionContext,normalize:error=>error?.$type?error:new h.ManagedException('System.Exception',error?.message??String(error),error)});const frameworkMatch=state.isInstance;state.isInstance=(error,target)=>rt.isInstance(error,target)||frameworkMatch(error,target);return state;};
   const functions={
     eh_frame:exceptionFrame,
+    eh_position:(state,origin)=>exceptions.positionExceptionFrame(state,origin),
+    eh_capture:(state,index,cell)=>exceptions.captureExceptionCell(state,index,cell),
+    eh_cell:(state,index)=>exceptions.exceptionCell(state,index),
+    eh_exit:state=>exceptions.exitExceptionFrame(state),
     eh_throw:(state,origin,error)=>handlerBlock(exceptions.dispatchException(state,origin,error)),
     eh_leave:(state,origin,target)=>handlerBlock(exceptions.leaveProtectedRegion(state,origin,target)),
     eh_endfinally:state=>handlerBlock(exceptions.finishFinally(state)),
@@ -361,6 +371,24 @@ function createService(descriptor, context) {
     ref_is_null:value=>value==null?1:0,
     budget_exceeded:()=>{throw new NativeWasmError('The native WebAssembly instruction budget was exceeded.','WASM_INSTRUCTION_LIMIT');},
   };
+  if(kind==='constrained_call') {
+    functions[kind]=(...nativeArgs)=>{
+      const reference=nativeArgs[0];
+      if(!reference?.$byref)throw new h.ManagedException('System.InvalidProgramException','A constrained call requires a managed reference receiver.');
+      let self=reference.get();
+      if(operand.constrainedMode==='reference') self=noNull(self);
+      else if(operand.declaringType===operand.constrainedType) {
+        // Calling a framework value override uses an isolated boxed-value copy.
+        // Framework helpers accept the same managed reference representation as
+        // an unboxed instance method, without sharing the original storage.
+        let storage=h.copyValue(self);
+        self={$byref:true,type:operand.constrainedType,get:()=>storage,set:value=>{storage=h.copyValue(value);}};
+      } else self=rt.box(self,operand.constrainedType);
+      const args=nativeArgs.slice(1).map((value,index)=>convert(value,index+1,operand.parameters?.[index]));
+      const f=frame([self,...args]);rt.call(f,operand,'callvirt');
+      return voidType(operand.returnType)?undefined:result(f.stack.pop());
+    };
+  }
   if(['call','callvirt','newobj'].includes(kind)){
     functions[kind]=(...nativeArgs)=>{
       const isInstance=kind!=='newobj'&&!operand.isStatic;

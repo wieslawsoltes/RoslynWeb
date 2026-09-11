@@ -6,7 +6,9 @@ import { invokeEmitBuiltin, isEmitField, reflectedOpcode } from './reflection-em
 import { emitTypeBases } from './reflection-types.mjs';
 import { invokeCollectionsBuiltin, isCollectionsInstance } from './collections-extra.mjs';
 import { invokeIoBuiltin, ioTypeBases } from './io.mjs';
+import { invokeJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isPointer, allocateMemory, releaseMemory, pointerBinary, readMemory, writeMemory, copyMemory, initializeMemory } from './memory.mjs';
+import { isStandardValueType, defaultStandardValue, decimalFromJS, standardValueFromJS, standardValueToJS, boxStandardValue, unboxStandardValue, standardStaticField, formatStandardValue, invokeStandardValueBuiltin } from './standard-values.mjs';
 
 const voidType = type => !type || type === 'System.Void' || type === 'void';
 const trimType = type => String(type?.name ?? type ?? '').replace(/&$/, '');
@@ -16,6 +18,7 @@ const longTypes = new Set(['System.Int64', 'System.UInt64', 'long', 'ulong']);
 const floatTypes = new Set(['System.Single', 'System.Double', 'float', 'double']);
 const isNumericType = type => intTypes.has(trimType(type)) || longTypes.has(trimType(type)) || floatTypes.has(trimType(type));
 const exceptionBases = Object.freeze({
+  'System.ArithmeticException': 'System.SystemException', 'System.DivideByZeroException': 'System.ArithmeticException', 'System.OverflowException': 'System.ArithmeticException',
   'System.ArgumentNullException': 'System.ArgumentException', 'System.ArgumentOutOfRangeException': 'System.ArgumentException',
   'System.ObjectDisposedException': 'System.InvalidOperationException',
   'System.IO.EndOfStreamException': 'System.IO.IOException', 'System.IO.FileNotFoundException': 'System.IO.IOException',
@@ -59,6 +62,8 @@ export function toJS(value) {
   if (isRef(value)) return toJS(value.get());
   if (value?.$box) return toJS(value.value);
   if (value?.$array) return value.items.map(toJS);
+  const standard = standardValueToJS(value, toJS);
+  if (standard !== undefined) return standard;
   return value;
 }
 
@@ -66,6 +71,7 @@ export function fromJS(value, type) {
   if (value && typeof value === 'object' && typeof value.$int64 === 'string') value = BigInt(value.$int64);
   if (value instanceof Numeric || value?.$type || isRef(value)) return value;
   const name = trimType(type);
+  if (name === 'System.Decimal') return decimalFromJS(value);
   if (value === null || value === undefined) return null;
   if (name.endsWith('[]') && Array.isArray(value)) return { $array: true, $type: name, elementType: name.slice(0, -2), items: value.map(item => fromJS(item, name.slice(0, -2))) };
   if (longTypes.has(name)) return i8(value);
@@ -80,7 +86,7 @@ export function fromJS(value, type) {
 
 function numericPair(a, b) {
   if (!(a instanceof Numeric) || !(b instanceof Numeric)) throw managedError('System.InvalidProgramException', 'Arithmetic operands must be numeric stack values.');
-  if (a.kind.startsWith('r') || b.kind.startsWith('r')) return { kind: 'r8', a: Number(a.value), b: Number(b.value) };
+  if (a.kind.startsWith('r') || b.kind.startsWith('r')) return { kind: a.kind === 'r4' && b.kind === 'r4' ? 'r4' : 'r8', a: Number(a.value), b: Number(b.value) };
   if (a.kind === 'i8' || b.kind === 'i8') return { kind: 'i8', a: BigInt(a.value), b: BigInt(b.value) };
   return { kind: 'i4', a: a.value, b: b.value };
 }
@@ -92,7 +98,7 @@ export function binary(opcode, left, right) {
   const op = opcode.split('.')[0], unsigned = opcode.endsWith('.un'), checked = opcode.includes('.ovf');
   let { a, b } = p;
   const bits = p.kind === 'i8' ? 64 : 32;
-  if (unsigned && p.kind !== 'r8') { a = p.kind === 'i8' ? BigInt.asUintN(64, a) : a >>> 0; b = p.kind === 'i8' ? BigInt.asUintN(64, b) : b >>> 0; }
+  if (unsigned && !p.kind.startsWith('r')) { a = p.kind === 'i8' ? BigInt.asUintN(64, a) : a >>> 0; b = p.kind === 'i8' ? BigInt.asUintN(64, b) : b >>> 0; }
   let result;
   if (checked) {
     const x = BigInt(a), y = BigInt(b);
@@ -107,8 +113,8 @@ export function binary(opcode, left, right) {
     case 'sub': result = a - b; break;
     case 'mul': result = p.kind === 'i4' ? Math.imul(a, b) : a * b; break;
     case 'div': case 'rem': {
-      if (p.kind !== 'r8' && (b === 0 || b === 0n)) throw managedError('System.DivideByZeroException', 'Attempted to divide by zero.');
-      if (op === 'div' && p.kind !== 'r8' && !unsigned && a === (p.kind === 'i8' ? -(1n << 63n) : -2147483648) && b === (p.kind === 'i8' ? -1n : -1)) throw managedError('System.OverflowException', 'Arithmetic operation resulted in an overflow.');
+      if (!p.kind.startsWith('r') && (b === 0 || b === 0n)) throw managedError('System.DivideByZeroException', 'Attempted to divide by zero.');
+      if (!p.kind.startsWith('r') && !unsigned && a === (p.kind === 'i8' ? -(1n << 63n) : -2147483648) && b === (p.kind === 'i8' ? -1n : -1)) throw managedError('System.OverflowException', 'Arithmetic operation resulted in an overflow.');
       result = op === 'div' ? a / b : a % b;
       if (p.kind === 'i4') result = Math.trunc(result);
       break;
@@ -120,13 +126,13 @@ export function binary(opcode, left, right) {
     case 'shr': result = p.kind === 'i8' ? (unsigned ? BigInt.asUintN(64, a) : a) >> (BigInt(b) & 63n) : unsigned ? a >>> (Number(b) & 31) : a >> (Number(b) & 31); break;
     default: throw limitation(`Unsupported numeric operation ${opcode}.`);
   }
-  return p.kind === 'i8' ? i8(result) : p.kind === 'r8' ? r8(result) : i4(result);
+  return p.kind === 'i8' ? i8(result) : p.kind === 'r8' ? r8(result) : p.kind === 'r4' ? r4(result) : i4(result);
 }
 
 export function unary(op, value) {
   if (!(value instanceof Numeric)) throw managedError('System.InvalidProgramException', 'Unary operand must be numeric.');
   const result = op === 'neg' ? -value.value : ~value.value;
-  return value.kind === 'i8' ? i8(result) : value.kind.startsWith('r') ? r8(result) : i4(result);
+  return value.kind === 'i8' ? i8(result) : value.kind === 'r4' ? r4(result) : value.kind === 'r8' ? r8(result) : i4(result);
 }
 
 export function compare(opcode, left, right) {
@@ -160,26 +166,40 @@ export function compare(opcode, left, right) {
 export function convert(opcode, value) {
   if (isPointer(value) && ['conv.i','conv.u'].includes(opcode)) return value;
   let v = raw(value);
-  const unsignedInput = opcode.endsWith('.un');
+  const unsignedInput = opcode.endsWith('.un'), checked = opcode.includes('.ovf.');
   const suffix = opcode.replace(/^conv\.(ovf\.)?/, '').replace(/\.un$/, '');
   if (opcode === 'conv.r.un') { v = value.kind === 'i8' ? BigInt.asUintN(64, BigInt(v)) : Number(v) >>> 0; return r8(v); }
   if (suffix === 'r4') return r4(v);
   if (suffix === 'r8') return r8(v);
   if (unsignedInput && value instanceof Numeric && !value.kind.startsWith('r')) v = value.kind === 'i8' ? BigInt.asUintN(64, v) : v >>> 0;
+  // conv.u8 widens an i4 evaluation-stack value by zero extension. Roslyn
+  // emits it for uint -> ulong; signed int -> ulong first uses conv.i8.
+  if (opcode === 'conv.u8' && value instanceof Numeric && value.kind === 'i4') v = v >>> 0;
   const sizes = { i1: 8, u1: 8, i2: 16, u2: 16, i4: 32, u4: 32, i8: 64, u8: 64, i: 32, u: 32 };
   const bits = sizes[suffix];
   if (!bits) throw limitation(`Unsupported conversion ${opcode}.`);
-  const unsigned = suffix.startsWith('u');
-  if (typeof v === 'number') {
-    if (!Number.isFinite(v)) {
-      if (opcode.includes('.ovf.')) throw managedError('System.OverflowException', 'Value was either too large or too small.');
-      // ECMA-335 leaves nonfinite, unchecked float-to-integer conversions unspecified.
-      v = 0;
+  const unsigned = suffix.startsWith('u'), floating = value instanceof Numeric && value.kind.startsWith('r');
+  let integer;
+  if (floating && !checked) {
+    // Match the bundled .NET 10 runtime: unchecked float conversions saturate
+    // at the Int32/UInt32/Int64/UInt64 boundary, and NaN maps to zero. Narrow
+    // destinations first convert to signed Int32 and then truncate their bits.
+    // https://learn.microsoft.com/dotnet/core/compatibility/jit/9.0/fp-to-integer
+    const stageBits = Math.max(bits, 32), stageUnsigned = bits >= 32 && unsigned;
+    const minimum = stageUnsigned ? 0n : -(1n << BigInt(stageBits - 1));
+    const maximum = (1n << BigInt(stageUnsigned ? stageBits : stageBits - 1)) - 1n;
+    integer = Number.isNaN(v) ? 0n : v < Number(minimum) ? minimum : v >= Number(maximum + 1n) ? maximum : BigInt(Math.trunc(v));
+  } else {
+    if (typeof v === 'number') {
+      if (!Number.isFinite(v)) {
+        if (checked) throw managedError('System.OverflowException', 'Value was either too large or too small.');
+        v = 0;
+      }
+      v = Math.trunc(v);
     }
-    v = Math.trunc(v);
+    integer = BigInt(v);
   }
-  let integer = BigInt(v);
-  if (opcode.includes('.ovf.')) {
+  if (checked) {
     const min = unsigned ? 0n : -(1n << BigInt(bits - 1));
     const max = (1n << BigInt(unsigned ? bits : bits - 1)) - 1n;
     if (integer < min || integer > max) throw managedError('System.OverflowException', 'Value was either too large or too small.');
@@ -194,7 +214,8 @@ export function methodKey(method) {
 }
 const fieldKey = field => `${field.declaringType ?? ''}::${field.name}`;
 
-class UnwindEscape { constructor(frame, error) { this.frame = frame; this.error = error; } }
+class UnwindEscape { constructor(frame, error, search) { this.frame = frame; this.error = error; this.search = search; } }
+class ExceptionPropagation { constructor(search) { this.search = search; } }
 
 export class ILRuntime {
   constructor(model, options = {}) {
@@ -203,6 +224,7 @@ export class ILRuntime {
     this.output = options.output ?? (line => console.log(line));
     this.maxInstructions = options.maxInstructions ?? 10_000_000;
     this.instructionCount = 0; this.callDepth = 0;
+    this.exceptionFrames = []; this.filterBoundaries = [];
     this.methods = new Map(); this.methodsByToken = new Map(); this.types = new Map(); this.assemblies = new Map();
     this.staticFields = new Map(); this.initializedTypes = new Set(); this.initializingTypes = new Set(); this.failedTypes = new Map();
     this.compiled = new Map(); this.stringInterns = new Map(); this.specializations = new Map();
@@ -213,6 +235,9 @@ export class ILRuntime {
     this.assemblies.set(model.name, model);
     for (const type of model.types ?? []) {
       const typeName = type.name ?? type.fullName;
+      // Every PE carries this structural metadata row. An empty row has no
+      // executable type identity and must not collide when implementation DLLs link.
+      if (typeName === '<Module>' && !(type.methods?.length || type.fields?.length)) continue;
       if (this.types.has(typeName) && this.types.get(typeName).$assembly !== model.name) throw limitation(`Type collision while linking ${typeName}.`);
       this.types.set(typeName, { ...type, name: typeName, $assembly: model.name });
       for (const method of type.methods ?? []) {
@@ -235,8 +260,34 @@ export class ILRuntime {
   invalid(message) { return managedError('System.InvalidProgramException', message); }
   arithmeticException() { return managedError('System.ArithmeticException', 'Overflow or underflow in the arithmetic operation.'); }
 
+  objectHashCode(value) {
+    if (value?.$box) return this.objectHashCode(value.value);
+    if (value instanceof Numeric) {
+      if (value.kind === 'i4') return i4(value.value);
+      if (value.kind === 'i8') return i4(Number(BigInt.asIntN(32, value.value ^ (value.value >> 32n))));
+      const view = new DataView(new ArrayBuffer(8));
+      if (value.kind === 'r4') {view.setFloat32(0, value.value === 0 ? 0 : Number.isNaN(value.value) ? NaN : value.value, true); return i4(view.getInt32(0, true));}
+      view.setFloat64(0, value.value === 0 ? 0 : Number.isNaN(value.value) ? NaN : value.value, true);
+      return i4(view.getInt32(0, true) ^ view.getInt32(4, true));
+    }
+    if (typeof value === 'string') {let hash = 2166136261; for (let i = 0; i < value.length; i++) hash = Math.imul(hash ^ value.charCodeAt(i), 16777619); return i4(hash);}
+    if (value?.$valueType) {
+      const standard = invokeStandardValueBuiltin(this, {declaringType: value.$type, name: 'GetHashCode', isStatic: false, parameters: [], returnType: 'System.Int32'}, [], value);
+      if (standard.handled) return standard.value;
+      let hash = 0; for (const field of Object.values(value.fields ?? {})) hash = Math.imul(hash, 31) ^ (field == null ? 0 : raw(this.objectHashCode(field))); return i4(hash);
+    }
+    // Reference identity hashes are stable within this runtime. As in the CLR,
+    // callers must not persist them or assume equality across runtimes/processes.
+    this.objectHashCodes ??= new WeakMap(); this.nextObjectHashCode ??= 1;
+    if (!this.objectHashCodes.has(value)) this.objectHashCodes.set(value, this.nextObjectHashCode++ | 0);
+    return i4(this.objectHashCodes.get(value));
+  }
+
+
   defaultValue(type) {
     const name = trimType(type);
+    const standard = defaultStandardValue(this, name);
+    if (standard !== undefined) return standard;
     if (longTypes.has(name)) return i8(0);
     if (name === 'System.Single' || name === 'float') return r4(0);
     if (floatTypes.has(name)) return r8(0);
@@ -266,7 +317,20 @@ export class ILRuntime {
   }
 
   frame(method, args, self) {
-    return { method, stack: [], locals: (method.locals ?? []).map(t => this.defaultValue(t.type ?? t)), args: method.isStatic ? args.map(copyValue) : [self, ...args.map(copyValue)], offset: 0, exception: null, transfer: null, finallyQueue: [], activeFinally: null, filterState: null, catches: [] };
+    // CLR value-type instance methods receive a managed address for `this`.
+    // In particular, newobj must initialize the allocation itself: copying the
+    // receiver on each ldarg.0 silently discarded struct constructor stores.
+    if (!method.isStatic && self?.$valueType) {
+      const instance = self;
+      self = address(() => instance, value => {
+        const replacement = copyValue(value);
+        for (const key of Object.keys(instance)) delete instance[key];
+        Object.assign(instance, replacement);
+      }, method.declaringType);
+    }
+    const frame = { method, stack: [], locals: (method.locals ?? []).map(t => this.defaultValue(t.type ?? t)), args: method.isStatic ? args.map(copyValue) : [self, ...args.map(copyValue)], offset: 0, exception: null, transfer: null, finallyQueue: [], activeFinally: null, filterState: null, catches: [] };
+    this.exceptionFrames.push(frame);
+    return frame;
   }
 
   typeContext(name, method) { return substituteType(name, method?.$typeArguments, method?.$methodArguments); }
@@ -335,7 +399,10 @@ export class ILRuntime {
     let type = this.typeName(self);
     while (type) {
       const override = this.closeType(type)?.methodOverrides?.find(x => x.declaration.declaringType === ref.declaringType && x.declaration.name === ref.name && (x.declaration.parameters ?? []).map(p => p.type ?? p).join() === (ref.parameters ?? []).map(p => p.type ?? p).join());
-      if (override) return this.resolveMethod(override.body);
+      if (override) {
+        const body = override.body;
+        return this.resolveMethod({ ...body, declaringType: genericDefinitionName(body.declaringType) === genericDefinitionName(type) ? type : body.declaringType, genericArguments: ref.genericArguments ?? body.genericArguments });
+      }
       const candidate = this.resolveMethod({ ...ref, declaringType: type });
       if (candidate && !candidate.isStatic) return candidate;
       type = this.closeType(type)?.baseType;
@@ -351,7 +418,7 @@ export class ILRuntime {
     try {
       const ctor = (this.closeType(typeName)?.methods ?? []).find(m => m.name === '.cctor');
       const resolvedCtor = ctor && this.resolveMethod({ ...ctor, declaringType: typeName });
-      if (resolvedCtor) this.invokeManaged(resolvedCtor, [], null, true);
+      if (resolvedCtor) this.withExceptionBoundary(() => this.invokeManaged(resolvedCtor, [], null, true));
       this.initializedTypes.add(typeName);
     } catch (error) {
       if (error?.runtimeLimitation) throw error;
@@ -377,7 +444,7 @@ export class ILRuntime {
     const method = this.resolveMethod(selector, options.assembly ?? this.model.name);
     if (!method) throw limitation(`Managed method '${typeof selector === 'object' ? methodKey(selector) : selector}' was not found.`);
     this.instructionCount = 0;
-    const result = this.invokeManaged(method, args.map((a, i) => fromJS(a, method.parameters?.[i]?.type ?? method.parameters?.[i])), options.self ?? null);
+    const result = this.invokeManaged(method, args.map((a, i) => { const type = method.parameters?.[i]?.type ?? method.parameters?.[i]; return isStandardValueType(type) ? standardValueFromJS(this, a, type) : fromJS(a, type); }), options.self ?? null);
     if (options.raw) return result;
     const plain = toJS(result), resultType = trimType(method.returnType);
     if (resultType === 'System.Boolean') return !!plain;
@@ -456,6 +523,8 @@ export class ILRuntime {
 
   allocate(typeName, initialize = true) {
     const name = trimType(typeName);
+    const standard = defaultStandardValue(this, name);
+    if (standard !== undefined) return standard;
     if (initialize) this.ensureType(name);
     const definition = this.closeType(name);
     if (name.endsWith('Exception') && (name.startsWith('System.') || this.inherits(name, 'System.Exception'))) return new ManagedException(name);
@@ -517,9 +586,10 @@ export class ILRuntime {
     return null;
   }
 
-  box(value, type) { return { $type: trimType(type), $box: true, value: copyValue(value) }; }
+  box(value, type) { const standard = boxStandardValue(this, value, trimType(type)); return standard !== undefined ? standard : { $type: trimType(type), $box: true, value: copyValue(value) }; }
   unbox(value, type, any = false) {
-    if (!isNumericType(type) && !this.types.get(trimType(type))?.isValueType && any) return this.cast(value, type, true);
+    if (any) { const standard = unboxStandardValue(this, value, trimType(type)); if (standard !== undefined) return standard; }
+    if (!isNumericType(type) && !isStandardValueType(type) && !this.types.get(trimType(type))?.isValueType && any) return this.cast(value, type, true);
     nullCheck(value);
     if (!value.$box || value.$type !== trimType(type)) throw managedError('System.InvalidCastException', 'Specified cast is not valid.');
     return any ? copyValue(value.value) : address(() => value.value, item => { value.value = copyValue(item); }, type);
@@ -528,6 +598,10 @@ export class ILRuntime {
   field(frame, ref, operation) {
     const isStatic = operation.includes('sfld');
     const key = fieldKey(ref);
+    if (operation === 'ldsfld' || operation === 'ldsflda') {
+      const standard = standardStaticField(ref);
+      if (standard !== undefined) { frame.stack.push(operation === 'ldsfld' ? standard : address(() => standard, () => { throw managedError('System.FieldAccessException', 'Decimal constants are read-only.'); }, ref.type)); return; }
+    }
     if (operation === 'ldsfld' && key === 'System.String::Empty') { frame.stack.push(''); return; }
     if (operation === 'ldsfld' && key === 'System.Type::EmptyTypes') { frame.stack.push(this.newArray('System.Type', i4(0))); return; }
     if ((operation === 'ldsfld' || operation === 'ldsflda') && isEmitField(ref)) {
@@ -633,7 +707,11 @@ export class ILRuntime {
   }
 
   allocateMemory(frame, count) { return allocateMemory(this, frame, count); }
-  releaseFrame(frame) { releaseMemory(this, frame); }
+  releaseFrame(frame) {
+    releaseMemory(this, frame);
+    const index = this.exceptionFrames.lastIndexOf(frame);
+    if (index >= 0) this.exceptionFrames.length = index;
+  }
   copyMemory(destination, source, count) { return copyMemory(destination, source, count); }
   initializeMemory(destination, value, count) { return initializeMemory(destination, value, count); }
   makeTypedReference(reference, type) {
@@ -668,14 +746,59 @@ export class ILRuntime {
     return this.handlers(frame).filter(h => ['catch', 'clause', 'filter'].includes(String(h.kind).toLowerCase()) && this.inside(offset, h.tryOffset, h.tryLength)).sort((a, b) => a.tryLength - b.tryLength || b.tryOffset - a.tryOffset);
   }
 
+  withExceptionBoundary(callback) {
+    // Runtime wrappers (type initialization and reflection) replace the thrown
+    // exception before it becomes visible to the caller's search pass.
+    this.filterBoundaries.push(this.exceptionFrames.length);
+    try { return callback(); } finally { this.filterBoundaries.pop(); }
+  }
+
+  propagateException(frame, error, search) {
+    const boundary = this.filterBoundaries.at(-1) ?? 0;
+    if (search && this.exceptionFrames.lastIndexOf(frame) > boundary) throw new ExceptionPropagation(search);
+    throw error;
+  }
+
+  searchException(frame, exception, offset) {
+    const frames = this.exceptionFrames, start = frames.lastIndexOf(frame), boundary = this.filterBoundaries.at(-1) ?? 0;
+    frame.offset = offset;
+    // CLR's first pass searches every active caller before unwinding a callee.
+    // The selected handler travels with the exception during the second pass.
+    for (let index = start; index >= boundary; index--) {
+      const current = frames[index];
+      for (const handler of this.exceptionCandidates(current, current.offset)) {
+        if (String(handler.kind).toLowerCase() !== 'filter') {
+          if (!handler.catchType || this.isInstance(exception, handler.catchType)) return {exception, frame:current, handler};
+          continue;
+        }
+        if (typeof current.evaluateFilter !== 'function') throw limitation('This saved JavaScript module must be regenerated to execute two-pass exception filters.');
+        const savedLength = frames.length;
+        this.filterBoundaries.push(savedLength);
+        let accepted = false;
+        try { accepted = truth(current.evaluateFilter(handler.filterOffset, exception)); }
+        catch (error) { if (error?.runtimeLimitation) throw error; }
+        finally { frames.length = savedLength; this.filterBoundaries.pop(); }
+        if (accepted) return {exception, frame:current, handler};
+      }
+    }
+    return {exception, frame:null, handler:null};
+  }
+
   handleException(frame, error, offset) {
-    if (error instanceof UnwindEscape && error.frame === frame) throw error.error;
+    if (error instanceof UnwindEscape && error.frame === frame) return this.propagateException(frame, error.error, error.search);
     if (error?.runtimeLimitation) throw error;
     if (frame.filterState) return this.endFilter(frame, false);
-    const exception = error?.$type ? error : new ManagedException('System.Exception', error?.message ?? String(error), error);
+    const search = error instanceof ExceptionPropagation ? error.search : this.searchException(frame, error?.$type ? error : new ManagedException('System.Exception', error?.message ?? String(error), error), offset);
     frame.stack.length = 0;
-    try { return this.selectExceptionHandler(frame, { exception, origin: offset, candidates: this.exceptionCandidates(frame, offset), index: 0 }); }
-    catch (error) { if (error instanceof UnwindEscape && error.frame === frame) throw error.error; throw error; }
+    const handler = search.frame === frame ? search.handler : null;
+    try {
+      return this.beginTransfer(frame, handler
+        ? {kind:'catch', target:handler.handlerOffset, exception:search.exception, handler}
+        : {kind:'throw', target:-1, exception:search.exception, search}, offset);
+    } catch (unwind) {
+      if (unwind instanceof UnwindEscape && unwind.frame === frame) return this.propagateException(frame, unwind.error, unwind.search);
+      throw unwind;
+    }
   }
 
   selectExceptionHandler(frame, state) {
@@ -720,7 +843,7 @@ export class ILRuntime {
     frame.transfer = transfer.parent?.transfer ?? null;
     frame.finallyQueue = transfer.parent?.finallyQueue ?? [];
     frame.activeFinally = transfer.parent?.activeFinally ?? null;
-    if (transfer.kind === 'throw') throw new UnwindEscape(frame, transfer.exception);
+    if (transfer.kind === 'throw') throw new UnwindEscape(frame, transfer.exception, transfer.search);
     if (transfer.kind === 'catch') {
       frame.exception = transfer.exception; frame.stack.push(transfer.exception);
       frame.catches.push({ handler: transfer.handler, exception: transfer.exception });
@@ -749,6 +872,8 @@ export class ILRuntime {
     if (isRef(value)) value = value.get();
     if (value?.$box) { typeHint ??= value.$type; value = value.value; }
     if (value === null || value === undefined) return '';
+    const standard = formatStandardValue(this, value, format);
+    if (standard !== undefined) return standard;
     if (typeof value === 'string') return value;
     if (value instanceof Numeric) {
       if (typeHint === 'System.Boolean') return truth(value) ? 'True' : 'False';
@@ -765,6 +890,10 @@ export class ILRuntime {
   }
 
   callBuiltin(ref, args, self, kind) {
+    const intrinsic = invokeJavaScriptIntrinsic(this, ref, args);
+    if (intrinsic.handled) return intrinsic;
+    const standard = invokeStandardValueBuiltin(this, ref, args, self, kind);
+    if (standard.handled) return standard;
     const io = invokeIoBuiltin(this, ref, args, self, kind);
     if (io.handled) return io;
     const emitted = invokeEmitBuiltin(this, ref, args, self, kind);
@@ -821,6 +950,7 @@ export class ILRuntime {
       }
     }
     if (type === 'System.Object') {
+      if (name === 'GetHashCode' && args.length === 0) return done(this.objectHashCode(nullCheck(self)));
       if (name === 'ReferenceEquals') return done(i4(args[0] === args[1]));
       if (name === 'Equals') return done(i4(ref.isStatic ? args[0] === args[1] : self === args[0]));
       if (name === 'ToString') return done(this.format(self));
@@ -834,14 +964,17 @@ export class ILRuntime {
       if (name === 'IsInfinity') return done(i4(a[0] === Infinity || a[0] === -Infinity));
     }
     if (type === 'System.Math' || type === 'System.MathF') {
+      // Evaluation-stack integers carry signed bits; Math unsigned overloads
+      // compare their declared unsigned values.
+      const values = a.map((value, index) => { const parameter = trimType(ref.parameters?.[index]?.type ?? ref.parameters?.[index]); return ['System.UInt32', 'System.UIntPtr'].includes(parameter) ? Number(value) >>> 0 : parameter === 'System.UInt64' ? BigInt.asUintN(64, BigInt(value)) : value; });
       const names = { Abs: 'abs', Acos: 'acos', Acosh: 'acosh', Asin: 'asin', Asinh: 'asinh', Atan: 'atan', Atan2: 'atan2', Atanh: 'atanh', Cbrt: 'cbrt', Ceiling: 'ceil', Cos: 'cos', Cosh: 'cosh', Exp: 'exp', Floor: 'floor', Log: 'log', Log10: 'log10', Log2: 'log2', Max: 'max', Min: 'min', Pow: 'pow', Sin: 'sin', Sinh: 'sinh', Sqrt: 'sqrt', Tan: 'tan', Tanh: 'tanh', Truncate: 'trunc' };
-      if (name === 'Sign') { if (Number.isNaN(a[0])) throw managedError('System.ArithmeticException', 'Function does not accept floating point Not-a-Number values.'); return done(i4(Math.sign(Number(a[0])))); }
-      if (name === 'Clamp') { if (a[1] > a[2]) throw managedError('System.ArgumentException', 'The minimum value must be less than or equal to the maximum.'); return done(fromJS(a[0] < a[1] ? a[1] : a[0] > a[2] ? a[2] : a[0], ref.returnType)); }
-      if (name === 'Abs' && (a[0] === -2147483648 && trimType(ref.returnType) === 'System.Int32' || a[0] === -(1n << 63n))) throw managedError('System.OverflowException', 'Negating the minimum value of a twos complement number is invalid.');
-      if (typeof a[0] === 'bigint' && ['Abs', 'Min', 'Max'].includes(name)) return done(i8(name === 'Abs' ? a[0] < 0 ? -a[0] : a[0] : name === 'Min' ? a[0] < a[1] ? a[0] : a[1] : a[0] > a[1] ? a[0] : a[1]));
-      if (name === 'Log' && a.length === 2) return done(r8(Math.log(a[0]) / Math.log(a[1])));
-      if (name === 'Round' && a.length === 1) { const floor = Math.floor(a[0]), fraction = a[0] - floor; return done(fromJS(fraction === 0.5 ? floor % 2 === 0 ? floor : floor + 1 : Math.round(a[0]), ref.returnType)); }
-      if (names[name]) return done(fromJS(Math[names[name]](...a.map(Number)), ref.returnType));
+      if (name === 'Sign') { if (Number.isNaN(values[0])) throw managedError('System.ArithmeticException', 'Function does not accept floating point Not-a-Number values.'); return done(i4(Math.sign(Number(values[0])))); }
+      if (name === 'Clamp') { if (values[1] > values[2]) throw managedError('System.ArgumentException', 'The minimum value must be less than or equal to the maximum.'); return done(fromJS(values[0] < values[1] ? values[1] : values[0] > values[2] ? values[2] : values[0], ref.returnType)); }
+      if (name === 'Abs' && (values[0] === ({ 'System.SByte': -128, 'System.Int16': -32768, 'System.Int32': -2147483648 })[trimType(ref.returnType)] || values[0] === -(1n << 63n))) throw managedError('System.OverflowException', 'Negating the minimum value of a twos complement number is invalid.');
+      if (typeof values[0] === 'bigint' && ['Abs', 'Min', 'Max'].includes(name)) return done(i8(name === 'Abs' ? values[0] < 0 ? -values[0] : values[0] : name === 'Min' ? values[0] < values[1] ? values[0] : values[1] : values[0] > values[1] ? values[0] : values[1]));
+      if (name === 'Log' && values.length === 2) return done(r8(Math.log(values[0]) / Math.log(values[1])));
+      if (name === 'Round' && values.length === 1) { const floor = Math.floor(values[0]), fraction = values[0] - floor; let rounded = fraction === 0.5 ? floor % 2 === 0 ? floor : floor + 1 : Math.round(values[0]); if (rounded === 0 && (values[0] < 0 || Object.is(values[0], -0))) rounded = -0; return done(fromJS(rounded, ref.returnType)); }
+      if (names[name]) return done(fromJS(Math[names[name]](...values.map(Number)), ref.returnType));
     }
     if (type === 'System.Array') {
       if (name === 'get_Length') return done(i4(nullCheck(self).items.length));
@@ -939,6 +1072,11 @@ export class ILRuntime {
     });
   }
 }
+
+// Capture the original tick implementation so custom tracing hooks always keep
+// per-instruction calls, including when users replace the prototype method.
+const defaultInstructionTick = ILRuntime.prototype.tick;
+ILRuntime.prototype.hasDefaultInstructionTick = function () { return this.tick === defaultInstructionTick; };
 
 // Helpers are shared by generated methods and remain ordinary, importable JavaScript.
 Object.assign(ILRuntime.prototype, { i4, i8, r4, r8, raw, truth, binary, unary, compare, convert, copy: copyValue, nullCheck });

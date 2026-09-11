@@ -1,5 +1,9 @@
 import { Writer, valueTypes, op } from './binary.mjs';
-import { analyzeWasmAssembly } from './analysis.mjs';
+import { analyzeWasmAssembly, nativeFrameworkEnums } from './analysis.mjs';
+import { prepareNativeExceptionFilters } from './filter-companions.mjs';
+import { planStructuredControlFlow } from './optimizer.mjs';
+import { nativeIntrinsic } from './intrinsics.mjs';
+import { isStandardValueType } from '../il/standard-values.mjs';
 
 const typeName = value => typeof value === 'string' ? value : value?.type ?? value?.name ?? value?.fullName;
 const clrFor = type => ({i32:'System.Int32',i64:'System.Int64',f32:'System.Single',f64:'System.Double',externref:'System.Object'})[type];
@@ -33,7 +37,7 @@ export function compileWasm(model, options={}) {
   const started=clock();if(options.maxInstructions!==undefined&&(!Number.isSafeInteger(options.maxInstructions)||options.maxInstructions<1||options.maxInstructions>2147483647)){const e=new RangeError('maxInstructions must be an integer between 1 and 2147483647.');e.code='WASM_ARGUMENT_RANGE';throw e;}
   const analysis=analyzeWasmAssembly(model,options), analyzed=clock();
   if(!analysis.supported){const e=new Error(`Direct WebAssembly compilation is unsupported: ${analysis.diagnostics.filter(d=>d.severity==='error').map(d=>d.message).slice(0,8).join('; ')}`);e.name='WasmCompilationError';e.code='WASM_UNSUPPORTED';e.diagnostics=analysis.diagnostics;e.analysis=analysis;throw e;}
-  const methods=analysis.methods, imports=[], importKeys=new Map(), signatures=[], signatureKeys=new Map();
+  const filterPlan=prepareNativeExceptionFilters(analysis.methods),methods=filterPlan.methods,mainMethods=filterPlan.mainMethods, imports=[], importKeys=new Map(), signatures=[], signatureKeys=new Map();
   const typeIndex=(parameters,result)=>{const k=parameters.join(',')+'->'+(result??'');if(!signatureKeys.has(k)){signatureKeys.set(k,signatures.length);signatures.push({parameters,result});}return signatureKeys.get(k);};
   const methodId=m=>m.id??m.key;
   const methodMap=new Map(methods.map(m=>[methodId(m),m]));
@@ -41,15 +45,16 @@ export function compileWasm(model, options={}) {
     const key=json(descriptor);if(importKeys.has(key))return importKeys.get(key);
     const index=imports.length;importKeys.set(key,index);imports.push({module:'clr',name:`s${index}`,...descriptor,typeIndex:typeIndex(descriptor.parameters,descriptor.result)});return index;
   };
-  const ctx={options,analysis,model,methods,methodMap,methodId,importService,isValueType:(name,assembly)=>analysis.types.some(t=>t.isValueType&&!t.isEnum&&t.name===String(name).split('<')[0]&&(!assembly||t.assemblyName===assembly)),hasEH:methods.some(m=>m.exceptionPlan?.handlers?.length),hasCctor:new Set(methods.filter(m=>m.method.name==='.cctor').map(m=>m.method.declaringType))};
+  const optimization={enabled:options.optimize!==false,structuredMethods:0,dispatcherMethods:0,nativeLoops:0,directBranches:0,eliminatedDispatches:0,localTeeRewrites:0,intrinsicCalls:0,functionBodyBytes:0};
+  const ctx={hasFilters:filterPlan.nativeFilters.length>0,optimization,options,analysis,model,methods,methodMap,methodId,importService,isValueType:(name,assembly)=>isStandardValueType(name)||analysis.types.some(t=>t.isValueType&&!t.isEnum&&t.name===String(name).split('<')[0]&&(!assembly||t.assemblyName===assembly)),hasEH:methods.some(m=>m.exceptionPlan?.handlers?.length),hasCctor:new Set(methods.filter(m=>m.method.name==='.cctor').map(m=>m.method.declaringType))};
   const bodies=methods.map(m=>emitMethod(ctx,m));
   const functionImportCount=imports.length;
   const indices=new Map(methods.map((m,i)=>[methodId(m),functionImportCount+i]));
   if(ctx.hasEH)imports.push({module:'clr',name:'exception_tag',kind:'exception_tag',parameters:['externref'],result:null,typeIndex:typeIndex(['externref'],null)});
-  const scalarType=(type,assembly)=>{type=typeName(type);const matches=analysis.types.filter(t=>t.isEnum&&t.name===type),definition=matches.find(t=>t.assemblyName===assembly)??(matches.length===1?matches[0]:null);return definition?.fields?.find(f=>f.name==='value__')?.type??type;};
-  const manifestMethods=methods.map((m,i)=>({id:methodId(m),key:m.key,exportName:`m${i}`,token:m.method.token,type:m.method.declaringType,name:m.method.name,assemblyName:m.assemblyName??m.method.assemblyName??model.name,parameters:(m.method.parameters??[]).map(typeName),returnType:typeName(m.method.returnType)??'System.Void',isStatic:!!m.method.isStatic,wasmParameters:m.paramTypes??m.parameters,wasmResult:m.resultType??m.result??null,genericArguments:m.method.genericArguments??[],scalarParameters:(m.method.parameters??[]).map(p=>scalarType(p,m.assemblyName)),scalarReturnType:scalarType(m.method.returnType,m.assemblyName)??'System.Void'}));
+  const scalarType=(type,assembly)=>{type=typeName(type);const matches=analysis.types.filter(t=>t.isEnum&&t.name===type),definition=matches.find(t=>t.assemblyName===assembly)??(matches.length===1?matches[0]:null);return definition?.fields?.find(f=>f.name==='value__')?.type??nativeFrameworkEnums.get(type)??type;};
+  const manifestMethods=mainMethods.map((m,i)=>({id:methodId(m),key:m.key,exportName:`m${i}`,token:m.method.token,type:m.method.declaringType,name:m.method.name,assemblyName:m.assemblyName??m.method.assemblyName??model.name,parameters:(m.method.parameters??[]).map(typeName),returnType:typeName(m.method.returnType)??'System.Void',isStatic:!!m.method.isStatic,wasmParameters:m.paramTypes??m.parameters,wasmResult:m.resultType??m.result??null,genericArguments:m.method.genericArguments??[],scalarParameters:(m.method.parameters??[]).map(p=>scalarType(p,m.assemblyName)),scalarReturnType:scalarType(m.method.returnType,m.assemblyName)??'System.Void'}));
   const rootIds=new Set(analysis.roots??analysis.exports?.map(x=>typeof x==='object'?x.id??x.key:x)??methods.filter(m=>m.isRoot).map(methodId));
-  const manifest={formatVersion:1,backend:'native-wasm',assembly:model.name,...(imports.length?{model:stripCode(model),assemblies:(options.assemblies??[]).map(stripCode)}:{}),methods:manifestMethods,exports:manifestMethods.filter(m=>!rootIds.size||rootIds.has(m.id)),entryPointToken:model.entryPoint?.token??model.entryPoint??null,entryPoint:analysis.entryPoint??null,imports:imports.map(({typeIndex,...d})=>d),fuel:options.instructionBudget!==false,statusCodes:{1:'instruction-budget',2:'overflow',3:'divide-by-zero',4:'arithmetic'},compiler:'RoslynWeb direct MSIL-to-WebAssembly'};
+  const manifest={formatVersion:1,backend:'native-wasm',...(filterPlan.nativeFilters.length?{nativeFilters:filterPlan.nativeFilters}:{}),assembly:model.name,...(imports.length?{model:stripCode(model),assemblies:(options.assemblies??[]).map(stripCode)}:{}),methods:manifestMethods,exports:manifestMethods.filter(m=>!rootIds.size||rootIds.has(m.id)),entryPointToken:model.entryPoint?.token??model.entryPoint??null,entryPoint:analysis.entryPoint??null,imports:imports.map(({typeIndex,...d})=>d),fuel:options.instructionBudget!==false,statusCodes:{1:'instruction-budget',2:'overflow',3:'divide-by-zero',4:'arithmetic'},compiler:'RoslynWeb direct MSIL-to-WebAssembly'};
   const methodTypes=methods.map(m=>typeIndex(m.paramTypes??m.parameters,m.resultType??m.result??null));
   const out=new Writer().raw([0,97,115,109,1,0,0,0]);
   out.section(1,new Writer().vector(signatures,(w,s)=>w.byte(0x60).vector(s.parameters,(b,t)=>b.byte(valueTypes[t])).vector(s.result?[s.result]:[],(b,t)=>b.byte(valueTypes[t]))));
@@ -57,23 +62,29 @@ export function compileWasm(model, options={}) {
   out.section(3,new Writer().vector(methodTypes,(w,n)=>w.u32(n)));
   const fuel=BigInt(options.maxInstructions??10_000_000);
   out.section(6,new Writer().u32(2).byte(valueTypes.i64).byte(1).byte(op.i64_const).signed(fuel,64).byte(op.end).byte(valueTypes.i32).byte(1).byte(op.i32_const).signed(0).byte(op.end));
-  out.section(7,new Writer().u32(methods.length+2).raw(manifestMethods.flatMap((m,i)=>new Writer().string(m.exportName).byte(0).u32(functionImportCount+i).bytes)).string('__fuel').byte(3).u32(0).string('__status').byte(3).u32(1));
-  out.section(10,new Writer().vector(bodies,(w,b)=>{const bytes=b.resolve(indices).bytes;w.u32(bytes.length).raw(bytes);}));
+  out.section(7,new Writer().u32(methods.length+2).raw(manifestMethods.flatMap((m,i)=>new Writer().string(m.exportName).byte(0).u32(functionImportCount+i).bytes)).raw(filterPlan.companions.flatMap((m,i)=>new Writer().string(m.nativeFilter.exportName).byte(0).u32(functionImportCount+mainMethods.length+i).bytes)).string('__fuel').byte(3).u32(0).string('__status').byte(3).u32(1));
+  out.section(10,new Writer().vector(bodies,(w,b)=>{const bytes=b.resolve(indices).bytes;optimization.functionBodyBytes+=bytes.length;w.u32(bytes.length).raw(bytes);}));
   out.section(0,new Writer().string('roslyn.web.manifest').raw(new TextEncoder().encode(json(manifest))));
   const names=new Writer().vector(manifestMethods,(w,m)=>w.u32(indices.get(m.id)).string(m.key??`${m.type}::${m.name}`));
   out.section(0,new Writer().string('name').byte(1).u32(names.bytes.length).raw(names.bytes));
   const bytes=out.finish();
   if(options.validate!==false&&!WebAssembly.validate(bytes)){const e=new Error('Generated WebAssembly did not validate.');e.code='WASM_INVALID_BINARY';e.bytes=bytes;throw e;}
-  const finished=clock();const publicAnalysis={assembly:analysis.assembly,supported:analysis.supported,executable:analysis.executable,diagnostics:analysis.diagnostics,methodCount:analysis.methodCount,totalInstructions:analysis.totalInstructions,exports:analysis.exports,dependencies:analysis.dependencies};return {bytes,exports:manifest.exports,imports:manifest.imports,analysis:publicAnalysis,manifest,timings:{analysisMs:analyzed-started,emissionMs:finished-analyzed,totalMs:finished-started},byteLength:bytes.length};
+  const finished=clock();const publicAnalysis={assembly:analysis.assembly,supported:analysis.supported,executable:analysis.executable,diagnostics:analysis.diagnostics,methodCount:analysis.methodCount,totalInstructions:analysis.totalInstructions,exports:analysis.exports,dependencies:analysis.dependencies};return {bytes,optimization,exports:manifest.exports,imports:manifest.imports,analysis:publicAnalysis,manifest,timings:{analysisMs:analyzed-started,emissionMs:finished-analyzed,totalMs:finished-started},byteLength:bytes.length};
 }
 
 function emitMethod(ctx, analyzed) {
   const method=analyzed.method, params=analyzed.paramTypes??analyzed.parameters, localTypes=analyzed.localTypes??analyzed.locals, result=analyzed.resultType??analyzed.result??null;
-  const blocks=analyzed.blocks, w=new CodeWriter(), locals=[...localTypes], slots=new Map(), temps=new Map();
+  const hasEH=!!analyzed.exceptionPlan?.handlers?.length, layout=ctx.options.optimize!==false&&!hasEH&&!analyzed.nativeFilter?planStructuredControlFlow(analyzed.blocks):null;
+  const blocks=layout?.blocks??analyzed.blocks, w=new CodeWriter(), locals=[...localTypes], slots=new Map(), temps=new Map();
+  if(layout){ctx.optimization.structuredMethods++;ctx.optimization.nativeLoops+=layout.loops.size;}else if(blocks.length>1||hasEH)ctx.optimization.dispatcherMethods++;
+  let latestSet=null;
+  const labels=[];let physicalNext;
+  const labelDepth=target=>{for(let n=labels.length-1;n>=0;n--)if(labels[n].target===target)return labels.length-1-n;throw new Error(`Unavailable structured target ${target} in ${analyzed.key}`);};
   const alloc=type=>{const id=params.length+locals.length;locals.push(type);return id;};
   const temp=(type,n=0)=>{const key=type+':'+n;if(!temps.has(key))temps.set(key,alloc(type));return temps.get(key);};
   const slot=(n,type)=>{const key=n+':'+type;if(!slots.has(key))slots.set(key,alloc(type));return slots.get(key);};
-  const get=n=>w.byte(op.local_get).u32(n), set=n=>w.byte(op.local_set).u32(n);
+  const get=n=>{if(ctx.options.optimize!==false&&latestSet?.id===n&&latestSet.end===w.bytes.length){w.bytes[latestSet.start]=op.local_tee;latestSet=null;ctx.optimization.localTeeRewrites++;return w;}return w.byte(op.local_get).u32(n);};
+  const set=n=>{const start=w.bytes.length;w.byte(op.local_set).u32(n);latestSet={id:n,start,end:w.bytes.length};return w;};
   const constant=(type,value)=>{w.byte(op[`${type}_const`]);if(type==='i32')w.signed(Number(value));else if(type==='i64')w.signed(BigInt(value),64);else w[type](value);};
   const zero=type=>type==='externref'?w.byte(op.ref_null).byte(valueTypes.externref):constant(type,0);
   const service=(kind,operand,p,r,extra={})=>w.byte(op.call).u32(ctx.importService({kind,operand,parameters:p,result:r??null,...extra}));
@@ -93,17 +104,20 @@ function emitMethod(ctx, analyzed) {
   const copy=(type)=>{if(type==='externref')service('copy_value',null,['externref'],'externref');};
   for(let n=0;n<localTypes.length;n++){const type=typeName(method.locals?.[n]);if(localTypes[n]==='externref'&&ctx.isValueType(type,analyzed.assemblyName)){service('default_value',type,[],'externref');set(params.length+n);}}
   const addressLocals=new Set(analyzed.addressTakenLocals??[]),addressArgs=new Set(analyzed.addressTakenArgs??[]);
-  for(const b of blocks)for(const i of b.instructions){const code=opname(i);if(code.startsWith('ldloca'))addressLocals.add(indexOf(code,i.operand));if(code.startsWith('ldarga'))addressArgs.add(indexOf(code,i.operand));}
+  if(analyzed.ownsNativeFilters){for(let n=0;n<localTypes.length;n++)addressLocals.add(n);for(let n=0;n<params.length;n++)addressArgs.add(n);}
+  if(!analyzed.nativeFilter)for(const b of blocks)for(const i of b.instructions){const code=opname(i);if(code.startsWith('ldloca'))addressLocals.add(indexOf(code,i.operand));if(code.startsWith('ldarga'))addressArgs.add(indexOf(code,i.operand));}
   const localCells=new Map([...addressLocals].map(n=>[n,alloc('externref')])),argCells=new Map([...addressArgs].map(n=>[n,alloc('externref')]));
   for(const [n,id]of localCells){get(params.length+n);service('cell_new',typeName(method.locals?.[n])??clrFor(localTypes[n]),[localTypes[n]],'externref');set(id);}
   for(const [n,id]of argCells){get(n);service('cell_new',n===0&&!method.isStatic?method.declaringType:typeName(method.parameters?.[n-(method.isStatic?0:1)]),[params[n]],'externref');set(id);}
   const ensureType=type=>{if(type&&ctx.hasCctor.has(type)&&!(method.name==='.cctor'&&method.declaringType===type))service('ensure_type',type,[],null);};
-  if(method.name!=='.cctor')ensureType(method.declaringType);
-  const blockId=new Map(blocks.map((b,i)=>[b.offset??b.instructions[0]?.offset,i])), hasEH=!!analyzed.exceptionPlan?.handlers?.length, pc=blocks.length>1||hasEH?alloc('i32'):null;
+  if(!analyzed.nativeFilter&&method.name!=='.cctor')ensureType(method.declaringType);
+  const blockId=new Map(blocks.map((b,i)=>[b.offset??b.instructions[0]?.offset,i])), pc=!layout&&(blocks.length>1||hasEH)?alloc('i32'):null;
   const ehFrame=hasEH?alloc('externref'):null,ehOffset=hasEH?alloc('i32'):null,ehError=hasEH?alloc('externref'):null;
   const ehDescriptor={plan:analyzed.exceptionPlan,blocks:blocks.map(b=>b.offset)};
-  if(hasEH){service('eh_frame',analyzed.exceptionPlan,[],'externref');set(ehFrame);}
-  const branch=(target,depth)=>{constant('i32',blockId.get(target));set(pc);w.byte(op.br).u32(depth);};
+  if(hasEH){service('eh_frame',analyzed.exceptionPlan,[],'externref');set(ehFrame);if(analyzed.ownsNativeFilters){for(const [n,cell]of argCells){get(ehFrame);constant('i32',n);get(cell);service('eh_capture',null,['externref','i32','externref'],null);}for(const [n,cell]of localCells){get(ehFrame);constant('i32',params.length+n);get(cell);service('eh_capture',null,['externref','i32','externref'],null);}}}
+  if(analyzed.nativeFilter){get(1);set(slot(0,'externref'));}
+  const branch=(target,depth)=>{if(layout){if(target===physicalNext){ctx.optimization.eliminatedDispatches++;return;}w.byte(op.br).u32(labelDepth(target));ctx.optimization.directBranches++;ctx.optimization.eliminatedDispatches++;return;}constant('i32',blockId.get(target));set(pc);w.byte(op.br).u32(depth);};
+  const conditionalBranch=(target,next,depth)=>{if(layout){w.byte(op.br_if).u32(labelDepth(target));ctx.optimization.directBranches++;ctx.optimization.eliminatedDispatches++;branch(next,depth);return;}w.byte(op.if).byte(valueTypes.i32);constant('i32',blockId.get(target));w.byte(op.else);constant('i32',blockId.get(next));w.byte(op.end);set(pc);w.byte(op.br).u32(depth);};
   const loadStack=(before,n,as)=>{get(slot(n,before[n]));if(as)coerce(before[n],as);};
   const saveStack=(after,n=after.length-1)=>set(slot(n,after[n]));
   const compare=(code,type,left,right)=>{
@@ -116,7 +130,9 @@ function emitMethod(ctx, analyzed) {
     }else w.byte(op[`${type}_${relation}${['eq','ne'].includes(relation)?'':unsigned?'_u':'_s'}`]);
   };
   function emitInstruction(i,next,depth) {
-    const code=opname(i), operand=i.operand, before=i.before??analyzed.stackBefore?.get(i.offset), after=i.after;
+    for(const c of i.coercions??[]){get(slot(c.slot,c.from));coerce(c.from,c.to);set(slot(c.slot,c.to));}
+    const code=opname(i), operand=i.operand, before=i.operandTypes??i.before??analyzed.stackBefore?.get(i.offset), after=i.after;
+    if(/^(br|beq|bne|bge|bgt|ble|blt|leave)/.test(code)||code==='switch')emitEdgeCoercions(i);
     if(!before||!after)throw new Error(`Analysis omitted stack types at ${analyzed.key} IL_${i.offset}`);
     const count=before.length, top=before[count-1], topId=count?slot(count-1,top):null;
     const push=()=>saveStack(after), a=(n,as)=>loadStack(before,n,as), last=(as)=>a(count-1,as);
@@ -127,6 +143,7 @@ function emitMethod(ctx, analyzed) {
     if(code==='dup'){last();copy(top);push();return;}
     if(code==='pop')return;
     if(/^(ldarg|starg|ldarga|ldloc|stloc|ldloca)(\.|$)/.test(code)){
+      if(analyzed.nativeFilter){const source=analyzed.nativeFilter.source,n=indexOf(code,operand),arg=code.includes('arg'),sourceParams=source.paramTypes??source.parameters,types=arg?sourceParams:source.localTypes,type=types[n],sourceMethod=source.method,clr=arg?(n===0&&!sourceMethod.isStatic?sourceMethod.declaringType:typeName(sourceMethod.parameters?.[n-(sourceMethod.isStatic?0:1)])):typeName(sourceMethod.locals?.[n]);get(0);constant('i32',arg?n:sourceParams.length+n);service('eh_cell',null,['externref','i32'],'externref');if(code.startsWith('ldarga')||code.startsWith('ldloca'))push();else if(code.startsWith('st')){last(type);copy(type);service('cell_set',clr??clrFor(type),['externref',type],null);}else{service('cell_get',clr??clrFor(type),['externref'],type);copy(type);coerce(type,after.at(-1));push();}return;}
       const n=indexOf(code,operand),arg=code.includes('arg'),types=arg?params:localTypes,cells=arg?argCells:localCells, id=arg?n:params.length+n, type=types[n], clr=arg?typeName(method.parameters?.[n-(method.isStatic?0:1)])??method.declaringType:typeName(method.locals?.[n])??clrFor(type);
       if(code.startsWith('ldarga')||code.startsWith('ldloca')){get(cells.get(n));push();}
       else if(code.startsWith('st')){if(cells.has(n)){get(cells.get(n));last(type);copy(type);service('cell_set',clr,['externref',type],null);}else{last(type);copy(type);set(id);}}
@@ -148,24 +165,26 @@ function emitMethod(ctx, analyzed) {
     if(code==='endfinally'){get(ehFrame);service('eh_endfinally',ehDescriptor,['externref'],'i32');set(pc);w.byte(op.br).u32(depth);return true;}
     if(code==='rethrow'){get(ehFrame);constant('i32',i.offset);service('eh_rethrow',ehDescriptor,['externref','i32'],null);w.byte(op.unreachable);return true;}
     if(/^br(\.s)?$/.test(code)){branch(targetOf(operand),depth);return true;}
-    if(/^(brtrue|brfalse)(\.s)?$/.test(code)){last();if(top==='externref')w.byte(op.ref_is_null).byte(op.i32_eqz);else if(top==='i64')w.byte(op.i64_eqz).byte(op.i32_eqz);if(code.startsWith('brfalse'))w.byte(op.i32_eqz);w.byte(op.if).byte(valueTypes.i32);constant('i32',blockId.get(targetOf(operand)));w.byte(op.else);constant('i32',blockId.get(next));w.byte(op.end);set(pc);w.byte(op.br).u32(depth);return true;}
-    if(/^(beq|bne|bge|bgt|ble|blt)(\.|$)/.test(code)){compare(code,before[count-2],slot(count-2,before[count-2]),topId);w.byte(op.if).byte(valueTypes.i32);constant('i32',blockId.get(targetOf(operand)));w.byte(op.else);constant('i32',blockId.get(next));w.byte(op.end);set(pc);w.byte(op.br).u32(depth);return true;}
+    if(/^(brtrue|brfalse)(\.s)?$/.test(code)){last();if(top==='externref')w.byte(op.ref_is_null).byte(op.i32_eqz);else if(top==='i64')w.byte(op.i64_eqz).byte(op.i32_eqz);if(code.startsWith('brfalse'))w.byte(op.i32_eqz);conditionalBranch(targetOf(operand),next,depth);return true;}
+    if(/^(beq|bne|bge|bgt|ble|blt)(\.|$)/.test(code)){compare(code,before[count-2],slot(count-2,before[count-2]),topId);conditionalBranch(targetOf(operand),next,depth);return true;}
     if(code==='switch'){
       // A second br_table selects a constant basic-block index; no JavaScript dispatch occurs.
-      const targets=operand.map(targetOf),n=targets.length;w.byte(op.block).byte(0x40);for(let x=n-1;x>=0;x--)w.byte(op.block).byte(0x40);last('i32');w.byte(op.br_table).u32(n);for(let x=0;x<n;x++)w.u32(x);w.u32(n);
+      const targets=operand.map(targetOf),n=targets.length;if(layout){last('i32');w.byte(op.br_table).u32(n);for(const target of targets)w.u32(labelDepth(target));w.u32(labelDepth(next));ctx.optimization.directBranches+=n+1;ctx.optimization.eliminatedDispatches++;return true;}w.byte(op.block).byte(0x40);for(let x=n-1;x>=0;x--)w.byte(op.block).byte(0x40);last('i32');w.byte(op.br_table).u32(n);for(let x=0;x<n;x++)w.u32(x);w.u32(n);
       for(let x=0;x<n;x++){w.byte(op.end);constant('i32',blockId.get(targets[x]));set(pc);w.byte(op.br).u32(depth+n-x);}
       w.byte(op.end);branch(next,depth);return true;
     }
-    if(code==='ret'){if(result){last(result);copy(result);}w.byte(op.return);return true;}
+    if(code==='endfilter'){if(!analyzed.nativeFilter)throw new Error('endfilter appeared outside a native filter companion.');last('i32');w.byte(op.return);return true;}
+    if(code==='ret'){if(result){last(result);copy(result);}if(hasEH&&ctx.hasFilters){get(ehFrame);service('eh_exit',null,['externref'],null);}w.byte(op.return);return true;}
     if(['call','callvirt','newobj'].includes(code)){
       const call=i.call??{},ref=call.ref??operand,target=call.targetId!==undefined?ctx.methodMap.get(call.targetId):null, parameterTypes=(ref.parameters??[]).map(typeName),callParams=call.params??[...(!ref.isStatic&&code!=='newobj'?['externref']:[]),...parameterTypes.map(signatureType)],callResult=call.result??signatureType(ref.returnType),start=count-callParams.length;
       ensureType(ref.declaringType);
       if(code==='newobj'&&target){
         const object=temp('externref'),struct=ctx.isValueType(ref.declaringType,target.assemblyName);service('allocate',ref.declaringType,[],'externref');if(struct)service('cell_new',ref.declaringType,['externref'],'externref');set(object);get(object);const p=target.paramTypes??target.parameters;for(let n=0;n<parameterTypes.length;n++){a(count-parameterTypes.length+n,p[n+1]);copy(p[n+1]);}w.managed(ctx.methodId(target));get(object);if(struct)service('cell_get',ref.declaringType,['externref'],'externref');push();return;
       }
-      if(code!=='newobj'&&nativeMath(ref,before,start,callResult)){if(callResult)push();return;}
+      if(code!=='newobj'&&(emitIntrinsic(ref,before,start)||nativeMath(ref,before,start,callResult))){if(callResult)push();return;}
       for(let n=0;n<callParams.length;n++){a(start+n,callParams[n]);copy(callParams[n]);}
-      if(target&&code!=='newobj'&&!call.virtual){if(code==='callvirt'){
+      if(call.constrainedMode&&call.constrainedMode!=='direct-value'){service('constrained_call',{...ref,constrainedType:call.constrainedType,constrainedMode:call.constrainedMode},callParams,callResult,{parameterTypes:[...(!ref.isStatic?[ref.declaringType]:[]),...parameterTypes],returnType:ref.returnType});}
+      else if(target&&code!=='newobj'&&!call.virtual){if(code==='callvirt'){
           // Preserve callvirt's mandatory null check before a devirtualized native call.
           const ids=callParams.map((t,n)=>temp(t,n+8));for(let n=callParams.length-1;n>=0;n--)set(ids[n]);get(ids[0]);service('nullcheck',ref,['externref'],'externref');w.byte(op.drop);for(const id of ids)get(id);
         }w.managed(ctx.methodId(target));}
@@ -190,6 +209,7 @@ function emitMethod(ctx, analyzed) {
     if(code==='throw'){last();service('throw',null,['externref'],null);w.byte(op.unreachable);return true;}
     throw new Error(`Direct WebAssembly emitter is missing validated opcode '${code}' at ${analyzed.key}:${i.offset}`);
   }
+  function emitEdgeCoercions(instruction){for(const c of instruction.edgeCoercions??[]){get(slot(c.slot,c.from));coerce(c.from,c.to);set(slot(c.slot,c.to));}}
   function checkedArithmetic(base,type,left,right,unsigned) {
     if(type==='i32'){
       const r=temp('i64');get(left);coerce('i32','i64',unsigned);get(right);coerce('i32','i64',unsigned);w.byte(op[`i64_${base}`]);set(r);
@@ -268,6 +288,26 @@ function emitMethod(ctx, analyzed) {
     ig(x);k(fraction);binary('and');get(ex);if(integer==='i64')w.byte(op.i64_extend_i32_u);k(mantissaBits);binary('shl');binary('or');
     w.byte(op.else);ig(x);constant('i32',1);get(ex);w.byte(op.i32_sub);if(integer==='i64')w.byte(op.i64_extend_i32_u);binary('shr_u');w.byte(op.end);ig(sign);binary('or');reinterpret();w.byte(op.end);
   }
+  function emitIntrinsic(ref,before,start) {
+    const intrinsic=nativeIntrinsic(ref);if(!intrinsic)return false;ctx.optimization.intrinsicCalls++;
+    const {type,name}=intrinsic;
+    const arg=(n,as)=>{get(slot(start+n,before[start+n]));if(as)coerce(before[start+n],as);};
+    if(intrinsic.kind==='reinterpret'){arg(0,intrinsic.from);w.byte(op[`${intrinsic.to}_reinterpret_${intrinsic.from}`]);return true;}
+    if(intrinsic.kind==='copySign'){arg(0,type);arg(1,type);w.byte(op[`${type}_copysign`]);return true;}
+    const count={LeadingZeroCount:'clz',TrailingZeroCount:'ctz',PopCount:'popcnt'}[name];
+    if(count){arg(0,type);w.byte(op[`${type}_${count}`]);coerce(type,'i32');return true;}
+    if(name==='RotateLeft'||name==='RotateRight'){arg(0,type);arg(1,type);w.byte(op[`${type}_${name==='RotateLeft'?'rotl':'rotr'}`]);return true;}
+    if(name==='Log2'){constant(type,type==='i64'?63:31);arg(0,type);constant(type,1);w.byte(op[`${type}_or`]).byte(op[`${type}_clz`]).byte(op[`${type}_sub`]);coerce(type,'i32');return true;}
+    if(name==='IsPow2'){arg(0,type);constant(type,0);w.byte(op[`${type}_${intrinsic.signed?'gt_s':'ne'}`]);arg(0,type);arg(0,type);constant(type,1);w.byte(op[`${type}_sub`]).byte(op[`${type}_and`]).byte(op[`${type}_eqz`]).byte(op.i32_and);return true;}
+    if(name==='RoundUpToPowerOf2'){
+      // Shift counts are masked in Wasm; guard zero and overflow explicitly.
+      arg(0,type);w.byte(op[`${type}_eqz`]);arg(0,type);constant(type,type==='i64'?1n<<63n:0x80000000);w.byte(op[`${type}_gt_u`]).byte(op.i32_or).byte(op.if).byte(valueTypes[type]);constant(type,0);
+      w.byte(op.else);arg(0,type);constant(type,1);w.byte(op[`${type}_sub`]).byte(op[`${type}_clz`]);
+      // x=1 needs shift by the full width, whose mathematical value is zero.
+      set(temp(type,44));get(temp(type,44));constant(type,type==='i64'?64:32);w.byte(op[`${type}_eq`]).byte(op.if).byte(valueTypes[type]);constant(type,1);w.byte(op.else);constant(type,type==='i64'?0xffffffffffffffffn:0xffffffff);get(temp(type,44));w.byte(op[`${type}_shr_u`]);constant(type,1);w.byte(op[`${type}_add`]).byte(op.end).byte(op.end);return true;
+    }
+    throw new Error(`Missing native intrinsic ${name}`);
+  }
   function nativeMath(ref,before,start,result) {
     if(!['System.Math','System.MathF'].includes(ref.declaringType))return false;
     const ps=ref.parameters??[],type=signatureType(ps[0]),ids=ps.map((p,n)=>slot(start+n,before[start+n]));
@@ -289,13 +329,20 @@ function emitMethod(ctx, analyzed) {
     if(ctx.options.instructionBudget!==false){w.byte(op.global_get).u32(0);constant('i64',block.instructions.length);w.byte(op.i64_sub).byte(op.global_set).u32(0).byte(op.global_get).u32(0);constant('i64',0);w.byte(op.i64_lt_s);faultIf(1);}
     let terminated=false;
     for(let n=0;n<block.instructions.length;n++){
-      const instruction=block.instructions[n],next=block.instructions[n+1]?.offset??blocks[index+1]?.offset;
-      if(hasEH){constant('i32',instruction.offset);set(ehOffset);}
+      const instruction=block.instructions[n],next=block.instructions[n+1]?.offset??(layout?layout.originalNext.get(block.offset):blocks[index+1]?.offset);
+      if(hasEH){constant('i32',instruction.offset);set(ehOffset);if(ctx.hasFilters&&['call','callvirt','newobj','ldsfld','ldsflda','stsfld'].includes(opname(instruction))){get(ehFrame);get(ehOffset);service('eh_position',null,['externref','i32'],null);}}
       terminated=emitInstruction(instruction,next,blocks.length-1-index+(hasEH?1:0))===true;
+      if(!terminated)emitEdgeCoercions(instruction);
     }
-    if(!terminated){if(index+1<blocks.length)branch(blocks[index+1].offset,blocks.length-1-index+(hasEH?1:0));else w.byte(op.unreachable);}
+    if(!terminated){const next=layout?layout.originalNext.get(block.offset):blocks[index+1]?.offset;if(next!==undefined)branch(next,blocks.length-1-index+(hasEH?1:0));else w.byte(op.unreachable);}
   }
-  if(blocks.length===1&&!hasEH)emitBlock(blocks[0],0);
+  if(layout){
+    const region=(start,end,ignoreLoop=null)=>{
+      const units=[];for(let n=start;n<end;){const last=layout.loops.get(n);if(last!==undefined&&n!==ignoreLoop){units.push({start:n,end:last+1,loop:true});n=last+1;}else{units.push({start:n,end:n+1,loop:false});n++;}}
+      for(let n=units.length-1;n>=0;n--){w.byte(op.block).byte(0x40);labels.push({target:blocks[units[n].start].offset});}
+      for(const unit of units){w.byte(op.end);labels.pop();if(unit.loop){w.byte(op.loop).byte(0x40);labels.push({target:blocks[unit.start].offset});region(unit.start,unit.end,unit.start);labels.pop();w.byte(op.end);}else{physicalNext=blocks[unit.end]?.offset;emitBlock(blocks[unit.start],unit.start);}}
+    };region(0,blocks.length);
+  }else if(blocks.length===1&&!hasEH)emitBlock(blocks[0],0);
   else{
     constant('i32',0);set(pc);w.byte(op.loop).byte(0x40);if(hasEH)w.byte(0x06).byte(0x40);
     for(let n=blocks.length-1;n>=0;n--)w.byte(op.block).byte(0x40);

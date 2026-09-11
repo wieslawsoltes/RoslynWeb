@@ -7,7 +7,7 @@ const region=(kind,start,length,handler,handlerLength,catchType)=>({kind,tryOffs
 const error=(type,message=type)=>Object.assign(new Error(message),{$type:type});
 const plan=buildExceptionPlan({body:instructions(31),exceptionHandlers:[region('catch',0,10,10,10,'System.DivideByZeroException'),region('finally',0,20,20,10)]});
 
-test('EH plans validate actual boundaries, handler stacks, malformed overlaps and unsupported filters',()=>{
+test('EH plans validate actual boundaries, handler stacks, malformed overlaps and malformed filters',()=>{
  assert.deepEqual(plan.handlerEntries,[{offset:10,stack:['externref']},{offset:20,stack:[]}]);
  for(const exceptionHandlers of [[region('filter',0,5,5,5)],[region('catch',0,0,5,5)],[region('catch',0,15,10,5)],[region('catch',0,15,20,5),region('catch',5,15,25,5)]])assert.throws(()=>buildExceptionPlan({body:instructions(31),exceptionHandlers}),e=>e.code==='WASM_EXCEPTION_REGIONS');
 });
@@ -97,8 +97,15 @@ test('genuine Roslyn IL compiles to native catch/finally with preserved static a
  program.dispose();
 });
 
-test('genuine C# exception filter is rejected explicitly before native code generation',async()=>{
- const {readFile}=await import('node:fs/promises');const {compileWasm}=await import('../src/wasm/compiler.mjs');
+test('genuine C# exception filters execute compiled native companions with shared arguments',async()=>{
+ const {readFile}=await import('node:fs/promises');const {compileWasm}=await import('../src/wasm/compiler.mjs');const {loadWasm}=await import('../src/wasm/runtime.mjs');
  const model=JSON.parse(await readFile(new URL('il-fixture.json',import.meta.url),'utf8'));
- assert.throws(()=>compileWasm(model,{exports:[{type:'Comprehensive',method:'Filter'}]}),error=>error.code==='WASM_UNSUPPORTED'&&error.diagnostics.some(d=>d.code==='WASM_EXCEPTION_REGIONS'||d.message.includes('filter')));
+ const artifact=compileWasm(model,{exports:[{type:'Comprehensive',method:'Filter'}]});
+ assert.equal(artifact.manifest.nativeFilters.length,1);
+ const program=await loadWasm(artifact.bytes);
+ assert.equal(typeof program.instance.exports[artifact.manifest.nativeFilters[0].exportName],'function');
+ assert.equal(program.invoke('Comprehensive::Filter',[0]),17);
+ assert.equal(program.invoke('Comprehensive::Filter',[2]),50);
+ assert.ok(artifact.manifest.model.types.every(type=>type.methods.every(method=>!('body' in method))));
+ program.dispose();
 });

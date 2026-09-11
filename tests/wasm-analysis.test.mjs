@@ -13,7 +13,10 @@ test('native Wasm analysis preserves native primitive kinds and rejects unresolv
   for(const [clr,kind] of [['System.Int32','i32'],['System.UInt64','i64'],['System.Single','f32'],['System.Double','f64'],['System.String','externref'],['System.Int32&','externref'],['System.Int32[]','externref']])assert.equal(wasmType(clr),kind);
   assert.throws(()=>wasmType('!!0'),/Open generic/);
   assert.throws(()=>wasmType('System.Int32*'),/Pointer/);
-  assert.throws(()=>wasmType('System.Nullable`1<System.Int32>'),/Value type/);
+  assert.equal(wasmType('System.Nullable`1<System.Int32>'),'externref');
+  assert.equal(wasmType('System.Decimal'),'externref');
+  assert.equal(wasmType('System.ValueTuple`2<System.Int32,System.Double>'),'externref');
+  assert.throws(()=>wasmType('System.Nullable`1<System.Int32*>'),/Pointer/);
   assert.throws(()=>wasmType('ThirdParty.Struct',{valueTypes:new Set(['ThirdParty.Struct'])}),/Value type/);
   assert.equal(wasmType('E',{types:new Map([['E',{isEnum:true,fields:[{name:'value__',type:'System.Int64'}]}]])}),'i64');
 });
@@ -48,12 +51,12 @@ test('native CFG rejects unequal stack heights and invalid branch offsets before
   assert.ok(codes(analyzeWasmAssembly(assembly([invalid]))).includes('WASM_INVALID_BRANCH'));
 });
 
-test('native CFG rejects bad calls, underflow and unsupported mixed float stack merges',()=>{
+test('native CFG rejects bad calls and underflow while widening mixed floating operands',()=>{
   const bad=method('Bad',[instruction(0,'call',ref('Missing')),instruction(1,'ret')]);
   assert.ok(codes(analyzeWasmAssembly(assembly([bad]))).includes('WASM_UNRESOLVED_CALL'));
   assert.ok(codes(analyzeWasmAssembly(assembly([method('Underflow',[instruction(0,'add'),instruction(1,'ret')])]))).includes('WASM_STACK_TYPE'));
   const mixed=method('Mixed',[instruction(0,'ldc.r4',1),instruction(1,'ldc.r8',2),instruction(2,'add'),instruction(3,'ret')],{returnType:'System.Double'});
-  assert.ok(codes(analyzeWasmAssembly(assembly([mixed]))).includes('WASM_STACK_TYPE'));
+  const result=analyzeWasmAssembly(assembly([mixed]));assert.equal(result.supported,true,JSON.stringify(result.diagnostics));assert.deepEqual(result.methods[0].instructions[2].coercions,[{slot:0,from:'f32',to:'f64'}]);assert.deepEqual(result.methods[0].instructions[2].after,['f64']);
 });
 
 test('closed generic native methods specialize at each call and preserve literal string contents',()=>{
@@ -135,4 +138,27 @@ test('abstract interface calls collect concrete native implementations without e
   const root=method('Read',[instruction(0,'ldarg.0'),instruction(1,'callvirt',ref('Get',{declaringType:'IValue',isStatic:false,assemblyName:'ExampleAssembly'})),instruction(2,'ret')],{parameters:[{type:'IValue'}]});
   const model=assembly([root]);model.types.push(iface,implementation);
   const result=analyzeWasmAssembly(model,{exports:['Read']});assert.equal(result.supported,true,JSON.stringify(result.diagnostics));assert.equal(result.methods.length,2);assert.equal(result.methods[0].instructions[1].call.kind,'virtual');assert.deepEqual(result.methods[0].instructions[1].call.virtualTargets,[1]);
+});
+
+
+test('floating-point CFG joins converge and promote only outgoing f32 paths',()=>{
+  const body=[instruction(0,'ldarg.0'),instruction(1,'brtrue',5),instruction(2,'ldc.r4',1.25),instruction(3,'br',7),instruction(4,'nop'),instruction(5,'ldc.r8',2.5),instruction(6,'br',7),instruction(7,'ldc.r4',4),instruction(8,'add'),instruction(9,'ret')];
+  const result=analyzeWasmAssembly(assembly([method('MixedJoin',body,{parameters:[{type:'System.Boolean'}],returnType:'System.Double'})]));
+  assert.equal(result.supported,true,JSON.stringify(result.diagnostics));const m=result.methods[0];
+  assert.deepEqual(m.stackBefore.get(7),['f64']);assert.deepEqual(m.instructions[3].edgeCoercions,[{slot:0,from:'f32',to:'f64'}]);
+  assert.deepEqual(m.instructions[6].edgeCoercions,[]);assert.deepEqual(m.instructions[8].operandTypes,['f64','f64']);
+});
+
+test('constrained struct interface calls resolve an unboxed native target',()=>{
+  const root=method('Read',[instruction(0,'ldarga.s',0),instruction(1,'constrained.',{name:'Value'}),instruction(2,'callvirt',ref('Get',{declaringType:'IValue',isStatic:false,assemblyName:'ExampleAssembly'})),instruction(3,'ret')],{parameters:[{type:'Value'}]});
+  const model=assembly([root]);
+  model.types.push({name:'IValue',attributes:'Public, Interface, Abstract',methods:[],fields:[]},{name:'Value',isValueType:true,baseType:'System.ValueType',interfaces:['IValue'],fields:[],methods:[method('Get',[instruction(0,'ldc.i4.7'),instruction(1,'ret')],{declaringType:'Value',isStatic:false,attributes:'Public, Virtual',token:0x06000002})]});
+  const result=analyzeWasmAssembly(model);assert.equal(result.supported,true,JSON.stringify(result.diagnostics));
+  const call=result.methods[0].instructions[2].call;assert.equal(call.constrainedMode,'direct-value');assert.equal(call.virtual,false);assert.equal(result.methods[call.targetId].method.declaringType,'Value');
+});
+
+test('constrained class receivers use dereferencing dispatch and malformed prefixes fail',()=>{
+  const root=method('Read',[instruction(0,'ldarga.s',0),instruction(1,'constrained.',{name:'System.String'}),instruction(2,'callvirt',ref('ToString',{declaringType:'System.Object',isStatic:false,returnType:'System.String'})),instruction(3,'ret')],{parameters:[{type:'System.String'}],returnType:'System.String'});
+  const result=analyzeWasmAssembly(assembly([root]));assert.equal(result.supported,true,JSON.stringify(result.diagnostics));assert.equal(result.methods[0].instructions[2].call.constrainedMode,'reference');
+  root.body[2]=instruction(2,'call',root.body[2].operand);assert.ok(codes(analyzeWasmAssembly(assembly([root]))).includes('WASM_CONSTRAINED_CALL'));
 });

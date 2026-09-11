@@ -1,0 +1,3175 @@
+{
+  "runtime": "10.0.0",
+  "roslynVersion": "5.0.0.0",
+  "cases": [
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "3"
+      }
+    },
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "0"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "2"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-23"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "10"
+      }
+    },
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "8"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "8"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-20"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "17"
+      }
+    },
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "7"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "112"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "7"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "112"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "7"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "4"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "7"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "37"
+      }
+    },
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "16"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1360"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "16"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "1360"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "16"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1096"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "16"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "80"
+      }
+    },
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "31"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "9920"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "31"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "9920"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "31"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "14262"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "31"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "157"
+      }
+    },
+    {
+      "method": "Polynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "100"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "333300"
+      }
+    },
+    {
+      "method": "LongPolynomial",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "100"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "333300"
+      }
+    },
+    {
+      "method": "NestedControl",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "100"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1636881583"
+      }
+    },
+    {
+      "method": "Irreducible",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "100"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "500"
+      }
+    },
+    {
+      "method": "TernaryJoin",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2147483648"
+      }
+    },
+    {
+      "method": "TernaryJoin",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-17"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "119"
+      }
+    },
+    {
+      "method": "TernaryJoin",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "TernaryJoin",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "3"
+      }
+    },
+    {
+      "method": "TernaryJoin",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "14"
+      }
+    },
+    {
+      "method": "TernaryJoin",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "17"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "126"
+      }
+    },
+    {
+      "method": "TernaryJoin",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2147483647"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2147483648"
+      }
+    },
+    {
+      "method": "FloatJoin",
+      "arguments": [
+        {
+          "type": "boolean",
+          "value": "True"
+        },
+        {
+          "type": "float",
+          "value": "16777216",
+          "bits": "1266679808"
+        },
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "-2251799813685248"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "16777216",
+        "bits": "4715268809856909312"
+      }
+    },
+    {
+      "method": "FloatJoin",
+      "arguments": [
+        {
+          "type": "boolean",
+          "value": "False"
+        },
+        {
+          "type": "float",
+          "value": "16777216",
+          "bits": "1266679808"
+        },
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "-0",
+        "bits": "-9223372036854775808"
+      }
+    },
+    {
+      "method": "FloatJoin",
+      "arguments": [
+        {
+          "type": "boolean",
+          "value": "False"
+        },
+        {
+          "type": "float",
+          "value": "1",
+          "bits": "1065353216"
+        },
+        {
+          "type": "double",
+          "value": "1.23456789012345",
+          "bits": "4608238818662570461"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "1.23456789012345",
+        "bits": "4608238818662570461"
+      }
+    },
+    {
+      "method": "SingleSteps",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "16777216",
+          "bits": "1266679808"
+        },
+        {
+          "type": "float",
+          "value": "1",
+          "bits": "1065353216"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "0",
+        "bits": "0"
+      }
+    },
+    {
+      "method": "SingleSteps",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1",
+          "bits": "1065353216"
+        },
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "0",
+        "bits": "0"
+      }
+    },
+    {
+      "method": "SingleSteps",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "-4194304"
+        },
+        {
+          "type": "float",
+          "value": "1",
+          "bits": "1065353216"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "NaN",
+        "bits": "-4194304"
+      }
+    },
+    {
+      "method": "CheckedKernel",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "20"
+        },
+        {
+          "type": "int32",
+          "value": "22"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1722"
+      }
+    },
+    {
+      "method": "CheckedKernel",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "2147483647"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "CheckedKernel",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "32768"
+        },
+        {
+          "type": "int32",
+          "value": "32768"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "CheckedKernel",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        },
+        {
+          "type": "int32",
+          "value": "2"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "UnsignedKernel",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "UnsignedKernel",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "UnsignedKernel",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483648"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "226067294"
+      }
+    },
+    {
+      "method": "UnsignedKernel",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "4294967295"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "678185497"
+      }
+    },
+    {
+      "method": "WideShift",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "0"
+      }
+    },
+    {
+      "method": "WideShift",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "22517998136852481"
+      }
+    },
+    {
+      "method": "WideShift",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        },
+        {
+          "type": "int32",
+          "value": "31"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "2143289343"
+      }
+    },
+    {
+      "method": "WideShift",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        },
+        {
+          "type": "int32",
+          "value": "32"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "4292870143"
+      }
+    },
+    {
+      "method": "WideShift",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        },
+        {
+          "type": "int32",
+          "value": "63"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "9223372036854775807"
+      }
+    },
+    {
+      "method": "WideShift",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        },
+        {
+          "type": "int32",
+          "value": "64"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "0"
+      }
+    },
+    {
+      "method": "WideShift",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9007199254740993"
+        },
+        {
+          "type": "int32",
+          "value": "65"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "22517998136852481"
+      }
+    },
+    {
+      "method": "LeadingZeros",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "32"
+      }
+    },
+    {
+      "method": "RoundPower",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "LeadingZeros",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "31"
+      }
+    },
+    {
+      "method": "RoundPower",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "LeadingZeros",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "30"
+      }
+    },
+    {
+      "method": "RoundPower",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "4"
+      }
+    },
+    {
+      "method": "LeadingZeros",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483648"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "RoundPower",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483648"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "2147483648"
+      }
+    },
+    {
+      "method": "LeadingZeros",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "4294967295"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "RoundPower",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "4294967295"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "TrailingZeros",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "64"
+      }
+    },
+    {
+      "method": "Population",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "Log2",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "TrailingZeros",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "Population",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "Log2",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "TrailingZeros",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "Population",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "2"
+      }
+    },
+    {
+      "method": "Log2",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "TrailingZeros",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "63"
+      }
+    },
+    {
+      "method": "Population",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1"
+      }
+    },
+    {
+      "method": "Log2",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "63"
+      }
+    },
+    {
+      "method": "TrailingZeros",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "18446744073709551615"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "Population",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "18446744073709551615"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "64"
+      }
+    },
+    {
+      "method": "Log2",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "18446744073709551615"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "63"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "-65"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "3221225473"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "-65"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "7"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "-1"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "3221225473"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "-1"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "7"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "2147483651"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "9223372036854775811"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "13835058055282163713"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "31"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "3221225473"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "31"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "30064771072"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "32"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "2147483651"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "32"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "15032385536"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "63"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "3221225473"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "63"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "7"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "64"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "2147483651"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "64"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "9223372036854775811"
+      }
+    },
+    {
+      "method": "Rotate",
+      "arguments": [
+        {
+          "type": "uint32",
+          "value": "2147483651"
+        },
+        {
+          "type": "int32",
+          "value": "65"
+        }
+      ],
+      "result": {
+        "type": "uint32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "RotateWide",
+      "arguments": [
+        {
+          "type": "ulong",
+          "value": "9223372036854775811"
+        },
+        {
+          "type": "int32",
+          "value": "65"
+        }
+      ],
+      "result": {
+        "type": "ulong",
+        "value": "13835058055282163713"
+      }
+    },
+    {
+      "method": "IsPower",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "IsPower",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "IsPower",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "IsPower",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "IsPower",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "3"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "IsPower",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "4611686018427387904"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "IsPower",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "9223372036854775807"
+        }
+      ],
+      "result": {
+        "type": "boolean",
+        "value": "False"
+      }
+    },
+    {
+      "method": "DoubleBits",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "-9223372036854775808"
+      }
+    },
+    {
+      "method": "SingleBits",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-2147483648"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        },
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "-0",
+        "bits": "-9223372036854775808"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        },
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "0",
+        "bits": "0"
+      }
+    },
+    {
+      "method": "CopySignSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        },
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "-0",
+        "bits": "-2147483648"
+      }
+    },
+    {
+      "method": "DoubleBits",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "0"
+      }
+    },
+    {
+      "method": "SingleBits",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        },
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "-0",
+        "bits": "-9223372036854775808"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        },
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "0",
+        "bits": "0"
+      }
+    },
+    {
+      "method": "CopySignSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0",
+          "bits": "0"
+        },
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "-0",
+        "bits": "-2147483648"
+      }
+    },
+    {
+      "method": "DoubleBits",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "-2251799813685248"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "-2251799813685248"
+      }
+    },
+    {
+      "method": "SingleBits",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "-4194304"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-4194304"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "-2251799813685248"
+        },
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "NaN",
+        "bits": "-2251799813685248"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "-2251799813685248"
+        },
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "NaN",
+        "bits": "9221120237041090560"
+      }
+    },
+    {
+      "method": "CopySignSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "-4194304"
+        },
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "NaN",
+        "bits": "-4194304"
+      }
+    },
+    {
+      "method": "DoubleBits",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-Infinity",
+          "bits": "-4503599627370496"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "-4503599627370496"
+      }
+    },
+    {
+      "method": "SingleBits",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-Infinity",
+          "bits": "-8388608"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-8388608"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-Infinity",
+          "bits": "-4503599627370496"
+        },
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "-Infinity",
+        "bits": "-4503599627370496"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-Infinity",
+          "bits": "-4503599627370496"
+        },
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "Infinity",
+        "bits": "9218868437227405312"
+      }
+    },
+    {
+      "method": "CopySignSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-Infinity",
+          "bits": "-8388608"
+        },
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "-Infinity",
+        "bits": "-8388608"
+      }
+    },
+    {
+      "method": "DoubleBits",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1.5",
+          "bits": "4609434218613702656"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "4609434218613702656"
+      }
+    },
+    {
+      "method": "SingleBits",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1.5",
+          "bits": "1069547520"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "1069547520"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1.5",
+          "bits": "4609434218613702656"
+        },
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "-1.5",
+        "bits": "-4613937818241073152"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1.5",
+          "bits": "4609434218613702656"
+        },
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "1.5",
+        "bits": "4609434218613702656"
+      }
+    },
+    {
+      "method": "CopySignSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1.5",
+          "bits": "1069547520"
+        },
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "-1.5",
+        "bits": "-1077936128"
+      }
+    },
+    {
+      "method": "DoubleBits",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "5E-324",
+          "bits": "1"
+        }
+      ],
+      "result": {
+        "type": "long",
+        "value": "1"
+      }
+    },
+    {
+      "method": "SingleBits",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "0"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "5E-324",
+          "bits": "1"
+        },
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "-5E-324",
+        "bits": "-9223372036854775807"
+      }
+    },
+    {
+      "method": "CopySign",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "5E-324",
+          "bits": "1"
+        },
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "5E-324",
+        "bits": "1"
+      }
+    },
+    {
+      "method": "CopySignSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0",
+          "bits": "0"
+        },
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "-0",
+        "bits": "-2147483648"
+      }
+    },
+    {
+      "method": "BitsDouble",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "-0",
+        "bits": "-9223372036854775808"
+      }
+    },
+    {
+      "method": "BitsDouble",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "0",
+        "bits": "0"
+      }
+    },
+    {
+      "method": "BitsDouble",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "4609434218613702656"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "1.5",
+        "bits": "4609434218613702656"
+      }
+    },
+    {
+      "method": "BitsDouble",
+      "arguments": [
+        {
+          "type": "long",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "double",
+        "value": "5E-324",
+        "bits": "1"
+      }
+    },
+    {
+      "method": "BitsSingle",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "-0",
+        "bits": "-2147483648"
+      }
+    },
+    {
+      "method": "BitsSingle",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "0",
+        "bits": "0"
+      }
+    },
+    {
+      "method": "BitsSingle",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1069547520"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "1.5",
+        "bits": "1069547520"
+      }
+    },
+    {
+      "method": "BitsSingle",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "1"
+        }
+      ],
+      "result": {
+        "type": "float",
+        "value": "1E-45",
+        "bits": "1"
+      }
+    },
+    {
+      "method": "FilterOrder",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "123"
+      }
+    },
+    {
+      "method": "FilterThrows",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "234"
+      }
+    },
+    {
+      "method": "FilterCrossCall",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "134"
+      }
+    },
+    {
+      "method": "FilterAllFalseIdentity",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1234"
+      }
+    },
+    {
+      "method": "FilterHelperRegions",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1234"
+      }
+    },
+    {
+      "method": "FilterRethrow",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1234"
+      }
+    },
+    {
+      "method": "FilterFinallyReplaces",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1234"
+      }
+    },
+    {
+      "method": "RecursiveFilters",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "124795678"
+      }
+    },
+    {
+      "method": "FilterCalleeReadsLocal",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "404"
+      }
+    },
+    {
+      "method": "FilterThrowingHelperFinally",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "12435"
+      }
+    },
+    {
+      "method": "FilterTypeInitializer",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "123"
+      }
+    },
+    {
+      "method": "ConstrainedStruct",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1212"
+      }
+    },
+    {
+      "method": "ConstrainedExplicit",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1919"
+      }
+    },
+    {
+      "method": "ConstrainedClass",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "1212"
+      }
+    },
+    {
+      "method": "ConstrainedNull",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "ConstrainedDescription",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "counter:42"
+      }
+    },
+    {
+      "method": "ConstrainedPrimitive",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "42"
+      }
+    },
+    {
+      "method": "ConstrainedHash",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "ConstrainedDual",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "37"
+      }
+    },
+    {
+      "method": "ConstrainedGenericStruct",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "4242"
+      }
+    },
+    {
+      "method": "DecimalAdd",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "0.3"
+      }
+    },
+    {
+      "method": "DecimalWide",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "79228162514264337593543950335"
+      }
+    },
+    {
+      "method": "DecimalMultiply",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "0.123456789123456789"
+      }
+    },
+    {
+      "method": "DecimalDivide",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "0.1428571428571428571428571429"
+      }
+    },
+    {
+      "method": "DecimalRemainder",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "-0.123456789"
+      }
+    },
+    {
+      "method": "DecimalRounding",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "2.34:2.35"
+      }
+    },
+    {
+      "method": "DecimalScaled",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "1.2300:-12"
+      }
+    },
+    {
+      "method": "DecimalOverflow",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "DecimalZeroDivision",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "DecimalToInt",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "-123"
+      }
+    },
+    {
+      "method": "DecimalBits",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "123:0:0:-2147352576"
+      }
+    },
+    {
+      "method": "DecimalCompare",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "111"
+      }
+    },
+    {
+      "method": "DecimalFormats",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "-1234.57:-1,234.568:-1.23E+003:-123,456.8 %"
+      }
+    },
+    {
+      "method": "DecimalDirectedRounding",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "-2.34:-2.35:-2.34"
+      }
+    },
+    {
+      "method": "DecimalNegativeZero",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "0.0000000:-2147024896"
+      }
+    },
+    {
+      "method": "NullableUnbox",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "142"
+      }
+    },
+    {
+      "method": "NullableWrongUnbox",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "NullableEmpty",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "NullableValue",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "134"
+      }
+    },
+    {
+      "method": "NullableMissingThrows",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "42"
+      }
+    },
+    {
+      "method": "NullableBoxing",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "142"
+      }
+    },
+    {
+      "method": "NullableDecimal",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "0.3"
+      }
+    },
+    {
+      "method": "TupleCopy",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "497"
+      }
+    },
+    {
+      "method": "TupleNested",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "14"
+      }
+    },
+    {
+      "method": "TupleArray",
+      "arguments": [],
+      "result": {
+        "type": "int32",
+        "value": "390"
+      }
+    },
+    {
+      "method": "TupleEquals",
+      "arguments": [],
+      "result": {
+        "type": "boolean",
+        "value": "True"
+      }
+    },
+    {
+      "method": "TupleString",
+      "arguments": [],
+      "result": {
+        "type": "string",
+        "value": "(3, value, 0.1)"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "-0",
+          "bits": "-9223372036854775808"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "0.1",
+          "bits": "4591870180066957722"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0.1"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1.2345678901234567",
+          "bits": "4608238818662570491"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "1.23456789012346"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1E-29",
+          "bits": "4172965893781238599"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "5E-29",
+          "bits": "4183757152651862041"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "1E-28",
+          "bits": "4188260752279232537"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0.0000000000000000000000000001"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "7.922816251426433E+28",
+          "bits": "5039527983027585023"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "79228162514264300000000000000"
+      }
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "7.922816251426434E+28",
+          "bits": "5039527983027585024"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "NaN",
+          "bits": "-2251799813685248"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "DecimalFromDouble",
+      "arguments": [
+        {
+          "type": "double",
+          "value": "Infinity",
+          "bits": "9218868437227405312"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0",
+          "bits": "0"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "-0",
+          "bits": "-2147483648"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "0.1",
+          "bits": "1036831949"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0.1"
+      }
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1.2345679",
+          "bits": "1067320914"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "1.234568"
+      }
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1E-29",
+          "bits": "256561912"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0"
+      }
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "1E-28",
+          "bits": "285050806"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0.0000000000000000000000000001"
+      }
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "7.922816E+28",
+          "bits": "1870659583"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "79228160000000000000000000000"
+      }
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "NaN",
+          "bits": "-4194304"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "DecimalFromSingle",
+      "arguments": [
+        {
+          "type": "float",
+          "value": "Infinity",
+          "bits": "2139095040"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "0.000"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0.000"
+      }
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "0.000"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "yes:0.000"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "-0.000"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "0.000"
+      }
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "-0.000"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "yes:0.000"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "12345678901234567890.123456789"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "12345678901234567890.123456789"
+      }
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "12345678901234567890.123456789"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "yes:12345678901234567890.123456789"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "  +1,234.500  "
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "1234.500"
+      }
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "  +1,234.500  "
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "yes:1234.500"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "79228162514264337593543950335"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "79228162514264337593543950335"
+      }
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "79228162514264337593543950335"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "yes:79228162514264337593543950335"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "79228162514264337593543950336"
+        }
+      ],
+      "exception": "System.OverflowException"
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "79228162514264337593543950336"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "no:0"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "1.23456789012345678901234567895"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "1.2345678901234567890123456790"
+      }
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "1.23456789012345678901234567895"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "yes:1.2345678901234567890123456790"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "invalid"
+        }
+      ],
+      "exception": "System.FormatException"
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "invalid"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "no:0"
+      }
+    },
+    {
+      "method": "DecimalParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "1e2"
+        }
+      ],
+      "exception": "System.FormatException"
+    },
+    {
+      "method": "DecimalTryParse",
+      "arguments": [
+        {
+          "type": "string",
+          "value": "1e2"
+        }
+      ],
+      "result": {
+        "type": "string",
+        "value": "no:0"
+      }
+    },
+    {
+      "method": "FilterLocals",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "5"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "406"
+      }
+    },
+    {
+      "method": "FilterLocals",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "7"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "408"
+      }
+    },
+    {
+      "method": "NullableLifted",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "-1"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "-1"
+      }
+    },
+    {
+      "method": "NullableLifted",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "0"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "7"
+      }
+    },
+    {
+      "method": "NullableLifted",
+      "arguments": [
+        {
+          "type": "int32",
+          "value": "42"
+        }
+      ],
+      "result": {
+        "type": "int32",
+        "value": "49"
+      }
+    }
+  ],
+  "sdk": "10.0.100",
+  "sourceSha256": "0fc294422f12eb36daf79f82cfb7d73e758fb7fa0590f79e4d1ca75608510da3",
+  "assemblySha256": "b0db74da67399ce1be8d10367c5d143a4e54138e08c9d1bc2c09938b3dd29ab1",
+  "methodology": "Actual C# compiled by the pinned SDK Roslyn in Release mode; exact emitted PE inspected with the repository IlInspector and independently executed on native .NET. Both JavaScript and Wasm optimized/unoptimized backends consume the same unchanged inspector model."
+}

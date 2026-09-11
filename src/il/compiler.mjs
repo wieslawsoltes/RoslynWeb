@@ -1,15 +1,19 @@
 import { ILCompilationError, capabilities } from './capabilities.mjs';
 import { createRuntime, methodKey } from './runtime.mjs';
+import { buildBasicBlocks, analyzeInt32Method, generateInt32Method } from './optimizer.mjs';
 import { genericDefinitionName, matchesMethodReference } from './generics.mjs';
 import { isExtendedBuiltin } from './framework.mjs';
 import { isReflectionBuiltin } from './reflection.mjs';
 import { isEmitBuiltin, isEmitField } from './reflection-emit.mjs';
 import { isCollectionsBuiltin } from './collections-extra.mjs';
 import { isIoBuiltin } from './io.mjs';
+import { isJavaScriptIntrinsic } from './intrinsics.mjs';
+import { isStandardValueBuiltin, isStandardValueField } from './standard-values.mjs';
 
 // This is JavaScript source serialization, including exact 64-bit metadata constants.
 const literal = value => {
   if (typeof value === 'bigint') return `${value}n`;
+  if (Object.is(value, -0)) return '-0';
   if (typeof value === 'number' && !Number.isFinite(value)) return Number.isNaN(value) ? 'NaN' : value < 0 ? '-Infinity' : 'Infinity';
   if (Array.isArray(value)) return `[${value.map(literal).join(',')}]`;
   if (value && typeof value === 'object') return `{${Object.entries(value).map(([key, item]) => `${JSON.stringify(key)}:${literal(item)}`).join(',')}}`;
@@ -36,7 +40,7 @@ export function isOpcodeSupported(opcode) {
 /** This is a deliberately finite bridge, not a replacement implementation of the .NET BCL. */
 export function isBuiltinCandidate(ref) {
   if (!ref || typeof ref !== 'object') return false;
-  if (isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
+  if (isJavaScriptIntrinsic(ref) || isStandardValueBuiltin(ref) || isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
   if (/\[[,]+\]$/.test(ref.declaringType ?? '')) { const rank = ref.declaringType.slice(ref.declaringType.lastIndexOf('[')).split(',').length, n = ref.parameters?.length ?? 0; return ref.name === '.ctor' && n === rank || ['Get','Address'].includes(ref.name) && n === rank || ref.name === 'Set' && n === rank + 1; }
   const type = String(ref.declaringType ?? '').split(/[<\[]/)[0], name = ref.name, p = (ref.parameters ?? []).map(p => p.type ?? p), n = p.length;
   const numeric = t => /^System\.(Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|Int64|UInt64|IntPtr|UIntPtr|Single|Double)$/.test(t);
@@ -57,6 +61,7 @@ export function isBuiltinCandidate(ref) {
     if (name === 'Join') return n === 2 && p[0] === 'System.String' && ['System.String[]', 'System.Object[]'].includes(p[1]);
     return false;
   }
+  if (type === 'System.Object' && name === 'GetHashCode') return ref.isStatic === false && n === 0 && ref.returnType === 'System.Int32';
   if (isMath && name === 'Round') return n === 1;
   if (type === 'System.Array') {
     if (['get_Length', 'get_Rank', 'Empty'].includes(name)) return n === 0;
@@ -141,7 +146,7 @@ export function analyzeAssembly(model, options = {}) {
       if (op === 'switch' && (!Array.isArray(instruction.operand) || instruction.operand.some(target => !offsets.has(Number(target))))) add('IL_INVALID_SWITCH', 'Switch has an invalid branch target.', instruction);
       if (fields.test(op)) {
         const f = instruction.operand, key = `${f?.declaringType}::${f?.name}`;
-        const builtin = op === 'ldsfld' && (key === 'System.String::Empty' || key === 'System.Type::EmptyTypes' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) || (op === 'ldsfld' || op === 'ldsflda') && isEmitField(f);
+        const builtin = isStandardValueField(f) || op === 'ldsfld' && (key === 'System.String::Empty' || key === 'System.Type::EmptyTypes' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) || (op === 'ldsfld' || op === 'ldsflda') && isEmitField(f);
         const external = options.externals instanceof Map ? options.externals.get(key) : options.externals?.[key];
         if (!fieldKeys.has(key) && !fieldKeys.has(`${genericDefinitionName(f?.declaringType)}::${f?.name}`) && !builtin && !(external && typeof external.get === 'function')) add('IL_UNRESOLVED_FIELD', `No linked storage or JavaScript external for field '${key}'.`, instruction);
       }
@@ -182,10 +187,10 @@ function operandIndex(op, operand) {
 
 function targetOffset(operand) { return Number(typeof operand === 'object' ? operand.target ?? operand.offset : operand); }
 
-function instructionSource(instruction, next, method) {
+function instructionSource(instruction, next, method, inline = false, filterEntry = false) {
   const op = opcodeOf(instruction), operand = instruction.operand, lit = `$rt.context(${literal(operand)},$f.method)`;
   const go = target => `$pc=${Number(target)};continue;`;
-  const advance = next === null ? 'throw $rt.invalid("Method fell through without ret.");' : go(next);
+  const advance = inline ? '' : next === null ? 'throw $rt.invalid("Method fell through without ret.");' : go(next);
   const emit = code => `${code}${advance}`;
   if (op === 'nop' || prefixes.has(op)) return advance;
   if (op === 'break') return emit('$rt.options.onBreakpoint?.({method:$f.method,offset:$f.offset});');
@@ -251,49 +256,89 @@ function instructionSource(instruction, next, method) {
   if (op === 'throw') return 'throw $rt.nullCheck($s.pop());';
   if (op === 'rethrow') return '$rt.rethrow($f);';
   if (op === 'endfinally') return '$pc=$rt.endFinally($f);continue;';
-  if (op === 'endfilter') return '$pc=$rt.endFilter($f,$s.pop());continue;';
+  if (op === 'endfilter') return (filterEntry ? 'if($filter)return $rt.truth($s.pop());' : '') + '$pc=$rt.endFilter($f,$s.pop());continue;';
   if (op === 'ckfinite') return emit('if(!Number.isFinite(Number($rt.raw($s[$s.length-1]))))throw $rt.arithmeticException();');
   return `throw $rt.unsupported(${literal(op)},$f);`;
 }
 
-export function generateMethod(method) {
-  const body = bodyOf(method), name = methodKey(method);
-  if (!body.length || method.decodeError) return `function($rt){throw $rt.unsupported(${literal(method.decodeError ?? 'method-without-il-body')},{method:${literal({ name, declaringType: method.declaringType })},offset:0});}`;
-  let source = `function($rt,$args,$self,$method){\nconst $f=$rt.frame($method,$args,$self),$s=$f.stack,$l=$f.locals,$a=$f.args;let $pc=${body[0].offset};\ntry{while(true){try{switch($pc){\n`;
-  for (let i = 0; i < body.length; i++) {
-    const instruction = body[i];
-    source += `case ${instruction.offset}:{$rt.tick($f,${instruction.offset});${instructionSource(instruction, i + 1 < body.length ? body[i + 1].offset : null, method)}}\n`;
+function referenceMethod(method, blocks) {
+  const body = bodyOf(method), filterEntry = (method.exceptionHandlers ?? []).some(handler => String(handler.kind).toLowerCase() === 'filter');
+  let source = filterEntry
+    ? `function($rt,$args,$self,$method){\nconst $f=$rt.frame($method,$args,$self),$l=$f.locals,$a=$f.args;\nfunction $execute($pc,$filter){const $s=$f.stack;while(true){try{switch($pc){\n`
+    : `function($rt,$args,$self,$method){\nconst $f=$rt.frame($method,$args,$self),$s=$f.stack,$l=$f.locals,$a=$f.args;let $pc=${body[0].offset};\ntry{while(true){try{switch($pc){\n`;
+  const indices = new Map(body.map((instruction, index) => [instruction.offset, index]));
+  for (const block of blocks) {
+    source += `case ${block.offset}:{`;
+    for (let i = 0; i < block.instructions.length; i++) {
+      const instruction = block.instructions[i], index = indices.get(instruction.offset);
+      source += `$rt.tick($f,${instruction.offset});${instructionSource(instruction, body[index + 1]?.offset ?? null, method, i + 1 < block.instructions.length, filterEntry)}`;
+    }
+    source += '}\n';
   }
-  return source + `default:throw $rt.invalid("Invalid instruction offset "+$pc);\n}}catch($error){$pc=$rt.handleException($f,$error,$f.offset);}}}finally{$rt.releaseFrame($f);}}`;
+  source += `default:throw $rt.invalid("Invalid instruction offset "+$pc);\n}}catch($error){${filterEntry ? 'if($filter)throw $error;' : ''}$pc=$rt.handleException($f,$error,$f.offset);}}}`;
+  if (filterEntry) return source + `$f.evaluateFilter=($offset,$exception)=>{const $stack=$f.stack,$offsetBefore=$f.offset;$f.stack=[$exception];try{return $execute($offset,true);}finally{$f.stack=$stack;$f.offset=$offsetBefore;}};try{return $execute(${body[0].offset},false);}finally{$rt.releaseFrame($f);}}`;
+  return source + `finally{$rt.releaseFrame($f);}}`;
 }
 
-function generatedMap(model) {
-  return `{\n${allMethods(model).map(method => `${literal(String(method.token))}:${generateMethod(method)}`).join(',\n')}\n}`;
+function methodPlan(method, options) {
+  const body = bodyOf(method), name = methodKey(method);
+  if (!body.length || method.decodeError) return { source: `function($rt){throw $rt.unsupported(${literal(method.decodeError ?? 'method-without-il-body')},{method:${literal({ name, declaringType: method.declaringType })},offset:0});}`, mode: 'unavailable', blocks: 0, instructions: body.length };
+  const blocks = options.optimize === false ? body.map(instruction => ({ offset: instruction.offset, instructions: [instruction] })) : buildBasicBlocks(method);
+  const reference = referenceMethod(method, blocks);
+  const numeric = options.optimize !== false && options.optimize !== 'blocks' ? analyzeInt32Method(method, blocks) : null;
+  return { source: numeric ? generateInt32Method(method, numeric, reference) : reference, mode: numeric ? 'int32' : options.optimize === false ? 'reference' : 'blocks', blocks: numeric ? numeric.blocks.length : blocks.length, instructions: body.length };
 }
 
-export function generateModule(model, options = {}) {
+export function generateMethod(method, options = {}) { return methodPlan(method, options).source; }
+
+function prepareSources(model, options) {
   const analysis = analyzeAssembly(model, options);
   if (options.strict && !analysis.supported) throw new ILCompilationError(`Assembly '${model.name}' is not fully supported by the JavaScript tier.`, analysis.diagnostics);
+  const optimization = { enabled: options.optimize !== false, mode: options.optimize === false ? 'reference' : options.optimize === 'blocks' ? 'blocks' : 'numeric', methods: 0, numericMethods: 0, basicBlocks: 0, instructions: 0, generatedSourceBytes: 0 };
+  const generatedMap = assembly => `\n{${allMethods(assembly).map(method => {
+    const plan = methodPlan(method, options);
+    optimization.methods++; optimization.numericMethods += plan.mode === 'int32' ? 1 : 0;
+    optimization.basicBlocks += plan.blocks; optimization.instructions += plan.instructions;
+    optimization.generatedSourceBytes += plan.source.length * 2;
+    return `${literal(String(method.token))}:${plan.source}`;
+  }).join(',\n')}\n}`;
+  const source = generatedMap(model), linked = (options.assemblies ?? []).map(assembly => ({ model: assembly, source: generatedMap(assembly) }));
+  return { model, source, linked, analysis, optimization };
+}
+
+function moduleSource(prepared, options) {
+  const { model, source, linked, analysis, optimization } = prepared;
   const importPath = options.runtimeImport ?? './runtime.mjs';
-  const linkedSource = (options.assemblies ?? []).map(linked => `{model:${literal(linked)},compiledMethods:${generatedMap(linked)}}`).join(',\n');
-  return `// Generated from normalized ECMA-335 IL. These method bodies are precompiled JavaScript; explicit runtime-emission APIs still require dynamic-code permission.\nimport {createRuntime} from ${literal(importPath)};\nexport const model=${literal(model)};\nexport const diagnostics=${literal(analysis.diagnostics)};\nexport const compiledMethods=${generatedMap(model)};\nexport const linkedAssemblies=[${linkedSource}];\nexport function createAssembly(options={}){const runtime=createRuntime(model,{...options,compiledMethods});for(const linked of linkedAssemblies)runtime.addAssembly(linked.model,linked.compiledMethods);return runtime;}\nexport default createAssembly;\n`;
+  const linkedSource = linked.map(linked => `{model:${literal(linked.model)},compiledMethods:${linked.source}}`).join(',\n');
+  return `// Generated from normalized ECMA-335 IL. These method bodies are precompiled JavaScript; explicit runtime-emission APIs still require dynamic-code permission.\nimport {createRuntime} from ${literal(importPath)};\nexport const model=${literal(model)};\nexport const diagnostics=${literal(analysis.diagnostics)};\nexport const optimization=${literal(optimization)};\nexport const compiledMethods=${source};\nexport const linkedAssemblies=[${linkedSource}];\nexport function createAssembly(options={}){const runtime=createRuntime(model,{...options,compiledMethods});for(const linked of linkedAssemblies)runtime.addAssembly(linked.model,linked.compiledMethods);runtime.optimization=optimization;return runtime;}\nexport default createAssembly;\n`;
+}
+
+export function generateModule(model, options = {}) { return moduleSource(prepareSources(model, options), options); }
+
+/** Compile reusable JavaScript functions once. Every created runtime owns its
+ * globals, virtual files, instruction budget, object heap and output handlers. */
+export function compileJavaScriptModule(model, options = {}) {
+  const prepared = prepareSources(model, options);
+  const compile = source => {
+    try { return Function(`"use strict";return (${source})`)(); }
+    catch (error) { throw new ILCompilationError(`Could not compile JavaScript for '${model.name}': ${error.message}`, prepared.analysis.diagnostics); }
+  };
+  const compiledMethods = compile(prepared.source);
+  const linked = prepared.linked.map(item => ({ model: item.model, compiledMethods: compile(item.source) }));
+  let source;
+  const blueprint = {
+    model, compiledMethods, linked, analysis: prepared.analysis, optimization: prepared.optimization, generatedSourceBytes: prepared.optimization.generatedSourceBytes,
+    get source() { return source ??= moduleSource(prepared, options); },
+    createRuntime(runtimeOptions = {}) {
+      const runtime = createRuntime(model, { ...options, ...runtimeOptions, compiledMethods });
+      for (const item of linked) runtime.addAssembly(item.model, item.compiledMethods);
+      runtime.analysis = prepared.analysis; runtime.diagnostics = prepared.analysis.diagnostics; runtime.optimization = prepared.optimization;
+      Object.defineProperty(runtime, 'source', { configurable: true, enumerable: true, get: () => blueprint.source });
+      return runtime;
+    },
+  };
+  return blueprint;
 }
 
 /** Compile all IL methods to real JS functions; unresolved paths throw when reached. */
-export function compileAssembly(model, options = {}) {
-  const analysis = analyzeAssembly(model, options);
-  if (options.strict && !analysis.supported) throw new ILCompilationError(`Assembly '${model.name}' is not fully supported by the JavaScript tier.`, analysis.diagnostics);
-  const methodsSource = generatedMap(model);
-  let compiledMethods;
-  try { compiledMethods = Function(`"use strict";return ${methodsSource}`)(); }
-  catch (error) { throw new ILCompilationError(`Could not compile JavaScript for '${model.name}': ${error.message}`, analysis.diagnostics); }
-  const runtime = createRuntime(model, { ...options, compiledMethods });
-  for (const linked of options.assemblies ?? []) {
-    const linkedMethods = Function(`"use strict";return ${generatedMap(linked)}`)();
-    runtime.addAssembly(linked, linkedMethods);
-  }
-  runtime.analysis = analysis;
-  runtime.diagnostics = analysis.diagnostics;
-  runtime.source = generateModule(model, options);
-  return runtime;
-}
+export function compileAssembly(model, options = {}) { return compileJavaScriptModule(model, options).createRuntime(); }

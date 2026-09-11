@@ -17,11 +17,12 @@ export function buildExceptionPlan(method) {
   const boundaries = new Set([...offsets, end]);
   const handlers = (method.exceptionHandlers ?? []).map((source, order) => {
     const kind = String(source.kind).toLowerCase() === 'clause' ? 'catch' : String(source.kind).toLowerCase();
-    if (!['catch', 'finally', 'fault'].includes(kind)) fail(`Native WebAssembly exception kind '${kind}' is unsupported; filter clauses require a separate filter-evaluation path.`);
-    const handler = {kind, tryOffset:source.tryOffset, tryLength:source.tryLength, handlerOffset:source.handlerOffset, handlerLength:source.handlerLength, catchType:source.catchType ?? null, order};
+    if (!['catch', 'filter', 'finally', 'fault'].includes(kind)) fail(`Native WebAssembly exception kind '${kind}' is unsupported.`);
+    const handler = {kind, tryOffset:source.tryOffset, tryLength:source.tryLength, handlerOffset:source.handlerOffset, handlerLength:source.handlerLength, catchType:source.catchType ?? null, ...(kind === 'filter' ? {filterOffset:source.filterOffset} : {}), order};
     for (const key of ['tryOffset','tryLength','handlerOffset','handlerLength']) if (!Number.isSafeInteger(handler[key]) || handler[key] < 0) fail(`Invalid exception region ${key}.`);
     if (!handler.tryLength || !handler.handlerLength || !offsets.has(handler.tryOffset) || !offsets.has(handler.handlerOffset) || !boundaries.has(handler.tryOffset + handler.tryLength) || !boundaries.has(handler.handlerOffset + handler.handlerLength)) fail('Exception regions must start and end at valid IL instruction boundaries.');
     if (contains(handler.handlerOffset, handler.tryOffset, handler.tryLength) || contains(handler.tryOffset, handler.handlerOffset, handler.handlerLength)) fail('An exception handler cannot overlap its own protected region.');
+    if (kind === 'filter' && (!Number.isSafeInteger(handler.filterOffset) || !offsets.has(handler.filterOffset) || handler.filterOffset >= handler.handlerOffset || contains(handler.filterOffset, handler.tryOffset, handler.tryLength))) fail('An exception filter must begin at a valid instruction before its handler and outside its protected region.');
     return Object.freeze(handler);
   });
   // Distinct protected regions may nest, but must not cross one another.
@@ -29,12 +30,13 @@ export function buildExceptionPlan(method) {
     const a=handlers[i],b=handlers[j],ae=a.tryOffset+a.tryLength,be=b.tryOffset+b.tryLength;
     if (a.tryOffset < b.tryOffset && b.tryOffset < ae && ae < be || b.tryOffset < a.tryOffset && a.tryOffset < be && be < ae) fail('Partially overlapping exception protected regions are unsupported.');
   }
-  return Object.freeze({handlers:Object.freeze(handlers),handlerEntries:Object.freeze(handlers.map(handler => Object.freeze({offset:handler.handlerOffset,stack:Object.freeze(handler.kind === 'catch' ? ['externref'] : [])}))),endOffset:end});
+  return Object.freeze({handlers:Object.freeze(handlers),handlerEntries:Object.freeze(handlers.flatMap(handler => [...(handler.kind === 'filter' ? [Object.freeze({offset:handler.filterOffset,stack:Object.freeze(['externref'])})] : []),Object.freeze({offset:handler.handlerOffset,stack:Object.freeze(['catch','filter'].includes(handler.kind) ? ['externref'] : [])})])),endOffset:end});
 }
 
 // Only the current native method's catch wrapper handles this marker. It then
 // rethrows the original error outside that wrapper, preventing a repeated unwind.
-class CompletedUnwind { constructor(frame, exception) { this.frame=frame;this.exception=exception; } }
+class CompletedUnwind { constructor(frame, exception, search) { this.frame=frame;this.exception=exception;this.search=search; } }
+class PropagatingUnwind { constructor(search) { this.search=search; } }
 const parents = Object.freeze({
   'System.DivideByZeroException':'System.ArithmeticException','System.OverflowException':'System.ArithmeticException','System.ArithmeticException':'System.SystemException',
   'System.ArgumentNullException':'System.ArgumentException','System.ArgumentOutOfRangeException':'System.ArgumentException','System.ArgumentException':'System.SystemException',
@@ -52,17 +54,19 @@ function defaultIsInstance(error, requested) {
 
 export function createExceptionFrame(plan, options = {}) {
   if (!Array.isArray(plan?.handlers)) fail('An exception frame requires a validated exception plan.');
-  return {plan,isInstance:options.isInstance ?? defaultIsInstance,normalize:options.normalize ?? (error => error),isFatal:options.isFatal ?? (error => error?.runtimeLimitation || typeof error?.code === 'string' && /^(?:WASM_|NATIVE_WASM_|DISPOSED$|ABORTED$|TIMEOUT$)/.test(error.code)),transfer:null,activeFinally:null,exception:null,catches:[]};
+  const frame={plan,isInstance:options.isInstance ?? defaultIsInstance,normalize:options.normalize ?? (error => error),isFatal:options.isFatal ?? (error => error?.runtimeLimitation || typeof error?.code === 'string' && /^(?:WASM_|NATIVE_WASM_|DISPOSED$|ABORTED$|TIMEOUT$)/.test(error.code)),transfer:null,activeFinally:null,exception:null,catches:[],context:options.context ?? null,origin:0,cells:[]};
+  if(frame.context)frame.context.frames.push(frame);
+  return frame;
 }
 function regionContains(frame, handler, offset) {
-  return contains(offset,handler.tryOffset,handler.tryLength) || frame.plan.handlers.some(other => other.tryOffset === handler.tryOffset && other.tryLength === handler.tryLength && other.kind === 'catch' && insideHandler(other,offset));
+  return contains(offset,handler.tryOffset,handler.tryLength) || frame.plan.handlers.some(other => other.tryOffset === handler.tryOffset && other.tryLength === handler.tryLength && ['catch','filter'].includes(other.kind) && insideHandler(other,offset));
 }
 function completeTransfer(frame, fromFinally) {
   const transfer=frame.transfer;
   if (!transfer) fail('endfinally has no pending exception or leave continuation.');
   if (transfer.queue.length) {frame.activeFinally=transfer.queue.shift();return frame.activeFinally.handlerOffset;}
   frame.transfer=transfer.parent?.transfer ?? null;frame.activeFinally=transfer.parent?.activeFinally ?? null;
-  if (transfer.kind === 'throw') {if(fromFinally)throw new CompletedUnwind(frame,transfer.exception);throw transfer.exception;}
+  if (transfer.kind === 'throw') {if(fromFinally)throw new CompletedUnwind(frame,transfer.exception,transfer.search);return escapeFrame(frame,transfer.exception,transfer.search);}
   frame.catches=frame.catches.filter(caught=>insideHandler(caught.handler,transfer.target));
   if (transfer.kind === 'catch') {frame.exception=transfer.exception;frame.catches.push({handler:transfer.handler,exception:transfer.exception});}
   return transfer.target;
@@ -75,15 +79,61 @@ function transfer(frame, request, origin) {
   return completeTransfer(frame,false);
 }
 
+/** A module-local stack coordinates CLR's search pass before any unwind pass.
+ * Filter callbacks are native WebAssembly exports; this service never evaluates IL.
+ */
+export function createExceptionContext(options = {}) {
+  return {frames:[],filterBoundaries:[],evaluateFilter:options.evaluateFilter ?? (()=>fail('A native exception filter evaluator was not installed.'))};
+}
+export function positionExceptionFrame(frame, origin) {frame.origin=origin;}
+export function captureExceptionCell(frame, index, cell) {frame.cells[index]=cell;}
+export function exceptionCell(frame,index) {const cell=frame.cells[index];if(!cell)fail(`Exception filter storage cell ${index} was not captured.`);return cell;}
+export function exitExceptionFrame(frame) {
+  const frames=frame.context?.frames;if(!frames)return;
+  const index=frames.lastIndexOf(frame);if(index>=0)frames.length=index;
+}
+export function resetExceptionContext(context) {context.frames.length=0;context.filterBoundaries.length=0;}
+function escapeFrame(frame, exception, search) {
+  const context=frame.context;
+  exitExceptionFrame(frame);
+  if(search && context && context.frames.length>(context.filterBoundaries.at(-1)??0))throw new PropagatingUnwind(search);
+  throw exception;
+}
+function searchException(frame, origin, exception) {
+  const context=frame.context, frames=context?.frames??[frame];
+  const start=frames.lastIndexOf(frame), boundary=context?.filterBoundaries.at(-1)??0;
+  if(start<0)fail('An exception escaped an inactive native frame.');
+  frame.origin=origin;
+  for(let index=start;index>=boundary;index--){
+    const current=frames[index];
+    const candidates=current.plan.handlers.filter(handler=>['catch','filter'].includes(handler.kind)&&contains(current.origin,handler.tryOffset,handler.tryLength)).sort(nesting);
+    for(const handler of candidates){
+      if(handler.kind==='catch'){
+        if(!handler.catchType||current.isInstance(exception,handler.catchType))return {exception,frame:current,handler};
+      }else{
+        if(!context)fail('Exception filters require the module-wide native exception context.');
+        const savedLength=frames.length;
+        context.filterBoundaries.push(savedLength);
+        let accepted=false;
+        try{accepted=!!context.evaluateFilter(current,handler,exception);}
+        catch(error){if(current.isFatal(error)||error instanceof WasmExceptionPlanError)throw error;}
+        finally{frames.length=savedLength;context.filterBoundaries.pop();}
+        if(accepted)return {exception,frame:current,handler};
+      }
+    }
+  }
+  return {exception,frame:null,handler:null};
+}
+
 /** Called from a native WASM catch clause; return the next handler's IL offset. */
 export function dispatchException(frame, origin, error) {
-  if (error instanceof CompletedUnwind && error.frame === frame) throw error.exception;
+  if(error instanceof CompletedUnwind&&error.frame===frame)return escapeFrame(frame,error.exception,error.search);
   // Engine limits and compatibility errors are host failures, not CLR exceptions.
-  if (frame.isFatal(error) || error instanceof WasmExceptionPlanError) throw error;
-  const exception=frame.normalize(error);
-  const candidates=frame.plan.handlers.filter(handler=>handler.kind === 'catch' && contains(origin,handler.tryOffset,handler.tryLength)).sort(nesting);
-  const handler=candidates.find(candidate=>!candidate.catchType || frame.isInstance(exception,candidate.catchType));
-  return transfer(frame,handler?{kind:'catch',target:handler.handlerOffset,handler,exception}:{kind:'throw',target:-1,exception},origin);
+  if(frame.isFatal(error)||error instanceof WasmExceptionPlanError){exitExceptionFrame(frame);throw error;}
+  frame.origin=origin;
+  const search=error instanceof PropagatingUnwind?error.search:searchException(frame,origin,frame.normalize(error));
+  const handler=search.frame===frame?search.handler:null;
+  return transfer(frame,handler?{kind:'catch',target:handler.handlerOffset,handler,exception:search.exception}:{kind:'throw',target:-1,exception:search.exception,search},origin);
 }
 export function leaveProtectedRegion(frame, origin, target) {
   if (!Number.isSafeInteger(target) || target < 0) fail('leave requires a valid instruction offset.');

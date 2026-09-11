@@ -7,6 +7,8 @@ export interface WasmAnalysis {
 }
 export interface WasmMethodSelector { token?: number; type?: string; declaringType?: string; name?: string; method?: string; parameters?: string[]; genericArguments?: string[]; }
 export interface WasmCompileOptions {
+  /** Optimize reducible control flow, native intrinsics and local instructions (default true). */
+  optimize?: boolean;
   /** Methods to export; selecting roots compiles their reachable managed dependencies. */
   exports?: Array<string | number | WasmMethodSelector>;
   /** Limit closed managed method specialization (default 4096). */
@@ -57,6 +59,17 @@ export interface WasmManifest {
   model?: unknown;
   [key: string]: unknown;
 }
+export interface WasmOptimizationStats {
+  enabled: boolean;
+  structuredMethods: number;
+  dispatcherMethods: number;
+  nativeLoops: number;
+  directBranches: number;
+  eliminatedDispatches: number;
+  localTeeRewrites: number;
+  intrinsicCalls: number;
+  functionBodyBytes: number;
+}
 export interface WasmCompilation {
   bytes: Uint8Array;
   exports: WasmMethod[];
@@ -64,6 +77,7 @@ export interface WasmCompilation {
   manifest: WasmManifest;
   analysis: WasmAnalysis;
   timings: Record<string, number>;
+  optimization: WasmOptimizationStats;
   [key: string]: unknown;
 }
 export interface WasmLoadOptions {
@@ -109,7 +123,7 @@ export interface WasmExecutable {
   readonly stdout: string;
   readonly stderr: string;
   readonly stats: {cacheHit: boolean; nativeCompilationMs: number; instantiationMs: number; methodCount: number; importCount: number};
-  /** Executes native Wasm synchronously; Int64/UInt64 arguments and results preserve BigInt precision. */
+  /** Executes native Wasm synchronously. Int64/UInt64 preserve BigInt precision. Decimal arguments accept exact decimal strings or BigInt and results are exact strings. Nullable accepts/returns null or its inner value. ValueTuple accepts fixed-length arrays or ItemN/Rest records and returns arrays. */
   invoke(selector: string | number | {token?: number; name?: string; type?: string; declaringType?: string; parameters?: string[]}, args?: unknown[], options?: WasmInvokeOptions): unknown;
   run(args?: string[], options?: WasmInvokeOptions & {entryPoint?: string | number}): NativeWasmExecutionResult;
   /** Invalidates managed wrappers and releases their runtime state. Previously retained raw exports remain ordinary Wasm functions. */
