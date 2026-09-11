@@ -1,0 +1,40 @@
+{
+  "testedAt": "2026-09-11T13:38:41.847Z",
+  "environment": "Actual .NET browser WASM, native WASI and Worker public API under Node",
+  "passed": 8,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Demo C# builds a dynamic CLR type and invokes generated JavaScript",
+      "passed": true
+    },
+    {
+      "name": "Real C# System.IO inputs, binary outputs and snapshots cross the Worker API",
+      "passed": true
+    },
+    {
+      "name": "Automatic WASM fallback retains files for a real framework-dependent program",
+      "passed": true
+    },
+    {
+      "name": "Persistent workspaces preserve managed file state across generic invocations and API edits",
+      "passed": true
+    },
+    {
+      "name": "Managed file changes survive a structured C# exception",
+      "passed": true
+    },
+    {
+      "name": "Real native WASI command registers and executes through compiler Worker RPC",
+      "passed": true
+    },
+    {
+      "name": "Native execution pre-abort leaves a usable compiler and starts no native program",
+      "passed": true
+    },
+    {
+      "name": "A real infinite native WASI loop is terminated by its Worker deadline",
+      "passed": true
+    }
+  ]
+}

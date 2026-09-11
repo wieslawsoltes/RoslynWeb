@@ -1,0 +1,29 @@
+<Project DefaultTargets="Build;RemoveBatch;AfterRemove">
+  <PropertyGroup>
+    <OutputDir Condition="'$(OutputDir)' == ''">out</OutputDir>
+    <P>$([MSBuild]::Escape('a;b'))</P>
+    <Q>$([System.String]::Copy('a%3Bb'))</Q>
+    <Skipped Condition="false And ('a' &gt; 'b')">bad</Skipped>
+    <Kept Condition="true Or ('a' &gt; 'b')">kept</Kept>
+  </PropertyGroup>
+  <ItemGroup>
+    <Input Include="a"><Flavor>red</Flavor></Input>
+    <Input Include="b"><Flavor>blue</Flavor></Input>
+    <Other Include="j1;j2" />
+    <Gone Include="a.txt;b.txt" />
+    <Escaped Include="$(P)" />
+    <Copied Include="$(Q)" />
+  </ItemGroup>
+  <Target Name="Build">
+    <MakeDir Directories="$(OutputDir)" />
+    <WriteLinesToFile File="$(OutputDir)/condition.txt" Lines="$(Kept)|$(Skipped)" Overwrite="true" />
+    <WriteLinesToFile File="$(OutputDir)/qualified-%(Input.Flavor).txt" Lines="%(Input.Flavor);@(Input);@(Other)" Overwrite="true" />
+    <WriteLinesToFile File="$(OutputDir)/escaping.txt" Lines="@(Escaped);@(Copied)" Overwrite="true" />
+  </Target>
+  <Target Name="RemoveBatch" Inputs="@(Gone)" Outputs="$(OutputDir)/%(Gone.Identity).gone">
+    <ItemGroup><Gone Remove="@(Gone)" /></ItemGroup>
+  </Target>
+  <Target Name="AfterRemove">
+    <WriteLinesToFile File="$(OutputDir)/removed.txt" Lines="@(Gone)" Overwrite="true" />
+  </Target>
+</Project>

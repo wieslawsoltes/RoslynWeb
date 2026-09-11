@@ -1,38 +1,53 @@
 {
-  "testedAt": "2026-09-11T12:11:23.399Z",
+  "testedAt": "2026-09-11T13:36:51.002Z",
   "environment": "Actual .NET browser-wasm in Node Worker through public compiler/project APIs",
-  "passed": 6,
+  "passed": 9,
   "failed": 0,
   "tests": [
     {
       "name": "Compile genuine MSBuild task using public Worker compiler",
       "passed": true,
-      "ms": 1510
+      "ms": 1710
     },
     {
       "name": "Project UsingTask generates files and returns metadata/typed outputs through WASM",
       "passed": true,
-      "ms": 588
+      "ms": 637
     },
     {
       "name": "Project resources and task-generated code execute from the actual emitted assembly",
       "passed": true,
-      "ms": 17
+      "ms": 62
     },
     {
       "name": "Second project build reuses task outputs and emits executable assembly again",
       "passed": true,
-      "ms": 58
+      "ms": 64
     },
     {
       "name": "Changing input invalidates the managed target content cache",
       "passed": true,
-      "ms": 65
+      "ms": 74
     },
     {
       "name": "Managed task errors and OnError cleanup propagate through public project build",
       "passed": true,
-      "ms": 5
+      "ms": 7
+    },
+    {
+      "name": "Culture RESX produces genuine satellite assemblies and ResourceManager resolves cultures",
+      "passed": true,
+      "ms": 141
+    },
+    {
+      "name": "Nested MSBuild projects and metadata batches generate real C# compiled and executed in WASM",
+      "passed": true,
+      "ms": 50
+    },
+    {
+      "name": "Exec runs a real native WASI command and compiles its generated C# in managed WASM",
+      "passed": true,
+      "ms": 53
     }
   ]
 }

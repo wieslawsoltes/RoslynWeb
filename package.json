@@ -1,6 +1,6 @@
 {
   "name": "@roslynweb/core",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "type": "module",
   "description": "Roslyn C# compilation in WebAssembly, managed assembly execution and an explicit MSIL-to-JavaScript backend",
   "license": "MIT",
@@ -50,7 +50,10 @@
     "test:compat": "node scripts/test-compat.mjs",
     "pages:build": "node scripts/stage-pages.mjs",
     "test:build": "node scripts/test-build.mjs",
-    "test:projects-wasm": "node tests/projects-wasm.mjs"
+    "test:projects-wasm": "node tests/projects-wasm.mjs",
+    "test:v4": "node scripts/test-v4.mjs",
+    "test:files": "node managed/runtime-files-tests.mjs",
+    "test:desktop": "node tests/desktop/wasm.mjs"
   },
   "engines": {
     "node": ">=22"

@@ -1,0 +1,25 @@
+{
+  "environment": "Native dotnet msbuild, SDK 10.0.100",
+  "fixture": "projects-v4-regressions.proj",
+  "files": {
+    "condition.txt": "kept|\n",
+    "qualified-red.txt": "red\na\nj1\nj2\n",
+    "qualified-blue.txt": "blue\nb\nj1\nj2\n",
+    "escaping.txt": "a;b\na;b\n",
+    "removed.txt": ""
+  },
+  "rejections": [
+    {
+      "expression": "$([MSBuild]::BitwiseOr(4294967296,1))",
+      "code": "MSB4186"
+    },
+    {
+      "expression": "$([MSBuild]::BitwiseNot(-2147483649))",
+      "code": "MSB4186"
+    },
+    {
+      "task": "<Message Text=\"x\" Bogus=\"x\"/>",
+      "code": "MSB4064"
+    }
+  ]
+}

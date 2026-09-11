@@ -1,0 +1,90 @@
+{
+  "testedAt": "2026-09-11T13:30:47.824Z",
+  "environment": "Actual .NET 10 browser-wasm runtime hosted by Node",
+  "runtime": {
+    "bridgeVersion": "0.4.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 167,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "passed": 15,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "Compile actual C# async System.IO program",
+      "status": "passed",
+      "ms": 1789
+    },
+    {
+      "name": "Seed actual .NET WASM files, run C# and capture binary snapshots",
+      "status": "passed",
+      "ms": 179
+    },
+    {
+      "name": "Filesystem deltas report created, unchanged and deleted files accurately",
+      "status": "passed",
+      "ms": 1
+    },
+    {
+      "name": "Ephemeral executions have separate filesystem workspaces",
+      "status": "passed",
+      "ms": 13
+    },
+    {
+      "name": "Files are captured even when managed user code throws",
+      "status": "passed",
+      "ms": 62
+    },
+    {
+      "name": "Persistent workspace seeds files and exposes configured quotas",
+      "status": "passed",
+      "ms": 132
+    },
+    {
+      "name": "Invoke real managed methods with a persistent working filesystem",
+      "status": "passed",
+      "ms": 8
+    },
+    {
+      "name": "File-aware invocation preserves generic and exact-signature options",
+      "status": "passed",
+      "ms": 6
+    },
+    {
+      "name": "Persistent execution supports delta-only capture",
+      "status": "passed",
+      "ms": 3
+    },
+    {
+      "name": "Workspace write, selected read, list and delete operate on runtime bytes",
+      "status": "passed",
+      "ms": 16
+    },
+    {
+      "name": "Absolute paths and traversal are rejected without host file writes",
+      "status": "passed",
+      "ms": 12
+    },
+    {
+      "name": "Persistent transfer validation is atomic for byte quotas and duplicate paths",
+      "status": "passed",
+      "ms": 3
+    },
+    {
+      "name": "Per-execution file count and generated output byte limits are enforced",
+      "status": "passed",
+      "ms": 50
+    },
+    {
+      "name": "Concurrent file-aware calls retain independent CWD, stdout and contents",
+      "status": "passed",
+      "ms": 77
+    },
+    {
+      "name": "Disposing a workspace invalidates its identifier",
+      "status": "passed",
+      "ms": 5
+    }
+  ]
+}

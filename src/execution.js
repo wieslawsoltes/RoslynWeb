@@ -2,8 +2,12 @@ import { compileAssembly } from './il/index.js';
 import { VirtualFileSystem } from './il/io.mjs';
 export async function executeJavaScript(model, options = {}) {
   let stdout = '';
-  const virtualFileSystem = options.virtualFiles !== undefined || options.captureVirtualFiles !== undefined || options.maxVirtualFileBytes !== undefined
+  const virtualFileSystem = options.virtualFiles !== undefined || options.captureVirtualFiles !== undefined || options.maxVirtualFileBytes !== undefined || options.workingDirectory !== undefined
     ? new VirtualFileSystem({files: options.virtualFiles, maxBytes: options.maxVirtualFileBytes}) : undefined;
+  if (options.workingDirectory !== undefined) {
+    const path = virtualFileSystem.normalize(options.workingDirectory || '/');
+    virtualFileSystem.mkdir(path); virtualFileSystem.cwd = path;
+  }
   const executable = compileAssembly(model, {
     externals: options.externals,
     assemblies: options.assemblies,

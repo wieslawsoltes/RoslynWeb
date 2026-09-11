@@ -75,3 +75,61 @@ export class RemoteHostTransport {
   request<T = unknown>(method: string, params?: unknown, options?: { signal?: AbortSignal; timeoutMs?: number }): Promise<T>;
   dispose(error?: Error): void;
 }
+
+export interface WasmCommandRequest {
+  args?: string[];
+  env?: Record<string, string>;
+  stdin?: string | Uint8Array;
+  files?: Record<string, string | Uint8Array | number[]>;
+  workingDirectory?: string;
+  directories?: string[];
+  maxFileBytes?: number;
+  maxOutputBytes?: number;
+  maxMemoryBytes?: number;
+  maxFiles?: number;
+  maxOpenFiles?: number;
+  signal?: AbortSignal;
+}
+export interface WasmCommandResult {
+  success: boolean;
+  exitCode: number;
+  stdout: string;
+  stderr: string;
+  files: Record<string, Uint8Array>;
+  removedFiles: string[];
+  directories: string[];
+  unsupportedCalls: string[];
+}
+export interface WasmCommand { name: string; module: WebAssembly.Module; imports: string[] }
+/** Execute registered WASI Preview 1 commands. Run untrusted commands in a terminable Worker. */
+export class WasmCommandRegistry {
+  constructor(options?: { fetch?: typeof fetch });
+  readonly commands: Map<string, WasmCommand>;
+  readonly closed: boolean;
+  register(name: string, source: BufferSource | WebAssembly.Module | string | URL, options?: { signal?: AbortSignal }): Promise<WasmCommand>;
+  run(name: string, request?: WasmCommandRequest): Promise<WasmCommandResult>;
+  unregister(name: string): boolean;
+  dispose(): void;
+}
+
+export interface DesktopCompatibility {
+  readonly assemblies: string[];
+  readonly host: BrowserDesktopHost | undefined;
+  snapshot(): Promise<Widget[]>;
+  refresh(): Promise<Widget[]>;
+  dispatch(event: Pick<DesktopEvent, 'id' | 'type'> & Partial<DesktopEvent>): Promise<Widget[]>;
+  run(assembly: import('../index.js').AssemblyInput, options?: import('../index.js').ExecutionOptions): Promise<import('../index.js').ExecutionResult>;
+  attach(root: HTMLElement, options?: { document?: Document; onError?: (error: Error, event: DesktopEvent) => void }): Promise<Widget[]>;
+  reset(): Promise<Widget[]>;
+  dispose(): Promise<void>;
+}
+/** Opt-in unsigned WinForms/WPF replacements; use a dedicated compiler instance. */
+export function createDesktopCompatibility(options: {
+  compiler: import('../index.js').RoslynCompiler;
+  root?: HTMLElement;
+  document?: Document;
+  fetch?: typeof fetch;
+  onOutput?: (output: { stdout: string; stderr: string }) => void;
+  onError?: (error: Error, event: DesktopEvent) => void;
+}): Promise<DesktopCompatibility>;
+export function synchronizeDesktopTree(host: BrowserDesktopHost, widgets: Widget[], options?: { acknowledgedSequence?: number }): BrowserDesktopHost;

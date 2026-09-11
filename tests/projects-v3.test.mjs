@@ -48,9 +48,9 @@ test('GenerateResource task forwards RESX conversion and task output items into 
  assert.equal(result.success,true,JSON.stringify(result.error));assert.equal(host.calls[0].options.resources[0].base64,'AQID');assert.deepEqual(result.files.get('/obj/Strings.resources'),new Uint8Array([1,2,3]));
 });
 
-test('satellite resource and duplicate manifest names fail explicitly',async()=>{
+test('satellite resource emits separate cultured assembly and duplicate names fail explicitly',async()=>{
  const host=compiler();host.convertResx=async()=>({success:true,base64:'AQ==',diagnostics:[]});
- let result=await buildProject(host,{files:{'App.csproj':'<Project Sdk="Microsoft.NET.Sdk"/>','Strings.pl.resx':'<root/>'}});assert.equal(result.error.code,'SATELLITE_RESOURCE_REQUIRED');
+ let result=await buildProject(host,{files:{'App.csproj':'<Project Sdk="Microsoft.NET.Sdk"/>','Strings.pl.resx':'<root/>'}});assert.equal(result.success,true,JSON.stringify(result.error));assert.equal(result.satelliteAssemblies[0].culture,'pl');assert.equal(result.satelliteAssemblies[0].path,'/bin/pl/App.resources.dll');
  result=await buildProject(host,{files:{'App.csproj':'<Project Sdk="Microsoft.NET.Sdk"><ItemGroup><EmbeddedResource Include="a.bin" LogicalName="same"/><EmbeddedResource Include="b.bin" LogicalName="same"/></ItemGroup></Project>','a.bin':'a','b.bin':'b'}});assert.equal(result.error.code,'DUPLICATE_RESOURCE_NAME');
 });
 

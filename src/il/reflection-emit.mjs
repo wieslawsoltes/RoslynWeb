@@ -1,4 +1,5 @@
 import { DynamicMethodBuilder } from './emitter.mjs';
+import { isTypeEmitBuiltin, invokeTypeEmitBuiltin } from './reflection-types.mjs';
 import { analyzeAssembly, generateMethod, isOpcodeSupported } from './compiler.mjs';
 import { ManagedException, Numeric, i4 } from './runtime.mjs';
 import { reflectionType } from './reflection.mjs';
@@ -23,6 +24,7 @@ export function isEmitField(ref) { return ref?.declaringType === E + 'OpCodes' &
 const emitOperands = new Set(['System.Byte', 'System.SByte', 'System.Int16', I, 'System.Int64', 'System.Single', 'System.Double', 'System.String', T, 'System.Reflection.MethodInfo', 'System.Reflection.ConstructorInfo', 'System.Reflection.FieldInfo', E + 'Label', E + 'Label[]', E + 'LocalBuilder']);
 export function isEmitBuiltin(ref) {
   if (!ref || typeof ref !== 'object') return false;
+  if (isTypeEmitBuiltin(ref)) return true;
   const owner = ref.declaringType, name = ref.name, p = sig(ref), n = p.length;
   if (owner === 'System.Reflection.MethodInfo' && name === 'CreateDelegate') return n === 1 && p[0] === T || n === 2 && p[0] === T && p[1] === 'System.Object' || (ref.genericArguments?.length === 1 && (n === 0 || n === 1 && p[0] === 'System.Object'));
   if (owner === E + 'DynamicMethod') {
@@ -48,7 +50,7 @@ export function isEmitBuiltin(ref) {
 
 function ensureMutable(generator) {
   if (!generator?.$builder) fail('NullReferenceException', 'An ILGenerator is required.');
-  if (generator.$owner.$published) fail('InvalidOperationException', 'The dynamic method has already been completed.');
+  if (generator.$owner.$published || generator.$owner.$typeBuilder?.$created) fail('InvalidOperationException', 'The dynamic method has already been completed.');
   return generator.$builder;
 }
 function labelValue(value, builder) {
@@ -105,8 +107,10 @@ function closeClause(builder, region) {
 /** Called before ordinary reflection dispatch because DynamicMethod inherits MethodInfo. */
 export function invokeEmitBuiltin(runtime, ref, args, self) {
   self = unwrap(self);
+  const emittedType = invokeTypeEmitBuiltin(runtime, ref, args, self);
+  if (emittedType.handled) return emittedType;
   // MemberInfo/MethodInfo calls on a dynamic method use its actual emitted metadata.
-  if (self?.$builder && self.$generator && ['System.Reflection.MethodInfo', 'System.Reflection.MethodBase', 'System.Reflection.MemberInfo'].includes(ref.declaringType)) {
+  if (self?.$dynamicMethod && self.$generator && ['System.Reflection.MethodInfo', 'System.Reflection.MethodBase', 'System.Reflection.MemberInfo'].includes(ref.declaringType)) {
     if (ref.name === 'Invoke') publish(runtime, self);
     else if (ref.name === 'CreateDelegate') {
       if (ref.genericArguments?.length) { args = [reflectionType(runtime, ref.genericArguments[0]), ...args]; ref = { ...ref, parameters: [{ type: T }, ...(ref.parameters ?? [])] }; }
@@ -134,6 +138,7 @@ export function invokeEmitBuiltin(runtime, ref, args, self) {
       const parameters = items(args[2]).map(typeName), returnType = typeName(args[1]) ?? 'System.Void';
       if (parameters.some(t => !t || t === 'System.Void' || /!\d/.test(t))) fail('ArgumentException', 'Invalid dynamic method parameter type.');
       const sequence = runtime.$dynamicSequence = (runtime.$dynamicSequence ?? 0) + 1;
+      self.$dynamicMethod = true;
       self.$builder = new DynamicMethodBuilder(String(args[0]) || '<anonymous>', returnType, parameters, { assemblyName: `${runtime.model.name}.Dynamic${sequence}`, typeName: `RoslynWeb.DynamicMethods.Method${sequence}` });
       self.$generator = { $type: E + 'ILGenerator', $builder: self.$builder, $owner: self, $regions: [] };
       self.$member = self.$builder.asReference();
@@ -181,7 +186,7 @@ export function invokeEmitBuiltin(runtime, ref, args, self) {
       else if (p[1] === E + 'Label[]') operand = items(operand).map(x => labelValue(x, builder));
       else if (p[1] === E + 'LocalBuilder') { if (operand?.$localOwner !== builder) fail('ArgumentException', 'Local belongs to a different method.'); operand = operand.$localIndex; }
       else if (p[1] === T) operand = typeName(operand);
-      else if (operand?.$member) operand = operand.$builder ? publish(runtime, operand) : operand.$member;
+      else if (operand?.$member) operand = operand.$dynamicMethod ? publish(runtime, operand) : operand.$member;
       else operand = raw(operand);
       if (name === 'EmitCall' && (items(args[2]).length || !['call', 'callvirt'].includes(opcode))) fail('NotSupportedException', 'EmitCall supports call/callvirt without varargs.');
       builder.emit(opcode, operand ?? null); return done();

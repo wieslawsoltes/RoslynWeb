@@ -1,22 +1,27 @@
 # Verification report
 
-RoslynWeb version: 0.3.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`.
+RoslynWeb version: 0.4.0. Verification date: 2026-09-11. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`.
 
 ## Results
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **184 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
+| JavaScript unit and real-IL fixture tests | **277 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract and transport tests |
 | Actual .NET WebAssembly through the public JS API | **21 passed, 0 failed** | `npm run test:wasm`; `docs/wasm-verification.json` |
 | Actual WebAssembly and worker RPC in Node worker threads | **12 passed, 0 failed** | `npm run test:worker`; `docs/worker-verification.json` |
-| Native managed bridge assertions | **55 passed** | `managed/SelfTest` |
+| Native managed bridge assertions | **73 passed** | `managed/SelfTest` |
 | Actual WASM compiler extension/object tooling | **21 passed, 0 failed** | `node managed/runtime-tooling-tests.mjs`; `docs/wasm-tooling-verification.json` |
 | Extended public API through Worker | **9 passed, 0 failed** | `npm run test:compat`; `docs/compatibility-verification.json` |
 | Actual WASM custom task and resource ABI | **20 passed, 0 failed** | `node managed/runtime-build-tests.mjs`; `docs/wasm-build-verification.json` |
 | Build/resource/dynamic-code public API through Worker | **11 passed, 0 failed** | `npm run test:build`; `docs/build-api-verification.json` |
-| Project builds through the actual WASM task bridge | **6 passed, 0 failed** | `npm run test:projects-wasm`; `docs/wasm-projects-verification.json` |
+| Project builds through the actual WASM task bridge | **9 passed, 0 failed** | `npm run test:projects-wasm`; `docs/wasm-projects-verification.json` |
+| Actual WASM managed filesystem/workspaces | **15 passed, 0 failed** | `node managed/runtime-files-tests.mjs`; `docs/wasm-files-verification.json` |
+| Filesystem, native WASI and type-builder public APIs | **8 passed, 0 failed** | `node scripts/test-v4.mjs`; `docs/v4-api-verification.json` |
+| Original WinForms/WPF binaries in actual WASM | **20 passed, 0 failed** | `node tests/desktop/wasm.mjs`; `docs/desktop-binary-verification.json` |
+| Native compiled C WASI commands | **12 passed** | Included in `npm test`; original C source and SHA-256-checked WASM fixture |
+| Original desktop DLL reproducibility | **Both binaries reproduced exactly** | `bash scripts/prepare-desktop-fixtures.sh --check`; original Microsoft reference identities/hashes |
 | Live official NuGet v3 restore | **Passed** | `tests/fixtures/newtonsoft-validation.json` |
-| Chromium staged Pages application and browser API suite | **15 checks passed, including 16 browser API tests** | `npm run test:browser`; [Chromium verification run](https://github.com/wieslawsoltes/RoslynWeb/actions/runs/34599672536); CI uploads the JSON report and screenshots |
+| Chromium staged Pages application and browser API suite | Executed by the PR build and again after deployment | `npm run test:browser`; CI uploads the JSON report and screenshots for each commit |
 
 The local server integration test starts the actual `npm run serve` server on an ephemeral port and requests the root page, demo directory and browser module; it also checks missing paths and encoded traversal rejection.
 
@@ -34,7 +39,7 @@ The managed build suite compiles genuine Microsoft.Build.Framework/Utilities tas
 
 The project integration suite exercises these capabilities through createRoslyn's actual Worker API: imported UsingTask declarations, generated C# files and task item metadata, RESX project resources, executable build output, optional content-cache hits, changed-input invalidation, and OnError cleanup. The public build API suite also runs the sample projects, DynamicMethod code, virtual IO examples, Worker file snapshots, and cancellation during startup.
 
-The content cache compares exact bytes and project state and replays target property/item/file outputs. These checks do not establish equivalence to native MSBuild timestamp scheduling, arbitrary custom task compatibility, satellite resource generation, or complete .csproj evaluation.
+The content cache compares exact bytes and project state and replays target property/item/file outputs. These checks do not establish equivalence to native MSBuild timestamp scheduling, arbitrary custom task compatibility, complete .csproj evaluation, or every native MSBuild convention. Culture-specific satellites are now emitted and exercised through genuine ResourceManager lookups.
 
 ## Actual WASM coverage
 
@@ -65,10 +70,20 @@ Serve the extracted project with `npm run serve`, then open `http://localhost:80
 
 Validate the intended browsers, production headers/CSP, slow-network behavior and mobile memory limits before embedding the runtime into the target application. The full framework is retained for compatibility, so runtime payload and initialization memory are larger than a trimmed application.
 
+## Added version 0.4 coverage
+
+The JavaScript type-builder suite includes 15 real C# methods compared with native .NET, plus negative tests for unsupported definitions. Collection coverage adds 34 native differential methods. The native MSBuild fixture covers 18 property-function outputs, metadata task/target batching, preservation of unrelated items and removals, conditional short-circuiting, escaped item separators, and explicit invalid-parameter/overflow rejection.
+
+The WASI tests execute a real C program linked against wasi-libc and check files, descriptors, directories, arguments, environment variables, streams, clock/random calls, exit codes, quotas and unsupported syscalls. A public API test terminates a genuine infinite native loop with a Worker deadline and verifies subsequent calls reject as disposed. Project integration runs that C command from Exec, compiles its generated C# and executes the result. Culture-specific satellite DLLs are loaded by the real .NET ResourceManager.
+
+Managed filesystem tests exercise temporary/persistent files, real async System.IO, exception snapshots, UTF-8/binary transfer, generic invocation, quotas, invalid paths, concurrent calls and disposal. Desktop tests execute unchanged original-reference WinForms/WPF binaries and their C# event handlers, with lifecycle, parenting-cycle, readonly and disabled-state regressions. DOM contract tests simulate delayed managed responses during rapid edits to verify that older snapshots do not overwrite newer input. These DOM fixtures are complemented by the actual Chromium sample checks in CI.
+
 ## Remaining compatibility boundaries
 
-The managed backend interprets compatible managed IL using .NET WASM; it cannot run arbitrary Windows/native DLLs, desktop framework binaries, mixed-mode C++/CLI, or an unrestricted native-code JIT. The JavaScript backend remains a documented CLR/BCL subset. Its C# Reflection.Emit bridge supports a bounded DynamicMethod/ILGenerator surface; arbitrary AssemblyBuilder/TypeBuilder graphs and every Reflection.Emit overload are not implemented. Auto backend selection uses compatibility analysis before executing user code.
+The managed backend interprets compatible managed IL using .NET WASM. Selected WinForms/WPF binaries execute unchanged through explicit unsigned replacement assemblies and DOM controls. This does not supply arbitrary desktop UI framework behavior, native Windows DLLs, BAML/XAML loading, dependency-property infrastructure, mixed-mode C++/CLI or a native-code JIT. See the exact desktop API and property limits in [the desktop guide](DESKTOP-COMPATIBILITY.md).
 
-Compiled browser-compatible ITask implementations are supported. OS processes/tools, nested native MSBuild builds, arbitrary inline task factories, general task batching/property functions, and native SDK workloads remain unavailable. Resource conversion accepts explicit primitive data instead of arbitrary object deserialization. Native adapters require actual WASM modules and explicit ABI bindings; browser UI controls use the documented JSON/DOM protocol, without WPF/WinForms binary emulation. Optional remote transport requires an independently supplied server.
+The JavaScript backend remains a documented CLR/BCL subset. Its Reflection.Emit adapter supports the tested DynamicMethod and AssemblyBuilder/TypeBuilder surfaces, with explicit limits on generic/nested/event builders, custom attributes, native layout, persistence and other advanced emission behavior. Auto selection checks compatibility before executing code.
 
-The reproducible portable-PDB scheduling adaptation remains in use. Neither the extra tests nor the working build examples remove that documented runtime requirement.
+Compatible managed ITask implementations, bounded property functions and metadata batching, nested browser project builds, resource satellites and explicitly registered WASI Exec commands are supported. Arbitrary native OS processes, external SDK engines, inline task factories, unrestricted property functions and full MSBuild behavior remain unavailable. The native adapter requires WASM modules with supported imports; it does not execute machine-code DLLs. Optional remote transport requires an independently supplied server.
+
+The reproducible portable-PDB scheduling adaptation remains in use, with the original and patched hashes in `dist/browser-adaptation.json`.

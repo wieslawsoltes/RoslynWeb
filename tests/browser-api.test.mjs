@@ -7,15 +7,15 @@ import {executeJavaScript} from '../src/execution.js';
 const model = (body = [{offset:0,opcode:'ldc.i4',operand:42},{offset:1,opcode:'ret'}]) => ({name:'FacadeFixture',entryPoint:1,types:[{name:'Program',fields:[],methods:[{token:1,name:'Main',declaringType:'Program',isStatic:true,returnType:'System.Int32',parameters:[],locals:[],exceptionHandlers:[],body}]}]});
 const assembly = body => ({success:true,pe:new Uint8Array([77,90]),inspection:model(body)});
 class ProtocolWorker {
-  static calls=[];
+  static calls=[]; static requests=[];
   postMessage(request) {
-    ProtocolWorker.calls.push(request.method);
+    ProtocolWorker.calls.push(request.method); ProtocolWorker.requests.push(request);
     queueMicrotask(() => { if (!this.closed) this.onmessage?.({data:{id:request.id,result:request.method==='$init'?{referenceCount:167}:{success:true,exitCode:0,stdout:'',stderr:''}}}); });
   }
   terminate(){this.closed=true;}
 }
 async function withCompiler(options, action) {
-  const previous=globalThis.Worker;globalThis.Worker=ProtocolWorker;ProtocolWorker.calls=[];
+  const previous=globalThis.Worker;globalThis.Worker=ProtocolWorker;ProtocolWorker.calls=[];ProtocolWorker.requests=[];
   let compiler;
   try {compiler=await createRoslyn(options);await action(compiler);}
   finally {compiler?.dispose();if(previous===undefined)delete globalThis.Worker;else globalThis.Worker=previous;}
@@ -36,19 +36,30 @@ test('abort also blocks an execution already waiting in the serialization queue'
     controller.abort();await assert.rejects(pending,error=>error.code==='ABORTED');
   });
 });
-test('WebAssembly execution rejects all explicitly supplied virtual-file options',async()=>{
+test('WebAssembly file options encode UTF-8 and binary input through the managed file ABI',async()=>{
   await withCompiler({},async compiler=>{
-    for(const option of [{virtualFiles:{'/input.txt':'seed'}},{captureVirtualFiles:true},{captureVirtualFiles:false},{maxVirtualFileBytes:32}]) {
-      await assert.rejects(compiler.run(assembly(),{backend:'wasm',...option}),error=>error.code==='VIRTUAL_FILES_REQUIRE_JAVASCRIPT');
-    }
-    assert.deepEqual(ProtocolWorker.calls,['$init']);
+    await compiler.run(assembly(),{virtualFiles:{'input.txt':'π','binary.bin':new Uint8Array([0,255])},captureVirtualFiles:true,workingDirectory:'work'});
+    assert.deepEqual(ProtocolWorker.calls,['$init','RunWithFiles']);
+    const request=JSON.parse(ProtocolWorker.requests.at(-1).args[2]);
+    assert.equal(request.files[0].base64,Buffer.from('π').toString('base64'));
+    assert.equal(request.files[1].base64,'AP8=');assert.equal(request.workingDirectory,'work');
   });
 });
-test('automatic fallback rejects virtual-file input before invoking the WASM program',async()=>{
+test('automatic compatibility fallback forwards relative files before WASM execution',async()=>{
   const unsupported=assembly([{offset:0,opcode:'unsupported-operation'},{offset:1,opcode:'ret'}]);
   await withCompiler({},async compiler=>{
-    await assert.rejects(compiler.run(unsupported,{backend:'auto',virtualFiles:{'/input.txt':'seed'}}),error=>error.code==='VIRTUAL_FILES_REQUIRE_JAVASCRIPT');
+    const result=await compiler.run(unsupported,{backend:'auto',virtualFiles:{'input.txt':'seed'}});
+    assert.equal(result.backend,'wasm');assert.equal(result.fallback.supported,false);
+    assert.deepEqual(ProtocolWorker.calls,['$init','RunWithFiles']);
+  });
+});
+test('absolute managed input paths are rejected before execution and persistent auto mode selects WASM',async()=>{
+  await withCompiler({},async compiler=>{
+    await assert.rejects(compiler.run(assembly(),{virtualFiles:{'/input.txt':'seed'}}),error=>error.code==='INVALID_WORKSPACE_PATH');
+    await assert.rejects(compiler.run(assembly(),{backend:'javascript',workspaceId:'existing'}),error=>error.code==='WORKSPACE_REQUIRES_WASM');
     assert.deepEqual(ProtocolWorker.calls,['$init']);
+    await compiler.run(assembly(),{backend:'auto',workspaceId:'existing'});
+    assert.deepEqual(ProtocolWorker.calls,['$init','RunWithFiles']);
   });
 });
 test('snapshot preserves and copies seeded files even if compiled code never accesses System.IO',async()=>{

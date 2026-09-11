@@ -140,6 +140,11 @@ selected constructors, calendar arithmetic, comparisons and components. Culture,
 time-zone conversion, arbitrary date formats and the entire Regex API remain in
 the .NET tier.
 
+Additional adapters implement `Queue<T>`, `Stack<T>`, `LinkedList<T>`/nodes,
+`SortedSet<T>` and `SortedDictionary<TKey,TValue>`, including live sorted range
+views, mutation-aware enumerators and selected comparison interfaces. See
+[the collection API and complexity guide](../../docs/collections-extra.md).
+
 Reflection operates over **linked normalized metadata**. It supports exact-overload
 selection, BindingFlags filtering, constructors, static/instance invocation, boxed
 return values and ref/out array updates, fields, assembly/type/member metadata,
@@ -180,11 +185,32 @@ This is a bounded implementation of the documented
 [DynamicMethod](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.dynamicmethod?view=net-10.0)
 and [ILGenerator](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.ilgenerator?view=net-10.0)
 APIs. It generates JavaScript functions and requires the host's dynamic-code
-permission. Runtime type/assembly builders, raw metadata emission, unmanaged
-`EmitCalli`, varargs, custom modifiers and native machine-code generation are not
-implemented. Unlike .NET's silent ignoring of emission after completion, this
+permission. Raw metadata emission, unmanaged `EmitCalli`, varargs, custom modifiers
+and native machine-code generation are not implemented. Unlike .NET's silent ignoring of emission after completion, this
 adapter rejects attempts to modify a completed method. Emitted assemblies remain
 linked until the JavaScript runtime instance is discarded.
+
+The C# `AssemblyBuilder`, `ModuleBuilder` and `TypeBuilder` adapters create executable
+classes in memory with `AssemblyBuilderAccess.Run`. Supported definitions include
+fields, literal primitive constants, instance/default/type constructors, static and
+instance methods, properties/indexers, parent types, interfaces and explicit method
+overrides. `CreateType`/`CreateTypeInfo` validate emitted IL and publish implementations
+to the current runtime; `Activator`, reflected member invocation and delegates then
+operate on those definitions. Dynamic assemblies with repeated type names retain
+distinct identities and static state. `TypeInfo.AsType` and normal type/member
+metadata are available after publication. These operations use the documented
+[TypeBuilder API](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.emit.typebuilder?view=net-10.0)
+through an explicit adapter; they do not depend on native JIT support in WASM.
+
+Use the documented overloads in `reflection-types.mjs`. Unsupported operations include
+generic parameter builders, dynamic value/enum/delegate definitions, nested types,
+event builders, custom attributes/modifiers, explicit/sequential native layout,
+collectible assembly lifetimes, multiple modules, persistence, and forward references
+to dynamic types that have not yet been published. Only a created type's reflection
+metadata can be enumerated. Type mutation after publication and invocation before
+publication are rejected. `CreateType` emits JavaScript and does not produce a DLL;
+use Roslyn for PE files. Generated methods share execution budgets and are retained
+until the runtime instance is discarded.
 
 `Type.GetProperty`/`GetProperties` and `PropertyInfo` use properties extracted from
 the PE metadata. They support exact indexed signatures, inherited/closed-generic
@@ -221,6 +247,10 @@ storage, bound targets, indexed branches and rethrow/finally behavior. The JS
 tests compare every result with `tests/il-emit-native-baseline.json`. To regenerate
 that native baseline with a local .NET 10 SDK, run
 `DOTNET=/path/to/dotnet node tests/il-emit-verify-native.mjs`.
+The type-builder fixture contributes 15 additional native differential cases,
+including constructors/properties, static initialization, interface and virtual
+dispatch, type identity and exact 64-bit literal fields. Regenerate both the Roslyn
+metadata and baseline with `DOTNET=/path/to/dotnet node tests/il-types-verify-native.mjs`.
 `tests/il-property-fixture.cs` additionally verifies real reflected property and
 indexer metadata, including private accessors and closed generic types.
 

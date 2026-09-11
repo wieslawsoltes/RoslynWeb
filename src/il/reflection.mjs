@@ -56,7 +56,8 @@ export function isReflectionBuiltin(ref) {
     if (n === 'SetValue') return len >= 2 && len <= 3 && p[0] === 'System.Object' && p[1] === 'System.Object' && (len === 2 || p[2] === 'System.Object[]');
   }
   if (t === 'System.Reflection.ParameterInfo') return ['get_Name', 'get_Position', 'get_ParameterType', 'get_IsOut', 'get_IsOptional', 'get_HasDefaultValue', 'get_DefaultValue'].includes(n) && len === 0;
-  if (t === 'System.Reflection.Assembly') return ['GetTypes', 'get_FullName', 'GetName'].includes(n) && len === 0 || n === 'GetType' && len === 1 && p[0] === 'System.String';
+  if (t === 'System.Reflection.Module') return ['get_Name', 'get_ScopeName', 'get_Assembly'].includes(n) && len === 0;
+  if (t === 'System.Reflection.Assembly') return ['GetTypes', 'get_FullName', 'GetName', 'get_IsDynamic', 'get_IsCollectible'].includes(n) && len === 0 || n === 'GetType' && len === 1 && p[0] === 'System.String';
   if (t === 'System.Reflection.AssemblyName') return ['get_Name', 'get_FullName', 'ToString'].includes(n) && len === 0;
   if (t === 'System.Activator' && n === 'CreateInstance') return len === 0 && (ref.genericArguments ?? []).length === 1 || len === 1 && p[0] === 'System.Type' || len === 2 && p[0] === 'System.Type' && ['System.Boolean', 'System.Object[]'].includes(p[1]);
   return false;
@@ -135,6 +136,7 @@ function invokeMember(runtime, member, object, supplied, constructor = false) {
   const items = itemsOf(supplied), p = signature(member);
   if (items.length !== p.length) fail('Reflection.TargetParameterCountException', 'Parameter count mismatch.');
   let instance = constructor ? runtime.allocate(member.declaringType) : target(runtime, member, object);
+  if (constructor && member.declaringType === 'System.Object' && p.length === 0) return instance;
   const args = items.map((v, i) => {
     let converted = convertArgument(runtime, v, p[i]);
     if (!p[i].endsWith('&')) return converted;
@@ -195,9 +197,9 @@ export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call')
     if (['op_Equality', 'op_Inequality'].includes(name)) { const equal = args[0] == null || args[1] == null ? args[0] == args[1] : typeName(args[0]) === typeName(args[1]); return done(i4(name === 'op_Equality' ? equal : !equal)); }
     if (!self?.typeName) fail('NullReferenceException', 'A reflected type is required.');
     const t = self.typeName, d = definition(runtime, t), generic = genericArguments(t);
-    if (name === 'get_FullName' || name === 'ToString') return done(t);
-    if (name === 'get_Name') return done(simpleRoot(t).split(/[.+]/).at(-1));
-    if (name === 'get_Namespace') { const root = simpleRoot(t).split('+')[0], i = root.lastIndexOf('.'); return done(i < 0 ? null : root.slice(0, i)); }
+    if (name === 'get_FullName' || name === 'ToString') return done(d?.displayName ?? t);
+    if (name === 'get_Name') return done(simpleRoot(d?.displayName ?? t).split(/[.+]/).at(-1));
+    if (name === 'get_Namespace') { const root = simpleRoot(d?.displayName ?? t).split('+')[0], i = root.lastIndexOf('.'); return done(i < 0 ? null : root.slice(0, i)); }
     if (name === 'get_BaseType') return done(d?.baseType ? reflectionType(runtime, d.baseType) : null);
     if (name === 'get_UnderlyingSystemType') return done(self);
     if (name === 'get_TypeHandle') return done({ $type: 'System.RuntimeTypeHandle', name: t });
@@ -213,7 +215,7 @@ export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call')
     if (name === 'get_IsAbstract') return done(i4(d ? flag(d, 'Abstract', 128) : false));
     if (name === 'get_IsSealed') return done(i4(d ? flag(d, 'Sealed', 256) : false));
     if (name === 'get_Assembly') return done({ $type: 'System.Reflection.Assembly', assemblyName: d?.$assembly ?? d?.assemblyName ?? null });
-    if (name === 'get_AssemblyQualifiedName') return done(d?.$assembly ? `${t}, ${d.$assembly}` : t);
+    if (name === 'get_AssemblyQualifiedName') return done(d?.$assembly ? `${d.displayName ?? t}, ${runtime.assemblies.get(d.$assembly)?.displayName ?? d.$assembly}` : t);
     if (name === 'Equals') return done(i4(self.typeName === args[0]?.typeName));
     if (name === 'IsAssignableFrom') return done(i4(args[0] != null && runtime.inherits(typeName(args[0]), t)));
     if (name === 'IsSubclassOf') return done(i4(args[0] != null && t !== typeName(args[0]) && runtime.inherits(t, typeName(args[0]))));
@@ -232,6 +234,7 @@ export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call')
       const memberKind = name.includes('Method') ? 'MethodInfo' : name.includes('Field') ? 'FieldInfo' : name.includes('Propert') ? 'PropertyInfo' : 'ConstructorInfo';
       const flagIndex = p.indexOf('System.Reflection.BindingFlags'), flags = flagIndex >= 0 ? Number(raw(args[flagIndex])) : 4 | 8 | 16;
       let candidates = members(runtime, t, memberKind, flags);
+      if (t === 'System.Object' && memberKind === 'ConstructorInfo' && flags & 16 && flags & 4) candidates = [reflectedMember('ConstructorInfo', { name: '.ctor', declaringType: t, returnType: 'System.Void', parameters: [], isStatic: false, attributes: 'Public' })];
       if (name.endsWith('s')) return done(array(candidates, `System.Reflection.${memberKind}`));
       const typeIndex = p.indexOf('System.Type[]'), desired = typeIndex >= 0 ? itemsOf(args[typeIndex]) : null;
       const returnIndex = p.indexOf('System.Type');
@@ -322,13 +325,16 @@ export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call')
     if (name === 'get_DefaultValue') return done(boxResult(runtime, fromJS(p.defaultValue, p.type), p.type));
   }
   if (owner === 'System.Reflection.Assembly') {
-    const model = runtime.assemblies.get(self?.assemblyName);
+    if (name === 'get_IsDynamic') return done(i4(self?.$type === 'System.Reflection.Emit.AssemblyBuilder' || !!runtime.assemblies.get(self?.assemblyName)?.displayName));
+    if (name === 'get_IsCollectible') return done(i4(0));
+    const model = runtime.assemblies.get(self?.assemblyName) ?? (self?.$type === 'System.Reflection.Emit.AssemblyBuilder' ? {name:self.name,types:[]} : null);
     if (!model) fail('InvalidOperationException', 'Assembly metadata is not linked.');
-    if (name === 'get_FullName') return done(model.fullName ?? model.name);
-    if (name === 'GetName') return done({ $type: 'System.Reflection.AssemblyName', name: model.name, fullName: model.fullName ?? model.name });
+    if (name === 'get_FullName') return done(model.fullName ?? model.displayName ?? model.name);
+    if (name === 'GetName') return done({ $type: 'System.Reflection.AssemblyName', name: model.displayName ?? model.name, fullName: model.fullName ?? model.displayName ?? model.name });
     if (name === 'GetTypes') return done(array((model.types ?? []).map(x => reflectionType(runtime, x.name)), 'System.Type'));
-    if (name === 'GetType') return done(model.types.some(x => x.name === args[0]) ? reflectionType(runtime, args[0]) : null);
+    if (name === 'GetType') { const found = model.types.find(x => (x.displayName ?? x.name) === args[0]); return done(found ? reflectionType(runtime, found.name) : null); }
   }
+  if (owner === 'System.Reflection.Module') return done(name === 'get_Assembly' ? { $type: 'System.Reflection.Assembly', assemblyName: self.assemblyName } : self.name ?? self.assemblyName);
   if (owner === 'System.Reflection.AssemblyName') return done(name === 'get_Name' ? self.name : self.fullName);
   return { handled: false };
 }

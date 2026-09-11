@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-11T11:38:56.945Z",
+  "testedAt": "2026-09-11T13:34:52.300Z",
   "environment": "Actual .NET browser-wasm in Node Worker, unmodified browser worker protocol",
   "browserEngineValidated": false,
   "passed": 9,
@@ -8,12 +8,12 @@
     {
       "name": "Public API compiles and loads real analyzer/generator DLL in a Worker",
       "passed": true,
-      "ms": 1988
+      "ms": 2436
     },
     {
       "name": "Demo incremental generator produces compilable C# and analyzer diagnostics",
       "passed": true,
-      "ms": 575
+      "ms": 776
     },
     {
       "name": "Editorconfig can promote analyzer diagnostics to errors",
@@ -23,32 +23,32 @@
     {
       "name": "Build .csproj, imported targets and generated source inside WASM",
       "passed": true,
-      "ms": 63
+      "ms": 84
     },
     {
       "name": "Persistent CLR object handles support properties, optional and generic methods",
       "passed": true,
-      "ms": 206
+      "ms": 130
     },
     {
       "name": "Runtime generated C# functions preserve Int64 and evaluate expressions",
       "passed": true,
-      "ms": 127
+      "ms": 133
     },
     {
       "name": "Generic methods and separate generic static fields execute as JavaScript",
       "passed": true,
-      "ms": 166
+      "ms": 233
     },
     {
       "name": "Actual DllImport metadata maps to an explicitly supplied native WASM export",
       "passed": true,
-      "ms": 62
+      "ms": 80
     },
     {
       "name": "C# browser UI model and event method round-trip through the Worker",
       "passed": true,
-      "ms": 87
+      "ms": 75
     }
   ]
 }

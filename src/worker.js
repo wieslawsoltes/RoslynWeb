@@ -1,5 +1,6 @@
 import { bootManaged } from './host.js';
 let host;
+let nativeCommands;
 let queue = Promise.resolve();
 // Keep Worker.onmessage unset: .NET uses it to distinguish an application
 // sidecar from one of its own pthread workers before resolving startup promises.
@@ -13,6 +14,12 @@ const receive = ({ data }) => {
       } else if (method === '$runJS') {
         const { executeJavaScript } = await import('./execution.js');
         self.postMessage({ id, result: await executeJavaScript(args[0], args[1]) });
+      } else if (method === '$nativeCommand') {
+        if (!nativeCommands) {
+          const { NativeCommandHost } = await import('./native-commands.js');
+          nativeCommands = new NativeCommandHost();
+        }
+        self.postMessage({ id, result: await nativeCommands.call(args[0], args[1]) });
       } else {
         if (!host) throw new Error('Compiler worker is not initialized');
         self.postMessage({ id, result: await host.call(method, args) });
