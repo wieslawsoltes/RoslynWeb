@@ -32,7 +32,13 @@ try {
  if(process.argv.includes('--update')) {
   await writeFile(new URL('./ordinal-unicode-fixture.json',import.meta.url),JSON.stringify(model,null,2)+'\n');
   await writeFile(path,JSON.stringify(baseline)+'\n');
- } else assert.deepEqual(baseline,JSON.parse(await readFile(path,'utf8')),'Native CLR ordinal oracle differs from the reviewed baseline.');
+ } else {
+  const {runtime:recordedRuntime,...expected}=JSON.parse(await readFile(path,'utf8'));
+  const {runtime:actualRuntime,...actual}=baseline;
+  // Runtime patches are provenance; mapping/source hashes and every result remain exact.
+  assert.equal(actualRuntime.split('.')[0],recordedRuntime.split('.')[0],'Native runtime major version');
+  assert.deepEqual(actual,expected,'Native CLR ordinal oracle differs from the reviewed baseline.');
+ }
  const str=units=>units==null?null:String.fromCharCode(...units);
  const check=program=>{
   for(const x of baseline.comparisons)assert.deepEqual(program.invoke('OrdinalUnicodeFixture::Compare',[str(x.a),str(x.b)]),x.result,JSON.stringify(x));

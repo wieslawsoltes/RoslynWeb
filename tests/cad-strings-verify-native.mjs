@@ -21,6 +21,12 @@ Console.WriteLine(JsonSerializer.Serialize(new {runtime=Environment.Version.ToSt
  const data=JSON.parse(result.stdout);for(const item of data.cases)assert.deepEqual(item.result,baseline.cases.find(expected=>expected.method===item.method).result,item.method);
  const report={runtime:data.runtime,sourceSha256:createHash('sha256').update(source).digest('hex'),cases:data.cases.map(item=>({method:item.method,results:item.result.length,sha256:createHash('sha256').update(JSON.stringify(item.result)).digest('hex')}))};
  if(process.argv.includes('--update'))await writeFile(new URL('./cad-strings-native-baseline.json',import.meta.url),JSON.stringify(report,null,2)+'\n');
- else assert.deepEqual(report,JSON.parse(await readFile(new URL('./cad-strings-native-baseline.json',import.meta.url),'utf8')));
+ else {
+  const {runtime:recordedRuntime,...expected}=JSON.parse(await readFile(new URL('./cad-strings-native-baseline.json',import.meta.url),'utf8'));
+  const {runtime:actualRuntime,...actual}=report;
+  // Runtime patches are provenance; source hashes and every result remain exact.
+  assert.equal(actualRuntime.split('.')[0],recordedRuntime.split('.')[0],'Native runtime major version');
+  assert.deepEqual(actual,expected,'Native string baseline');
+ }
  console.log(`PASS native .NET ${data.runtime}: ${data.cases.reduce((sum,item)=>sum+item.result.length,0)} string/split/comparer/builder results match managed .NET Wasm.`);
 }finally{await rm(directory,{recursive:true,force:true});}

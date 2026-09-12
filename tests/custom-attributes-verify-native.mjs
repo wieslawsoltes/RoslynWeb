@@ -18,6 +18,12 @@ Console.Write(JsonSerializer.Serialize(new{runtime=Environment.Version.ToString(
  const data={...JSON.parse(result.stdout),sourceSha256:createHash('sha256').update(await readFile(new URL('./custom-attributes-fixture.cs',import.meta.url))).digest('hex')};
  const baselineUrl=new URL('./custom-attributes-native-baseline.json',import.meta.url);
  if(process.argv.includes('--update')) await writeFile(baselineUrl,JSON.stringify(data,null,2)+'\n');
- else assert.deepEqual(data,JSON.parse(await readFile(baselineUrl,'utf8')),'Native attribute baseline');
+ else {
+  const {runtime:recordedRuntime,...expected}=JSON.parse(await readFile(baselineUrl,'utf8'));
+  const {runtime:actualRuntime,...actual}=data;
+  // Runtime patches are provenance; source hashes and every result remain exact.
+  assert.equal(actualRuntime.split('.')[0],recordedRuntime.split('.')[0],'Native runtime major version');
+  assert.deepEqual(actual,expected,'Native attribute baseline');
+ }
  console.log(`Native .NET ${data.runtime}: ${Object.keys(data.results).length} attribute scenarios and ${Object.keys(data.filters).length} filter contracts verified.`);
 }finally{await rm(directory,{recursive:true,force:true});}
