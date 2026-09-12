@@ -96,6 +96,8 @@ jobs:
             history: 1
           - suite: netdxf
             history: 1
+          - suite: netdxf-compilers
+            history: 1
           - suite: performance
             history: 0
     steps:

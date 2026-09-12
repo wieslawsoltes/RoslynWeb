@@ -11,7 +11,8 @@ The workflow builds the current revision once, generates native CLR fixtures, an
 | Runtime | Managed Wasm, Worker, build, resources, files, desktop binaries, and generated compiler APIs |
 | CLI | Production Node host, sessions, watch, executable and installed-package integration |
 | CAD | Events, framework/formatting, and compiler services, retaining the independent native CLR collection oracle |
-| netDxf | Managed documents, curved/patterned hatches, whole-library emission, generated reader/writer and entity tests |
+| netDxf | Managed documents, curved/patterned hatches, entity tests and argument exceptions |
+| netDxf compilers | Whole-library emission and generated reader/writer execution |
 | Performance | All five existing cache, compilation, execution and host-comparison checks |
 | Document matrix, two jobs | All 24 version/format/text cases, 72 writes, 216 reads and nine writer-to-reader backend pairs |
 | Browser | Real Chromium compiler lab and WebGPU CAD sample |
@@ -49,6 +50,7 @@ DOTNET=dotnet node scripts/ci-suite.mjs cad
 node scripts/ci-suite.mjs runtime
 node scripts/ci-suite.mjs cli
 node scripts/ci-suite.mjs netdxf
+node scripts/ci-suite.mjs netdxf-compilers
 node scripts/ci-suite.mjs performance
 ```
 

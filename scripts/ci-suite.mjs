@@ -65,16 +65,18 @@ const suites = {
   netdxf: {
     commands: [
       npm('test:netdxf'),
-      npm('test:netdxf-compilers'),
       npm('test:netdxf-entities'),
       node('tests/argument-exceptions-integration.mjs'),
     ],
     reports: [
       'netdxf-verification.json',
       'netdxf-pattern-verification.json',
-      'netdxf-backends-verification.json',
       'netdxf-entities-verification.json',
     ],
+  },
+  'netdxf-compilers': {
+    commands: [npm('test:netdxf-compilers')],
+    reports: ['netdxf-backends-verification.json'],
   },
   performance: {
     commands: [
