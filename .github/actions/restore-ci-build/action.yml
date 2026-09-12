@@ -1,0 +1,24 @@
+name: Restore this run's compiler build
+description: Reuse the freshly built runtime and native-generated test fixtures.
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+    - uses: actions/download-artifact@v4
+      with:
+        name: ci-build
+        path: artifacts
+    - name: Verify and unpack the shared build
+      shell: bash
+      working-directory: artifacts
+      run: |
+        sha256sum --check ci-build.tar.gz.sha256
+        tar -xzf ci-build.tar.gz -C ..
+    - name: Require runtime assets and the real IL fixture
+      shell: bash
+      run: |
+        test -s dist/_framework/dotnet.js
+        test -s dist/netdxf/netDxf.netstandard.dll
+        test -s managed/SelfTest/bin/Release/net10.0/il-fixture.json

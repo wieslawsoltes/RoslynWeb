@@ -2,6 +2,8 @@
 
 RoslynWeb version: 0.9.0. Verification date: 2026-09-12. Runtime: .NET 10.0.0 browser-wasm, Roslyn 5.0.0.0 from SDK 10.0.100, 167 framework references. The runtime binary and compiler source-checksum scheduling adaptation are recorded in `dist/browser-adaptation.json`. Native CLR oracle generation records the actual installed .NET 10 servicing version.
 
+The [CI execution and performance guide](CI.md) describes the shared fresh build, independent verification jobs, strict document-matrix aggregation and method-resolution optimization. Each successful workflow archives per-suite command timings and fresh verification reports.
+
 ## netDxf and WebGPU (0.9.0)
 
 The full pinned 272-file netDxf source snapshot compiles without C# diagnostics in actual Roslyn WebAssembly. Source-mode library and bridge emission deterministically reproduce the prebuilt hashes. The managed .NET Wasm backend executes the full library, and the generated JavaScript/native-Wasm backends execute selected geometry, entity and reader/writer methods. Strict diagnostics and actual document execution are checked separately; the verified inputs and supported framework service domains define the generated-backend coverage.

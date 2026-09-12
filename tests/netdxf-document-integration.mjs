@@ -1,51 +1,35 @@
 // Execute actual netDxf document I/O, including cross-runtime interchange.
 // Run with --managed-only to validate the oracle/fixture before backend work.
+// Use --shard INDEX/COUNT --output FILE for independent CI case partitions.
 // Default execution requires BOTH generated backends; emission errors and
 // execution errors are failures, never evidence of successful I/O support.
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {readFile, writeFile} from 'node:fs/promises';
+import {mkdir, readFile, writeFile} from 'node:fs/promises';
+import {dirname, resolve} from 'node:path';
+import {fileURLToPath} from 'node:url';
 import {Worker} from 'node:worker_threads';
 import {createRoslyn} from '../src/node/index.js';
+import {documentCases, expectedSignature, assertSignature, semanticSignature} from './netdxf-document-corpus.mjs';
+import {parseDocumentArguments, selectDocumentCases} from './netdxf-document-aggregate.mjs';
 
 const args = process.argv.slice(2);
-assert(args.every(arg => arg === '--managed-only'), `Unknown arguments: ${args.join(' ')}`);
-const managedOnly = args.includes('--managed-only');
+const options = parseDocumentArguments(args);
+const managedOnly = options.managedOnly;
 const root = new URL('../', import.meta.url);
 const type = 'NetDxfDocumentFixture';
-const versions = [2000, 2004, 2007, 2010, 2013, 2018];
-const versionCodes = ['AC1015', 'AC1018', 'AC1021', 'AC1024', 'AC1027', 'AC1032'];
-const profiles = [
-  {name: 'legacy', layer: 'Prüfung € étage', text: 'Résumé £ µ — café'},
-  {name: 'unicode', layer: 'Zażółć 中文 Ω 😀', text: 'Zażółć gęślą jaźń 中文 Ω 😀'},
-];
-const cases = versions.flatMap((year, index) => [false, true].flatMap(binary => profiles.map(profile => ({
-  ...profile, year, binary, code: versionCodes[index],
-  label: `${year} ${binary ? 'binary' : 'ASCII'} ${profile.name}`,
-}))));
-const pointFields = prefix => ['x', 'y', 'z'].map(axis => `${prefix}.${axis}`);
-const entityFields = prefix => ['type', 'layer.name', 'layer.colorIndex'].map(field => `${prefix}.${field}`);
-const signatureFields = [
-  'version', 'entities.count', 'layers.count', 'lines.count', 'circles.count', 'arcs.count',
-  'polylines.count', 'texts.count', 'mtexts.count',
-  ...entityFields('line'), ...pointFields('line.start'), ...pointFields('line.end'), 'line.thickness', 'line.linetypeScale',
-  ...entityFields('circle'), ...pointFields('circle.center'), 'circle.radius',
-  ...entityFields('arc'), ...pointFields('arc.center'), 'arc.radius', 'arc.startAngle', 'arc.endAngle',
-  ...entityFields('polyline'), 'polyline.closure', 'polyline.elevation', 'polyline.thickness', 'polyline.vertices.count',
-  ...Array.from({length: 4}, (_, index) => ['x', 'y', 'bulge', 'startWidth', 'endWidth']
-    .map(field => `polyline.vertices[${index}].${field}`)).flat(),
-  ...entityFields('text'), 'text.value', ...pointFields('text.position'), 'text.height', 'text.rotation', 'text.widthFactor',
-  ...entityFields('mtext'), 'mtext.value', ...pointFields('mtext.position'), 'mtext.height', 'mtext.rectangleWidth', 'mtext.rotation',
-];
-assert.equal(signatureFields.length, expectedSignature(cases[0]).length, 'Signature schema and expected fields must agree.');
+const cases = selectDocumentCases(options.shard).map(item => ({...item}));
 const programs = new Map();
 const documents = new Map();
 const failures = [];
 const startedAt = performance.now();
 const report = {
-  schemaVersion: 1,
+  schemaVersion: 2,
   testedAt: new Date().toISOString(),
-  command: `node tests/netdxf-document-integration.mjs${managedOnly ? ' --managed-only' : ''}`,
+  command: `node tests/netdxf-document-integration.mjs${args.length ? ` ${args.join(' ')}` : ''}`,
+  shard: options.shard ? {...options.shard, totalCases: documentCases.length, caseIds: cases.map(item => item.id)} : null,
+  runIdentity: {commit: process.env.GITHUB_SHA ?? null, runId: process.env.GITHUB_RUN_ID ?? null,
+    runAttempt: process.env.GITHUB_RUN_ATTEMPT ?? null},
   nodeVersion: process.version,
   platform: `${process.platform}/${process.arch}`,
   mode: managedOnly ? 'managed-only' : 'all-backends',
@@ -53,16 +37,7 @@ const report = {
   fallbackAllowed: false,
   scope: 'Actual pinned netDxf Save/Load execution and cross-backend document interchange for six entity types. This is a bounded document corpus, not universal netDxf or arbitrary-document compatibility.',
   cases: cases.map(item => ({...item, expectedSignature: expectedSignature(item)})),
-  semanticSignature: {
-    fields: signatureFields.map((name, index) => ({name, type: typeof expectedSignature(cases[0])[index]})),
-    numericRelativeTolerance: 1e-11,
-    numericAbsoluteTolerance: 1e-11,
-    strings: 'Exact ordinal equality, including layer identifiers and complete TEXT/MTEXT payloads.',
-    excludedVolatileFields: ['handles', 'timestamps', 'comments'],
-    checks: ['version', 'entity counts', 'layer counts/names/colors', 'line endpoints/thickness/linetype scale',
-      'circle center/radius', 'arc center/radius/angles', 'polyline closure/elevation/thickness/vertices/bulges/widths',
-      'TEXT and MTEXT values/positions/heights/rotations/widths'],
-  },
+  semanticSignature,
   backends: {},
   writes: [],
   reads: [],
@@ -144,41 +119,6 @@ function succeed(result, label) {
   return result;
 }
 
-function expectedSignature(item) {
-  const layer = item.layer;
-  return [
-    `AutoCad${item.year}`, 6, 2, 1, 1, 1, 1, 1, 1,
-    'LINE', layer, 3, 1.25, -2.5, 3.75, 1000.125, 20.5, -6.25, 0.375, 2.5,
-    'CIRCLE', layer, 3, 4.25, 5.5, 6.75, 2.125,
-    'ARC', layer, 3, -10.5, 3.125, -4.25, 7.75, 350, 25.5,
-    'LWPOLYLINE', layer, 3, 'closed', 2.25, 0.5, 4,
-    0, 0, 0.5, 0.25, 0.75,
-    10.25, 0, 0, 0, 0,
-    10.25, 5.5, -0.125, 0, 0,
-    0, 5.5, 0, 0, 0,
-    'TEXT', layer, 3, item.text, -3.25, 4.5, 1.75, 2.5, 27.5, 0.875,
-    'MTEXT', layer, 3, `${item.text}\\PSecond paragraph 123`, 7.25, -8.5, 2.75, 1.25, 30.5, 12.5,
-  ];
-}
-
-function assertSignature(actual, expected, label) {
-  assert(Array.isArray(actual), `${label}: signature must be an array`);
-  assert.equal(actual.length, expected.length, `${label}: semantic field count`);
-  for (let index = 0; index < expected.length; index++) {
-    const field = `${label}: ${signatureFields[index]} [${index}]`;
-    if (typeof expected[index] === 'number') {
-      assert.equal(typeof actual[index], 'string', `${field}: fixture returns numeric strings`);
-      assert.notEqual(actual[index].trim(), '', `${field}: missing numeric value`);
-      const value = Number(actual[index]);
-      assert(Number.isFinite(value), `${field}: non-finite value ${actual[index]}`);
-      assert(Math.abs(value - expected[index]) <= 1e-11 * Math.max(1, Math.abs(expected[index])),
-        `${field}: ${value} != ${expected[index]}`);
-    } else {
-      assert.equal(actual[index], expected[index], field);
-    }
-  }
-}
-
 function assertDocument(values, item, label) {
   assert(Array.isArray(values) || ArrayBuffer.isView(values), `${label}: writer must return an array of byte values`);
   assert(Array.from(values).every(value => Number.isInteger(value) && value >= 0 && value <= 255),
@@ -223,12 +163,12 @@ async function writeDocuments(backend, program) {
       assertDocument(bytes, item, label);
       // Normalize typed-array results before crossing the managed JSON bridge.
       output.set(item.label, Array.from(bytes));
-      report.writes.push({backend, case: item.label, byteLength: bytes.length,
+      report.writes.push({backend, caseId: item.id, case: item.label, byteLength: bytes.length,
         sha256: createHash('sha256').update(Buffer.from(bytes)).digest('hex'),
         milliseconds: performance.now() - started, passed: true});
       writes++;
     } catch (error) {
-      report.writes.push({backend, case: item.label, milliseconds: performance.now() - started, passed: false});
+      report.writes.push({backend, caseId: item.id, case: item.label, milliseconds: performance.now() - started, passed: false});
       fail(label, error);
     }
   }
@@ -263,11 +203,11 @@ async function readDocuments(reader, writer) {
       passed++;
       comparisons++;
       const semanticValues = actual.map((value, index) => typeof expected[index] === 'number' ? Number(value) : value);
-      report.reads.push({writer, reader, case: item.label, fields: actual.length,
+      report.reads.push({writer, reader, caseId: item.id, case: item.label, fields: actual.length,
         semanticSha256: createHash('sha256').update(JSON.stringify(semanticValues)).digest('hex'),
         milliseconds: performance.now() - started, passed: true});
     } catch (error) {
-      report.reads.push({writer, reader, case: item.label, milliseconds: performance.now() - started, passed: false});
+      report.reads.push({writer, reader, caseId: item.id, case: item.label, milliseconds: performance.now() - started, passed: false});
       fail(label, error);
     }
   }
@@ -284,7 +224,9 @@ try {
   const provenance = JSON.parse(provenanceText);
   report.upstream = {repository: provenance.repository, commit: provenance.commit, sourceCount: provenance.sourceCount,
     assemblyBytes: dll.length, assemblySha256: createHash('sha256').update(dll).digest('hex')};
-  report.fixture = {sourceSha256: createHash('sha256').update(source).digest('hex')};
+  report.fixture = {sourceSha256: createHash('sha256').update(source).digest('hex'),
+    runnerSha256: createHash('sha256').update(await readFile(fileURLToPath(import.meta.url))).digest('hex'),
+    corpusSha256: createHash('sha256').update(await readFile(new URL('./netdxf-document-corpus.mjs', import.meta.url))).digest('hex')};
   console.log(`netDxf ${provenance.commit}; DLL sha256 ${createHash('sha256').update(dll).digest('hex')}`);
   compiler = await createRoslyn({startupTimeoutMs: 120000, timeoutMs: 300000});
   report.compiler = compiler.info;
@@ -305,7 +247,7 @@ try {
   });
   await writeDocuments('managed', programs.get('managed'));
   await readDocuments('managed', 'managed');
-  report.managedSignatures = cases.map(item => ({case: item.label, signature: item.oracle}));
+  report.managedSignatures = cases.map(item => ({caseId: item.id, case: item.label, signature: item.oracle}));
   assert.equal(failures.length, 0, 'The managed fixture must pass before generated-backend comparisons.');
 
   if (!managedOnly) {
@@ -372,9 +314,15 @@ try {
   })));
   report.passed = failures.length === 0 && programs.size === backendCount &&
     writes === backendCount * cases.length && comparisons === backendCount * backendCount * cases.length;
-  report.fullMatrixPassed = !managedOnly && report.passed;
-  // An oracle-only run must not overwrite the committed all-backend evidence.
-  if (!managedOnly) {
-    await writeFile(new URL('docs/netdxf-document-verification.json', root), `${JSON.stringify(report, null, 2)}\n`);
+  report.fullMatrixPassed = !managedOnly && report.passed && cases.length === documentCases.length;
+  // Partial evidence gets a separate default filename and never replaces the
+  // complete committed matrix. An explicit output also allows oracle reports.
+  if (!managedOnly || options.output) {
+    const output = options.output ? resolve(options.output) : fileURLToPath(new URL(options.shard?.count > 1
+      ? `artifacts/netdxf-document-${options.shard.index}-of-${options.shard.count}.json`
+      : 'docs/netdxf-document-verification.json', root));
+    await mkdir(dirname(output), {recursive: true});
+    await writeFile(output, `${JSON.stringify(report, null, 2)}\n`);
+    console.log(`Report: ${output}`);
   }
 }

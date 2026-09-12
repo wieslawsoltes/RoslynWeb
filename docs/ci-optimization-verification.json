@@ -1,0 +1,149 @@
+{
+  "measuredAt": "2026-09-12T11:59:44.583Z",
+  "baselineCi": {
+    "runUrl": "https://github.com/wieslawsoltes/RoslynWeb/actions/runs/34689750467",
+    "head": "7d4799e24a5ee1318eaad3ee79872453dc8c852f",
+    "buildJobSeconds": 2154,
+    "netDxfStageSeconds": 1362,
+    "documentMatrixSeconds": 1098.35389615
+  },
+  "localDocumentMatrix": {
+    "scope": "Fresh full24-case runs on the same local environment, including actual Roslyn compilation, strict generated emission and all document operations. These are separate runs; host load can affect elapsed time.",
+    "node": "v24.19.0",
+    "platform": "linux/x64",
+    "baselineMilliseconds": 694170.728673,
+    "indexedMilliseconds": 88229.75509,
+    "speedup": 7.867762162151548,
+    "reductionPercent": 87.28990557428675,
+    "counts": {
+      "cases": 24,
+      "expectedBackends": 3,
+      "loadedBackends": 3,
+      "expectedWrites": 72,
+      "successfulWrites": 72,
+      "expectedReads": 216,
+      "successfulReads": 216,
+      "failedChecks": 0
+    },
+    "fullMatrixPassed": true,
+    "fallbackAllowed": false,
+    "fixtureSourceSha256": "17971122252d6fd6f18733567721ac95718fd69ba3abc7206cd2fe7608abf5c3",
+    "fixtureAssemblySha256": "6309b85bfb647f0112d157c48f0f9f3a233410810427ac18d39651af5ab20bf5",
+    "upstream": {
+      "repository": "https://github.com/wieslawsoltes/netDxf",
+      "commit": "5b562312f683fc635405c149537ca488e4ec4d39",
+      "sourceCount": 272,
+      "assemblyBytes": 767488,
+      "assemblySha256": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd"
+    },
+    "indexedBackends": {
+      "managed": {
+        "loaded": true,
+        "execution": "Actual .NET WebAssembly in a Node worker",
+        "assemblyBytes": 7680
+      },
+      "javascript": {
+        "loaded": true,
+        "strict": true,
+        "optimize": true,
+        "execution": "Actual emitted code in its own Node worker; no managed execution fallback",
+        "artifactBytes": 46811735,
+        "artifactSha256": "7fa9ba413909d62a27951611268c4dc7a2df464ecdf06b982da3533ad2ab3606",
+        "compiledMethods": 4482,
+        "diagnostics": [],
+        "emissionAndLoadMilliseconds": 21742.008289999998
+      },
+      "native-wasm": {
+        "loaded": true,
+        "strict": true,
+        "optimize": true,
+        "execution": "Actual emitted code in its own Node worker; no managed execution fallback",
+        "artifactBytes": 9827999,
+        "artifactSha256": "70cccaedc51af2b237e2b576c5d00db59662f3300bdd44dbf7ec6b97efa46bf8",
+        "compiledMethods": 2893,
+        "diagnostics": [],
+        "emissionAndLoadMilliseconds": 24330.723669000003
+      }
+    }
+  },
+  "methodResolutionProbe": {
+    "testedAt": "2026-09-12T11:59:31.789Z",
+    "node": "v24.19.0",
+    "platform": "linux/x64",
+    "artifact": {
+      "bytes": 9827999,
+      "sha256": "70cccaedc51af2b237e2b576c5d00db59662f3300bdd44dbf7ec6b97efa46bf8"
+    },
+    "inputs": {
+      "write": [
+        2000,
+        true,
+        "Pr\u00fcfung \u20ac \u00e9tage",
+        "R\u00e9sum\u00e9 \u00a3 \u00b5 \u2014 caf\u00e9"
+      ],
+      "read": "The same baseline-produced binary DXF bytes"
+    },
+    "baseline": "Unchanged token/exact/signature logic with the previous complete methods.values() fallback restored in memory. No repository files are replaced.",
+    "indexed": "Lazy generic owner and name candidates; unchanged full signature matcher.",
+    "scope": "One complete native-Wasm document write/read, same module and input bytes, separate runtime instances. This is a bounded microbenchmark rather than a CI duration forecast.",
+    "runs": [
+      {
+        "mode": "baseline",
+        "writeMilliseconds": 4274.3386390000005,
+        "readMilliseconds": 9144.115225000001,
+        "writeLookup": {
+          "calls": 18403,
+          "misses": 15934,
+          "milliseconds": 3709.862599000005
+        },
+        "readLookup": {
+          "calls": 41982,
+          "misses": 35988,
+          "milliseconds": 8252.497384000053
+        },
+        "writtenBytes": 9300,
+        "readBytes": 9300,
+        "readBytesSha256": "82410e8720384f2846afec37d086440e3aeebc1b400ab4da0de8d246d1d2c10b",
+        "signatureFields": 83,
+        "signatureSha256": "c6cf98a53b4525e046447ebb5d0f4ba9ed4386d7a13df2b67410a2678a2ca81d",
+        "semanticParityPassed": true
+      },
+      {
+        "mode": "indexed",
+        "writeMilliseconds": 237.4583930000008,
+        "readMilliseconds": 365.67743699999846,
+        "writeLookup": {
+          "calls": 18403,
+          "misses": 15934,
+          "milliseconds": 21.464491999979145
+        },
+        "readLookup": {
+          "calls": 41982,
+          "misses": 35988,
+          "milliseconds": 28.93786600008025
+        },
+        "writtenBytes": 9300,
+        "readBytes": 9300,
+        "readBytesSha256": "82410e8720384f2846afec37d086440e3aeebc1b400ab4da0de8d246d1d2c10b",
+        "signatureFields": 83,
+        "signatureSha256": "c6cf98a53b4525e046447ebb5d0f4ba9ed4386d7a13df2b67410a2678a2ca81d",
+        "semanticParityPassed": true
+      }
+    ],
+    "speedup": {
+      "formula": "baseline milliseconds / indexed milliseconds",
+      "write": 18.000368759338762,
+      "read": 25.005959623918606
+    },
+    "metadataTraversalReduction": {
+      "formula": "1 - indexed lookup milliseconds / baseline lookup milliseconds",
+      "write": 0.9942142083629284,
+      "read": 0.9964934413604074
+    },
+    "measurementNotes": [
+      "Resolution timings are instrumented with performance.now() around each actual resolveMethod call.",
+      "Both modes run in one Node process in baseline-then-indexed order, with separate runtime instances; Node JIT warmup and concurrent machine load can affect the ratio.",
+      "The source optimization preserves token and exact-signature paths; benchmark baseline restores the old full-table fallback scan in memory."
+    ]
+  }
+}
