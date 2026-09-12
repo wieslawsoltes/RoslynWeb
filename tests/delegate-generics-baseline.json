@@ -1,0 +1,22 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "a302bee57c033efae48e118344a9b3a2b676868bb31174be80c9c7fcce9cd722",
+  "cases": [
+    {
+      "method": "MethodIdentity",
+      "result": "False:True:String:True"
+    },
+    {
+      "method": "ReturnIdentity",
+      "result": "False:1:2"
+    },
+    {
+      "method": "TypeIdentity",
+      "result": "False:True:String"
+    },
+    {
+      "method": "Collections",
+      "result": "2:int:string:2:True"
+    }
+  ]
+}

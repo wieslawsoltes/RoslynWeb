@@ -1,9 +1,11 @@
+import {isSpanType} from '../il/spans.mjs';
 import { isEventField, isEventHandlerType } from '../il/events.mjs';
 import { isBuiltinCandidate } from '../il/compiler.mjs';
 import { genericDefinitionName, matchesMethodReference, splitTypeArguments, substituteType } from '../il/generics.mjs';
 import { buildExceptionPlan } from './exceptions.mjs';
 import { nativeIntrinsic } from './intrinsics.mjs';
 import { isStandardValueType, isStandardValueBuiltin, isStandardValueField } from '../il/standard-values.mjs';
+import { isExtendedValueType } from '../il/framework.mjs';
 
 const primitiveKinds = new Map([
   ...['Boolean','Byte','SByte','Char','Int16','UInt16','Int32','UInt32','IntPtr','UIntPtr'].map(t => [`System.${t}`, 'i32']),
@@ -12,7 +14,7 @@ const primitiveKinds = new Map([
 ]);
 export const nativeFrameworkEnums = new Map([['System.MidpointRounding','System.Int32'],['System.Globalization.NumberStyles','System.Int32'],['System.StringComparison','System.Int32']]);
 const unsupportedValueTypes = /^System\.(?:Decimal|DateTime|DateTimeOffset|TimeSpan|DateOnly|TimeOnly|Guid|Nullable`1|ValueTuple(?:`\d+)?|Collections\.Generic\.KeyValuePair`2)(?:<|$)/;
-const forbiddenReferences = /(?:System\.(?:Span|ReadOnlySpan|Memory|ReadOnlyMemory)`1|methodptr\(|\*)/;
+const forbiddenReferences = /(?:System\.(?:Memory|ReadOnlyMemory)`1|methodptr\(|\*)/;
 const numericKinds = new Set(['i32','i64','f32','f64']);
 const integralKinds = new Set(['i32','i64']);
 const floatKind = kind => kind === 'f32' || kind === 'f64';
@@ -34,11 +36,15 @@ export function wasmType(type, context = {}) {
   if (/!\d/.test(type)) throw new TypeError(`Open generic type '${type}' requires a closed instantiation.`);
   if (forbiddenReferences.test(type)) throw new TypeError(`Pointer or byref-like type '${type}' is not supported by native WebAssembly emission.`);
   if (type.endsWith('&')) { wasmType(type.slice(0, -1), context); return 'externref'; }
+  if (/^System\.(?:Span|ReadOnlySpan)`1/.test(type)&&!isSpanType(type))throw new TypeError(`Span type '${type}' has unsupported storage or a malformed generic signature.`);
   if (primitiveKinds.has(type)) return primitiveKinds.get(type);
   if (nativeFrameworkEnums.has(type)) return primitiveKinds.get(nativeFrameworkEnums.get(type));
-  if (/\[[,]*\]$/.test(type)) { const element = type.replace(/\[[,]*\]$/, ''); if (!context.validatingTypes?.has(element)) wasmType(element, context); return 'externref'; }
+  if (/\[[,]*\]$/.test(type)) { const element = type.replace(/\[[,]*\]$/, ''); if(isSpanType(element))throw new TypeError(`A managed span cannot be stored in array '${type}'.`); if (!context.validatingTypes?.has(element)) wasmType(element, context); return 'externref'; }
+  if (isSpanType(type)) { const element=splitTypeArguments(type)[0];if(isSpanType(element)||element.endsWith('&'))throw new TypeError(`Span element type '${element}' has unsupported byref-like storage.`);wasmType(element,context);return 'externref'; }
   if (type === 'System.Drawing.Color') return 'externref';
+  if (type === 'System.Runtime.CompilerServices.DefaultInterpolatedStringHandler') return 'externref';
   if (isStandardValueType(type)) { for (const argument of splitTypeArguments(type)) wasmType(argument,context); return 'externref'; }
+  if (isExtendedValueType(type)) { for (const argument of splitTypeArguments(type)) wasmType(argument,context); return 'externref'; }
   const definition = context.types?.get?.(genericDefinitionName(type));
   if (definition?.isEnum) return wasmType(definition.fields?.find(f => f.name === 'value__')?.type ?? 'System.Int32', context);
   if (definition?.isValueType) {
@@ -49,18 +55,18 @@ export function wasmType(type, context = {}) {
     for (const field of definition.fields ?? []) if (!field.isStatic) wasmType(substituteType(field.type, arguments_), { ...context, validatingTypes });
     return 'externref';
   }
-  if (!definition && context.valueTypes?.has?.(genericDefinitionName(type)) && !/^System\.Runtime(?:Type|Method|Field)Handle$/.test(type) || unsupportedValueTypes.test(type) || /(?:\+|\.)Enumerator(?:<|$)/.test(type))
+  if (!definition && context.valueTypes?.has?.(genericDefinitionName(type)) && !/^System\.Runtime(?:Type|Method|Field)Handle$/.test(type) || unsupportedValueTypes.test(type) || !definition && /(?:\+|\.)Enumerator(?:<|$)/.test(type))
     throw new TypeError(`Value type '${type}' requires framework-specific value semantics not implemented by this native backend.`);
   return 'externref';
 }
 
 /** Finite runtime services shared with the existing framework bridge. No service compiles or interprets user IL. */
-export function isNativeWasmBuiltin(ref) {
+export function isNativeWasmBuiltin(ref, context) {
   if (!ref || typeof ref !== 'object') return false;
   const name = String(ref.declaringType ?? '');
   if (/^System\.Reflection\.Emit(?:\.|$)/.test(name) || name.startsWith('System.Linq.Expressions.') && ref.name === 'Compile') return false;
   if (forbiddenReferences.test([name, ref.returnType, ...(ref.parameters ?? []).map(typeName)].join('|'))) return false;
-  return !!nativeIntrinsic(ref) || isStandardValueBuiltin(ref) || isBuiltinCandidate(ref);
+  return !!nativeIntrinsic(ref) || isStandardValueBuiltin(ref) || isBuiltinCandidate(ref,context);
 }
 
 function instantiateReference(ref, typeArguments, methodArguments) {
@@ -178,6 +184,8 @@ export function analyzeWasmAssembly(model, options = {}) {
   // Retain only matching methods on closed types encountered in the export closure;
   // their IL is compiled to Wasm exactly like direct calls, with no JS IL fallback.
   const serviceCallbacks = new Map(), serviceTypes = new Map(), serviceRetained = new Set();
+  const virtualRefreshers = new Set();
+  const virtualPlans = new Map();
   const retainServiceCallbacks = () => {
     for (const {closedType, assemblyName} of serviceTypes.values()) {
       let type = typesByAssembly.get(`${assemblyName}|${genericDefinitionName(closedType)}`) ?? types.get(genericDefinitionName(closedType));
@@ -193,7 +201,8 @@ export function analyzeWasmAssembly(model, options = {}) {
             if (method.isStatic || method.isAbstract || method.isPInvoke || method.isRuntime || method.isExternal || method.genericParameters?.length) continue;
             if (!(method.name === callback.name || method.name.endsWith(`.${callback.name}`)) || method.parameters?.length !== callback.count) continue;
             const parameters=method.parameters.map(p=>substituteType(typeName(p),splitTypeArguments(actual)));
-            if (callback.comparer ? parameters.some(p=>p!=='System.Object'&&p!==callback.keyType) : parameters.some(p=>p!==actual&&p!=='System.Object')) continue;
+            if (callback.format ? parameters.join(',')!=='System.String,System.IFormatProvider' : callback.comparer ? parameters.some(p=>p!=='System.Object'&&p!==callback.keyType) : parameters.some(p=>p!==actual&&p!=='System.Object')) continue;
+            if(callback.name==='ToString'&&method.returnType!=='System.String'||callback.name==='MoveNext'&&method.returnType!=='System.Boolean'||['Dispose','Reset'].includes(callback.name)&&method.returnType!=='System.Void')continue;
             const definition = definitionsByToken.get(`${type.assemblyName}|${method.token}`);
             if (definition) enqueue(definition, {...definition, declaringType:actual});
           }
@@ -211,6 +220,13 @@ export function analyzeWasmAssembly(model, options = {}) {
   };
   const noteServiceCall = ref => {
     const type = String(ref.declaringType ?? ''), name = ref.name;
+    if(/^System\.(?:Console|String|Object|Text\.StringBuilder|ValueTuple(?:`\d+)?(?:<.*>)?)$/.test(type)&&/^(?:Write|WriteLine|Concat|Format|Append|AppendLine|Join|ToString)$/.test(name)) {
+      serviceCallbacks.set('ToString|0',{name:'ToString',count:0});serviceCallbacks.set('ToString|2',{name:'ToString',count:2,format:true});retainServiceCallbacks();
+    }
+    if((type.startsWith('System.Collections.')||type.startsWith('System.Linq.'))&&(ref.parameters??[]).some(p=>/^System\.Collections\.(?:Generic\.)?IEnumerable/.test(typeName(p)))) {
+      for(const callbackName of ['GetEnumerator','MoveNext','get_Current','Dispose','Reset'])serviceCallbacks.set(`${callbackName}|0`,{name:callbackName,count:0});retainServiceCallbacks();
+    }
+    if(type==='System.ICloneable'&&name==='Clone') { serviceCallbacks.set('Clone|0',{name:'Clone',count:0});retainServiceCallbacks();return; }
     if (/^System\..*Exception$/.test(type) && ['get_Message', 'ToString'].includes(name) && ref.isStatic === false
       && ref.returnType === 'System.String' && ref.parameters?.length === 0) {
       serviceCallbacks.set('ToString|0', { name: 'ToString', count: 0 });
@@ -296,25 +312,44 @@ export function analyzeWasmAssembly(model, options = {}) {
       return [type.baseType,...(type.interfaces ?? [])].filter(Boolean).some(name=>genericDefinitionName(name)===genericDefinitionName(base)||derivedFrom(typesByAssembly.get(`${type.assemblyName}|${genericDefinitionName(name)}`) ?? types.get(genericDefinitionName(name)),base,seen));
     };
     const virtualImplementations = () => {
-      // Static calls and finite runtime services never require this graph walk.
-      const receiverTypes=[...typesByAssembly.values()].filter(type=>derivedFrom(type,resolvedRef.declaringType));
-      const dispatchOwner=method=>derivedFrom(method.$type,resolvedRef.declaringType)||receiverTypes.some(receiver=>derivedFrom(receiver,method.declaringType));
-      return definitions.filter(m => !m.isStatic && !m.isAbstract && !m.isPInvoke && !m.isRuntime && !m.isExternal && (m.name === resolvedRef.name || m.name.endsWith(`.${resolvedRef.name}`)) && m.parameters?.length === resolvedRef.parameters.length && m.parameters.every((p,i) => typeName(p) === typeName(resolvedRef.parameters[i])) && dispatchOwner(m)).map(m => enqueue(m, { ...resolvedRef, declaringType:m.declaringType }));
+      const planKey=`${resolvedRef.assemblyName??descriptor.assemblyName}|${methodSignature(resolvedRef)}|${resolvedRef.returnType}`;
+      let plan=virtualPlans.get(planKey);
+      if(!plan){
+        // Cache the conservative dispatch graph once for every closed signature.
+        const receiverTypes=[...typesByAssembly.values()].filter(type=>derivedFrom(type,resolvedRef.declaringType));
+        const dispatchOwner=method=>derivedFrom(method.$type,resolvedRef.declaringType)||receiverTypes.some(receiver=>derivedFrom(receiver,method.declaringType));
+        const candidates=definitions.filter(m=>!m.isStatic&&!m.isAbstract&&!m.isPInvoke&&!m.isRuntime&&!m.isExternal&&(m.name===resolvedRef.name||m.name.endsWith(`.${resolvedRef.name}`))&&m.parameters?.length===resolvedRef.parameters.length&&dispatchOwner(m));
+        plan={candidates,version:-1,targets:null};virtualPlans.set(planKey,plan);
+      }
+      if(plan.targets&&plan.version===serviceTypes.size)return plan.targets;
+      plan.version=serviceTypes.size;
+      const closedOwners=new Map();
+      for(const item of serviceTypes.values()) {
+        let actual=item.closedType,type=typesByAssembly.get(`${item.assemblyName}|${genericDefinitionName(actual)}`)??types.get(genericDefinitionName(actual));const seen=new Set();
+        while(type&&!seen.has(actual)){seen.add(actual);closedOwners.set(`${type.assemblyName}|${actual}`,{actual,type});actual=substituteType(type.baseType,splitTypeArguments(actual));type=typesByAssembly.get(`${type.assemblyName}|${genericDefinitionName(actual)}`)??types.get(genericDefinitionName(actual));}
+      }
+      const result=[];
+      for(const m of plan.candidates){
+        const owners=m.$type.genericParameters?.length?[...closedOwners.values()].filter(item=>item.type.name===m.declaringType&&item.type.assemblyName===m.assemblyName).map(item=>item.actual):[m.declaringType];
+        for(const actual of owners)if(m.parameters.every((p,i)=>substituteType(typeName(p),splitTypeArguments(actual),resolvedRef.genericArguments??[])===typeName(resolvedRef.parameters[i])))result.push(enqueue(m,{...resolvedRef,declaringType:actual}));
+      }
+      plan.targets=result;return result;
     };
     if (opcodeOf(instruction) === 'callvirt' && (definition?.isAbstract || !definition && types.get(genericDefinitionName(resolvedRef.declaringType))?.attributes?.includes('Interface'))) {
       const targets = virtualImplementations();
-      if (targets.length) { const call = { kind:'virtual', targetId:null, virtualTargets:targets.map(m => m.id), virtual:true, ref:resolvedRef, params,result }; calls.set(methodSignature(resolvedRef),call); return call; }
+      if (targets.length) { const call = { kind:'virtual', targetId:null, virtualTargets:targets.map(m => m.id), virtual:true, ref:resolvedRef, params,result }; virtualRefreshers.add(()=>{call.virtualTargets=virtualImplementations().map(m=>m.id);}); calls.set(methodSignature(resolvedRef),call); return call; }
     }
     if (definition && !definition.isAbstract && !definition.isPInvoke && !definition.isExternal && !definition.isRuntime) {
       const target = enqueue(definition, resolvedRef);
       const call = { kind:'managed', targetId:target.id, key:target.key, ref:resolvedRef, params, result, virtual:opcodeOf(instruction) === 'callvirt' && /\bVirtual\b/i.test(definition.attributes ?? '') };
       if (call.virtual) {
         call.virtualTargets = virtualImplementations().map(m => m.id);
+        virtualRefreshers.add(()=>{call.virtualTargets=virtualImplementations().map(m=>m.id);});
       }
       if (resolvedRef.isStatic || opcodeOf(instruction) === 'newobj') ensureInitializer(resolvedRef.declaringType, target.assemblyName, descriptor, instruction);
       calls.set(target.key, call); return call;
     }
-    if (isNativeWasmBuiltin(resolvedRef) || isDelegate && !isEventHandlerType(resolvedRef.declaringType) && ['.ctor','Invoke'].includes(resolvedRef.name)) { noteServiceCall(resolvedRef); const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
+    if (isNativeWasmBuiltin(resolvedRef,contextFor(descriptor.assemblyName)) || isDelegate && !isEventHandlerType(resolvedRef.declaringType) && ['.ctor','Invoke'].includes(resolvedRef.name)) { noteServiceCall(resolvedRef); const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
     report(definition?.isPInvoke ? 'WASM_PINVOKE' : definition?.isAbstract ? 'WASM_ABSTRACT_DISPATCH' : 'WASM_UNRESOLVED_CALL', `No native WebAssembly implementation or supported runtime service for '${methodSignature(resolvedRef)}'.`, descriptor, instruction);
     return { kind:'unresolved', ref:resolvedRef, params, result };
   };
@@ -329,6 +364,7 @@ export function analyzeWasmAssembly(model, options = {}) {
       if(typeof ref==='string'&&['initobj','box','unbox','unbox.any','ldobj','stobj','cpobj','castclass','isinst','newarr','ldelema'].includes(op))noteServiceType(ref,descriptor.assemblyName);
     }
     retainServiceCallbacks();
+    for(const refresh of virtualRefreshers)refresh();
     if (methods.length > (options.maxMethods ?? 4096)) { report('WASM_METHOD_LIMIT', 'Native method specialization exceeds the configured method limit.', descriptor); break; }
     if (method.decodeError) report('WASM_IL_DECODE', method.decodeError, descriptor);
     try { descriptor.exceptionPlan = buildExceptionPlan(method); }
@@ -427,7 +463,7 @@ export function analyzeWasmAssembly(model, options = {}) {
         const suffix = op.split('.')[1], value = suffix === 'i8' ? 'i64' : suffix === 'r4' ? 'f32' : suffix === 'r8' ? 'f64' : suffix === 'ref' ? 'externref' : 'i32';
         if (op.startsWith('st')) pop(value); pop('externref'); if (op.startsWith('ld')) push(value);
       } else if (['ldobj','stobj','initobj','cpobj'].includes(op)) { const value = kind(typeName(operand), descriptor, instruction); if (op === 'stobj') pop(value); if (op === 'cpobj') pop('externref'); pop('externref'); if (op === 'ldobj') push(value); }
-      else if (op === 'box') { pop(kind(typeName(operand), descriptor, instruction)); push('externref'); }
+      else if (op === 'box') { if(isSpanType(typeName(operand)))report('WASM_SPAN_STORAGE','A managed span cannot be boxed.',descriptor,instruction);pop(kind(typeName(operand), descriptor, instruction)); push('externref'); }
       else if (op === 'unbox' || op === 'unbox.any') { pop('externref'); push(op === 'unbox' ? 'externref' : kind(typeName(operand), descriptor, instruction)); }
       else if (op === 'castclass' || op === 'isinst') { kind(typeName(operand), descriptor, instruction); pop('externref'); push('externref'); }
       else if (op === 'ldftn' || op === 'ldvirtftn') { instruction.call = resolveCall(operand, descriptor, { ...instruction, opcode:'call' }); if (op === 'ldvirtftn') pop('externref'); push('externref'); }

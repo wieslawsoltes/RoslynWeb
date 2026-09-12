@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-12T06:38:38.706Z",
+  "testedAt": "2026-09-12T08:51:59.433Z",
   "upstream": {
     "repository": "https://github.com/wieslawsoltes/netDxf",
     "commit": "5b562312f683fc635405c149537ca488e4ec4d39"
@@ -9,62 +9,39 @@
   "fullLibrarySupport": {
     "javascript": {
       "supported": false,
-      "diagnosticCount": 335,
+      "diagnosticCount": 110,
       "codes": {
-        "IL_UNRESOLVED_CALL": 332,
+        "IL_UNRESOLVED_CALL": 107,
         "IL_UNRESOLVED_FIELD": 3
       },
       "dependencies": {
-        "System.String": 57,
-        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 23,
-        "System.Array": 22,
-        "System.Environment": 21,
-        "System.Threading.Thread": 17,
-        "System.Globalization.CultureInfo": 17,
-        "System.Globalization.TextInfo": 15,
         "System.Double": 15,
-        "System.Math": 13,
-        "System.IO.Path": 13,
         "System.IO.File": 10,
-        "System.ICloneable": 9,
+        "System.String": 9,
         "System.IO.FileLoadException": 8,
         "System.Text.Encoding": 8,
         "System.BitConverter": 7,
-        "System.Int32": 6,
         "System.DateTime": 6,
+        "System.Environment": 6,
+        "System.Array": 5,
         "System.Collections.Hashtable": 5,
-        "System.Int64": 5,
-        "System.Collections.Generic.List`1<!0>": 5,
         "System.IO.FileInfo": 4,
         "System.Reflection.MemberInfo": 4,
-        "System.Runtime.CompilerServices.Unsafe": 4,
         "System.Text.RegularExpressions.Regex": 3,
         "System.IO.FileNotFoundException": 3,
-        "System.Convert": 2,
+        "System.Collections.Generic.List`1<!0>": 3,
         "System.IO.BinaryWriter": 2,
         "System.TimeSpan": 2,
-        "System.Int16": 2,
-        "System.Byte": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 2,
-        "System.Collections.Generic.List`1<netDxf.Entities.EntityObject>": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 2,
         "System.StringComparer": 1,
         "System.IO.FileSystemInfo": 1,
-        "System.Tuple`3<netDxf.Vector2,netDxf.Vector2,System.Double>": 1,
         "System.Attribute": 1,
-        "System.ReadOnlySpan`1<System.Char>": 1,
+        "System.Convert": 1,
         "System.Text.StringBuilder": 1,
-        "System.Collections.Generic.List`1<netDxf.Entities.Attribute>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.Entities.AttributeDefinition>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>": 1,
-        "System.Collections.Generic.ICollection`1<System.String>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<!0,!1>": 1,
-        "System.Collections.Generic.List`1<System.String>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,!0>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.XData>": 1,
-        "System.Runtime.InteropServices.MemoryMarshal": 1
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 1,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 1,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 1,
+        "System.IO.Path": 1,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 1
       },
       "examples": [
         {
@@ -84,51 +61,6 @@
           "offset": 56,
           "opcode": "call",
           "message": "No linked implementation or JavaScript external for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 127,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 132,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 137,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 151,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 163,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_CurrentCulture()'."
         },
         {
           "severity": "error",
@@ -223,155 +155,109 @@
         {
           "severity": "error",
           "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.MathHelper::RoundToNearest(System.Double,System.Double)",
-          "token": 100663547,
-          "offset": 4,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Math::Round(System.Double,System.Int32)'."
+          "method": "netDxf.StringEnum`1::GetStringValues()",
+          "token": 100663718,
+          "offset": 36,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
         },
         {
           "severity": "error",
           "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.MathHelper::ArcFromBulge(netDxf.Vector2,netDxf.Vector2,System.Double)",
-          "token": 100663548,
-          "offset": 289,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::.ctor(!0,!1,!2,!3)'."
+          "method": "netDxf.StringEnum`1::GetValues()",
+          "token": 100663719,
+          "offset": 38,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
         },
         {
           "severity": "error",
           "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.MathHelper::ArcToBulge(netDxf.Vector2,System.Double,System.Double,System.Double)",
-          "token": 100663549,
-          "offset": 102,
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 16,
           "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`3<netDxf.Vector2,netDxf.Vector2,System.Double>::.ctor(!0,!1,!2)'."
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::.ctor()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 29,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::ContainsKey(System.Object)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 43,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 57,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 116,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 148,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::Add(System.Object,System.Object)'."
         }
       ],
       "message": "Assembly 'netDxf.netstandard' is not fully supported by the JavaScript tier."
     },
     "nativeWasm": {
       "supported": false,
-      "diagnosticCount": 616,
+      "diagnosticCount": 169,
       "codes": {
-        "WASM_UNSUPPORTED_TYPE": 437,
-        "WASM_UNRESOLVED_CALL": 165,
+        "WASM_UNSUPPORTED_TYPE": 85,
+        "WASM_UNRESOLVED_CALL": 70,
         "WASM_STACK_TYPE": 11,
         "WASM_UNRESOLVED_FIELD": 3
       },
       "dependencies": {
         "System.DateTime": 41,
-        "System.String": 27,
-        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.DxfObject>": 24,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>": 23,
-        "System.ReadOnlySpan`1<System.Object>": 18,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Vertex>": 18,
         "System.Double": 15,
-        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>": 15,
         "System.TimeSpan": 14,
-        "System.Collections.Generic.List`1+Enumerator<System.String>": 14,
-        "System.Math": 13,
-        "System.IO.Path": 10,
         "System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>": 9,
-        "System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>": 9,
         "System.IO.FileMode": 9,
         "System.IO.FileAccess": 9,
         "System.IO.FileShare": 9,
         "System.IO.File": 9,
         "call": 9,
-        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 9,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>": 9,
-        "System.ICloneable": 9,
         "System.IO.FileLoadException": 8,
         "System.Text.Encoding": 8,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.EntityObject>": 8,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Layer>": 8,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Linetype>": 8,
-        "System.Runtime.CompilerServices.Unsafe": 8,
-        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,System.String>": 8,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.LinetypeSegment>": 7,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.Layout>": 7,
-        "System.Int32": 6,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>": 6,
+        "System.String": 6,
         "System.BitConverter": 5,
-        "System.Array": 5,
         "System.Environment": 5,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath>": 5,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 5,
-        "System.Int64": 5,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.Layout>": 5,
-        "System.Collections.Generic.KeyValuePair`2<System.String,System.String>": 5,
-        "System.Collections.Generic.IEnumerator`1<!0>": 4,
-        "System.Collections.Generic.List`1<!0>": 4,
-        "System.Collections.Generic.List`1+Enumerator<!0>": 4,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,!0>": 4,
         "System.Text.RegularExpressions.Regex": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MLineVertex>": 3,
-        "System.Collections.Generic.List`1+Enumerator<System.Int32[]>": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MeshEdge>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.DimensionStyle,System.String[]>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Image,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Underlay,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.MLine,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Leader,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Insert,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Dimension,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.Block>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,netDxf.Objects.DictionaryObject>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeSegment,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 3,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.LayerStateProperties>": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchPatternLineDefinition>": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath+Edge>": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.AttributeDefinition>": 3,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.BlockRecord>": 3,
-        "System.Collections.Generic.List`1+Enumerator<System.Double>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Int32>": 3,
         "System.IO.FileInfo": 2,
         "System.StringSplitOptions": 2,
         "callvirt": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyle,System.String[]>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Image,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Underlay,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.MLine,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Leader,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Insert,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Dimension,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.DictionaryObject>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeSegment,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 2,
         "System.Reflection.MemberInfo": 2,
-        "System.Runtime.InteropServices.MemoryMarshal": 2,
-        "System.Int16": 2,
-        "System.Threading.Thread": 2,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Attribute>": 2,
-        "System.Collections.Generic.Dictionary`2<System.String,!0>": 2,
-        "System.Collections.Generic.Dictionary`2+ValueCollection<System.String,!0>": 2,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.XRecordEntry>": 2,
-        "System.Byte": 2,
-        "!0": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Int32>": 2,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.MLineStyleElement>": 2,
-        "System.Tuple`3<netDxf.Vector2,netDxf.Vector2,System.Double>": 1,
-        "System.Convert": 1,
         "System.StringComparer": 1,
-        "netDxf.Collections.ObservableCollection`1<!0>": 1,
-        "System.Collections.Generic.ICollection`1<!1>": 1,
-        "System.Collections.Generic.Dictionary`2<!0,!1>": 1,
-        "System.Collections.Generic.Dictionary`2+ValueCollection<!0,!1>": 1
+        "System.IO.Path": 1
       },
       "examples": [
         {
@@ -401,23 +287,7 @@
         {
           "severity": "error",
           "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Tables.ShapeStyle::ContainsShapeName(System.String,System.String)",
-          "token": 100664333,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
           "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuadratic(System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
-          "token": 100665464,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
           "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuadratic(System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
           "token": 100665464,
           "assembly": "netDxf.netstandard"
@@ -433,23 +303,7 @@
         {
           "severity": "error",
           "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveCubic(System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
-          "token": 100665465,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
           "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuartic(System.Double,System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
-          "token": 100665466,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
           "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuartic(System.Double,System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
           "token": 100665466,
           "assembly": "netDxf.netstandard"
@@ -553,9 +407,49 @@
           "assembly": "netDxf.netstandard",
           "offset": 4,
           "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.IO.FileAccess' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
+          "token": 100663460,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.IO.FileShare' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
+          "token": 100663460,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNRESOLVED_CALL",
+          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
+          "token": 100663460,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_STACK_TYPE",
+          "message": "'call' expected externref, received i32.",
+          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
+          "token": 100663460,
+          "assembly": "netDxf.netstandard",
+          "offset": 4,
+          "opcode": "call"
         }
       ],
-      "message": "Direct WebAssembly compilation is unsupported: Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.KeyValuePair`2<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
+      "message": "Direct WebAssembly compilation is unsupported: Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.BitConverter::GetBytes(System.Int32)'.; No native WebAssembly implementation or supported runtime service for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'.",
       "selection": "Default native exports: public closed static methods plus their reachable method closure."
     }
   },
@@ -563,7 +457,7 @@
     {
       "name": "All 272 unchanged pinned netDxf C# sources compile in Roslyn WebAssembly without diagnostics",
       "passed": true,
-      "milliseconds": 22502.900864,
+      "milliseconds": 25175.953487,
       "evidence": {
         "sources": 272,
         "diagnostics": 0,
@@ -574,22 +468,22 @@
     {
       "name": "Full-library compiler probes preserve explicit unsupported diagnostics",
       "passed": true,
-      "milliseconds": 68052.26240800001,
+      "milliseconds": 88492.339495,
       "evidence": {
         "javascript": {
           "supported": false,
-          "diagnostics": 335,
+          "diagnostics": 110,
           "codes": {
-            "IL_UNRESOLVED_CALL": 332,
+            "IL_UNRESOLVED_CALL": 107,
             "IL_UNRESOLVED_FIELD": 3
           }
         },
         "nativeWasm": {
           "supported": false,
-          "diagnostics": 616,
+          "diagnostics": 169,
           "codes": {
-            "WASM_UNSUPPORTED_TYPE": 437,
-            "WASM_UNRESOLVED_CALL": 165,
+            "WASM_UNSUPPORTED_TYPE": 85,
+            "WASM_UNRESOLVED_CALL": 70,
             "WASM_STACK_TYPE": 11,
             "WASM_UNRESOLVED_FIELD": 3
           }
@@ -599,7 +493,7 @@
     {
       "name": "Public kernel API compiles eleven real netDxf geometry, entity and color exports on all three backends",
       "passed": true,
-      "milliseconds": 2293.2312269999966,
+      "milliseconds": 2177.3155220000044,
       "evidence": {
         "wasm": {
           "backend": "wasm",
@@ -620,7 +514,7 @@
           "artifactBytes": 4096,
           "compiledMethods": 11,
           "diagnostics": 0,
-          "compileMs": 356.53958900000725,
+          "compileMs": 394.5643199999904,
           "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
         },
         "javascript": {
@@ -639,10 +533,10 @@
             "TrueColorArgb"
           ],
           "assemblyBytes": 4096,
-          "artifactBytes": 2955265,
+          "artifactBytes": 2964703,
           "compiledMethods": 243,
           "diagnostics": 0,
-          "compileMs": 785.5301079999917,
+          "compileMs": 813.379237000001,
           "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
         },
         "native-wasm": {
@@ -661,10 +555,10 @@
             "TrueColorArgb"
           ],
           "assemblyBytes": 4096,
-          "artifactBytes": 4116679,
-          "compiledMethods": 158,
+          "artifactBytes": 4131227,
+          "compiledMethods": 162,
           "diagnostics": 0,
-          "compileMs": 1150.6470069999923,
+          "compileMs": 968.9195150000014,
           "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
         }
       }
@@ -672,7 +566,7 @@
     {
       "name": "279 deterministic geometry, entity and color cases match the .NET WebAssembly oracle on both generated backends",
       "passed": true,
-      "milliseconds": 12970.732569,
+      "milliseconds": 7125.575121000002,
       "evidence": {
         "caseCount": 279,
         "cases": [
@@ -3879,7 +3773,7 @@
     {
       "name": "Real Bezier parameter validation throws ArgumentOutOfRangeException across all backends",
       "passed": true,
-      "milliseconds": 14.802794000002905,
+      "milliseconds": 13.372755999997025,
       "evidence": {
         "parameters": [
           -0.01,
@@ -3891,7 +3785,7 @@
     {
       "name": "Entity construction and RGB validation preserve ArgumentOutOfRangeException on all backends",
       "passed": true,
-      "milliseconds": 879.3458870000031,
+      "milliseconds": 625.4535640000104,
       "evidence": {
         "caseCount": 5,
         "backends": 3,
@@ -3901,25 +3795,25 @@
     {
       "name": "The full managed library round-trips ASCII and binary DXF documents",
       "passed": true,
-      "milliseconds": 87564.50841100002,
+      "milliseconds": 111426.72146700001,
       "evidence": {
         "managed": {
           "supported": true
         },
         "javascript": {
           "supported": false,
-          "diagnostics": 337,
+          "diagnostics": 112,
           "codes": {
-            "IL_UNRESOLVED_CALL": 334,
+            "IL_UNRESOLVED_CALL": 109,
             "IL_UNRESOLVED_FIELD": 3
           }
         },
         "nativeWasm": {
           "supported": false,
-          "diagnostics": 600,
+          "diagnostics": 130,
           "codes": {
-            "WASM_UNRESOLVED_CALL": 129,
-            "WASM_UNSUPPORTED_TYPE": 464,
+            "WASM_UNRESOLVED_CALL": 56,
+            "WASM_UNSUPPORTED_TYPE": 67,
             "WASM_STACK_TYPE": 4,
             "WASM_UNRESOLVED_FIELD": 3
           }
@@ -3948,63 +3842,40 @@
     },
     "javascript": {
       "supported": false,
-      "diagnosticCount": 337,
+      "diagnosticCount": 112,
       "codes": {
-        "IL_UNRESOLVED_CALL": 334,
+        "IL_UNRESOLVED_CALL": 109,
         "IL_UNRESOLVED_FIELD": 3
       },
       "dependencies": {
-        "System.String": 57,
-        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 23,
-        "System.Array": 22,
-        "System.Environment": 21,
-        "System.Threading.Thread": 17,
-        "System.Globalization.CultureInfo": 17,
-        "System.Globalization.TextInfo": 15,
         "System.Double": 15,
-        "System.Math": 13,
-        "System.IO.Path": 13,
         "System.IO.File": 10,
         "System.Text.Encoding": 9,
-        "System.ICloneable": 9,
+        "System.String": 9,
         "System.IO.FileLoadException": 8,
         "System.BitConverter": 7,
-        "System.Int32": 6,
         "System.DateTime": 6,
+        "System.Environment": 6,
+        "System.Array": 5,
         "System.Collections.Hashtable": 5,
-        "System.Int64": 5,
-        "System.Collections.Generic.List`1<!0>": 5,
         "System.IO.FileInfo": 4,
         "System.Reflection.MemberInfo": 4,
-        "System.Runtime.CompilerServices.Unsafe": 4,
         "System.Text.RegularExpressions.Regex": 3,
         "System.IO.FileNotFoundException": 3,
-        "System.Convert": 2,
+        "System.Collections.Generic.List`1<!0>": 3,
         "System.IO.BinaryWriter": 2,
         "System.TimeSpan": 2,
-        "System.Int16": 2,
-        "System.Byte": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 2,
-        "System.Collections.Generic.List`1<netDxf.Entities.EntityObject>": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 2,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 2,
         "System.Text.CodePagesEncodingProvider": 1,
         "System.StringComparer": 1,
         "System.IO.FileSystemInfo": 1,
-        "System.Tuple`3<netDxf.Vector2,netDxf.Vector2,System.Double>": 1,
         "System.Attribute": 1,
-        "System.ReadOnlySpan`1<System.Char>": 1,
+        "System.Convert": 1,
         "System.Text.StringBuilder": 1,
-        "System.Collections.Generic.List`1<netDxf.Entities.Attribute>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.Entities.AttributeDefinition>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>": 1,
-        "System.Collections.Generic.ICollection`1<System.String>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<!0,!1>": 1,
-        "System.Collections.Generic.List`1<System.String>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,!0>": 1,
-        "System.Collections.Generic.Dictionary`2+KeyCollection<System.String,netDxf.XData>": 1,
-        "System.Runtime.InteropServices.MemoryMarshal": 1
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 1,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 1,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 1,
+        "System.IO.Path": 1,
+        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 1
       },
       "examples": [
         {
@@ -4042,51 +3913,6 @@
           "offset": 56,
           "opcode": "call",
           "message": "No linked implementation or JavaScript external for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 127,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 132,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 137,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 151,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 163,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_CurrentCulture()'."
         },
         {
           "severity": "error",
@@ -4181,139 +4007,91 @@
         {
           "severity": "error",
           "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.MathHelper::RoundToNearest(System.Double,System.Double)",
-          "token": 100663547,
-          "offset": 4,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Math::Round(System.Double,System.Int32)'."
+          "method": "netDxf.StringEnum`1::GetStringValues()",
+          "token": 100663718,
+          "offset": 36,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetValues()",
+          "token": 100663719,
+          "offset": 38,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 16,
+          "opcode": "newobj",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::.ctor()'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 29,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::ContainsKey(System.Object)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 43,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
+        },
+        {
+          "severity": "error",
+          "code": "IL_UNRESOLVED_CALL",
+          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
+          "token": 100663722,
+          "offset": 57,
+          "opcode": "callvirt",
+          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
         }
       ],
       "message": "Assembly 'NetDxfIoProbe' is not fully supported by the JavaScript tier."
     },
     "nativeWasm": {
       "supported": false,
-      "diagnosticCount": 600,
+      "diagnosticCount": 130,
       "codes": {
-        "WASM_UNRESOLVED_CALL": 129,
-        "WASM_UNSUPPORTED_TYPE": 464,
+        "WASM_UNRESOLVED_CALL": 56,
+        "WASM_UNSUPPORTED_TYPE": 67,
         "WASM_STACK_TYPE": 4,
         "WASM_UNRESOLVED_FIELD": 3
       },
       "dependencies": {
         "System.DateTime": 49,
-        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.DxfObject>": 24,
-        "System.String": 22,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Vertex>": 21,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>": 20,
-        "System.ReadOnlySpan`1<System.Object>": 18,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>": 17,
         "System.TimeSpan": 16,
-        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>": 15,
-        "System.Collections.Generic.List`1+Enumerator<System.String>": 14,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>": 12,
-        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,System.String>": 11,
         "System.Collections.Hashtable": 10,
-        "System.IO.Path": 10,
         "System.Text.Encoding": 9,
-        "System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>": 9,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.EntityObject>": 8,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Layer>": 8,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Linetype>": 8,
-        "System.Runtime.CompilerServices.Unsafe": 8,
-        "System.Collections.Generic.KeyValuePair`2<System.String,System.String>": 7,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Tables.LinetypeSegment>": 7,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.Layout>": 7,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinitionReactor>": 6,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.DxfObjectReference>": 6,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Vector2>": 6,
-        "System.Collections.Generic.List`1+Enumerator<System.Double>": 6,
-        "System.Int32": 6,
-        "System.Array": 6,
         "System.BitConverter": 6,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Header.HeaderVariable>": 5,
         "System.Environment": 5,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.Layout>": 5,
-        "System.Collections.Generic.List`1+Enumerator<System.Int32[]>": 5,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MeshEdge>": 5,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath>": 5,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.Block>": 5,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 5,
-        "System.Int64": 5,
-        "System.Collections.Generic.IEnumerator`1<!0>": 4,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,!0>": 4,
+        "System.String": 5,
         "System.Reflection.MemberInfo": 4,
-        "System.Collections.Generic.List`1<!0>": 4,
-        "System.Collections.Generic.List`1+Enumerator<!0>": 4,
-        "System.Math": 4,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.DictionaryObject>": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MLineVertex>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.DimensionStyle,System.String[]>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Image,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Underlay,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.MLine,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Leader,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Insert,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Entities.Dimension,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<System.String,netDxf.Objects.DictionaryObject>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeSegment,System.String>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 3,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Collections.Generic.List`1<netDxf.XData>>": 3,
-        "System.Collections.Generic.Dictionary`2+Enumerator<netDxf.DxfObject,System.Int32>": 3,
         "System.IO.FileMode": 3,
         "System.IO.FileAccess": 3,
         "System.IO.FileShare": 3,
         "System.IO.File": 3,
         "call": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.AttributeDefinition>": 3,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Blocks.BlockRecord>": 3,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchPatternLineDefinition>": 3,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Tables.VPort>": 2,
-        "System.Collections.Generic.Dictionary`2<System.String,!0>": 2,
-        "System.Collections.Generic.Dictionary`2+ValueCollection<System.String,!0>": 2,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Tables.ShapeStyle>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyle,System.String[]>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Image,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Underlay,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.MLine,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Blocks.Block,System.Collections.Generic.List`1<netDxf.Entities.EntityObject>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Hatch,System.Collections.Generic.List`1<netDxf.Entities.HatchBoundaryPath>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Objects.Group,System.Collections.Generic.List`1<System.String>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Leader,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Viewport,System.Collections.Generic.List`1<netDxf.Tables.Layer>>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Insert,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Entities.Dimension,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.DictionaryObject>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeSegment,System.String>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.Tables.LinetypeShapeSegment,System.Int16>": 2,
-        "System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinition>": 2,
-        "System.Collections.Generic.KeyValuePair`2<netDxf.DxfObject,System.Int32>": 2,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Attribute>": 2,
-        "System.Convert": 2,
         "System.IO.BinaryWriter": 2,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.MLineStyleElement>": 2,
-        "System.Int16": 2,
-        "System.Collections.Generic.List`1+Enumerator<netDxf.Objects.XRecordEntry>": 2,
-        "System.Byte": 2,
-        "!0": 2,
         "System.Text.RegularExpressions.Regex": 2,
-        "System.Threading.Thread": 2,
-        "System.Runtime.InteropServices.MemoryMarshal": 2,
         "System.Text.CodePagesEncodingProvider": 1,
-        "System.Collections.Generic.ICollection`1<!1>": 1,
         "System.StringSplitOptions": 1,
         "callvirt": 1,
         "System.StringComparer": 1,
-        "netDxf.Collections.ObservableCollection`1<!0>": 1,
-        "System.Collections.Generic.Dictionary`2<!0,!1>": 1,
-        "System.Collections.Generic.Dictionary`2+ValueCollection<!0,!1>": 1,
+        "System.Convert": 1,
+        "System.IO.Path": 1,
         "System.Double": 1
       },
       "examples": [
@@ -4343,38 +4121,6 @@
           "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
           "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
           "token": 100665097,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
-          "token": 100664928,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Header.HeaderVariable>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
-          "token": 100664928,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Objects.DictionaryObject>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
-          "token": 100664928,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinitionReactor>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::Write(System.IO.Stream,netDxf.DxfDocument,System.Boolean)",
-          "token": 100664928,
           "assembly": "netDxf.netstandard"
         },
         {
@@ -4506,9 +4252,47 @@
           "assembly": "netDxf.netstandard",
           "offset": 1246,
           "opcode": "initobj"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
+          "token": 100665097,
+          "assembly": "netDxf.netstandard",
+          "offset": 1253,
+          "opcode": "box"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::WriteSystemVariable(netDxf.Header.HeaderVariable)",
+          "token": 100664935,
+          "assembly": "netDxf.netstandard"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::WriteSystemVariable(netDxf.Header.HeaderVariable)",
+          "token": 100664935,
+          "assembly": "netDxf.netstandard",
+          "offset": 2417,
+          "opcode": "unbox.any"
+        },
+        {
+          "severity": "error",
+          "code": "WASM_UNSUPPORTED_TYPE",
+          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
+          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::WriteSystemVariable(netDxf.Header.HeaderVariable)",
+          "token": 100664935,
+          "assembly": "netDxf.netstandard",
+          "offset": 2422,
+          "opcode": "call"
         }
       ],
-      "message": "Direct WebAssembly compilation is unsupported: No native WebAssembly implementation or supported runtime service for 'System.Text.CodePagesEncodingProvider::get_Instance()'.; No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<System.String>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Header.HeaderVariable>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Objects.DictionaryObject>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.Dictionary`2+ValueCollection+Enumerator<System.String,netDxf.Objects.ImageDefinitionReactor>' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::get_WindowsCodePage()'."
+      "message": "Direct WebAssembly compilation is unsupported: No native WebAssembly implementation or supported runtime service for 'System.Text.CodePagesEncodingProvider::get_Instance()'.; No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::get_WindowsCodePage()'.; No native WebAssembly implementation or supported runtime service for 'System.Environment::get_UserName()'.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.DateTime::get_Now()'.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend."
     }
   },
   "passed": true,

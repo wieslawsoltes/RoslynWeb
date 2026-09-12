@@ -56,6 +56,7 @@ jobs:
           npm run test:events
           npm run test:cad-bcl
           npm run test:cad-format
+          npm run test:compiler-services
       - name: Actual WebAssembly integration
         run: npm run test:wasm
       - name: Worker integration

@@ -1,7 +1,20 @@
 export type DxfPoint = { x: number; y: number; z?: number; bulge?: number } | [number, number, number?];
 export type DxfColor = [number, number, number] | [number, number, number, number];
+export interface DxfHatchPatternLine {
+  /** World-space origin of line zero. Pattern rotation, scale and OCS/INSERT transforms are already applied. */
+  origin: DxfPoint;
+  /** World-space vector for one dash-length unit; need not be normalized after INSERT transforms. */
+  direction: DxfPoint;
+  /** World-space translation from line k to line k+1, including along-line dash phase displacement. */
+  offset: DxfPoint;
+  /** Optional transformed perpendicular vector for square dot markers. */
+  perpendicular?: DxfPoint;
+  /** Positive = drawn dash, negative = gap, zero = dot. Empty = continuous. Repeats in both directions. */
+  dashes?: number[];
+}
+export interface DxfHatchPattern { name?: string; lines: DxfHatchPatternLine[]; }
 export interface DxfEntity {
-  /** Includes TEXT/MTEXT/ATTRIB, solid HATCH and WIPEOUT in addition to line/face primitives. */
+  /** Includes TEXT/MTEXT/ATTRIB, solid/patterned HATCH and WIPEOUT in addition to line/face primitives. */
   type: string;
   layer?: string;
   color?: DxfColor;
@@ -27,6 +40,8 @@ export interface DxfEntity {
   /** Closed world-space rings. Normal hatch style applies even/odd island parity. */
   loops?: DxfPoint[][];
   hatchStyle?: 'Normal' | 'Outer' | 'Ignore' | 0 | 1 | 2;
+  /** HATCH without pattern is solid. Families clip to the same island region as solid fills. */
+  pattern?: DxfHatchPattern;
   text?: string;
   height?: number;
   width?: number;
@@ -69,6 +84,12 @@ export interface DxfTessellationOptions {
   tolerance?: number;
   /** Point cross diameter in drawing units. Default: 0.5. */
   pointSize?: number;
+  /** Total expanded pattern lines across the scene. Default: 100,000. Exceeding the budget always throws. */
+  maxHatchLines?: number;
+  /** Total boundary, line clipping and dash expansion work across the scene. Default: 10,000,000. */
+  maxHatchWork?: number;
+  /** Square dot side in pattern dash units, clipped at boundaries. Default: 10% of the smaller spacing/dash cycle. */
+  hatchDotSize?: number;
   /** Reject unsupported/invalid entities instead of recording issues. */
   strict?: boolean;
 }

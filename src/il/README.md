@@ -344,3 +344,7 @@ for memory/text/binary streams, UTF-8 data, virtual files, directory enumeration
 and stream/encoding base types. `tests/il-io.test.mjs` additionally verifies
 buffer aliasing, zero-filled growth, disposal, resource budgets, malformed byte
 sequences, EOF, virtual-file isolation, and copied Worker-safe file snapshots.
+
+## Managed spans and compiler-generated inline arrays
+
+The JavaScript backend supports bounded managed `Span<T>` / `ReadOnlySpan<T>` storage, verified inline arrays and selected `Unsafe` / `MemoryMarshal` helpers, including Roslyn-generated params spans for composite formatting. See [contracts, aliasing behavior, limits and differential tests](../../docs/SPANS.md). Span-based IO overloads remain separately unsupported.

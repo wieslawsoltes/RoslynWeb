@@ -1,66 +1,71 @@
 {
-  "testedAt": "2026-09-12T06:32:52.819Z",
+  "testedAt": "2026-09-12T08:57:18.856Z",
   "realBrowser": true,
   "realWebGPU": true,
   "tests": [
     {
       "name": "Sample starts a real compiler worker and loads the complete pinned netDxf library",
       "passed": true,
-      "ms": 1767
+      "ms": 1428
     },
     {
       "name": "WebGPU submits real drawing commands and produces colored geometry pixels",
       "passed": true,
-      "ms": 551
+      "ms": 462
     },
     {
       "name": "Actual WebGPU pixels show hatch holes, source-ordered wipeout masking and shaped Unicode text",
       "passed": true,
-      "ms": 720
+      "ms": 593
+    },
+    {
+      "name": "Actual WebGPU pattern pixels preserve dash gaps, hatch holes and clipped dot markers",
+      "passed": true,
+      "ms": 304
     },
     {
       "name": "Zoom, pan, fit and layer controls change the real renderer state",
       "passed": true,
-      "ms": 435
+      "ms": 379
     },
     {
       "name": "Text and binary DXF downloads round-trip through the real managed library",
       "passed": true,
-      "ms": 400
+      "ms": 385
     },
     {
       "name": "Invalid and over-limit uploads report errors and preserve the current drawing",
       "passed": true,
-      "ms": 4964
+      "ms": 2362
     },
     {
       "name": "Source mode recompiles all upstream source files in browser WebAssembly",
       "passed": true,
-      "ms": 26104
+      "ms": 24941
     },
     {
       "name": "Optional geometry comparison executes managed Wasm, native Wasm and generated JavaScript",
       "passed": true,
-      "ms": 9863
+      "ms": 9790
     },
     {
       "name": "Mobile layout stays within the viewport and keeps document actions available",
       "passed": true,
-      "ms": 133
+      "ms": 228
     },
     {
       "name": "Unavailable WebGPU leaves real netDxf parsing and export usable",
       "passed": true,
-      "ms": 1584
+      "ms": 2836
     },
     {
       "name": "Missing startup assets surface an error and restart recovers cleanly",
       "passed": true,
-      "ms": 2517
+      "ms": 2888
     }
   ],
   "pageErrors": [],
-  "baseUrl": "http://127.0.0.1:39237/RoslynWeb/",
+  "baseUrl": "http://127.0.0.1:39613/RoslynWeb/",
   "browserVersion": "140.0.7339.186",
   "library": {
     "sourceCount": 272,
@@ -133,10 +138,30 @@
       18
     ]
   },
+  "hatchPatterns": {
+    "stats": {
+      "lineSegments": 100,
+      "triangles": 248,
+      "textQuads": 0,
+      "vertices": 944,
+      "drawCalls": 2,
+      "frames": 8,
+      "width": 1140,
+      "height": 762,
+      "disposed": false,
+      "lost": false
+    },
+    "screenshot": {
+      "width": 1140,
+      "height": 762,
+      "colors": 687,
+      "nonBackgroundPixels": 48240
+    }
+  },
   "geometryComparison": [
-    ".NET Wasm0.12 s5778.5398163397",
-    "Native Wasm5.22 s5778.5398163397",
-    "JavaScript3.82 s5778.5398163397"
+    ".NET Wasm0.13 s5778.5398163397",
+    "Native Wasm4.76 s5778.5398163397",
+    "JavaScript4.41 s5778.5398163397"
   ],
   "passed": true
 }

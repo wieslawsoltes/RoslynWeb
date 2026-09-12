@@ -413,10 +413,25 @@ public static class NetDxfBridge
                     {
                         var hatchTransform = transform * MathHelper.ArbitraryAxis(hatch.Normal);
                         var hatchOffset = World(Ocs(Vector2.Zero, hatch.Elevation, hatch.Normal));
-                        if (hatch.Pattern.Fill == HatchFillType.SolidFill && !(hatch.Pattern is HatchGradientPattern))
+                        if (!(hatch.Pattern is HatchGradientPattern))
                         {
                             var item = Shape("HATCH"); item["hatchStyle"] = hatch.Pattern.Style.ToString();
                             item["loops"] = hatch.BoundaryPaths.Select(boundary => HatchLoop(boundary).Select(p => Point(hatchTransform * p + hatchOffset)).ToArray()).ToArray();
+                            if (hatch.Pattern.Fill != HatchFillType.SolidFill)
+                            {
+                                double rotation = hatch.Pattern.Angle * MathHelper.DegToRad;
+                                double c = Math.Cos(rotation), s = Math.Sin(rotation), scale = hatch.Pattern.Scale;
+                                var definitions = hatch.Pattern.LineDefinitions.Select(line => {
+                                    double angle = (hatch.Pattern.Angle + line.Angle) * MathHelper.DegToRad;
+                                    var direction = new Vector3(Math.Cos(angle), Math.Sin(angle), 0);
+                                    var perpendicular = new Vector3(-Math.Sin(angle), Math.Cos(angle), 0);
+                                    var origin = new Vector3(hatch.Pattern.Origin.X + scale * (c * line.Origin.X - s * line.Origin.Y), hatch.Pattern.Origin.Y + scale * (s * line.Origin.X + c * line.Origin.Y), 0);
+                                    return new { origin = Point(hatchTransform * origin + hatchOffset), direction = Point(hatchTransform * direction),
+                                        offset = Point(hatchTransform * (scale * (line.Delta.X * direction + line.Delta.Y * perpendicular))),
+                                        perpendicular = Point(hatchTransform * perpendicular), dashes = line.DashPattern.Select(dash => dash * scale).ToArray() };
+                                }).ToArray();
+                                item["pattern"] = new { name = hatch.Pattern.Name, lines = definitions };
+                            }
                             Entities.Add(item); return;
                         }
                         foreach (var boundary in hatch.BoundaryPaths)
@@ -427,7 +442,7 @@ public static class NetDxfBridge
                             part.Layer = layer; part.Color = color;
                             Visit(part, hatchTransform, hatchOffset, layer, color, opacity, Math.Max(1, depth), blockPath, visibilityLayers);
                         }
-                        Issue(entity, "DXF_HATCH_PATTERN_NOT_RENDERED", "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter.");
+                        Issue(entity, "DXF_HATCH_GRADIENT_NOT_RENDERED", "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter.");
                         return;
                     }
                     case MLine mline:

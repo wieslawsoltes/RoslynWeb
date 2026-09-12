@@ -28,15 +28,57 @@ const delegateType = t => /^System\.(Func|Action|Predicate|Comparison)`?/.test(t
 const comparerType = t => /I(?:Equality)?Comparer/.test(t);
 const scalarNumber = t => /^System\.(Int32|Int64|Single|Double)$/.test(t);
 const interfaces = new Set(['System.Collections.IEnumerable', 'System.Collections.Generic.IEnumerable`1', 'System.Collections.IEnumerator', 'System.Collections.Generic.IEnumerator`1', 'System.IDisposable']);
+const referenceTuple = type => /^System\.Tuple`[1-7]$/.test(rootOf(type));
+const collectionValue = type => /^System\.Collections\.Generic\.(?:KeyValuePair`2|List`1\+Enumerator|Dictionary`2\+(?:Enumerator|KeyCollection\+Enumerator|ValueCollection\+Enumerator)|HashSet`1\+Enumerator)$/.test(rootOf(type));
+
+/** These framework structs use copied records and independent scalar iterator state. */
+export function isExtendedValueType(type) { return collectionValue(type); }
+export function defaultExtendedValue(rt,type) {
+  if(!collectionValue(type))return undefined;
+  const types=genericTypes(type);
+  if(rootOf(type)==='System.Collections.Generic.KeyValuePair`2')return pair(rt.defaultValue(types[0]),rt.defaultValue(types[1]),types[0],types[1]);
+  return {$type:type,$valueType:true,fields:{},$enumerator:true,$index:0,$current:null,$valid:false,$uninitialized:true};
+}
+export function isExtendedInstance(rt,value,target) {
+  if(value?.$box)value=value.value;
+  const root=rootOf(target),types=genericTypes(target),actual=value?.$type;
+  if(value?.$array&&target==='System.ICloneable'||typeof value==='string'&&target==='System.ICloneable')return true;
+  if(!value?.$array&&!value?.$items&&!value?.$table&&!value?.$collection&&!value?.$enumerator&&!value?.$list)return undefined;
+  const element=value.elementType??(value.$table?(value.$set?value.$keyType:`System.Collections.Generic.KeyValuePair\`2<${value.$keyType},${value.$valueTypeName}>`):value.$elementType??genericTypes(actual)[0]);
+  const same=element===types[0],covariant=same||!!(element&&(element==='System.String'||element.endsWith('[]')||rt.closeType(element)?.isValueType===false)&&rt.inherits(element,types[0]));
+  if(value.$enumerator||value.$list){if(target==='System.Collections.IEnumerator'||target==='System.IDisposable')return true;if(root==='System.Collections.Generic.IEnumerator`1')return covariant;return undefined;}
+  if(target==='System.Collections.IEnumerable'||target==='System.Collections.ICollection')return true;
+  if(root==='System.Collections.Generic.IEnumerable`1'||root==='System.Collections.Generic.IReadOnlyCollection`1')return covariant;
+  if(root==='System.Collections.Generic.ICollection`1')return same;
+  if(root==='System.Collections.Generic.IReadOnlyList`1')return !!(value.$array||value.$items)&&covariant;
+  if(root==='System.Collections.Generic.IList`1')return !!(value.$array||value.$items)&&same;
+  if(root==='System.Collections.Generic.IReadOnlyDictionary`2'||root==='System.Collections.Generic.IDictionary`2')return !!value.$table&&!value.$set&&value.$keyType===types[0]&&value.$valueTypeName===types[1];
+  return undefined;
+}
 
 export function isExtendedBuiltin(ref) {
   if (!ref || typeof ref !== 'object') return false;
   const type = rootOf(ref.declaringType), n = (ref.parameters ?? []).length, p = ptypes(ref), name = ref.name;
+  const instance=ref.isStatic===false&&(ref.genericParameterCount??0)===0;
+  if(type==='System.ICloneable'||type==='System.Array'&&name==='Clone'||type==='System.String'&&name==='Clone')return instance&&name==='Clone'&&n===0&&ref.returnType==='System.Object';
+  if(type==='System.Array'&&name==='CopyTo')return instance&&ref.returnType==='System.Void'&&n===2&&p[0]==='System.Array'&&['System.Int32','System.Int64'].includes(p[1]);
+  if(type==='System.Array'&&name==='Copy')return ref.isStatic===true&&ref.returnType==='System.Void'&&(p.join(',')==='System.Array,System.Array,System.Int32'||p.join(',')==='System.Array,System.Int32,System.Array,System.Int32,System.Int32');
+  if(referenceTuple(type)){
+    const types=genericTypes(ref.declaringType),parameters=p.map(t=>substituteType(t,types));
+    if(name==='.ctor')return instance&&ref.returnType==='System.Void'&&n===Number(type.at(-1))&&parameters.every((t,i)=>t===types[i]);
+    if(/^get_Item[1-7]$/.test(name)){const index=Number(name.at(-1))-1;return instance&&n===0&&index<types.length&&substituteType(ref.returnType,types)===types[index];}
+    return false;
+  }
+  if(type==='System.Tuple'&&name==='Create'){const types=ref.genericArguments??[];return ref.isStatic===true&&n>=1&&n<=7&&types.length===n&&p.every((t,i)=>substituteType(t,[],types)===types[i])&&substituteType(ref.returnType,[],types)===`System.Tuple\`${n}<${types.join(',')}>`;}
+  if(type==='System.Collections.ICollection'&&name==='CopyTo')return instance&&n===2&&p[0]==='System.Array'&&p[1]==='System.Int32'&&ref.returnType==='System.Void';
+  if(type==='System.Collections.Generic.ICollection`1'&&name==='CopyTo')return instance&&n===2&&substituteType(p[0],genericTypes(ref.declaringType))===genericTypes(ref.declaringType)[0]+'[]'&&p[1]==='System.Int32'&&ref.returnType==='System.Void';
+  if(type==='System.Collections.Generic.ICollection`1'&&name==='get_Count')return instance&&n===0&&ref.returnType==='System.Int32';
+  if(type==='System.Collections.Generic.List`1+Enumerator')return instance&&n===0&&(['Dispose','Reset'].includes(name)&&ref.returnType==='System.Void'||name==='MoveNext'&&ref.returnType==='System.Boolean'||name==='get_Current'&&substituteType(ref.returnType,genericTypes(ref.declaringType))===genericTypes(ref.declaringType)[0]);
   if (type === 'System.Collections.Generic.IReadOnlyList`1') return ref.isStatic === false && (ref.genericParameterCount ?? 0) === 0 && name === 'get_Item' && n === 1 && p[0] === 'System.Int32' && substituteType(ref.returnType,genericTypes(ref.declaringType)) === genericTypes(ref.declaringType)[0];
   if (type === 'System.Collections.Generic.IReadOnlyCollection`1') return ref.isStatic === false && (ref.genericParameterCount ?? 0) === 0 && name === 'get_Count' && n === 0 && ref.returnType === 'System.Int32';
   if (interfaces.has(type)) return n === 0 && ['GetEnumerator', 'MoveNext', 'get_Current', 'Dispose', 'Reset'].includes(name);
   if (/^System\.Collections\.Generic\.(Dictionary`2|HashSet`1)(\+.*)?$/.test(type)) {
-    if (type.includes('+')) return n === 0 && ['get_Count', 'GetEnumerator', 'MoveNext', 'get_Current', 'Dispose', 'Reset'].includes(name);
+    if (type.includes('+')) {const types=genericTypes(ref.declaringType),element=types[type.endsWith('+KeyCollection')?0:1];return n === 0 && ['get_Count', 'GetEnumerator', 'MoveNext', 'get_Current', 'Dispose', 'Reset'].includes(name) || /\+(KeyCollection|ValueCollection)$/.test(type)&&instance&&name==='CopyTo'&&n===2&&substituteType(p[0],types)===element+'[]'&&p[1]==='System.Int32'&&ref.returnType==='System.Void';}
     if (name === '.ctor') {
       const comparer = `System.Collections.Generic.IEqualityComparer\`1<${genericTypes(ref.declaringType)[0]}>`;
       const types = p.map(type => substituteType(type,genericTypes(ref.declaringType)));
@@ -57,6 +99,8 @@ export function isExtendedBuiltin(ref) {
   }
   if (type === 'System.Collections.Generic.KeyValuePair`2') return name === '.ctor' && n === 2 || ['get_Key', 'get_Value', 'ToString'].includes(name) && n === 0 || name === 'Deconstruct' && n === 2 && p.every(t => t.endsWith('&'));
   if (type === 'System.Collections.Generic.List`1') {
+    if(name==='GetEnumerator')return instance&&n===0;
+    if(name==='CopyTo'){const types=genericTypes(ref.declaringType),resolved=p.map(t=>substituteType(t,types));return instance&&ref.returnType==='System.Void'&&[types[0]+'[]',types[0]+'[],System.Int32','System.Int32,'+types[0]+'[],System.Int32,System.Int32'].includes(resolved.join(','));}
     if (name === '.ctor') return n === 1 && sequenceType(p[0]);
     return ['AddRange', 'Remove', 'RemoveAll', 'Find', 'FindAll', 'Exists', 'TrueForAll', 'ForEach', 'InsertRange'].includes(name) && n === (name === 'InsertRange' ? 2 : 1) || ['Insert', 'RemoveRange'].includes(name) && n === 2 || name === 'RemoveAt' && n === 1 || ['Reverse', 'Sort'].includes(name) && n === 0 && (name !== 'Sort' || genericTypes(ref.declaringType)[0] !== 'System.String');
   }
@@ -113,8 +157,15 @@ export function isExtendedBuiltin(ref) {
 
 function userMethod(rt, obj, name, count) {
   if (!obj?.$type) return null;
-  const candidates = [...rt.methods.values()].filter(m => !m.isStatic && m.name === name && m.parameters?.length === count && (m.declaringType === obj.$type || rt.inherits(obj.$type, m.declaringType)));
-  return candidates.find(m => m.declaringType === obj.$type) ?? candidates[0] ?? null;
+  let actual=obj.$type;const seen=new Set();
+  while(actual&&!seen.has(actual)){
+    seen.add(actual);const definition=rt.closeType(actual);if(!definition)break;
+    const candidates=(definition.methods??[]).filter(m=>!m.isStatic&&m.parameters?.length===count&&(m.name===name||m.name.endsWith('.'+name)));
+    const method=candidates.find(m=>m.name===name)??candidates[0];
+    if(method)return rt.resolveMethod({...method,declaringType:actual,assemblyName:definition.$assembly});
+    actual=definition.baseType;
+  }
+  return null;
 }
 function equality(rt, x, y) {
   if (x?.$box && y?.$box && x.$type !== y.$type) return false;
@@ -170,8 +221,12 @@ function removeEntry(rt,self,key) { const entry = findEntry(rt,self,key); if (!e
 function pair(key, value, keyType = 'System.Object', valueType = 'System.Object') { return { $type: `System.Collections.Generic.KeyValuePair\`2<${keyType},${valueType}>`, $valueType: true, fields: { key: copyValue(key), value: copyValue(value) } }; }
 function enumerable(type, factory) { return { $type: type || 'System.Collections.Generic.IEnumerable`1<System.Object>', $enumerable: factory }; }
 function enumerator(rt, source, returnType) {
-  const value = { $type: returnType || 'System.Collections.Generic.IEnumerator`1<System.Object>', $enumerator: true, $current: null, $valid: false };
+  if(returnType)returnType=substituteType(returnType,genericTypes(source.$type));
+  const elementType=source.$table?(source.$set?source.$keyType:`System.Collections.Generic.KeyValuePair\`2<${source.$keyType},${source.$valueTypeName}>`):source.elementType??source.$elementType??genericTypes(source.$type)[0];
+  const value = { $type: returnType || 'System.Collections.Generic.IEnumerator`1<System.Object>', $enumerator: true, $current: null, $valid: false, $elementType:elementType };
   if (source.$table) Object.assign(value, { $valueType: true, fields: {}, $tableSource: source, $index: -1, $version: source.$version });
+  else if(source.$collection)Object.assign(value,{$valueType:true,fields:{},$tableSource:source.$collection,$projection:source.$projection,$elementType:source.$elementType,$index:-1,$version:source.$collection.$version});
+  else if(source.$items)Object.assign(value,{$valueType:true,fields:{},$list:source,$index:-1,$version:source.$version,$current:rt.defaultValue(genericTypes(source.$type)[0])});
   else value.$iterator = sequenceItems(rt,source)[Symbol.iterator]();
   return value;
 }
@@ -227,6 +282,47 @@ function callDelegate(rt, fn, args) { requireValue(fn,'delegate'); return rt.inv
 function elementType(ref, index=0) { return ref.genericArguments?.[index] ?? genericTypes(ptypes(ref)[0])[index] ?? 'System.Object'; }
 function arrayResult(items,type) { return { $array:true,$type:`${type}[]`,elementType:type,items:items.map(copyValue) }; }
 function listResult(items,type) { return { $type:`System.Collections.Generic.List\`1<${type}>`,fields:{},$items:items.map(copyValue),$version:0 }; }
+const primitiveValue=t=>/^System\.(?:Boolean|Char|SByte|Byte|Int16|UInt16|Int32|UInt32|Int64|UInt64|Single|Double|IntPtr|UIntPtr)$/.test(t);
+const widening={SByte:['Int16','Int32','Int64','Single','Double'],Byte:['Int16','UInt16','Int32','UInt32','Int64','UInt64','Single','Double'],Int16:['Int32','Int64','Single','Double'],UInt16:['Int32','UInt32','Int64','UInt64','Single','Double'],Char:['UInt16','Int32','UInt32','Int64','UInt64','Single','Double'],Int32:['Int64','Single','Double'],UInt32:['Int64','UInt64','Single','Double'],Int64:['Single','Double'],UInt64:['Single','Double'],Single:['Double']};
+function arrayCopy(rt,source,sourceIndex,destination,destinationIndex,count,{singleDimension=false}={}) {
+  requireValue(source,'sourceArray');requireValue(destination,'destinationArray');
+  if(!source.$array||!destination.$array)fail('ArgumentException','Source and destination must be arrays.');
+  const rank=a=>a.dimensions?.length??1,sourceLower=source.lowerBounds?.[0]??0,destinationLower=destination.lowerBounds?.[0]??0;
+  if(singleDimension&&(rank(source)!==1||rank(destination)!==1))fail('ArgumentException','Only single dimensional arrays are supported for this operation.');
+  if(rank(source)!==rank(destination))fail('RankException','Source and destination arrays must have the same rank.');
+  if(count<0||sourceIndex<sourceLower||destinationIndex<destinationLower)fail('ArgumentOutOfRangeException','Array offset or length was out of range.');
+  const from=sourceIndex-sourceLower,to=destinationIndex-destinationLower;
+  if(from+count>source.items.length||to+count>destination.items.length)fail('ArgumentException','Source or destination array was not long enough.');
+  const sourceType=source.elementType,destinationType=destination.elementType,valueType=t=>primitiveValue(t)||isExtendedValueType(t)||rt.closeType(t)?.isValueType===true;
+  const srcValue=valueType(sourceType),dstValue=valueType(destinationType),same=sourceType===destinationType;
+  const canWiden=!!widening[sourceType?.replace('System.','')]?.includes(destinationType?.replace('System.',''));
+  if(!same&&srcValue&&!dstValue&&!rt.isInstance(rt.box(rt.defaultValue(sourceType),sourceType),destinationType))fail('ArrayTypeMismatchException','Source array type cannot be boxed to destination array type.');
+  if(!same&&(srcValue&&dstValue&&!canWiden||!srcValue&&!dstValue&&!rt.inherits(sourceType,destinationType)&&!rt.inherits(destinationType,sourceType)))fail('ArrayTypeMismatchException','Source array type cannot be assigned to destination array type.');
+  const values=source.items.slice(from,from+count);
+  for(let i=0;i<values.length;i++){
+    let value=values[i];
+    if(!same){
+      if(srcValue&&!dstValue){value=rt.box(value,sourceType);if(!rt.isInstance(value,destinationType))fail('InvalidCastException','Array element cannot be cast to destination type.');}
+      else if(!srcValue&&dstValue){if(value==null||!value.$box||value.$type!==destinationType)fail('InvalidCastException','Array element cannot be unboxed to destination type.');value=rt.unbox(value,destinationType,true);}
+      else if(!srcValue&&value!=null&&!rt.isInstance(value,destinationType))fail('InvalidCastException','Array element cannot be cast to destination type.');
+    }
+    destination.items[to+i]=rt.coerce(copyValue(value),destinationType);
+  }
+  return done();
+}
+function collectionCopy(rt,self,args,ref) {
+  const list=!!self.$items,range=list&&args.length===4,destination=requireValue(args[range?1:0],'array'),index=Number(raw(args[range?2:1]??0)),start=range?Number(raw(args[0])):0;
+  const count=range?Number(raw(args[3])):self.$items?.length??self.$collection?.$count??self.$count;
+  if(start<0||count<0)fail('ArgumentOutOfRangeException','index/count');
+  if(list&&self.$items.length-start<count)fail('ArgumentException','Offset and length were out of bounds.');
+  if((destination.dimensions?.length??1)!==1||(destination.lowerBounds?.[0]??0)!==0)fail('ArgumentException','Only zero based single dimensional arrays are supported.');
+  if(index<0)fail('ArgumentOutOfRangeException','arrayIndex');
+  if(index>destination.items.length||count>destination.items.length-index)fail('ArgumentException','Destination array was not long enough.');
+  const items=list?self.$items:collect(rt,self),elementType=self.$elementType??(self.$table?(self.$set?self.$keyType:`System.Collections.Generic.KeyValuePair\`2<${self.$keyType},${self.$valueTypeName}>`):genericTypes(self.$type)[0]);
+  try{return arrayCopy(rt,{$array:true,elementType,items},start,destination,index,count,{singleDimension:true});}
+  catch(error){if(error.$type==='System.ArrayTypeMismatchException'||error.$type==='System.InvalidCastException')fail('ArgumentException','Invalid destination array type.');throw error;}
+}
+
 function linq(rt,ref,args) {
   const name=ref.name, type=elementType(ref), source=args[0], p=ptypes(ref), gen=ref.genericArguments ?? [];
   const seq = value => sequenceItems(rt,value), fn = (f,...a) => callDelegate(rt,f,a), lazy = f => done(enumerable(ref.returnType,f));
@@ -329,7 +425,45 @@ function temporal(ref,args,self,selfRef){
 export function invokeExtendedBuiltin(rt,ref,args,self,kind) {
   if(!isExtendedBuiltin(ref))return {handled:false};
   const original=self,selfRef=self?.$byref?self:null;if(selfRef)self=selfRef.get();
+  if(self?.$box&&collectionValue(self.$type))self=self.value;
   const type=rootOf(ref.declaringType),name=ref.name,a=args.map(raw);
+  if(name==='Clone'&&['System.ICloneable','System.Array','System.String'].includes(type)){
+    requireValue(self,'this');
+    if(typeof self==='string')return done(self);
+    if(self.$array)return done({...self,items:self.items.map(copyValue),...(self.dimensions?{dimensions:[...self.dimensions],lowerBounds:[...self.lowerBounds]}:{})});
+    const method=rt.findVirtual(ref,self);if(method)return done(rt.invokeManaged(method,[],self));
+    throw new ILExecutionError(`No linked ICloneable implementation for '${self.$type}'.`,{runtimeLimitation:true});
+  }
+  if(type==='System.Array'&&name==='CopyTo'){
+    if(ptypes(ref)[1]==='System.Int64'&&(a[1]<-2147483648n||a[1]>2147483647n))fail('ArgumentOutOfRangeException','index');
+    return arrayCopy(rt,self,self?.lowerBounds?.[0]??0,args[0],Number(a[1]),self?.items?.length??0,{singleDimension:true});
+  }
+  if(type==='System.Array'&&name==='Copy')return args.length===3?arrayCopy(rt,args[0],args[0]?.lowerBounds?.[0]??0,args[1],args[1]?.lowerBounds?.[0]??0,Number(a[2])):arrayCopy(rt,args[0],Number(a[1]),args[2],Number(a[3]),Number(a[4]));
+  if(referenceTuple(type)||type==='System.Tuple'){
+    if(name==='.ctor'||name==='Create'){
+      const actual=name==='Create'?substituteType(ref.returnType,[],ref.genericArguments??[]):ref.declaringType;
+      const value={$type:actual,fields:{},$referenceTuple:true,$tupleItems:args.map(copyValue)};
+      if(name==='Create')return done(value);Object.assign(self,value);return done();
+    }
+    return done(copyValue(self.$tupleItems[Number(name.at(-1))-1]));
+  }
+  if(name==='CopyTo'&&(self?.$items||self?.$collection||type==='System.Collections.Generic.ICollection`1'&&self?.$table||type==='System.Collections.ICollection'&&self?.$table))return collectionCopy(rt,self,args,ref);
+  if(name==='CopyTo'&&self?.$array)return arrayCopy(rt,self,self.lowerBounds?.[0]??0,args[0],Number(a[1]),self.items.length,{singleDimension:true});
+  if((type==='System.Collections.Generic.ICollection`1'||type==='System.Collections.Generic.IReadOnlyCollection`1')&&name==='get_Count'){
+    if(self?.$array||self?.$items)return done(i4((self.$array?self.items:self.$items).length));
+    if(self?.$table||self?.$collection)return done(i4(self.$table?self.$count:self.$collection.$count));
+  }
+  if(self?.$list){
+    if(name==='MoveNext'){if(self.$version!==self.$list.$version)fail('InvalidOperationException','Collection was modified.');const valid=self.$index+1<self.$list.$items.length;self.$index=valid?self.$index+1:self.$list.$items.length;self.$valid=valid;self.$current=valid?copyValue(self.$list.$items[self.$index]):rt.defaultValue(genericTypes(self.$type)[0]);return done(i4(valid));}
+    if(name==='get_Current'){if(type==='System.Collections.IEnumerator'&&!self.$valid)fail('InvalidOperationException','Enumeration has not started or has already finished.');const value=copyValue(self.$current??rt.defaultValue(genericTypes(self.$type)[0]));return done(type==='System.Collections.IEnumerator'&&(value instanceof Numeric||value?.$valueType)?rt.box(value,genericTypes(self.$type)[0]):value);}
+    if(name==='Dispose')return done();
+    if(name==='Reset'){if(self.$version!==self.$list.$version)fail('InvalidOperationException','Collection was modified.');self.$index=-1;self.$valid=false;self.$current=rt.defaultValue(genericTypes(self.$type)[0]);return done();}
+  }
+  if(self?.$uninitialized&&collectionValue(self.$type)){
+    if(name==='get_Current'){if(type==='System.Collections.IEnumerator')fail('InvalidOperationException','Enumeration has not started or has already finished.');const types=genericTypes(self.$type),root=rootOf(self.$type);return done(root.includes('+KeyCollection')?rt.defaultValue(types[0]):root.includes('+ValueCollection')?rt.defaultValue(types[1]):root.startsWith('System.Collections.Generic.Dictionary`2')?pair(rt.defaultValue(types[0]),rt.defaultValue(types[1]),types[0],types[1]):rt.defaultValue(types[0]));}
+    if(name==='Dispose')return done();
+    if(name==='MoveNext'||name==='Reset')fail('NullReferenceException','Object reference not set to an instance of an object.');
+  }
   if(type==='System.Linq.Enumerable')return linq(rt,ref,args);
   if(type==='System.TimeSpan'||type==='System.DateTime')return temporal(ref,args,self,selfRef);
   if(type==='System.Linq.IGrouping`2'&&name==='get_Key')return done(copyValue(self.$groupKey));
@@ -340,6 +474,7 @@ export function invokeExtendedBuiltin(rt,ref,args,self,kind) {
     if(name==='Deconstruct'){args[0].set(copyValue(self.fields.key));args[1].set(copyValue(self.fields.value));return done();}
   }
   if(type==='System.Collections.Generic.List`1') {
+    if(name==='GetEnumerator')return done(enumerator(rt,self,ref.returnType));
     if(name==='.ctor'){self.$items=collect(rt,args[0]);self.$version=0;return done();}
     const items=self.$items,index=Number(a[0]);const check=(i,end=false)=>{if(i<0||i>items.length||!end&&i===items.length)fail('ArgumentOutOfRangeException','index');};
     if(name==='AddRange'||name==='InsertRange'){const at=name==='AddRange'?items.length:index;check(at,true);const values=collect(rt,args[name==='AddRange'?0:1]);allocationCheck(rt,items.length+values.length);for(let i=items.length-1;i>=at;i--)items[i+values.length]=items[i];for(let i=0;i<values.length;i++)items[at+i]=values[i];if(values.length)self.$version++;return done();}
@@ -361,7 +496,7 @@ export function invokeExtendedBuiltin(rt,ref,args,self,kind) {
     if(name==='.ctor'){const t=table(ref.declaringType,types[0],set?types[0]:types[1],set);t.$set=set;const parameters=ptypes(ref);const hasComparer=rootOf(parameters.at(-1))==='System.Collections.Generic.IEqualityComparer`1';if(hasComparer)t.$equalityComparer=args.at(-1);if(args.length&&parameters[0]==='System.Int32'){if(a[0]<0)fail('ArgumentOutOfRangeException','capacity');}else if(args.length&&!hasComparer)for(const v of sequenceItems(rt,args[0])){const key=set?v:v.fields.key,value=set?v:v.fields.value;if(!put(rt,t,key,value)&&!set)fail('ArgumentException','An item with the same key has already been added.');}Object.assign(self,t);return done();}
     if(!self?.$table)return {handled:false};
     if(name==='get_Count')return done(i4(self.$count));
-    if(name==='get_Keys'||name==='get_Values'){const view=enumerable(ref.returnType,function*(){for(const kv of sequenceItems(rt,self))yield name==='get_Keys'?kv.fields.key:kv.fields.value;});view.$collection=self;return done(view);}
+    if(name==='get_Keys'||name==='get_Values'){const view=enumerable(ref.returnType,function*(){for(const kv of sequenceItems(rt,self))yield name==='get_Keys'?kv.fields.key:kv.fields.value;});view.$collection=self;view.$projection=name==='get_Keys'?'key':'value';view.$elementType=name==='get_Keys'?self.$keyType:self.$valueTypeName;return done(view);}
     if(name==='GetEnumerator')return done(enumerator(rt,self,ref.returnType));
     if(name==='Clear'){for(const e of self.$entries)e.alive=false;self.$buckets.clear();self.$entries.length=0;self.$free.length=0;self.$count=0;return done();}
     if(name==='Add'||name==='TryAdd'||name==='set_Item'){const added=put(rt,self,args[0],set?args[0]:args[1],name==='set_Item');if(!added&&name==='Add'&&!set)fail('ArgumentException','An item with the same key has already been added.');return done(name==='TryAdd'||set?i4(added):undefined);}
@@ -378,7 +513,7 @@ export function invokeExtendedBuiltin(rt,ref,args,self,kind) {
     }
   }
   if(self?.$collection&&name==='get_Count')return done(i4(self.$collection.$count));
-  if(name==='GetEnumerator'&&(self?.$enumerable||self?.$array||self?.$table||self?.$items))return done(enumerator(rt,self));
-  if(self?.$enumerator){if(name==='MoveNext'){if(self.$tableSource){const source=self.$tableSource;if(self.$version!==source.$version)fail('InvalidOperationException','Collection was modified.');while(++self.$index<source.$entries.length){const entry=source.$entries[self.$index];if(entry.alive){self.$current=source.$set?copyValue(entry.key):pair(entry.key,entry.value,source.$keyType,source.$valueTypeName);self.$valid=true;return done(i4(1));}}self.$current=null;self.$valid=false;return done(i4(0));}const step=self.$iterator.next();self.$current=step.value;self.$valid=!step.done;return done(i4(!step.done));}if(name==='get_Current'){if(!self.$valid){if(self.$tableSource&&type!=='System.Collections.IEnumerator'){const s=self.$tableSource;return done(s.$set?rt.defaultValue(s.$keyType):pair(rt.defaultValue(s.$keyType),rt.defaultValue(s.$valueTypeName),s.$keyType,s.$valueTypeName));}fail('InvalidOperationException','Enumeration has not started or has already finished.');}return done(copyValue(self.$current));}if(name==='Dispose'){if(self.$tableSource)return done();self.$iterator?.return?.();self.$valid=false;return done();}if(name==='Reset'){if(self.$tableSource){if(self.$version!==self.$tableSource.$version)fail('InvalidOperationException','Collection was modified.');self.$index=-1;self.$current=null;self.$valid=false;return done();}fail('NotSupportedException','Reset is not supported for this enumerator.');}}
+  if(name==='GetEnumerator'&&(self?.$enumerable||self?.$array||self?.$table||self?.$items))return done(enumerator(rt,self,ref.returnType));
+  if(self?.$enumerator){if(name==='MoveNext'){if(self.$tableSource){const source=self.$tableSource;if(self.$version!==source.$version)fail('InvalidOperationException','Collection was modified.');while(++self.$index<source.$entries.length){const entry=source.$entries[self.$index];if(entry.alive){self.$current=self.$projection?copyValue(entry[self.$projection]):source.$set?copyValue(entry.key):pair(entry.key,entry.value,source.$keyType,source.$valueTypeName);self.$valid=true;return done(i4(1));}}self.$current=null;self.$valid=false;return done(i4(0));}const step=self.$iterator.next();self.$current=step.value;self.$valid=!step.done;return done(i4(!step.done));}if(name==='get_Current'){if(!self.$valid){if(self.$tableSource&&type!=='System.Collections.IEnumerator'){const s=self.$tableSource;return done(self.$projection?rt.defaultValue(self.$elementType):s.$set?rt.defaultValue(s.$keyType):pair(rt.defaultValue(s.$keyType),rt.defaultValue(s.$valueTypeName),s.$keyType,s.$valueTypeName));}fail('InvalidOperationException','Enumeration has not started or has already finished.');}return done(type==='System.Collections.IEnumerator'&&(self.$current instanceof Numeric||self.$current?.$valueType)?rt.box(self.$current,self.$current.$type??self.$elementType??self.$tableSource?.$keyType):copyValue(self.$current));}if(name==='Dispose'){if(self.$tableSource)return done();self.$iterator?.return?.();self.$valid=false;return done();}if(name==='Reset'){if(self.$tableSource){if(self.$version!==self.$tableSource.$version)fail('InvalidOperationException','Collection was modified.');self.$index=-1;self.$current=null;self.$valid=false;return done();}fail('NotSupportedException','Reset is not supported for this enumerator.');}}
   return {handled:false};
 }

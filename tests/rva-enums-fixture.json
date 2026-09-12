@@ -1,0 +1,3518 @@
+{
+  "success": true,
+  "schemaVersion": 1,
+  "name": "RvaEnumsFixture",
+  "entryPoint": null,
+  "assemblyIdentity": "RvaEnumsFixture, Version=0.0.0.0, Culture=neutral",
+  "version": "0.0.0.0",
+  "culture": "",
+  "publicKeyToken": "null",
+  "moduleVersionId": "1ead1e4c-6668-4da6-8f56-7c9a925dd487",
+  "references": [
+    {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    }
+  ],
+  "valueTypes": [
+    "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=10",
+    "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=20",
+    "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=40",
+    "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=5",
+    "RvaEnumsFixture+I16",
+    "RvaEnumsFixture+I32",
+    "RvaEnumsFixture+I64",
+    "RvaEnumsFixture+I8",
+    "RvaEnumsFixture+U16",
+    "RvaEnumsFixture+U32",
+    "RvaEnumsFixture+U64",
+    "RvaEnumsFixture+U8",
+    "System.RuntimeFieldHandle"
+  ],
+  "types": [
+    {
+      "token": 33554433,
+      "name": "<Module>",
+      "attributes": "NotPublic",
+      "baseType": null,
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554434,
+      "name": "RvaEnumsFixture",
+      "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663297,
+          "name": "SignedByte",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+I8[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554436,
+                "name": "RvaEnumsFixture+I8"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108872,
+                "name": "FEDABE10E61B00D9130050169D6796DD86FC72AEB4E895CC0F8EF1901BED5827",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=5",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  128,
+                  255,
+                  0,
+                  1,
+                  127
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.i1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554436,
+                "name": "RvaEnumsFixture+I8"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663298,
+          "name": "UnsignedByte",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+U8[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554437,
+                "name": "RvaEnumsFixture+U8"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108865,
+                "name": "0150A92BB1212CD00516B65FDE0704614760000963874FCBB11EAA734EE87809",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=5",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  0,
+                  1,
+                  127,
+                  128,
+                  255
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.u1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554437,
+                "name": "RvaEnumsFixture+U8"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663299,
+          "name": "SignedShort",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+I16[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554438,
+                "name": "RvaEnumsFixture+I16"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108868,
+                "name": "556753B4DA9B39610600E40B9673205BC62E4DF0F649C9957C6282BD59AB42A0",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=10",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  0,
+                  128,
+                  255,
+                  255,
+                  0,
+                  0,
+                  1,
+                  0,
+                  255,
+                  127
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.i2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554438,
+                "name": "RvaEnumsFixture+I16"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663300,
+          "name": "UnsignedShort",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+U16[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554439,
+                "name": "RvaEnumsFixture+U16"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108871,
+                "name": "ED6204F61D7E79229CD56574815F56970D64270EEA13DDBB44FE60674A8F6122",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=10",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  0,
+                  0,
+                  1,
+                  0,
+                  255,
+                  127,
+                  0,
+                  128,
+                  255,
+                  255
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.u2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554439,
+                "name": "RvaEnumsFixture+U16"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663301,
+          "name": "SignedInt",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+I32[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554440,
+                "name": "RvaEnumsFixture+I32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108867,
+                "name": "467A25E97FD2B7B9E93FEE50FFF7A55F37A688EE8F9309A31D35410BE2BAF8DE",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=20",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  0,
+                  0,
+                  0,
+                  128,
+                  255,
+                  255,
+                  255,
+                  255,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  255,
+                  255,
+                  255,
+                  127
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554440,
+                "name": "RvaEnumsFixture+I32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663302,
+          "name": "UnsignedInt",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+U32[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554441,
+                "name": "RvaEnumsFixture+U32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108866,
+                "name": "3F8C1FF1F6E8F0F98F0774287D548014FB611BD6173453BD440C4E9A9431E1CA",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=20",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  255,
+                  255,
+                  255,
+                  127,
+                  0,
+                  0,
+                  0,
+                  128,
+                  255,
+                  255,
+                  255,
+                  255
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.u4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554441,
+                "name": "RvaEnumsFixture+U32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663303,
+          "name": "SignedLong",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+I64[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554442,
+                "name": "RvaEnumsFixture+I64"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108870,
+                "name": "A72AFE5514256C19F94C4E2766FB6B9B17FAF5AB6967E3581F892211497F7796",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=40",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  128,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  32,
+                  0,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  127
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.i8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554442,
+                "name": "RvaEnumsFixture+I64"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663304,
+          "name": "UnsignedLong",
+          "declaringType": "RvaEnumsFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RvaEnumsFixture",
+          "returnType": "System.String[]",
+          "parameters": [],
+          "locals": [
+            "RvaEnumsFixture+U64[]",
+            "System.String[]",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 33554443,
+                "name": "RvaEnumsFixture+U64"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108869,
+                "name": "60B8E0BA8B10C966757D4E461B2CD80D5F0F20BFA7726501CDD003687958397D",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=40",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "RvaEnumsFixture",
+                "initialData": [
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  1,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  32,
+                  0,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  127,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  0,
+                  128,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255,
+                  255
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777230,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 29,
+              "opcode": "br.s",
+              "operand": 56,
+              "size": 2
+            },
+            {
+              "offset": 31,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldelem.i8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "box",
+              "operand": {
+                "token": 33554443,
+                "name": "RvaEnumsFixture+U64"
+              },
+              "size": 5
+            },
+            {
+              "offset": 41,
+              "opcode": "ldstr",
+              "operand": "X",
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "ToString",
+                "declaringType": "System.Enum",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 51,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "ldlen",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "conv.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "blt.s",
+              "operand": 31,
+              "size": 2
+            },
+            {
+              "offset": 62,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554435,
+      "name": "<PrivateImplementationDetails>",
+      "attributes": "Sealed",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108865,
+          "name": "0150A92BB1212CD00516B65FDE0704614760000963874FCBB11EAA734EE87809",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=5",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            0,
+            1,
+            127,
+            128,
+            255
+          ]
+        },
+        {
+          "token": 67108866,
+          "name": "3F8C1FF1F6E8F0F98F0774287D548014FB611BD6173453BD440C4E9A9431E1CA",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=20",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            255,
+            255,
+            255,
+            127,
+            0,
+            0,
+            0,
+            128,
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "token": 67108867,
+          "name": "467A25E97FD2B7B9E93FEE50FFF7A55F37A688EE8F9309A31D35410BE2BAF8DE",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=20",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            0,
+            0,
+            0,
+            128,
+            255,
+            255,
+            255,
+            255,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            255,
+            255,
+            255,
+            127
+          ]
+        },
+        {
+          "token": 67108868,
+          "name": "556753B4DA9B39610600E40B9673205BC62E4DF0F649C9957C6282BD59AB42A0",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=10",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            0,
+            128,
+            255,
+            255,
+            0,
+            0,
+            1,
+            0,
+            255,
+            127
+          ]
+        },
+        {
+          "token": 67108869,
+          "name": "60B8E0BA8B10C966757D4E461B2CD80D5F0F20BFA7726501CDD003687958397D",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=40",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            32,
+            0,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            127,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            128,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255
+          ]
+        },
+        {
+          "token": 67108870,
+          "name": "A72AFE5514256C19F94C4E2766FB6B9B17FAF5AB6967E3581F892211497F7796",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=40",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            128,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            32,
+            0,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            255,
+            127
+          ]
+        },
+        {
+          "token": 67108871,
+          "name": "ED6204F61D7E79229CD56574815F56970D64270EEA13DDBB44FE60674A8F6122",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=10",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            0,
+            0,
+            1,
+            0,
+            255,
+            127,
+            0,
+            128,
+            255,
+            255
+          ]
+        },
+        {
+          "token": 67108872,
+          "name": "FEDABE10E61B00D9130050169D6796DD86FC72AEB4E895CC0F8EF1901BED5827",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=5",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": [
+            128,
+            255,
+            0,
+            1,
+            127
+          ]
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554436,
+      "name": "RvaEnumsFixture+I8",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108873,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+I8",
+          "type": "System.SByte",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108874,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+I8",
+          "type": "RvaEnumsFixture+I8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": -128,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108875,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+I8",
+          "type": "RvaEnumsFixture+I8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": -1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108876,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+I8",
+          "type": "RvaEnumsFixture+I8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 0,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108877,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+I8",
+          "type": "RvaEnumsFixture+I8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108878,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+I8",
+          "type": "RvaEnumsFixture+I8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 127,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554437,
+      "name": "RvaEnumsFixture+U8",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108879,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+U8",
+          "type": "System.Byte",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108880,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+U8",
+          "type": "RvaEnumsFixture+U8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 0,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108881,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+U8",
+          "type": "RvaEnumsFixture+U8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108882,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+U8",
+          "type": "RvaEnumsFixture+U8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 127,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108883,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+U8",
+          "type": "RvaEnumsFixture+U8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 128,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108884,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+U8",
+          "type": "RvaEnumsFixture+U8",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 255,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554438,
+      "name": "RvaEnumsFixture+I16",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108885,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+I16",
+          "type": "System.Int16",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108886,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+I16",
+          "type": "RvaEnumsFixture+I16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": -32768,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108887,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+I16",
+          "type": "RvaEnumsFixture+I16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": -1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108888,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+I16",
+          "type": "RvaEnumsFixture+I16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 0,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108889,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+I16",
+          "type": "RvaEnumsFixture+I16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108890,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+I16",
+          "type": "RvaEnumsFixture+I16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 32767,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554439,
+      "name": "RvaEnumsFixture+U16",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108891,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+U16",
+          "type": "System.UInt16",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108892,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+U16",
+          "type": "RvaEnumsFixture+U16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 0,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108893,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+U16",
+          "type": "RvaEnumsFixture+U16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108894,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+U16",
+          "type": "RvaEnumsFixture+U16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 32767,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108895,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+U16",
+          "type": "RvaEnumsFixture+U16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 32768,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108896,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+U16",
+          "type": "RvaEnumsFixture+U16",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 65535,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554440,
+      "name": "RvaEnumsFixture+I32",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108897,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+I32",
+          "type": "System.Int32",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108898,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+I32",
+          "type": "RvaEnumsFixture+I32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": -2147483648,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108899,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+I32",
+          "type": "RvaEnumsFixture+I32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": -1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108900,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+I32",
+          "type": "RvaEnumsFixture+I32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 0,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108901,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+I32",
+          "type": "RvaEnumsFixture+I32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108902,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+I32",
+          "type": "RvaEnumsFixture+I32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 2147483647,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554441,
+      "name": "RvaEnumsFixture+U32",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108903,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+U32",
+          "type": "System.UInt32",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108904,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+U32",
+          "type": "RvaEnumsFixture+U32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 0,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108905,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+U32",
+          "type": "RvaEnumsFixture+U32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 1,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108906,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+U32",
+          "type": "RvaEnumsFixture+U32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 2147483647,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108907,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+U32",
+          "type": "RvaEnumsFixture+U32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 2147483648,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108908,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+U32",
+          "type": "RvaEnumsFixture+U32",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": 4294967295,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554442,
+      "name": "RvaEnumsFixture+I64",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108909,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+I64",
+          "type": "System.Int64",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108910,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+I64",
+          "type": "RvaEnumsFixture+I64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "-9223372036854775808"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108911,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+I64",
+          "type": "RvaEnumsFixture+I64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "-1"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108912,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+I64",
+          "type": "RvaEnumsFixture+I64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "0"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108913,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+I64",
+          "type": "RvaEnumsFixture+I64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "9007199254740993"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108914,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+I64",
+          "type": "RvaEnumsFixture+I64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "9223372036854775807"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554443,
+      "name": "RvaEnumsFixture+U64",
+      "attributes": "NestedPrivate, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108915,
+          "name": "value__",
+          "declaringType": "RvaEnumsFixture+U64",
+          "type": "System.UInt64",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108916,
+          "name": "A",
+          "declaringType": "RvaEnumsFixture+U64",
+          "type": "RvaEnumsFixture+U64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "0"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108917,
+          "name": "B",
+          "declaringType": "RvaEnumsFixture+U64",
+          "type": "RvaEnumsFixture+U64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "9007199254740993"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108918,
+          "name": "C",
+          "declaringType": "RvaEnumsFixture+U64",
+          "type": "RvaEnumsFixture+U64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "9223372036854775807"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108919,
+          "name": "D",
+          "declaringType": "RvaEnumsFixture+U64",
+          "type": "RvaEnumsFixture+U64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "9223372036854775808"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        },
+        {
+          "token": 67108920,
+          "name": "E",
+          "declaringType": "RvaEnumsFixture+U64",
+          "type": "RvaEnumsFixture+U64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "18446744073709551615"
+          },
+          "assemblyName": "RvaEnumsFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554444,
+      "name": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=5",
+      "attributes": "NestedAssembly, ExplicitLayout, Sealed",
+      "baseType": "System.ValueType",
+      "isValueType": true,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554445,
+      "name": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=10",
+      "attributes": "NestedAssembly, ExplicitLayout, Sealed",
+      "baseType": "System.ValueType",
+      "isValueType": true,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554446,
+      "name": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=20",
+      "attributes": "NestedAssembly, ExplicitLayout, Sealed",
+      "baseType": "System.ValueType",
+      "isValueType": true,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554447,
+      "name": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=40",
+      "attributes": "NestedAssembly, ExplicitLayout, Sealed",
+      "baseType": "System.ValueType",
+      "isValueType": true,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    }
+  ]
+}

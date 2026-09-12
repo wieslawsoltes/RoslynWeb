@@ -1,0 +1,160 @@
+[
+  {
+    "method": "ArrayClone",
+    "args": [],
+    "result": "False|True|9|3|11"
+  },
+  {
+    "method": "ExplicitClone",
+    "args": [],
+    "result": 9
+  },
+  {
+    "method": "ArrayCopy",
+    "args": [],
+    "result": "1,1,2,3,4|4|4"
+  },
+  {
+    "method": "ListCopy",
+    "args": [],
+    "result": "4|12|6|6|2|4"
+  },
+  {
+    "method": "DictionaryCopy",
+    "args": [],
+    "result": "ab|12|a2|2"
+  },
+  {
+    "method": "ListEnumerator",
+    "args": [],
+    "result": "0|2|4|0|4"
+  },
+  {
+    "method": "EnumeratorMutation",
+    "args": [],
+    "result": "3|modified"
+  },
+  {
+    "method": "DefaultValues",
+    "args": [],
+    "result": "0|0|0"
+  },
+  {
+    "method": "BoxedEnumerator",
+    "args": [],
+    "result": "4|2|8|9"
+  },
+  {
+    "method": "DictionaryEnumerator",
+    "args": [],
+    "result": "0|3|6|0|6"
+  },
+  {
+    "method": "KeyEnumerator",
+    "args": [],
+    "result": "1|2"
+  },
+  {
+    "method": "TupleReference",
+    "args": [],
+    "result": "4|7|8x|True|4"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      0
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      1
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      2
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      3
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      4
+    ],
+    "result": "ArrayTypeMismatchException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      5
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      6
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      7
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      8
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      9
+    ],
+    "result": "InvalidOperationException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      10
+    ],
+    "result": "InvalidCastException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      11
+    ],
+    "result": "ArrayTypeMismatchException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      12
+    ],
+    "result": "InvalidCastException"
+  },
+  {
+    "method": "CopyError",
+    "args": [
+      13
+    ],
+    "result": "ArgumentOutOfRangeException"
+  }
+]

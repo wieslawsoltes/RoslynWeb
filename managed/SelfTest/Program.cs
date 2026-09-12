@@ -14,6 +14,20 @@ void Check(bool condition, string message) { if (!condition) throw new Exception
 JsonNode Parse(string text) => JsonNode.Parse(text)!;
 JsonNode Compile(string source, string kind = "console", string? name = null) => Parse(CompilerBridge.Compile(System.Text.Json.JsonSerializer.Serialize(new { source, outputKind = kind, assemblyName = name, includeInspection = true })));
 string Image(JsonNode result) { Check(result["success"]!.GetValue<bool>(), "compilation: " + (result["assemblyName"]?.GetValue<string>() ?? result.ToJsonString())); return result["peBase64"]!.GetValue<string>(); }
+var utf16Options = new System.Text.Json.JsonSerializerOptions { Converters = { new Utf16JsonConverter(), new Utf16CharJsonConverter() } };
+foreach (var value in new[]{ "plain", "\ud800", "\udc00", "\ud800\udc00", "\udc00x\ud800", "<>&\"\\\0\ud800" })
+{
+    var encoded = System.Text.Json.JsonSerializer.Serialize(value, utf16Options);
+    Check(System.Text.Json.JsonSerializer.Deserialize<string>(encoded, utf16Options) == value, "lossless UTF-16 string JSON round trip " + string.Join(",", value.Select(c => (int)c)));
+}
+var dictionaryJson = System.Text.Json.JsonSerializer.Serialize(new Dictionary<string,string>{{"source", "\ud800"}}, utf16Options);
+Check(System.Text.Json.JsonSerializer.Deserialize<Dictionary<string,string>>(dictionaryJson, utf16Options)!["source"] == "\ud800", "dictionary keys remain supported with lossless string values");
+Check(System.Text.Json.JsonSerializer.Deserialize<char>("\"\\ud800\"", utf16Options) == '\ud800' && System.Text.Json.JsonSerializer.Serialize('\udc00', utf16Options) == "\"\\uDC00\"", "char JSON preserves isolated UTF-16 units");
+var keyOptions = new System.Text.Json.JsonSerializerOptions(utf16Options) { DictionaryKeyPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
+Check(System.Text.Json.JsonSerializer.Serialize(new Dictionary<string,string>{{"SomeKey", "value"}}, keyOptions) == "{\"someKey\":\"value\"}", "UTF-16 converter retains dictionary key naming policy");
+var inlineMetadata = Compile("[System.Runtime.CompilerServices.InlineArray(4)] public struct Buffer { private int element; } public struct Ordinary { public int Value; }", "library", "InlineMetadata");
+Image(inlineMetadata);
+Check(inlineMetadata["inspection"]!["types"]!.AsArray().Single(t => t!["name"]!.GetValue<string>() == "Buffer")!["inlineArrayLength"]!.GetValue<int>() == 4 && inlineMetadata["inspection"]!["types"]!.AsArray().Single(t => t!["name"]!.GetValue<string>() == "Ordinary")!["inlineArrayLength"] is null, "InlineArrayAttribute length preserved without inferring type names");
 var version = Parse(CompilerBridge.Version());
 Check(version["referenceCount"]!.GetValue<int>() > 150, "embedded .NET reference pack available");
 var diagnostic = Compile("class Broken { static void Main() { int value = ; } }");

@@ -1,3 +1,5 @@
+import {genericDefinitionName} from '../il/generics.mjs';
+import {isSpanType} from '../il/spans.mjs';
 import {parseFloatBits, floatLiteralExecutionBits} from '../il/float-bits.mjs';
 import { Writer, valueTypes, op } from './binary.mjs';
 import { analyzeWasmAssembly, nativeFrameworkEnums } from './analysis.mjs';
@@ -47,7 +49,7 @@ export function compileWasm(model, options={}) {
     const index=imports.length;importKeys.set(key,index);imports.push({module:'clr',name:`s${index}`,...descriptor,typeIndex:typeIndex(descriptor.parameters,descriptor.result)});return index;
   };
   const optimization={enabled:options.optimize!==false,structuredMethods:0,dispatcherMethods:0,nativeLoops:0,directBranches:0,eliminatedDispatches:0,localTeeRewrites:0,intrinsicCalls:0,functionBodyBytes:0};
-  const ctx={hasFilters:filterPlan.nativeFilters.length>0,optimization,options,analysis,model,methods,methodMap,methodId,importService,isValueType:(name,assembly)=>isStandardValueType(name)||analysis.types.some(t=>t.isValueType&&!t.isEnum&&t.name===String(name).split('<')[0]&&(!assembly||t.assemblyName===assembly)),hasEH:methods.some(m=>m.exceptionPlan?.handlers?.length),hasCctor:new Set(methods.filter(m=>m.method.name==='.cctor').map(m=>m.method.declaringType))};
+  const ctx={hasFilters:filterPlan.nativeFilters.length>0,optimization,options,analysis,model,methods,methodMap,methodId,importService,isValueType:(name,assembly)=>isSpanType(name)||isStandardValueType(name)||analysis.types.some(t=>t.isValueType&&!t.isEnum&&t.name===genericDefinitionName(name)&&(!assembly||t.assemblyName===assembly)),hasEH:methods.some(m=>m.exceptionPlan?.handlers?.length),hasCctor:new Set(methods.filter(m=>m.method.name==='.cctor').map(m=>m.method.declaringType))};
   const bodies=methods.map(m=>emitMethod(ctx,m));
   const functionImportCount=imports.length;
   const indices=new Map(methods.map((m,i)=>[methodId(m),functionImportCount+i]));

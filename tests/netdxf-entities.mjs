@@ -6,14 +6,14 @@ import {createHash} from 'node:crypto';
 import {createRoslyn} from '../src/node/index.js';
 import {loadWasm} from '../src/wasm/index.js';
 const root=new URL('../',import.meta.url),checks=[];
-const report={testedAt:new Date().toISOString(),scope:'Selected constructors, properties, entity mutations and event accessors in the actual pinned netDxf assembly. Cloning is a separate capability probe. Complete DXF document reading and writing are not claimed for generated backends.',checks};
+const report={testedAt:new Date().toISOString(),scope:'Selected constructors, properties, entity mutations, event accessors and independent Circle/layer cloning in the actual pinned netDxf assembly. Complete DXF document reading and writing are not claimed for generated backends.',checks};
 const cases={
  LineLength:[[0,0,0,3,4,0],[1,2,3,4,6,3],[-12,7,4,2,-4,9],[0,0,0,0,0,0]],
  CircleArea:[[1],[7],[0.125],[10000]],
  ArcSweep:[[0,90],[350,10],[-30,450],[20,20]],
  TrueColorArgb:[[12,34,56],[0,0,0],[255,255,255],[255,0,127]],
  IndexColorArgb:[[1],[7],[23],[255]],
- PolylineMutation:[[]],LayerEvents:[[]],LayerAssignment:[[]],
+ PolylineMutation:[[]],LayerEvents:[[]],LayerAssignment:[[]],CircleClone:[[]],
  InvalidCircleConstructor:[[0],[-1]],InvalidCircleSetter:[[0],[-0.25]],
  InvalidLayerName:[[null],[''],['a/b'],['a|b']],InvalidLayerAssignment:[[]],InvalidLinetypeScale:[[]],InvalidVertexWidth:[[-1]],
 };
@@ -26,7 +26,7 @@ const typeOf=error=>error?.$type??error?.managedType??error?.type;
 const equal=(actual,expected,label)=>{if(typeof expected==='number')assert(Math.abs(actual-expected)<=Math.max(1,Math.abs(expected))*2e-13,`${label}: ${actual} != ${expected}`);else assert.deepEqual(actual,expected,label);};
 let compiler;
 try {
- compiler=await createRoslyn({startupTimeoutMs:90000});report.compiler=compiler.info;
+ compiler=await createRoslyn({startupTimeoutMs:120000,timeoutMs:180000});report.compiler=compiler.info;
  const bytes=new Uint8Array(await readFile(new URL('dist/netdxf/netDxf.netstandard.dll',root)));
  const provenance=JSON.parse(await readFile(new URL('vendor/netDxf/provenance.json',root),'utf8'));
  report.netDxf={repository:provenance.repository,commit:provenance.commit,sourceCount:provenance.sourceCount,assemblyBytes:bytes.length,sha256:createHash('sha256').update(bytes).digest('hex')};
@@ -54,17 +54,6 @@ try {
    }catch(error){check.error={message:error.message,diagnostics:error.diagnostics??error.details?.diagnostics??[]};console.error('FAIL',backend,method,error.message);process.exitCode=1;}finally{program?.dispose?.();}
   }
  }
- report.additionalProbes=[];
- const cloneOracle=succeeded(await compiler.invoke(assembly.assemblyId,'NetDxfEntitiesFixture','CircleClone',[])).result;
- for(const backend of ['javascript','native-wasm']) {
-  const probe={method:'CircleClone',backend,managedResult:cloneOracle};report.additionalProbes.push(probe);let program;
-  try {
-   const artifact=await compiler[backend==='javascript'?'emitJavaScript':'emitWasm'](assembly,{exports:['NetDxfEntitiesFixture.CircleClone'],strict:true,optimize:true,runtimeImport:new URL('../src/il/runtime.mjs',import.meta.url).href});
-   program=backend==='javascript'?(await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(artifact.source))).createAssembly():await loadWasm(artifact.bytes);
-   probe.result=await program.invoke('NetDxfEntitiesFixture::CircleClone',[]);equal(probe.result,cloneOracle,backend+' CircleClone');probe.supported=true;
-  }catch(error){const diagnostics=error.diagnostics??error.details?.diagnostics??[];if(!diagnostics.length)throw error;probe.supported=false;probe.diagnostics=diagnostics;probe.diagnosticCount=diagnostics.length;probe.reason='Cloning reaches ICloneable dispatch, framework enumerators and other framework APIs outside this selected entity scope.';}
-  finally{program?.dispose?.();}
-  console.log('PROBE',backend,'CircleClone',probe.supported?'supported':probe.diagnosticCount+' explicit unsupported diagnostics');
- }
+
 }catch(error){checks.push({method:'setup or managed oracle',passed:false,error:{message:error.message}});console.error(error.message);process.exitCode=1;}
 finally{await compiler?.close();report.passed=checks.length===Object.keys(cases).length*2&&checks.every(check=>check.passed);report.comparisons=checks.filter(check=>check.passed).reduce((sum,check)=>sum+check.cases,0);await writeFile(new URL('docs/netdxf-entities-verification.json',root),JSON.stringify(report,null,2)+'\n');console.log(checks.filter(check=>check.passed).length+'/'+checks.length+' entity backend checks passed; '+report.comparisons+' generated execution comparisons.');}

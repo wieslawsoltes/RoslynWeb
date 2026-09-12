@@ -2,7 +2,7 @@ import {floatNumberFromBits} from './float-bits.mjs';
 import {integerToSingle} from './integer-float.mjs';
 import { ILExecutionError, capabilities } from './capabilities.mjs';
 import { splitTypeArguments, genericDefinitionName, substituteType, substituteMetadata, matchesMethodReference } from './generics.mjs';
-import { invokeExtendedBuiltin } from './framework.mjs';
+import { invokeExtendedBuiltin, defaultExtendedValue, isExtendedInstance, isExtendedValueType } from './framework.mjs';
 import { invokeReflectionBuiltin } from './reflection.mjs';
 import { invokeEmitBuiltin, isEmitField, reflectedOpcode } from './reflection-emit.mjs';
 import { emitTypeBases } from './reflection-types.mjs';
@@ -10,6 +10,8 @@ import { invokeCollectionsBuiltin, isCollectionsInstance } from './collections-e
 import { invokeIoBuiltin, ioTypeBases } from './io.mjs';
 import { invokeEventBuiltin, isEventField, eventStaticField, isEventHandlerType, delegateEquals, delegateHashCode } from './events.mjs';
 import { invokeCadBuiltin, defaultCadValue, formatCadValue } from './cad-bcl.mjs';
+import {compositeCadFormat} from './cad-culture.mjs';
+import {defaultSpanValue, invokeSpanBuiltin, initializeInlineArray, managedArrayAddress} from './spans.mjs';
 import { invokeJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isPointer, allocateMemory, releaseMemory, pointerBinary, readMemory, writeMemory, copyMemory, initializeMemory } from './memory.mjs';
 import { isStandardValueType, isStandardValueInstance, defaultStandardValue, decimalFromJS, standardValueFromJS, standardValueToJS, boxStandardValue, unboxStandardValue, standardStaticField, formatStandardValue, invokeStandardValueBuiltin } from './standard-values.mjs';
@@ -307,6 +309,10 @@ export class ILRuntime {
 
   defaultValue(type) {
     const name = trimType(type);
+    const extended = defaultExtendedValue(this,name);
+    if (extended !== undefined) return extended;
+    const span = defaultSpanValue(name);
+    if (span !== undefined) return span;
     const cad = defaultCadValue(name);
     if (cad !== undefined) return cad;
     const standard = defaultStandardValue(this, name);
@@ -360,6 +366,14 @@ export class ILRuntime {
   context(value, method) {
     if (!method?.$typeArguments?.length && !method?.$methodArguments?.length) return value;
     const result = substituteMetadata(value, method.$typeArguments, method.$methodArguments);
+    // A MethodSpec owns its signature's !!n parameters. Resolve its generic
+    // arguments in the caller context, then substitute that callee signature.
+    if (value && typeof value === 'object' && Array.isArray(value.genericArguments) && Array.isArray(value.parameters)) {
+      const ownerArguments=splitTypeArguments(result.declaringType);
+      const typeArguments=ownerArguments.length?ownerArguments:method.$typeArguments;
+      result.parameters=substituteMetadata(value.parameters,typeArguments,result.genericArguments);
+      result.returnType=substituteType(value.returnType,typeArguments,result.genericArguments);
+    }
     // A MethodDef/FieldDef owner inside its own generic type is encoded as the open definition.
     if (result && typeof result === 'object' && result.declaringType === method.$definitionType && method.$typeArguments?.length) result.declaringType = method.declaringType;
     return result;
@@ -546,6 +560,10 @@ export class ILRuntime {
 
   allocate(typeName, initialize = true) {
     const name = trimType(typeName);
+    const extended = defaultExtendedValue(this,name);
+    if (extended !== undefined) return extended;
+    const span = defaultSpanValue(name);
+    if (span !== undefined) return span;
     const cad = defaultCadValue(name);
     if (cad !== undefined) return cad;
     const standard = defaultStandardValue(this, name);
@@ -559,6 +577,7 @@ export class ILRuntime {
       for (const field of current.fields ?? []) if (!field.isStatic) object.fields[fieldKey({ ...field, declaringType: field.declaringType ?? current.name })] = this.defaultValue(field.type);
       current = this.closeType(current.baseType);
     }
+    initializeInlineArray(this,object,definition);
     return object;
   }
 
@@ -601,6 +620,8 @@ export class ILRuntime {
     if (standard !== undefined) return standard;
     const collection = isCollectionsInstance(this, value, target);
     if (collection !== undefined) return collection;
+    const extended = isExtendedInstance(this,value,target);
+    if (extended !== undefined) return extended;
     if ((value.$array || value.$items) && /^System\.Collections\.Generic\.IReadOnly(?:List|Collection)`1</.test(target)) {
       const element=value.elementType ?? splitTypeArguments(value.$type)[0], expected=splitTypeArguments(target)[0];
       if (element === expected) return true;
@@ -621,7 +642,7 @@ export class ILRuntime {
   box(value, type) { const standard = boxStandardValue(this, value, trimType(type)); return standard !== undefined ? standard : { $type: trimType(type), $box: true, value: copyValue(value) }; }
   unbox(value, type, any = false) {
     if (any) { const standard = unboxStandardValue(this, value, trimType(type)); if (standard !== undefined) return standard; }
-    if (!isNumericType(type) && !isStandardValueType(type) && !this.types.get(trimType(type))?.isValueType && any) return this.cast(value, type, true);
+    if (!isNumericType(type) && !isStandardValueType(type) && !isExtendedValueType(type) && !this.types.get(trimType(type))?.isValueType && any) return this.cast(value, type, true);
     nullCheck(value);
     if (!value.$box || value.$type !== trimType(type)) throw managedError('System.InvalidCastException', 'Specified cast is not valid.');
     return any ? copyValue(value.value) : address(() => value.value, item => { value.value = copyValue(item); }, type);
@@ -657,7 +678,7 @@ export class ILRuntime {
       else { object.fields ??= Object.create(null); object.fields[key] = this.coerce(item, ref.type); }
     };
     if (operation.startsWith('st')) set(value);
-    else frame.stack.push(operation.endsWith('a') ? address(get, set, ref.type) : copyValue(get()));
+    else frame.stack.push(operation.endsWith('a') ? {...address(get, set, ref.type),$location:{owner:isStatic?this.staticFields:object,key}} : copyValue(get()));
   }
 
   newArray(type, length) {
@@ -709,7 +730,7 @@ export class ILRuntime {
 
   arrayAddress(array, index, type) {
     const n = this.arrayIndex(array, index);
-    return address(() => array.items[n], value => { array.items[n] = this.coerce(value, array.elementType); }, type ?? array.elementType);
+    return managedArrayAddress(this,array,n,type??array.elementType);
   }
 
   indirectLoad(ref, opcode = 'ldobj', type) {
@@ -731,7 +752,7 @@ export class ILRuntime {
     const list = argument ? frame.args : frame.locals;
     const local = frame.method.locals?.[index];
     const type = argument ? frame.method.parameters?.[index - (frame.method.isStatic ? 0 : 1)]?.type : local?.type ?? local;
-    return address(() => list[index], value => { list[index] = this.coerce(value, type); }, type);
+    return {...address(() => list[index], value => { list[index] = this.coerce(value, type); }, type),$location:{owner:list,key:index}};
   }
 
   functionPointer(frame, ref, virtual, self) {
@@ -925,6 +946,8 @@ export class ILRuntime {
   }
 
   callBuiltin(ref, args, self, kind) {
+    const span=invokeSpanBuiltin(this,ref,args,self,kind);
+    if(span.handled)return span;
     const cad = invokeCadBuiltin(this, ref, args, self, kind);
     if (cad.handled) return cad;
     const event = invokeEventBuiltin(this, ref, args, self);
@@ -959,7 +982,7 @@ export class ILRuntime {
     }
     if (name === '.ctor' && type === 'System.Object') return done();
     if (type === 'System.Console' && ['Write', 'WriteLine'].includes(name)) {
-      const text = args.length > 1 && typeof args[0] === 'string' ? this.compositeFormat(args[0], args.slice(1)) : args.map((value, i) => {
+      const text = args.length > 1 && typeof args[0] === 'string' ? this.compositeFormat(args[0], (ref.parameters?.at(-1)?.type ?? ref.parameters?.at(-1)) === 'System.Object[]' ? args[1]?.items ?? null : args.slice(1)) : args.map((value, i) => {
         const t = ref.parameters?.[i]?.type;
         return t === 'System.Char[]' && value?.$array ? value.items.map(c => String.fromCharCode(Number(raw(c)))).join('') : this.format(value, undefined, t);
       }).join('');
@@ -1141,20 +1164,23 @@ export class ILRuntime {
 
   initializeArray(array, data) {
     const bytes = Uint8Array.from(data), view = new DataView(bytes.buffer);
-    const reader = { 'System.Byte': ['getUint8', 1], 'System.SByte': ['getInt8', 1], 'System.Boolean': ['getUint8', 1], 'System.Int16': ['getInt16', 2], 'System.UInt16': ['getUint16', 2], 'System.Char': ['getUint16', 2], 'System.Int32': ['getInt32', 4], 'System.UInt32': ['getUint32', 4], 'System.Int64': ['getBigInt64', 8], 'System.UInt64': ['getBigUint64', 8], 'System.Single': ['getFloat32', 4], 'System.Double': ['getFloat64', 8] }[array.elementType];
+    const definition = this.closeType(array.elementType);
+    const elementType = definition?.isEnum ? definition.fields?.find(field => field.name === 'value__')?.type : array.elementType;
+    const reader = { 'System.Byte': ['getUint8', 1], 'System.SByte': ['getInt8', 1], 'System.Boolean': ['getUint8', 1], 'System.Int16': ['getInt16', 2], 'System.UInt16': ['getUint16', 2], 'System.Char': ['getUint16', 2], 'System.Int32': ['getInt32', 4], 'System.UInt32': ['getUint32', 4], 'System.Int64': ['getBigInt64', 8], 'System.UInt64': ['getBigUint64', 8], 'System.Single': ['getFloat32', 4], 'System.Double': ['getFloat64', 8] }[elementType];
     if (!reader) throw limitation(`RVA array initialization of ${array.elementType} is unsupported.`);
     if (bytes.length < array.items.length * reader[1]) throw managedError('System.ArgumentException', 'Field data is too small for the destination array.');
-    for (let i = 0; i < array.items.length; i++) array.items[i] = fromJS(view[reader[0]](i * reader[1], true), array.elementType);
+    for (let i = 0; i < array.items.length; i++) {
+      const offset = i * reader[1];
+      // RVA initialization copies bits. Preserve signaling NaNs and payloads
+      // through subsequent BitConverter calls, as with ld.r4/ld.r8 literals.
+      array.items[i] = elementType === 'System.Single' ? floatLiteral('r4', BigInt(view.getUint32(offset, true)))
+        : elementType === 'System.Double' ? floatLiteral('r8', view.getBigUint64(offset, true))
+        : fromJS(view[reader[0]](offset, true), elementType);
+    }
   }
 
   compositeFormat(format, values) {
-    if (values.length === 1 && values[0]?.$array) values = values[0].items;
-    return String(format).replace(/\{\{|\}\}|\{(\d+)(?:,(-?\d+))?(?::([^{}]+))?\}/g, (all, index, alignment, specifier) => {
-      if (all === '{{') return '{'; if (all === '}}') return '}';
-      if (Number(index) >= values.length) throw managedError('System.FormatException', 'Index must be within the size of the argument list.');
-      const text = this.format(values[Number(index)], specifier), width = Number(alignment ?? 0);
-      return width < 0 ? text.padEnd(-width) : text.padStart(width);
-    });
+    return compositeCadFormat(this, format, values, null);
   }
 }
 

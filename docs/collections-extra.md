@@ -29,6 +29,23 @@ No locale database is bundled for collation. Default string ordering is rejected
 
 Serialization callbacks, synchronized wrappers, concurrent collections, native shared-memory behavior, LinkedListNode.ValueRef, unsupported collection-interface mutators and unlisted overloads remain outside this addition. Supplying a comparer does not enable arbitrary framework methods used by that comparer: those methods must also pass ordinary JavaScript compatibility analysis.
 
+## Copying, cloning and generated Wasm
+
+The additional services in `src/il/framework.mjs` are shared by generated JavaScript and native Wasm. Native Wasm executes the selected managed method bodies as Wasm and imports these finite framework services; managed .NET Wasm remains the reference implementation.
+
+| Surface | Supported behavior |
+| --- | --- |
+| `Array.Clone()` and `ICloneable.Clone()` | A distinct array with copied value elements and shared reference elements. Array dimensions and lower bounds are preserved. Linked managed implementations, including explicit implementations inherited from a base class, execute their actual `Clone` methods. String cloning returns the same immutable string. |
+| `Array.Copy` / `CopyTo` | Three-argument and five-argument `Int32` `Copy` overloads; instance `CopyTo(Array, Int32/Int64)`. Overlapping copies preserve source values. Supported primitive widening, reference assignment, boxing and unboxing are checked; invalid ranks, indices, lengths and element conversions produce managed exceptions. `CopyTo` requires one-dimensional arrays. |
+| `List<T>.CopyTo` | Whole-list, destination-index and source-index/destination-index/count overloads, with copied value elements. Supported generic and nongeneric collection interfaces dispatch to the corresponding array or collection implementation. |
+| Dictionary copies and views | Key/value views copy into compatible arrays; generic dictionary collection copying produces `KeyValuePair<TKey,TValue>` elements. Supported collection casts and `IReadOnlyCollection<T>.Count` preserve element types and applicable reference covariance. |
+| Reference `Tuple<T1,…,T7>` | Constructors, `Item1` through the applicable final getter, and `Tuple.Create` for one through seven items. Tuple identity remains a reference; storing or retrieving a value-type item copies its value. |
+| Framework value records | `KeyValuePair<TKey,TValue>`, `List<T>.Enumerator`, dictionary enumerators and key/value enumerators, and `HashSet<T>.Enumerator` have explicit native-Wasm value representations. Defaults, assignments, boxing/unboxing and returned values preserve their supported struct semantics. Enumerator copies have independent positions; boxed enumerators retain their own mutable state. |
+
+This does not add reference-tuple structural equality, comparison, formatting, `ITuple`, eight-item/rest tuples, arbitrary array conversion rules, every collection interface mutator, or every framework enumerator type. Compatibility admission is per signature, and a supported clone entry point must still have a supported dependency closure. No generic deep-copy operation substitutes for a linked object's `Clone` method.
+
+Framework services also call managed code implicitly. Both generated backends retain required inherited enumeration methods and formatting callbacks, including `ToString(string, IFormatProvider)`. Native analysis closes generic implementations using encountered type instantiations and updates virtual targets as the dependency closure grows. It shares conservative dispatch plans by closed signature to avoid repeated graph walks; it does not remove unsupported virtual implementations merely to make an export pass compatibility checks.
+
 ## Verification and reproduction
 
 `tests/il-collections-fixture.cs` is real C# compiled and inspected by Roslyn into the checked-in `tests/il-collections-fixture.json`. The native .NET 10.0.0 baseline records **34 cases** for ordering, custom/delegate comparison, exact integers, view mutation, ownership, error types, interface casts, boxed enumeration, live values and enumerator invalidation. `tests/il-collections.test.mjs` runs those same methods as JavaScript and includes five additional compatibility/resource/dispatch checks, for **39 tests**.
@@ -46,5 +63,16 @@ dotnet managed/SelfTest/bin/Release/net10.0/SelfTest.dll \
   --inspect tests/il-collections-fixture.cs tests/il-collections-fixture.json
 node --test tests/il-collections.test.mjs
 ```
+
+`tests/collection-copy-fixture.cs` adds **26 managed .NET-Wasm oracle scenarios**, compared in three JavaScript modes and two native-Wasm modes: **130 comparisons** covering shallow/value copies, inherited explicit clones, tuple identity, collection views, independent and boxed enumerators, defaults, overlap, widening, boxing/unboxing and exceptions. `tests/enumerable-inheritance-fixture.cs` adds three scenarios covering inherited sources, inherited enumerator callbacks and generic inherited sources in the same five modes. The netDxf entity integration now requires `CircleClone` to execute successfully on both generated backends and verifies that changing the clone's radius and layer does not change the original.
+
+```sh
+node tests/collection-copy-integration.mjs
+node tests/enumerable-inheritance-integration.mjs
+node --test tests/collection-copy.test.mjs tests/enumerable-inheritance.test.mjs
+node tests/netdxf-entities.mjs
+```
+
+The integration scripts compile their C# fixtures through the production Roslyn/.NET-Wasm host. Add `--update` to either collection-copy or enumerable-inheritance integration command to regenerate its checked-in inspection and oracle data. The netDxf command requires the assets produced by `npm run build:netdxf`.
 
 The baseline captures tested behavior, not a proof of complete BCL or collection overload parity.

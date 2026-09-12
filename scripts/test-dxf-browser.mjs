@@ -144,6 +144,32 @@ try {
     await page.evaluate(async () => { const r=window.dxfLab.renderer; r.setScene(window.dxfLab.document.scene); r.render(); await r.device.queue.onSubmittedWorkDone(); });
   });
 
+  await test('Actual WebGPU pattern pixels preserve dash gaps, hatch holes and clipped dot markers', async () => {
+    const inspected = await page.evaluate(async () => {
+      const renderer = window.dxfLab.renderer;
+      const ring = (x0,y0,x1,y1) => [[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
+      renderer.setScene({ version: 1, entities: [
+        { type: 'HATCH', layer: 'Pattern', color: [0,1,0,1], loops: [ring(-50,-25,50,25),ring(-10,-12,10,12)], pattern: { lines: [{ origin: [0,0], direction: [1,0], offset: [0,5], dashes: [6,-4] }] } },
+        { type: 'HATCH', layer: 'Dots', color: [1,0,0,1], loops: [ring(70,-25,110,25),ring(85,-10,95,10)], pattern: { lines: [{ origin: [70,0], direction: [1,0], offset: [0,5], dashes: [0,-5] }] } },
+      ] }, { hatchDotSize: 1.5 });
+      renderer.fit(); renderer.render(); await renderer.device.queue.onSubmittedWorkDone();
+      const points = {};
+      for (const [name,x,y] of [['dash',-37,0],['gap',-32,0],['hole',3,0],['dot',80,0],['dotHole',90,0]]) points[name] = renderer.worldToScreen(x,y);
+      return { stats: renderer.stats, issues: renderer.geometry.issues, points };
+    });
+    assert.deepEqual(inspected.issues, []); assert(inspected.stats.lineSegments > 20); assert(inspected.stats.triangles > 20);
+    const observed = pixels(await page.locator('#drawing').screenshot({ path: resolve(artifactDirectory,'hatch-patterns.png') }));
+    const sample = (name,predicate) => { const p = inspected.points[name]; return [-1,0,1].some(x => [-1,0,1].some(y => predicate(...observed.rgbAt(p.x+x,p.y+y)))); };
+    const green = (r,g,b) => g > 180 && r < 30 && b < 30, red = (r,g,b) => r > 180 && g < 30 && b < 30;
+    assert(sample('dash',green), 'A positive dash must produce green GPU pixels.');
+    assert(!sample('gap',green), 'The negative dash gap must remain empty.');
+    assert(!sample('hole',green), 'Pattern lines must not cross a hatch island.');
+    assert(sample('dot',red), 'A zero-length dash must produce a visible GPU dot marker.');
+    assert(!sample('dotHole',red), 'Dot markers must not appear inside hatch holes.');
+    report.hatchPatterns = { stats: inspected.stats, screenshot: observed };
+    await page.evaluate(async () => { const r = window.dxfLab.renderer; r.setScene(window.dxfLab.document.scene); r.fit(); r.render(); await r.device.queue.onSubmittedWorkDone(); });
+  });
+
   await test('Zoom, pan, fit and layer controls change the real renderer state', async () => {
     const initial = await page.evaluate(() => ({ ...window.dxfLab.renderer.camera }));
     await page.locator('#zoom-in').click();

@@ -1,6 +1,6 @@
 {
-  "testedAt": "2026-09-12T06:40:50.364Z",
-  "scope": "Selected constructors, properties, entity mutations and event accessors in the actual pinned netDxf assembly. Cloning is a separate capability probe. Complete DXF document reading and writing are not claimed for generated backends.",
+  "testedAt": "2026-09-12T08:52:05.233Z",
+  "scope": "Selected constructors, properties, entity mutations, event accessors and independent Circle/layer cloning in the actual pinned netDxf assembly. Complete DXF document reading and writing are not claimed for generated backends.",
   "checks": [
     {
       "method": "LineLength",
@@ -11,7 +11,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 202,
-      "compileMilliseconds": 4667.859272,
+      "compileMilliseconds": 5237.900411,
       "results": [
         {
           "args": [
@@ -216,7 +216,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 98,
-      "compileMilliseconds": 4133.206579,
+      "compileMilliseconds": 4363.584545,
       "results": [
         {
           "args": [
@@ -421,7 +421,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 196,
-      "compileMilliseconds": 553.4096639999989,
+      "compileMilliseconds": 629.2012799999993,
       "results": [
         {
           "args": [
@@ -546,7 +546,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 92,
-      "compileMilliseconds": 688.8225810000004,
+      "compileMilliseconds": 769.7927209999998,
       "results": [
         {
           "args": [
@@ -671,7 +671,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 198,
-      "compileMilliseconds": 542.9685659999977,
+      "compileMilliseconds": 555.0220439999994,
       "results": [
         {
           "args": [
@@ -812,7 +812,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 95,
-      "compileMilliseconds": 675.5153770000034,
+      "compileMilliseconds": 752.5407240000022,
       "results": [
         {
           "args": [
@@ -953,7 +953,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 8,
-      "compileMilliseconds": 385.84966200000054,
+      "compileMilliseconds": 427.08096099999966,
       "results": [
         {
           "args": [
@@ -1002,7 +1002,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 6,
-      "compileMilliseconds": 619.8744780000015,
+      "compileMilliseconds": 667.005247000001,
       "results": [
         {
           "args": [
@@ -1051,7 +1051,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 7,
-      "compileMilliseconds": 412.1384399999988,
+      "compileMilliseconds": 394.1798140000028,
       "results": [
         {
           "args": [
@@ -1092,7 +1092,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 5,
-      "compileMilliseconds": 707.8967230000017,
+      "compileMilliseconds": 698.1229649999987,
       "results": [
         {
           "args": [
@@ -1133,7 +1133,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 209,
-      "compileMilliseconds": 576.1183420000016,
+      "compileMilliseconds": 919.8422360000004,
       "results": [
         {
           "args": [],
@@ -1150,8 +1150,8 @@
       "passed": true,
       "cases": 1,
       "diagnosticCount": 0,
-      "selectedMethods": 111,
-      "compileMilliseconds": 825.3872230000015,
+      "selectedMethods": 115,
+      "compileMilliseconds": 1411.0354449999977,
       "results": [
         {
           "args": [],
@@ -1169,7 +1169,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 205,
-      "compileMilliseconds": 512.4866010000005,
+      "compileMilliseconds": 803.4823260000012,
       "results": [
         {
           "args": [],
@@ -1187,7 +1187,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 102,
-      "compileMilliseconds": 720.1245109999982,
+      "compileMilliseconds": 1203.188807999999,
       "results": [
         {
           "args": [],
@@ -1205,7 +1205,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 211,
-      "compileMilliseconds": 493.63147299999764,
+      "compileMilliseconds": 651.5412099999994,
       "results": [
         {
           "args": [],
@@ -1223,12 +1223,48 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 102,
-      "compileMilliseconds": 829.2532829999982,
+      "compileMilliseconds": 760.7208129999999,
       "results": [
         {
           "args": [],
           "result": 7,
           "actual": 7
+        }
+      ]
+    },
+    {
+      "method": "CircleClone",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 1567,
+      "compileMilliseconds": 3847.1744980000003,
+      "results": [
+        {
+          "args": [],
+          "result": 474,
+          "actual": 474
+        }
+      ]
+    },
+    {
+      "method": "CircleClone",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 1472,
+      "compileMilliseconds": 9767.274906999999,
+      "results": [
+        {
+          "args": [],
+          "result": 474,
+          "actual": 474
         }
       ]
     },
@@ -1241,7 +1277,7 @@
       "cases": 2,
       "diagnosticCount": 0,
       "selectedMethods": 195,
-      "compileMilliseconds": 616.1245210000016,
+      "compileMilliseconds": 556.6584719999955,
       "results": [
         {
           "args": [
@@ -1268,7 +1304,7 @@
       "cases": 2,
       "diagnosticCount": 0,
       "selectedMethods": 91,
-      "compileMilliseconds": 1149.120945999999,
+      "compileMilliseconds": 774.2465650000013,
       "results": [
         {
           "args": [
@@ -1295,7 +1331,7 @@
       "cases": 2,
       "diagnosticCount": 0,
       "selectedMethods": 198,
-      "compileMilliseconds": 559.9880739999971,
+      "compileMilliseconds": 540.0267810000005,
       "results": [
         {
           "args": [
@@ -1322,7 +1358,7 @@
       "cases": 2,
       "diagnosticCount": 0,
       "selectedMethods": 94,
-      "compileMilliseconds": 686.994580999999,
+      "compileMilliseconds": 756.5486119999987,
       "results": [
         {
           "args": [
@@ -1349,7 +1385,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 183,
-      "compileMilliseconds": 481.02704300000187,
+      "compileMilliseconds": 528.790700000005,
       "results": [
         {
           "args": [
@@ -1390,7 +1426,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 68,
-      "compileMilliseconds": 658.2186339999971,
+      "compileMilliseconds": 694.0855880000017,
       "results": [
         {
           "args": [
@@ -1431,7 +1467,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 199,
-      "compileMilliseconds": 483.05197000000044,
+      "compileMilliseconds": 524.0675129999945,
       "results": [
         {
           "args": [],
@@ -1449,7 +1485,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 96,
-      "compileMilliseconds": 809.3190350000004,
+      "compileMilliseconds": 717.4932110000009,
       "results": [
         {
           "args": [],
@@ -1467,7 +1503,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 197,
-      "compileMilliseconds": 557.0435030000008,
+      "compileMilliseconds": 515.6257079999996,
       "results": [
         {
           "args": [],
@@ -1485,7 +1521,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 93,
-      "compileMilliseconds": 1006.3289220000006,
+      "compileMilliseconds": 668.5700179999985,
       "results": [
         {
           "args": [],
@@ -1503,7 +1539,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 8,
-      "compileMilliseconds": 297.9044470000008,
+      "compileMilliseconds": 322.802334,
       "results": [
         {
           "args": [
@@ -1523,7 +1559,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 8,
-      "compileMilliseconds": 781.7968220000039,
+      "compileMilliseconds": 604.6286620000028,
       "results": [
         {
           "args": [
@@ -1553,2326 +1589,6 @@
     "assemblyBytes": 6144,
     "diagnostics": []
   },
-  "additionalProbes": [
-    {
-      "method": "CircleClone",
-      "backend": "javascript",
-      "managedResult": 474,
-      "supported": false,
-      "diagnostics": [
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 127,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 132,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 137,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 151,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToString()",
-          "token": 100663336,
-          "offset": 163,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.MathHelper::RoundToNearest(System.Double,System.Double)",
-          "token": 100663547,
-          "offset": 4,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Math::Round(System.Double,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.MathHelper::ArcFromBulge(netDxf.Vector2,netDxf.Vector2,System.Double)",
-          "token": 100663548,
-          "offset": 289,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::.ctor(!0,!1,!2,!3)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix2::ToString()",
-          "token": 100663590,
-          "offset": 5,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix2::ToString()",
-          "token": 100663590,
-          "offset": 10,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix2::ToString()",
-          "token": 100663590,
-          "offset": 15,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix2::ToString()",
-          "token": 100663590,
-          "offset": 32,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Environment::get_NewLine()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 5,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 10,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 15,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 32,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Environment::get_NewLine()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 128,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 145,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Environment::get_NewLine()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 241,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix3::ToString()",
-          "token": 100663644,
-          "offset": 344,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 5,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 10,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 15,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 32,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Environment::get_NewLine()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 148,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 165,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Environment::get_NewLine()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 281,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 298,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Environment::get_NewLine()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 414,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Matrix4::ToString()",
-          "token": 100663714,
-          "offset": 537,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Transparency::ToString()",
-          "token": 100663740,
-          "offset": 37,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector2::ToString()",
-          "token": 100663801,
-          "offset": 32,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector2::ToString()",
-          "token": 100663801,
-          "offset": 37,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector2::ToString()",
-          "token": 100663801,
-          "offset": 42,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector3::ToString()",
-          "token": 100663862,
-          "offset": 86,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector3::ToString()",
-          "token": 100663862,
-          "offset": 91,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector3::ToString()",
-          "token": 100663862,
-          "offset": 96,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector3::ToString()",
-          "token": 100663862,
-          "offset": 110,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector4::ToString()",
-          "token": 100663917,
-          "offset": 106,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector4::ToString()",
-          "token": 100663917,
-          "offset": 111,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector4::ToString()",
-          "token": 100663917,
-          "offset": 116,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Vector4::ToString()",
-          "token": 100663917,
-          "offset": 130,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.XDataRecord::.ctor(netDxf.XDataCode,System.Object)",
-          "token": 100663927,
-          "offset": 402,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Int64::TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Int64&)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 93,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Math::Round(System.Double,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 104,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.IFormatProvider,System.String,System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 165,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Math::Round(System.Double,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 176,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.IFormatProvider,System.String,System.Object,System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 279,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Math::Round(System.Double,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 290,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.IFormatProvider,System.String,System.Object,System.Object,System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 311,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.String::.ctor(System.Char,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "offset": 410,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.IFormatProvider,System.String,System.Object,System.Object,System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "offset": 243,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "offset": 487,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "offset": 608,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "offset": 710,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "offset": 258,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "offset": 389,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "offset": 486,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Units.LinearUnitFormat::GetFraction(System.Double,System.Int32,System.Int32&,System.Int32&)",
-          "token": 100663945,
-          "offset": 9,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Convert::ToInt32(System.Double)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Tables.ShapeStyle::.ctor(System.String,System.String,System.Double,System.Double,System.Double)",
-          "token": 100664324,
-          "offset": 33,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.IO.Path::GetInvalidPathChars()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Objects.ImageDefinition::.ctor(System.String,System.String,System.Int32,System.Double,System.Int32,System.Double,netDxf.Units.ImageResolutionUnits)",
-          "token": 100664516,
-          "offset": 33,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.IO.Path::GetInvalidPathChars()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Objects.UnderlayDefinition::.ctor(System.String,System.String,netDxf.Objects.UnderlayType)",
-          "token": 100664730,
-          "offset": 33,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.IO.Path::GetInvalidPathChars()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.AlignedDimension::Clone()",
-          "token": 100665501,
-          "offset": 361,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Angular2LineDimension::Clone()",
-          "token": 100665528,
-          "offset": 397,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Angular3PointDimension::Clone()",
-          "token": 100665548,
-          "offset": 373,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.ArcLengthDimension::Clone()",
-          "token": 100665592,
-          "offset": 385,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.DiametricDimension::Clone()",
-          "token": 100665750,
-          "offset": 349,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.DimensionBlock::FormatDimensionText(System.Double,netDxf.Entities.DimensionType,System.String,netDxf.Tables.DimensionStyle,netDxf.Blocks.Block)",
-          "token": 100665815,
-          "offset": 528,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.DimensionBlock::FormatDimensionText(System.Double,netDxf.Entities.DimensionType,System.String,netDxf.Tables.DimensionStyle,netDxf.Blocks.Block)",
-          "token": 100665815,
-          "offset": 555,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Leader::Clone()",
-          "token": 100666129,
-          "offset": 324,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.LinearDimension::Clone()",
-          "token": 100666168,
-          "offset": 373,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "offset": 83,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Array::CopyTo(System.Array,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.MeshEdge::ToString()",
-          "token": 100666328,
-          "offset": 100,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Threading.Thread::get_CurrentCulture()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.MeshEdge::ToString()",
-          "token": 100666328,
-          "offset": 105,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.CultureInfo::get_TextInfo()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.MeshEdge::ToString()",
-          "token": 100666328,
-          "offset": 110,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Globalization.TextInfo::get_ListSeparator()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.MeshEdge::ToString()",
-          "token": 100666328,
-          "offset": 124,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.OrdinateDimension::Clone()",
-          "token": 100666353,
-          "offset": 373,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "offset": 412,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item1()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "offset": 420,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item2()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "offset": 428,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item3()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "offset": 435,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item4()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.RadialDimension::Clone()",
-          "token": 100666531,
-          "offset": 349,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.ICloneable::Clone()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Spline::NurbsEvaluator(netDxf.Vector3[],System.Double[],System.Double[],System.Int32,System.Boolean,System.Boolean,System.Int32)",
-          "token": 100666617,
-          "offset": 263,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Array::CopyTo(System.Array,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.Spline::NurbsEvaluator(netDxf.Vector3[],System.Double[],System.Double[],System.Int32,System.Boolean,System.Boolean,System.Int32)",
-          "token": 100666617,
-          "offset": 271,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Array::CopyTo(System.Array,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan(!!0&,System.Int32)",
-          "token": 100667418,
-          "offset": 1,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Runtime.CompilerServices.Unsafe::AsRef(!!0&)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan(!!0&,System.Int32)",
-          "token": 100667418,
-          "offset": 6,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Runtime.CompilerServices.Unsafe::As(!!0&)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan(!!0&,System.Int32)",
-          "token": 100667418,
-          "offset": 12,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Runtime.InteropServices.MemoryMarshal::CreateReadOnlySpan(!!0&,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "<PrivateImplementationDetails>::InlineArrayElementRef(!!0&,System.Int32)",
-          "token": 100667419,
-          "offset": 1,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Runtime.CompilerServices.Unsafe::As(!!0&)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "<PrivateImplementationDetails>::InlineArrayElementRef(!!0&,System.Int32)",
-          "token": 100667419,
-          "offset": 7,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Runtime.CompilerServices.Unsafe::Add(!!0&,System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "offset": 251,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item1()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "offset": 259,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item2()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "offset": 267,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item3()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "offset": 274,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item4()'."
-        }
-      ],
-      "diagnosticCount": 92,
-      "reason": "Cloning reaches ICloneable dispatch, framework enumerators and other framework APIs outside this selected entity scope."
-    },
-    {
-      "method": "CircleClone",
-      "backend": "native-wasm",
-      "managedResult": 474,
-      "supported": false,
-      "diagnostics": [
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MLineVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.MLine::Clone()",
-          "token": 100666203,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.Int32[]>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MeshEdge>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::Clone()",
-          "token": 100666476,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.AlignedDimension::Clone()",
-          "token": 100665501,
-          "assembly": "netDxf.netstandard",
-          "offset": 361,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.XData::Clone()",
-          "token": 100663924,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Angular2LineDimension::Clone()",
-          "token": 100665528,
-          "assembly": "netDxf.netstandard",
-          "offset": 397,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Angular3PointDimension::Clone()",
-          "token": 100665548,
-          "assembly": "netDxf.netstandard",
-          "offset": 373,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.ArcLengthDimension::Clone()",
-          "token": 100665592,
-          "assembly": "netDxf.netstandard",
-          "offset": 385,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.DiametricDimension::Clone()",
-          "token": 100665750,
-          "assembly": "netDxf.netstandard",
-          "offset": 349,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchPatternLineDefinition>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchPattern::Clone()",
-          "token": 100665997,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.IEnumerator`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath+Edge>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchBoundaryPath::Clone()",
-          "token": 100665949,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Leader::Clone()",
-          "token": 100666129,
-          "assembly": "netDxf.netstandard",
-          "offset": 324,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.LinearDimension::Clone()",
-          "token": 100666168,
-          "assembly": "netDxf.netstandard",
-          "offset": 373,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MLineVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.MLine::Clone()",
-          "token": 100666203,
-          "assembly": "netDxf.netstandard",
-          "offset": 269,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MLineVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.MLine::Clone()",
-          "token": 100666203,
-          "assembly": "netDxf.netstandard",
-          "offset": 218,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.Int32[]>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "assembly": "netDxf.netstandard",
-          "offset": 109,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MeshEdge>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "assembly": "netDxf.netstandard",
-          "offset": 201,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.Int32[]>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "assembly": "netDxf.netstandard",
-          "offset": 54,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Array::CopyTo(System.Array,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "assembly": "netDxf.netstandard",
-          "offset": 83,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.MeshEdge>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Mesh::Clone()",
-          "token": 100666319,
-          "assembly": "netDxf.netstandard",
-          "offset": 152,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.OrdinateDimension::Clone()",
-          "token": 100666353,
-          "assembly": "netDxf.netstandard",
-          "offset": 373,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::Clone()",
-          "token": 100666476,
-          "assembly": "netDxf.netstandard",
-          "offset": 235,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::Clone()",
-          "token": 100666476,
-          "assembly": "netDxf.netstandard",
-          "offset": 184,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.ICloneable::Clone()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.RadialDimension::Clone()",
-          "token": 100666531,
-          "assembly": "netDxf.netstandard",
-          "offset": 349,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Viewport::set_ClippingBoundary(netDxf.Entities.EntityObject)",
-          "token": 100666843,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.XData::Clone()",
-          "token": 100663924,
-          "assembly": "netDxf.netstandard",
-          "offset": 85,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.XData::Clone()",
-          "token": 100663924,
-          "assembly": "netDxf.netstandard",
-          "offset": 28,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchPatternLineDefinition>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchPattern::Clone()",
-          "token": 100665997,
-          "assembly": "netDxf.netstandard",
-          "offset": 147,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchPatternLineDefinition>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchPattern::Clone()",
-          "token": 100665997,
-          "assembly": "netDxf.netstandard",
-          "offset": 96,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.Double>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchPatternLineDefinition::Clone()",
-          "token": 100666006,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Entities.HatchBoundaryPath>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Entities.HatchBoundaryPath>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "ldfld"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1+Enumerator<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1+Enumerator<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.IEnumerator`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::System.Collections.IEnumerable.GetEnumerator()",
-          "token": 100667166,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'netDxf.Collections.ObservableCollection`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<!0>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.IEnumerator`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<!0>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath+Edge>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchBoundaryPath::Clone()",
-          "token": 100665949,
-          "assembly": "netDxf.netstandard",
-          "offset": 58,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.HatchBoundaryPath+Edge>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchBoundaryPath::Clone()",
-          "token": 100665949,
-          "assembly": "netDxf.netstandard",
-          "offset": 12,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Attribute>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.AttributeCollection::GetEnumerator()",
-          "token": 100666881,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Attribute>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.AttributeCollection::GetEnumerator()",
-          "token": 100666881,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Viewport::set_ClippingBoundary(netDxf.Entities.EntityObject)",
-          "token": 100666843,
-          "assembly": "netDxf.netstandard",
-          "offset": 302,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Viewport::set_ClippingBoundary(netDxf.Entities.EntityObject)",
-          "token": 100666843,
-          "assembly": "netDxf.netstandard",
-          "offset": 246,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Layer>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Tables.Layer>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Tables.Layer>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Tables.Layer>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Tables.ApplicationRegistry::CloneApplicationRegistry(netDxf.Tables.ApplicationRegistry,System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.ApplicationRegistry>&)",
-          "token": 100664000,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.ICollection`1<!1>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2::get_Values()",
-          "token": 100667190,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>::Add(System.String,netDxf.Objects.LayerStateProperties)",
-          "token": 100667193,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Int64::TryParse(System.String,System.Globalization.NumberStyles,System.IFormatProvider,System.Int64&)'.",
-          "method": "netDxf.netstandard|netDxf.XDataRecord::.ctor(netDxf.XDataCode,System.Object)",
-          "token": 100663927,
-          "assembly": "netDxf.netstandard",
-          "offset": 402,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.Double>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchPatternLineDefinition::Clone()",
-          "token": 100666006,
-          "assembly": "netDxf.netstandard",
-          "offset": 89,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<System.Double>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchPatternLineDefinition::Clone()",
-          "token": 100666006,
-          "assembly": "netDxf.netstandard",
-          "offset": 48,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<!0>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "ldfld"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1+Enumerator<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<!0>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1+Enumerator<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<!0>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 644,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 837,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.Polyline2DVertex>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 72,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Vector3>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 781,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item1()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 412,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item2()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 420,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item3()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 428,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item4()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Polyline2D::PolygonalVertexes(System.Int32,System.Double,System.Double)",
-          "token": 100666474,
-          "assembly": "netDxf.netstandard",
-          "offset": 435,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Tables.ApplicationRegistry::CloneApplicationRegistry(netDxf.Tables.ApplicationRegistry,System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.ApplicationRegistry>&)",
-          "token": 100664000,
-          "assembly": "netDxf.netstandard",
-          "offset": 154,
-          "opcode": "constrained."
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.XDataRecord>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Tables.ApplicationRegistry::CloneApplicationRegistry(netDxf.Tables.ApplicationRegistry,System.Collections.Generic.Dictionary`2<System.String,netDxf.Tables.ApplicationRegistry>&)",
-          "token": 100664000,
-          "assembly": "netDxf.netstandard",
-          "offset": 94,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::get_Count()",
-          "token": 100667146,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "ldfld"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Tables.LinetypeSegment>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Tables.LinetypeSegment>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Tables.LinetypeSegment>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Tables.LinetypeSegment>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.Path::GetInvalidPathChars()'.",
-          "method": "netDxf.netstandard|netDxf.Tables.ShapeStyle::.ctor(System.String,System.String,System.Double,System.Double,System.Double)",
-          "token": 100664324,
-          "assembly": "netDxf.netstandard",
-          "offset": 33,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.Path::GetInvalidPathChars()'.",
-          "method": "netDxf.netstandard|netDxf.Objects.ImageDefinition::.ctor(System.String,System.String,System.Int32,System.Double,System.Int32,System.Double,netDxf.Units.ImageResolutionUnits)",
-          "token": 100664516,
-          "assembly": "netDxf.netstandard",
-          "offset": 33,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.Dictionary`2<!0,!1>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2::get_Values()",
-          "token": 100667190,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "ldfld"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.Dictionary`2+ValueCollection<!0,!1>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2::get_Values()",
-          "token": 100667190,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>::Add(System.String,netDxf.Objects.LayerStateProperties)",
-          "token": 100667193,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>::BeforeAddItemEvent(System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100667179,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>::Add(System.String,netDxf.Objects.LayerStateProperties)",
-          "token": 100667193,
-          "assembly": "netDxf.netstandard",
-          "offset": 49,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>::AddItemEvent(System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100667180,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Objects.MLineStyleElement>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Objects.MLineStyleElement>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Objects.MLineStyleElement>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1<netDxf.Objects.MLineStyleElement>::GetEnumerator()",
-          "token": 100667163,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.EntityObject>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.EntityCollection::GetEnumerator()",
-          "token": 100667055,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.List`1+Enumerator<netDxf.Entities.EntityObject>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.EntityCollection::GetEnumerator()",
-          "token": 100667055,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item1()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "assembly": "netDxf.netstandard",
-          "offset": 251,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item2()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "assembly": "netDxf.netstandard",
-          "offset": 259,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item3()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "assembly": "netDxf.netstandard",
-          "offset": 267,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::get_Item4()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.HatchBoundaryPath+Polyline::Explode()",
-          "token": 100667569,
-          "assembly": "netDxf.netstandard",
-          "offset": 274,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Array::CopyTo(System.Array,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Spline::NurbsEvaluator(netDxf.Vector3[],System.Double[],System.Double[],System.Int32,System.Boolean,System.Boolean,System.Int32)",
-          "token": 100666617,
-          "assembly": "netDxf.netstandard",
-          "offset": 263,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Array::CopyTo(System.Array,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.Entities.Spline::NurbsEvaluator(netDxf.Vector3[],System.Double[],System.Double[],System.Int32,System.Boolean,System.Boolean,System.Int32)",
-          "token": 100666617,
-          "assembly": "netDxf.netstandard",
-          "offset": 271,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Tuple`4<netDxf.Vector2,System.Double,System.Double,System.Double>::.ctor(netDxf.Vector2,System.Double,System.Double,System.Double)'.",
-          "method": "netDxf.netstandard|netDxf.MathHelper::ArcFromBulge(netDxf.Vector2,netDxf.Vector2,System.Double)",
-          "token": 100663548,
-          "assembly": "netDxf.netstandard",
-          "offset": 289,
-          "opcode": "newobj"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Objects.LayerState::Properties_BeforeAddItem(netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>,netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100664558,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>::BeforeAddItemEvent(System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100667179,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "newobj"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>::.ctor(System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100667205,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>::AddItemEvent(System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100667180,
-          "assembly": "netDxf.netstandard",
-          "offset": 13,
-          "opcode": "newobj"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.Path::GetInvalidPathChars()'.",
-          "method": "netDxf.netstandard|netDxf.Objects.UnderlayDefinition::.ctor(System.String,System.String,netDxf.Objects.UnderlayType)",
-          "token": 100664730,
-          "assembly": "netDxf.netstandard",
-          "offset": 33,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type '!0' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::get_Item(System.Int32)",
-          "token": 100667144,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Objects.LayerState::Properties_BeforeAddItem(netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>,netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100664558,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>::get_Item()",
-          "token": 100667206,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Objects.LayerState::Properties_BeforeAddItem(netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>,netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100664558,
-          "assembly": "netDxf.netstandard",
-          "offset": 50,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Objects.LayerState::Properties_BeforeAddItem(netDxf.Collections.ObservableDictionary`2<System.String,netDxf.Objects.LayerStateProperties>,netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100664558,
-          "assembly": "netDxf.netstandard",
-          "offset": 83,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>::.ctor(System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>)",
-          "token": 100667205,
-          "assembly": "netDxf.netstandard",
-          "offset": 8,
-          "opcode": "stfld"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type 'System.Collections.Generic.List`1<!0>' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::get_Item(System.Int32)",
-          "token": 100667144,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "ldfld"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Open generic type '!0' requires a closed instantiation.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableCollection`1::get_Item(System.Int32)",
-          "token": 100667144,
-          "assembly": "netDxf.netstandard",
-          "offset": 7,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Objects.LayerStateProperties>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Collections.ObservableDictionaryEventArgs`2<System.String,netDxf.Objects.LayerStateProperties>::get_Item()",
-          "token": 100667206,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "ldfld"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Threading.Thread::get_CurrentCulture()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.DimensionBlock::FormatDimensionText(System.Double,netDxf.Entities.DimensionType,System.String,netDxf.Tables.DimensionStyle,netDxf.Blocks.Block)",
-          "token": 100665815,
-          "assembly": "netDxf.netstandard",
-          "offset": 528,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Threading.Thread::get_CurrentCulture()'.",
-          "method": "netDxf.netstandard|netDxf.Entities.DimensionBlock::FormatDimensionText(System.Double,netDxf.Entities.DimensionType,System.String,netDxf.Tables.DimensionStyle,netDxf.Blocks.Block)",
-          "token": 100665815,
-          "assembly": "netDxf.netstandard",
-          "offset": 555,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Math::Round(System.Double,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 93,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.IFormatProvider,System.String,System.Object)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 104,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Math::Round(System.Double,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 165,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.IFormatProvider,System.String,System.Object,System.Object)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 176,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::.ctor(System.Char,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 311,
-          "opcode": "newobj"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Math::Round(System.Double,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 279,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.IFormatProvider,System.String,System.Object,System.Object,System.Object)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 290,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.IFormatProvider,System.String,System.Object,System.Object,System.Object)'.",
-          "method": "netDxf.netstandard|netDxf.Units.AngleUnitFormat::ToDegreesMinutesSeconds(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663932,
-          "assembly": "netDxf.netstandard",
-          "offset": 410,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Math::Round(System.Double,System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.MathHelper::RoundToNearest(System.Double,System.Double)",
-          "token": 100663547,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 253,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 258,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 258,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 384,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 389,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 389,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 481,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 486,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToEngineering(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663942,
-          "assembly": "netDxf.netstandard",
-          "offset": 486,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 238,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 243,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 243,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 603,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 482,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 608,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 608,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 487,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 487,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 705,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 710,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.String::Format(System.String,System.ReadOnlySpan`1<System.Object>)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::ToArchitectural(System.Double,netDxf.Units.UnitStyleFormat)",
-          "token": 100663941,
-          "assembly": "netDxf.netstandard",
-          "offset": 710,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::As<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayElementRef<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&,System.Int32)",
-          "token": 100667419,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::Add<System.Object>(System.Object&,System.Int32)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayElementRef<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&,System.Int32)",
-          "token": 100667419,
-          "assembly": "netDxf.netstandard",
-          "offset": 7,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::As<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayElementRef<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&,System.Int32)",
-          "token": 100667419,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::Add<System.Object>(System.Object&,System.Int32)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayElementRef<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&,System.Int32)",
-          "token": 100667419,
-          "assembly": "netDxf.netstandard",
-          "offset": 7,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::AsRef<<>y__InlineArray4`1<System.Object>>(<>y__InlineArray4`1<System.Object>&)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::As<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 12,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.InteropServices.MemoryMarshal::CreateReadOnlySpan<System.Object>(System.Object&,System.Int32)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray4`1<System.Object>,System.Object>(<>y__InlineArray4`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 12,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::AsRef<<>y__InlineArray5`1<System.Object>>(<>y__InlineArray5`1<System.Object>&)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.CompilerServices.Unsafe::As<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 6,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Pointer or byref-like type 'System.ReadOnlySpan`1<System.Object>' is not supported by native WebAssembly emission.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 12,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Runtime.InteropServices.MemoryMarshal::CreateReadOnlySpan<System.Object>(System.Object&,System.Int32)'.",
-          "method": "netDxf.netstandard|<PrivateImplementationDetails>::InlineArrayAsReadOnlySpan<<>y__InlineArray5`1<System.Object>,System.Object>(<>y__InlineArray5`1<System.Object>&,System.Int32)",
-          "token": 100667418,
-          "assembly": "netDxf.netstandard",
-          "offset": 12,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Convert::ToInt32(System.Double)'.",
-          "method": "netDxf.netstandard|netDxf.Units.LinearUnitFormat::GetFraction(System.Double,System.Int32,System.Int32&,System.Int32&)",
-          "token": 100663945,
-          "assembly": "netDxf.netstandard",
-          "offset": 9,
-          "opcode": "call"
-        }
-      ],
-      "diagnosticCount": 152,
-      "reason": "Cloning reaches ICloneable dispatch, framework enumerators and other framework APIs outside this selected entity scope."
-    }
-  ],
   "passed": true,
-  "comparisons": 140
+  "comparisons": 142
 }

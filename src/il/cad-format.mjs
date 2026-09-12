@@ -18,22 +18,28 @@ const fail=(name,message)=>{throw new ManagedException(`System.${name}`,message)
 const limit=message=>{throw new ILExecutionError(message,{runtimeLimitation:true});};
 const signatures=new Map();
 function admit(type,name,isStatic,result,...params) {const key=`${type}|${name}|${isStatic}|${result}`;if(!signatures.has(key))signatures.set(key,new Set());signatures.get(key).add(params.join('|'));}
-for(const type of numeric){admit(type,'ToString',false,S,P);admit(type,'ToString',false,S,S,P);}
+for(const type of numeric){admit(type,'ToString',false,S);admit(type,'ToString',false,S,S);admit(type,'ToString',false,S,P);admit(type,'ToString',false,S,S,P);}
 admit(N,'.ctor',false,'System.Void');
 admit(N,'get_InvariantInfo',true,N);admit(N,'get_NumberDecimalSeparator',false,S);admit(N,'set_NumberDecimalSeparator',false,'System.Void',S);
 admit(N,'get_NumberDecimalDigits',false,'System.Int32');admit(N,'set_NumberDecimalDigits',false,'System.Void','System.Int32');
+admit(N,'Clone',false,'System.Object');admit(N,'get_IsReadOnly',false,'System.Boolean');
+for(const property of ['PositiveSign','NegativeSign','NumberGroupSeparator','NaNSymbol','PositiveInfinitySymbol','NegativeInfinitySymbol','CurrencySymbol','CurrencyDecimalSeparator','CurrencyGroupSeparator']) {admit(N,`get_${property}`,false,S);admit(N,`set_${property}`,false,'System.Void',S);}
+admit(N,'get_NumberNegativePattern',false,'System.Int32');admit(N,'set_NumberNegativePattern',false,'System.Void','System.Int32');
+admit(N,'get_CurrentInfo',true,N);admit(N,'GetInstance',true,N,P);
 admit(C,'get_NumberFormat',false,N);
 export function isCadFormatBuiltin(ref) {
   return !!ref&&!(ref.genericParameterCount??0)&&!ref.genericArguments?.length&&(signatures.get(`${ref.declaringType}|${ref.name}|${ref.isStatic}|${ref.returnType}`)?.has((ref.parameters??[]).map(p=>p.type??p).join('|'))??false);
 }
-function nfi(readOnly=false) {return {$type:N,fields:{},$cadNumberFormat:true,decimalSeparator:'.',decimalDigits:2,readOnly};}
-function invariant(rt) {return rt.$cadInvariantNumberFormat??=nfi(true);}
-function providerInfo(rt,provider) {
+export function createCadNumberFormat(readOnly=false) {return {$type:N,fields:{},$cadNumberFormat:true,decimalSeparator:'.',decimalDigits:2,groupSeparator:',',positiveSign:'+',negativeSign:'-',nanSymbol:'NaN',positiveInfinitySymbol:'Infinity',negativeInfinitySymbol:'-Infinity',numberNegativePattern:1,currencySymbol:'¤',currencyDecimalSeparator:'.',currencyGroupSeparator:',',readOnly};}
+export function invariantCadNumberFormat(rt) {return rt.$cadInvariantNumberFormat??=createCadNumberFormat(true);}
+export function cadProviderInfo(rt,provider) {
   provider=deref(provider);
+  if(provider==null)return rt.$cadCurrentCulture?.numberFormat??invariantCadNumberFormat(rt);
   if(provider?.$cadNumberFormat)return provider;
-  if(provider?.$type===C&&(provider.name===''||provider.name==='InvariantCulture'))return invariant(rt);
-  limit('Numeric formatting supports CultureInfo.InvariantCulture and NumberFormatInfo constructed by this runtime; current-culture and other format providers are not implemented.');
+  if(provider?.$type===C&&(provider.name===''||provider.name==='InvariantCulture'))return provider.numberFormat??invariantCadNumberFormat(rt);
+  limit('Numeric formatting supports the invariant current culture, invariant CultureInfo clones, and NumberFormatInfo constructed by this runtime; other cultures and custom providers are not implemented.');
 }
+const propertyMap={NumberDecimalSeparator:'decimalSeparator',NumberDecimalDigits:'decimalDigits',NumberGroupSeparator:'groupSeparator',PositiveSign:'positiveSign',NegativeSign:'negativeSign',NaNSymbol:'nanSymbol',PositiveInfinitySymbol:'positiveInfinitySymbol',NegativeInfinitySymbol:'negativeInfinitySymbol',NumberNegativePattern:'numberNegativePattern',CurrencySymbol:'currencySymbol',CurrencyDecimalSeparator:'currencyDecimalSeparator',CurrencyGroupSeparator:'currencyGroupSeparator'};
 const ten=n=>10n**BigInt(n);
 function scaledRound(n,d,places,even=true) {
   if(places>=0)n*=ten(places);else d*=ten(-places);
@@ -73,9 +79,9 @@ function fixedDigits(digits,point,separator) {
   if(point>=digits.length)return digits+'0'.repeat(point-digits.length);
   return digits.slice(0,point)+separator+digits.slice(point);
 }
-function scientific(part,decimals,letter,width,separator,positiveSign=true) {
+function scientific(part,decimals,letter,width,separator,positiveSign=true,info={positiveSign:'+',negativeSign:'-'}) {
   const digits=part.digits.padEnd(decimals+1,'0');
-  return digits[0]+(decimals?separator+digits.slice(1,decimals+1):'')+letter+(part.exp<0?'-':positiveSign?'+':'')+String(Math.abs(part.exp)).padStart(width,'0');
+  return digits[0]+(decimals?separator+digits.slice(1,decimals+1):'')+letter+(part.exp<0?info.negativeSign:positiveSign?info.positiveSign:'')+String(Math.abs(part.exp)).padStart(width,'0');
 }
 function formatCustom(value,type,format,info,n,d,negative) {
   const m=/^([#]*[0]*|[0]+[#]*)(?:\.([0]*[#]*))?(?:([Ee])([+-])(0+))?$/.exec(format);
@@ -95,13 +101,13 @@ function formatCustom(value,type,format,info,n,d,negative) {
   if(integer==='0'&&minWhole===0&&!m[3])integer='';else integer=integer.padStart(minWhole,'0');
   while(frac.length>minFraction&&frac.endsWith('0'))frac=frac.slice(0,-1);
   let result=integer+(frac?info.decimalSeparator+frac:'');
-  if(m[3])result+=m[3]+(exp<0?'-':m[4]==='+'?'+':'')+String(Math.abs(exp)).padStart(m[5].length,'0');
-  return (negative&&result?'-':'')+result;
+  if(m[3])result+=m[3]+(exp<0?info.negativeSign:m[4]==='+'?info.positiveSign:'')+String(Math.abs(exp)).padStart(m[5].length,'0');
+  return (negative&&result?info.negativeSign??'-':'')+result;
 }
-function formatNumeric(value,type,format,info) {
+export function formatCadNumeric(value,type,format,info) {
   const integer=integral.get(type);let negative,n,d,number;
   if(integer){const [bits,signed]=integer;number=signed?BigInt.asIntN(bits,BigInt(value)):BigInt.asUintN(bits,BigInt(value));negative=number<0n;n=negative?-number:number;d=1n;}
-  else {number=type==='System.Single'?Math.fround(Number(value)):Number(value);if(Number.isNaN(number))return 'NaN';if(!Number.isFinite(number))return number<0?'-Infinity':'Infinity';negative=number<0||Object.is(number,-0);number=Math.abs(number);({n,d}=exact(number));}
+  else {number=type==='System.Single'?Math.fround(Number(value)):Number(value);if(Number.isNaN(number))return info.nanSymbol??'NaN';if(!Number.isFinite(number))return number<0?info.negativeInfinitySymbol??'-Infinity':info.positiveInfinitySymbol??'Infinity';negative=number<0||Object.is(number,-0);number=Math.abs(number);({n,d}=exact(number));}
   format=format==null||format===''?'G':format;
   const standard=/^([A-Za-z])(\d*)$/.exec(format);
   if(!standard)return formatCustom(number,type,format,info,n,d,negative);
@@ -110,34 +116,40 @@ function formatNumeric(value,type,format,info) {
   if(!'DEFGXRBNCP'.includes(kind)||(!integer&&'DXB'.includes(kind))||(integer&&kind==='R'))fail('FormatException','Format specifier was invalid.');
   if('NCP'.includes(kind))limit(`Standard numeric format '${kind}' is not implemented by the CAD invariant formatter.`);
   if(precision!==null&&precision>1000)limit('Numeric format precision greater than 1000 digits is not implemented.');
-  const sign=negative?'-':'',sep=info.decimalSeparator;
+  const sign=negative?info.negativeSign??'-':'',sep=info.decimalSeparator;
   if(kind==='D')return sign+n.toString().padStart(precision??1,'0');
   if(kind==='X'||kind==='B'){let text=BigInt.asUintN(integer[0],number).toString(kind==='X'?16:2).padStart(precision??1,'0');if(letter==='X')text=text.toUpperCase();return text;}
   if(kind==='F'){const count=precision??info.decimalDigits,q=scaledRound(n,d,count,!integer),text=q.toString().padStart(count+1,'0');return sign+(count?text.slice(0,-count)+sep+text.slice(-count):text);}
-  if(kind==='E'){const count=precision??6;return sign+scientific(significant(n,d,count+1,!integer),count,letter,3,sep);}
+  if(kind==='E'){const count=precision??6;return sign+scientific(significant(n,d,count+1,!integer),count,letter,3,sep,true,info);}
   const shortestMode=kind==='R'||!precision;
   let part,threshold;
   if(shortestMode){if(integer){part={digits:n.toString(),exp:n===0n?0:n.toString().length-1};threshold=part.digits.length;}else{part=shortest(number,type==='System.Single',n,d);threshold=type==='System.Single'?9:17;}}
   else {part=significant(n,d,precision,!integer);threshold=precision;}
   part.digits=part.digits.replace(/0+$/,'')||'0';
-  if(part.exp<-4||part.exp>=threshold)return sign+scientific(part,part.digits.length-1,letter===letter.toLowerCase()?'e':'E',2,sep);
+  if(part.exp<-4||part.exp>=threshold)return sign+scientific(part,part.digits.length-1,letter===letter.toLowerCase()?'e':'E',2,sep,true,info);
   return sign+fixedDigits(part.digits,part.exp+1,sep);
 }
 export function invokeCadFormatBuiltin(rt,ref,args,self) {
   if(!isCadFormatBuiltin(ref))return {handled:false};
   const name=ref.name;self=deref(self);
-  if(numeric.has(ref.declaringType)){const p=(ref.parameters??[]).map(p=>p.type??p),hasFormat=p[0]===S;return done(formatNumeric(raw(self),ref.declaringType,hasFormat?raw(args[0]):null,providerInfo(rt,args[hasFormat?1:0])));}
-  if(ref.declaringType===C){providerInfo(rt,self);return done(invariant(rt));}
-  if(name==='.ctor'){Object.assign(self,nfi());return done(undefined);}
-  if(name==='get_InvariantInfo')return done(invariant(rt));
+  if(numeric.has(ref.declaringType)){const p=(ref.parameters??[]).map(p=>p.type??p),hasFormat=p[0]===S;return done(formatCadNumeric(raw(self),ref.declaringType,hasFormat?raw(args[0]):null,cadProviderInfo(rt,args[hasFormat?1:0])));}
+  if(ref.declaringType===C)return done(cadProviderInfo(rt,self));
+  if(name==='.ctor'){Object.assign(self,createCadNumberFormat());return done(undefined);}
+  if(name==='get_InvariantInfo')return done(invariantCadNumberFormat(rt));
+  if(name==='get_CurrentInfo')return done(cadProviderInfo(rt,null));
+  if(name==='GetInstance')return done(cadProviderInfo(rt,args[0]));
   if(self==null)fail('NullReferenceException','Object reference not set to an instance of an object.');
   if(!self.$cadNumberFormat)limit('Unknown NumberFormatInfo object.');
-  if(name==='get_NumberDecimalSeparator')return done(self.decimalSeparator);
-  if(name==='get_NumberDecimalDigits')return done(i4(self.decimalDigits));
+  if(name==='Clone')return done({...self,fields:{},readOnly:false});
+  if(name==='get_IsReadOnly')return done(i4(self.readOnly));
+  const property=propertyMap[name.slice(4)];
+  if(name.startsWith('get_'))return done(['decimalDigits','numberNegativePattern'].includes(property)?i4(self[property]):self[property]);
   const value=raw(args[0]);
-  if(name==='set_NumberDecimalDigits'&&(value<0||value>99))fail('ArgumentOutOfRangeException','NumberDecimalDigits');
+  if(property==='decimalDigits'&&(value<0||value>99))fail('ArgumentOutOfRangeException','NumberDecimalDigits');
+  if(property==='numberNegativePattern'&&(value<0||value>4))fail('ArgumentOutOfRangeException','NumberNegativePattern');
   if(self.readOnly)fail('InvalidOperationException','Instance is read-only.');
-  if(name==='set_NumberDecimalSeparator'){if(value==null)fail('ArgumentNullException','value');if(value==='')fail('ArgumentException','The value cannot be an empty string.');self.decimalSeparator=value;}
-  else self.decimalDigits=value;
+  if(!['decimalDigits','numberNegativePattern'].includes(property)&&value==null)fail('ArgumentNullException','value');
+  if(['decimalSeparator','currencyDecimalSeparator'].includes(property)&&value==='')fail('ArgumentException','The value cannot be an empty string.');
+  self[property]=value;
   return done(undefined);
 }

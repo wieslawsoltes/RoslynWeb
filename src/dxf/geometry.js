@@ -1,5 +1,6 @@
 /** CPU tessellation for the portable DXF scene format. All angles are degrees. */
 import { triangulateDxfLoops } from './polygon.js';
+import { tessellateDxfPattern } from './hatch.js';
 import { estimateDxfTextCorners } from './text.js';
 const TAU = Math.PI * 2;
 const DEG = Math.PI / 180;
@@ -65,7 +66,12 @@ export function tessellateDxfScene(scene, options = {}) {
     maxVertices: options.maxVertices ?? 4_000_000,
     tolerance: options.tolerance ?? 0,
     pointSize: options.pointSize ?? 0.5,
+    maxHatchLines: options.maxHatchLines ?? 100_000,
+    maxHatchWork: options.maxHatchWork ?? 10_000_000,
   };
+  for (const key of ['maxHatchLines', 'maxHatchWork']) if (!Number.isSafeInteger(settings[key]) || settings[key] < 1) throw new RangeError(`${key} must be a positive safe integer.`);
+  if (options.hatchDotSize !== undefined) positive(options.hatchDotSize, 'hatchDotSize');
+  const hatchBudget = { lines: 0, work: 0 };
   for (const key of ['curveSegments', 'maxCurveSegments', 'maxVertices']) {
     if (!Number.isSafeInteger(settings[key]) || settings[key] < (key === 'maxVertices' ? 2 : 4)) throw new RangeError(`${key} must be a positive integer of at least ${key === 'maxVertices' ? 2 : 4}.`);
   }
@@ -164,7 +170,12 @@ export function tessellateDxfScene(scene, options = {}) {
         }
       } else if (type === 'HATCH' || type === 'WIPEOUT') {
         if (!Array.isArray(entity.loops)) throw new TypeError('Filled boundaries need a loops array.');
-        push(triangles, triangulateDxfLoops(entity.loops.map(loop => loop.map(p => point(p))), { style: entity.hatchStyle ?? 'Normal', maxVertices: settings.maxVertices - vertexCount - texts.length * 6 }));
+        const loops = entity.loops.map(loop => loop.map(p => point(p)));
+        const remaining = settings.maxVertices - vertexCount - texts.length * 6;
+        if (type === 'HATCH' && entity.pattern) {
+          const fill = tessellateDxfPattern(loops, entity.pattern, { ...settings, style: entity.hatchStyle ?? 'Normal', maxVertices: remaining, hatchDotSize: options.hatchDotSize, budget: hatchBudget });
+          push(lines, fill.lines); push(triangles, fill.triangles);
+        } else push(triangles, triangulateDxfLoops(loops, { style: entity.hatchStyle ?? 'Normal', maxVertices: remaining }));
       } else if (['TEXT', 'MTEXT', 'ATTRIB'].includes(type)) {
         if (vertexCount + (texts.length + 1) * 6 > settings.maxVertices) { const error = new RangeError(`DXF geometry exceeds maxVertices (${settings.maxVertices}).`); error.code = 'DXF_VERTEX_LIMIT'; throw error; }
         text = { ...entity, type, color: rgba, layer, visibilityLayers, entityIndex: index };
@@ -197,7 +208,7 @@ export function tessellateDxfScene(scene, options = {}) {
       vertexCount += (lines.length + triangles.length) / 3;
       if (lines.length || triangles.length || text) renderedEntities++;
     } catch (error) {
-      if (options.strict || error.code === 'DXF_VERTEX_LIMIT' || error.code === 'DXF_TEXT_LIMIT' || error.code === 'DXF_TEXT_LAYOUT_LIMIT') throw error;
+      if (options.strict || error.code === 'DXF_VERTEX_LIMIT' || error.code === 'DXF_TEXT_LIMIT' || error.code === 'DXF_TEXT_LAYOUT_LIMIT' || error.code === 'DXF_HATCH_WORK_LIMIT' || error.code === 'DXF_HATCH_LINE_LIMIT') throw error;
       issues.push({ code: error.code ?? 'DXF_INVALID_ENTITY', entityIndex: index, type: entity?.type ?? null, message: error.message });
     }
   }

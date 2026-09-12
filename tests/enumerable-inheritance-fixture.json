@@ -1,0 +1,2405 @@
+{
+  "success": true,
+  "schemaVersion": 1,
+  "name": "EnumerableInheritanceFixture",
+  "entryPoint": null,
+  "assemblyIdentity": "EnumerableInheritanceFixture, Version=0.0.0.0, Culture=neutral",
+  "version": "0.0.0.0",
+  "culture": "",
+  "publicKeyToken": "null",
+  "moduleVersionId": "5c6ce3e3-4abb-4092-b985-62e3b2a54342",
+  "references": [
+    {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Collections",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Collections, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Threading.Thread",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Threading.Thread, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    }
+  ],
+  "valueTypes": [
+    "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=12",
+    "System.RuntimeFieldHandle"
+  ],
+  "types": [
+    {
+      "token": 33554433,
+      "name": "<Module>",
+      "attributes": "NotPublic",
+      "baseType": null,
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554434,
+      "name": "EnumerableInheritanceFixture",
+      "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663297,
+          "name": "InheritedSource",
+          "declaringType": "EnumerableInheritanceFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Int32[]",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "newobj",
+              "operand": {
+                "token": 100663310,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+Source",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Collections.Generic.List`1<System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Collections.Generic.IEnumerable`1<!0>"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": "ToArray",
+                "declaringType": "System.Collections.Generic.List`1<System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "!0[]",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663298,
+          "name": "InheritedEnumeratorCallbacks",
+          "declaringType": "EnumerableInheritanceFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Int32[]",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "newobj",
+              "operand": {
+                "token": 100663320,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+SecondSource",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Collections.Generic.List`1<System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Collections.Generic.IEnumerable`1<!0>"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": "ToArray",
+                "declaringType": "System.Collections.Generic.List`1<System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "!0[]",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663299,
+          "name": "InheritedGenericSource",
+          "declaringType": "EnumerableInheritanceFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Int32[]",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777233,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 67108865,
+                "name": "0D418E4514DF520288CB2176052BF99455A4B7953C7BAAC90117F924B7EB7B3E",
+                "declaringType": "<PrivateImplementationDetails>",
+                "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=12",
+                "isStatic": true,
+                "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": [
+                  7,
+                  0,
+                  0,
+                  0,
+                  11,
+                  0,
+                  0,
+                  0,
+                  13,
+                  0,
+                  0,
+                  0
+                ]
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "InitializeArray",
+                "declaringType": "System.Runtime.CompilerServices.RuntimeHelpers",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Array"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.RuntimeFieldHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772174,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+GenericSource`1<System.Int32>",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0[]"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 22,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Collections.Generic.List`1<System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Collections.Generic.IEnumerable`1<!0>"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 27,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": "ToArray",
+                "declaringType": "System.Collections.Generic.List`1<System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "!0[]",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 32,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663300,
+          "name": "UnselectedUnsupported",
+          "declaringType": "EnumerableInheritanceFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772175,
+                "name": "Sleep",
+                "declaringType": "System.Threading.Thread",
+                "assemblyName": "System.Threading.Thread",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Int32"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554435,
+      "name": "<PrivateImplementationDetails>",
+      "attributes": "Sealed",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108865,
+          "name": "0D418E4514DF520288CB2176052BF99455A4B7953C7BAAC90117F924B7EB7B3E",
+          "declaringType": "<PrivateImplementationDetails>",
+          "type": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=12",
+          "isStatic": true,
+          "attributes": "Assembly, Static, InitOnly, HasFieldRVA",
+          "constant": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "initialData": [
+            7,
+            0,
+            0,
+            0,
+            11,
+            0,
+            0,
+            0,
+            13,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554436,
+      "name": "EnumerableInheritanceFixture+Enumerator",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [
+        "System.Collections.Generic.IEnumerator`1<System.Int32>",
+        "System.Collections.IEnumerator",
+        "System.IDisposable"
+      ],
+      "methodOverrides": [
+        {
+          "declaration": {
+            "token": 167772166,
+            "name": "get_Current",
+            "declaringType": "System.Collections.IEnumerator",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Object",
+            "parameters": [],
+            "isStatic": false
+          },
+          "body": {
+            "token": 100663302,
+            "name": "System.Collections.IEnumerator.get_Current",
+            "declaringType": "EnumerableInheritanceFixture+Enumerator",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Object",
+            "parameters": [],
+            "isStatic": false
+          }
+        }
+      ],
+      "fields": [
+        {
+          "token": 67108866,
+          "name": "index",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "type": "System.Int32",
+          "isStatic": false,
+          "attributes": "Private",
+          "constant": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [
+        {
+          "token": 385875969,
+          "name": "Current",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "assemblyName": "EnumerableInheritanceFixture",
+          "attributes": "None",
+          "type": "System.Int32",
+          "isStatic": false,
+          "parameters": [],
+          "getter": {
+            "token": 100663301,
+            "name": "get_Current",
+            "declaringType": "EnumerableInheritanceFixture+Enumerator",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Int32",
+            "parameters": [],
+            "isStatic": false
+          },
+          "setter": null
+        },
+        {
+          "token": 385875970,
+          "name": "System.Collections.IEnumerator.Current",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "assemblyName": "EnumerableInheritanceFixture",
+          "attributes": "None",
+          "type": "System.Object",
+          "isStatic": false,
+          "parameters": [],
+          "getter": {
+            "token": 100663302,
+            "name": "System.Collections.IEnumerator.get_Current",
+            "declaringType": "EnumerableInheritanceFixture+Enumerator",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Object",
+            "parameters": [],
+            "isStatic": false
+          },
+          "setter": null
+        }
+      ],
+      "methods": [
+        {
+          "token": 100663301,
+          "name": "get_Current",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Int32",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108866,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+Enumerator",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "mul",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663302,
+          "name": "System.Collections.IEnumerator.get_Current",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Object",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 100663301,
+                "name": "get_Current",
+                "declaringType": "EnumerableInheritanceFixture+Enumerator",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "box",
+              "operand": {
+                "token": 16777233,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 11,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Private, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663303,
+          "name": "MoveNext",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Boolean",
+          "parameters": [],
+          "locals": [
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108866,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+Enumerator",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 9,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 10,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108866,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+Enumerator",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 16,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 17,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "clt",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 20,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 3,
+          "initLocals": true,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663304,
+          "name": "Reset",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldc.i4.m1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108866,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+Enumerator",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663305,
+          "name": "Dispose",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663306,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+Enumerator",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldc.i4.m1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108866,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+Enumerator",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 13,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554437,
+      "name": "EnumerableInheritanceFixture+SourceBase",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [
+        "System.Collections.IEnumerable"
+      ],
+      "methodOverrides": [
+        {
+          "declaration": {
+            "token": 167772168,
+            "name": "GetEnumerator",
+            "declaringType": "System.Collections.IEnumerable",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Collections.IEnumerator",
+            "parameters": [],
+            "isStatic": false
+          },
+          "body": {
+            "token": 100663308,
+            "name": "System.Collections.IEnumerable.GetEnumerator",
+            "declaringType": "EnumerableInheritanceFixture+SourceBase",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Collections.IEnumerator",
+            "parameters": [],
+            "isStatic": false
+          }
+        }
+      ],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663307,
+          "name": "GetEnumerator",
+          "declaringType": "EnumerableInheritanceFixture+SourceBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Collections.Generic.IEnumerator`1<System.Int32>",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "newobj",
+              "operand": {
+                "token": 100663306,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+Enumerator",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663308,
+          "name": "System.Collections.IEnumerable.GetEnumerator",
+          "declaringType": "EnumerableInheritanceFixture+SourceBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Collections.IEnumerator",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 100663307,
+                "name": "GetEnumerator",
+                "declaringType": "EnumerableInheritanceFixture+SourceBase",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Collections.Generic.IEnumerator`1<System.Int32>",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Private, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663309,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+SourceBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554438,
+      "name": "EnumerableInheritanceFixture+Source",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "EnumerableInheritanceFixture+SourceBase",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [
+        "System.Collections.Generic.IEnumerable`1<System.Int32>",
+        "System.Collections.IEnumerable"
+      ],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663310,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+Source",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 100663309,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+SourceBase",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554439,
+      "name": "EnumerableInheritanceFixture+EnumeratorBase",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [
+        "System.Collections.IEnumerator",
+        "System.IDisposable"
+      ],
+      "methodOverrides": [
+        {
+          "declaration": {
+            "token": 167772166,
+            "name": "get_Current",
+            "declaringType": "System.Collections.IEnumerator",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Object",
+            "parameters": [],
+            "isStatic": false
+          },
+          "body": {
+            "token": 100663312,
+            "name": "System.Collections.IEnumerator.get_Current",
+            "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Object",
+            "parameters": [],
+            "isStatic": false
+          }
+        }
+      ],
+      "fields": [
+        {
+          "token": 67108867,
+          "name": "index",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "type": "System.Int32",
+          "isStatic": false,
+          "attributes": "Private",
+          "constant": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [
+        {
+          "token": 385875971,
+          "name": "Current",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "assemblyName": "EnumerableInheritanceFixture",
+          "attributes": "None",
+          "type": "System.Int32",
+          "isStatic": false,
+          "parameters": [],
+          "getter": {
+            "token": 100663311,
+            "name": "get_Current",
+            "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Int32",
+            "parameters": [],
+            "isStatic": false
+          },
+          "setter": null
+        },
+        {
+          "token": 385875972,
+          "name": "System.Collections.IEnumerator.Current",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "assemblyName": "EnumerableInheritanceFixture",
+          "attributes": "None",
+          "type": "System.Object",
+          "isStatic": false,
+          "parameters": [],
+          "getter": {
+            "token": 100663312,
+            "name": "System.Collections.IEnumerator.get_Current",
+            "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Object",
+            "parameters": [],
+            "isStatic": false
+          },
+          "setter": null
+        }
+      ],
+      "methods": [
+        {
+          "token": 100663311,
+          "name": "get_Current",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Int32",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108867,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 9,
+              "opcode": "mul",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 10,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663312,
+          "name": "System.Collections.IEnumerator.get_Current",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Object",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 100663311,
+                "name": "get_Current",
+                "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "box",
+              "operand": {
+                "token": 16777233,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 11,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Private, Final, Virtual, HideBySig, VtableLayoutMask, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663313,
+          "name": "MoveNext",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Boolean",
+          "parameters": [],
+          "locals": [
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108867,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "add",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 9,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 10,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108867,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 16,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 17,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "clt",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 20,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 3,
+          "initLocals": true,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663314,
+          "name": "Reset",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldc.i4.m1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108867,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663315,
+          "name": "Dispose",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663316,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldc.i4.m1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108867,
+                "name": "index",
+                "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+                "type": "System.Int32",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "assemblyName": "EnumerableInheritanceFixture",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 13,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554440,
+      "name": "EnumerableInheritanceFixture+InheritedEnumerator",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "EnumerableInheritanceFixture+EnumeratorBase",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [
+        "System.Collections.Generic.IEnumerator`1<System.Int32>",
+        "System.Collections.IEnumerator",
+        "System.IDisposable"
+      ],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663317,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+InheritedEnumerator",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 100663316,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+EnumeratorBase",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554441,
+      "name": "EnumerableInheritanceFixture+SecondSource",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [
+        "System.Collections.Generic.IEnumerable`1<System.Int32>",
+        "System.Collections.IEnumerable"
+      ],
+      "methodOverrides": [
+        {
+          "declaration": {
+            "token": 167772168,
+            "name": "GetEnumerator",
+            "declaringType": "System.Collections.IEnumerable",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Collections.IEnumerator",
+            "parameters": [],
+            "isStatic": false
+          },
+          "body": {
+            "token": 100663319,
+            "name": "System.Collections.IEnumerable.GetEnumerator",
+            "declaringType": "EnumerableInheritanceFixture+SecondSource",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Collections.IEnumerator",
+            "parameters": [],
+            "isStatic": false
+          }
+        }
+      ],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663318,
+          "name": "GetEnumerator",
+          "declaringType": "EnumerableInheritanceFixture+SecondSource",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Collections.Generic.IEnumerator`1<System.Int32>",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "newobj",
+              "operand": {
+                "token": 100663317,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+InheritedEnumerator",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663319,
+          "name": "System.Collections.IEnumerable.GetEnumerator",
+          "declaringType": "EnumerableInheritanceFixture+SecondSource",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Collections.IEnumerator",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 100663318,
+                "name": "GetEnumerator",
+                "declaringType": "EnumerableInheritanceFixture+SecondSource",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Collections.Generic.IEnumerator`1<System.Int32>",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Private, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663320,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+SecondSource",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554442,
+      "name": "EnumerableInheritanceFixture+GenericSourceBase`1",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [
+        "T"
+      ],
+      "interfaces": [
+        "System.Collections.IEnumerable"
+      ],
+      "methodOverrides": [
+        {
+          "declaration": {
+            "token": 167772168,
+            "name": "GetEnumerator",
+            "declaringType": "System.Collections.IEnumerable",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Collections.IEnumerator",
+            "parameters": [],
+            "isStatic": false
+          },
+          "body": {
+            "token": 100663323,
+            "name": "System.Collections.IEnumerable.GetEnumerator",
+            "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1",
+            "assemblyName": "EnumerableInheritanceFixture",
+            "genericParameterCount": 0,
+            "returnType": "System.Collections.IEnumerator",
+            "parameters": [],
+            "isStatic": false
+          }
+        }
+      ],
+      "fields": [
+        {
+          "token": 67108868,
+          "name": "values",
+          "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1",
+          "type": "!0[]",
+          "isStatic": false,
+          "attributes": "Private, InitOnly",
+          "constant": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663321,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "values",
+              "type": "!0[]"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772176,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "stfld",
+              "operand": {
+                "token": 167772177,
+                "name": "values",
+                "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1<!0>",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "type": "!0[]"
+              },
+              "size": 5
+            },
+            {
+              "offset": 13,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663322,
+          "name": "GetEnumerator",
+          "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Collections.Generic.IEnumerator`1<!0>",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 167772177,
+                "name": "values",
+                "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1<!0>",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "type": "!0[]"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772178,
+                "name": "GetEnumerator",
+                "declaringType": "System.Collections.Generic.IEnumerable`1<!0>",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Collections.Generic.IEnumerator`1<!0>",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 11,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663323,
+          "name": "System.Collections.IEnumerable.GetEnumerator",
+          "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Collections.IEnumerator",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772179,
+                "name": "GetEnumerator",
+                "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1<!0>",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Collections.Generic.IEnumerator`1<!0>",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Private, Final, Virtual, HideBySig, VtableLayoutMask",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554443,
+      "name": "EnumerableInheritanceFixture+GenericSource`1",
+      "attributes": "NestedPrivate, BeforeFieldInit",
+      "baseType": "EnumerableInheritanceFixture+GenericSourceBase`1<!0>",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [
+        "T"
+      ],
+      "interfaces": [
+        "System.Collections.Generic.IEnumerable`1<!0>",
+        "System.Collections.IEnumerable"
+      ],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663324,
+          "name": ".ctor",
+          "declaringType": "EnumerableInheritanceFixture+GenericSource`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "EnumerableInheritanceFixture",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "values",
+              "type": "!0[]"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "call",
+              "operand": {
+                "token": 167772180,
+                "name": ".ctor",
+                "declaringType": "EnumerableInheritanceFixture+GenericSourceBase`1<!0>",
+                "assemblyName": "EnumerableInheritanceFixture",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0[]"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554444,
+      "name": "<PrivateImplementationDetails>+__StaticArrayInitTypeSize=12",
+      "attributes": "NestedAssembly, ExplicitLayout, Sealed",
+      "baseType": "System.ValueType",
+      "isValueType": true,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    }
+  ]
+}

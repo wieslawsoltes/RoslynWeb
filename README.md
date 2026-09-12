@@ -24,7 +24,7 @@ The sample is a static developer tool. Package restore contacts the selected pac
 
 ![netDxf drawing rendered by the RoslynWeb WebGPU sample](docs/images/netdxf-studio.png)
 
-The [netDxf sample](demo/dxf.html) compiles the **complete 272-file netDxf library** from the pinned [`netstandard` branch](https://github.com/wieslawsoltes/netDxf/tree/5b562312f683fc635405c149537ca488e4ec4d39), executes its reader/writer in the .NET WebAssembly runtime, and renders extracted CAD geometry with WebGPU. Open it from the compiler lab or at `/demo/dxf.html`. It supports text/binary DXF import and export, a generated drawing, layer controls, fit, pan/zoom, runtime source compilation, and explicit viewer issue reports. TEXT, MTEXT, and block attributes use browser font shaping and a WebGPU texture pipeline. Solid hatches preserve holes and nested islands; wipeouts mask earlier display geometry. The sample exposes segment, fill-triangle, and text-label counts.
+The [netDxf sample](demo/dxf.html) compiles the **complete 272-file netDxf library** from the pinned [`netstandard` branch](https://github.com/wieslawsoltes/netDxf/tree/5b562312f683fc635405c149537ca488e4ec4d39), executes its reader/writer in the .NET WebAssembly runtime, and renders extracted CAD geometry with WebGPU. Open it from the compiler lab or at `/demo/dxf.html`. It supports text/binary DXF import and export, a generated drawing, layer controls, fit, pan/zoom, runtime source compilation, and explicit viewer issue reports. TEXT, MTEXT, and block attributes use browser font shaping and a WebGPU texture pipeline. Solid and patterned hatches preserve holes and nested islands; pattern line families include dashes, gaps, dots, and block transforms; wipeouts mask earlier display geometry. The sample exposes segment, fill-triangle, and text-label counts.
 
 ```js
 import { createRoslyn } from '@roslynweb/core/browser';
@@ -51,7 +51,7 @@ node bin/roslynweb.mjs script examples/cli/netdxf.mjs -- - out/sample.dxf text
 node bin/roslynweb.mjs script examples/cli/netdxf.mjs -- drawing.dxf out/binary.dxf binary
 ```
 
-The full-library path uses .NET's Wasm runtime. Direct MSIL→native Wasm and JavaScript are separate, strictly checked experiments with selected netDxf geometry exports; they do not yet support the whole reader/writer. The renderer is a top/XY viewer with an explicit entity surface; entities it cannot draw remain in the managed document for export. See the [netDxf API, build, performance and compatibility guide](docs/NETDXF.md) for exact behavior and reproducible tests.
+The full-library path uses .NET's Wasm runtime. Direct MSIL→native Wasm and JavaScript support strictly checked netDxf geometry and entity operations; they do not yet support the whole reader/writer. The renderer is a top/XY viewer with an explicit entity surface; entities it cannot draw remain in the managed document for export. See the [netDxf API, build, performance and compatibility guide](docs/NETDXF.md) for exact behavior and reproducible tests.
 
 ## Use from a terminal
 

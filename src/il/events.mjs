@@ -51,7 +51,11 @@ const fail = (type, message) => {throw new ManagedException(`System.${type}`,mes
 const list = value => value?.$invocationList ?? [value];
 function pointerIdentity(pointer) {
   const method = pointer?.method;
-  return `${method?.$assembly ?? method?.assemblyName ?? pointer?.assembly ?? ''}|${typeof method === 'object' ? methodKey(method) : method}|${method?.genericArguments?.join(',') ?? ''}`;
+  // Resolved generic methods store their closed arguments in $methodArguments.
+  // They can have identical parameter signatures (for example void M<T>()),
+  // while remaining distinct delegate targets after specialization.
+  const argumentsKey = (method?.$methodArguments ?? method?.genericArguments ?? []).join(',');
+  return `${method?.$assembly ?? method?.assemblyName ?? pointer?.assembly ?? ''}|${typeof method === 'object' ? methodKey(method) : method}|${argumentsKey}`;
 }
 function targetEqual(left, right) {
   return left === right || left?.$delegate && right?.$delegate && left.$type === right.$type

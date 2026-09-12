@@ -113,7 +113,7 @@ export function selectJavaScriptExports(model, options = {}) {
       // parameters are closed by the runtime for each receiver specialization;
       // keep them conservatively when a compatible receiver supplies a comparer.
       const comparerParameters = parameters.every(p => p === 'System.Object' || comparerArguments.includes(p) || comparerArguments.length > 0 && /!\d/.test(p));
-      const valid = name === 'ToString' ? parameters.length === 0 && item.method.returnType === 'System.String'
+      const valid = name === 'ToString' ? (parameters.length === 0 || parameters.join(',') === 'System.String,System.IFormatProvider') && item.method.returnType === 'System.String'
         : name === 'CompareTo' ? parameters.length === 1 && sameOrObject(parameters[0]) && item.method.returnType === 'System.Int32'
         : name === 'Compare' ? parameters.length === 2 && comparerParameters && item.method.returnType === 'System.Int32'
         : name === 'GetHashCode' ? (parameters.length === 0 || parameters.length === 1 && comparerParameters) && item.method.returnType === 'System.Int32'
@@ -127,8 +127,7 @@ export function selectJavaScriptExports(model, options = {}) {
     if (visited.has(sourceType) || sourceType.endsWith('[]')) return;
     visited.add(sourceType);
     for (const item of methods) {
-      const interfaces = item.type.interfaces ?? [];
-      const compatible = item.type.name === genericDefinitionName(sourceType) || interfaces.some(type => type === sourceType || /!\d/.test(type + sourceType) && genericDefinitionName(type) === genericDefinitionName(sourceType));
+      const compatible = dispatchOwners(sourceType).has(`${item.assembly.name}|${item.type.name}`);
       if (compatible && !item.method.isStatic && !item.method.isAbstract && [...enumerationCallbacks].some(name => item.method.name === name || item.method.name.endsWith(`.${name}`))) {
         enqueue(item);
         if (item.method.name.endsWith('GetEnumerator')) retainEnumerable(item.method.returnType, visited);

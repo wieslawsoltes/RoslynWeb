@@ -1,12 +1,24 @@
 # CAD numeric formatting
 
-The JavaScript and native WebAssembly tiers implement a finite numeric formatting adapter in `src/il/cad-format.mjs`. Calls are admitted by their complete managed signature. The adapter supports `ToString(IFormatProvider)` and `ToString(string, IFormatProvider)` for `Double`, `Single`, and the eight signed and unsigned integer types from 8 through 64 bits.
+The JavaScript and native WebAssembly tiers implement a finite numeric formatting adapter in `src/il/cad-format.mjs`. Calls are admitted by their complete managed signature. The adapter supports `ToString()`, `ToString(string)`, `ToString(IFormatProvider)`, and `ToString(string, IFormatProvider)` for `Double`, `Single`, and the eight signed and unsigned integer types from 8 through 64 bits.
 
 ## Providers
 
-Supported providers are `CultureInfo.InvariantCulture`, `NumberFormatInfo.InvariantInfo`, `CultureInfo.InvariantCulture.NumberFormat`, and a `NumberFormatInfo` created through its parameterless constructor. A new number format has the invariant defaults. Its `NumberDecimalSeparator` and `NumberDecimalDigits` properties can be read and changed. The separator can contain multiple characters; decimal digits range from 0 through 99. Invariant instances are read-only. Invalid property values and attempts to change invariant instances raise the corresponding managed exceptions.
+Supported providers are the runtime's invariant current culture, `CultureInfo.InvariantCulture`, mutable clones of that culture, `NumberFormatInfo.InvariantInfo`, and number formats constructed or cloned by the adapter. Provider-free numeric calls and null providers use the generated runtime's current culture. A new runtime starts with the invariant culture; it does not inherit the browser locale. Assigning a mutable invariant culture clone to `CultureInfo.CurrentCulture` or `Thread.CurrentThread.CurrentCulture` updates later default numeric formatting and parsing for that runtime.
 
-Null providers, other cultures, and arbitrary user format providers raise an explicit runtime limitation. This adapter does not define current-culture behavior or change provider-free formatting elsewhere in the runtime.
+`CultureInfo.Clone`, `new CultureInfo("")`, `CultureInfo.GetCultureInfo("")`, `CultureInfo.NumberFormat` get/set, and `TextInfo.ListSeparator` get/set are available. Invariant singleton providers are read-only, while clones are independently mutable. Other culture names, arbitrary `IFormatProvider` / `ICustomFormatter` implementations, and execution-context culture propagation remain explicit limitations.
+
+The supported mutable `NumberFormatInfo` properties are:
+
+| Properties | Use |
+| --- | --- |
+| `NumberDecimalSeparator`, `NumberDecimalDigits` | Numeric formatting and parsing; separators may contain multiple characters and digits range from 0 through 99. |
+| `PositiveSign`, `NegativeSign` | Numeric signs and scientific exponents; also used by integer parsing. |
+| `NumberGroupSeparator`, `NumberNegativePattern` | Integer parsing; negative-pattern values range from 0 through 4. |
+| `NaNSymbol`, `PositiveInfinitySymbol`, `NegativeInfinitySymbol` | Non-finite numeric formatting. |
+| `CurrencySymbol`, `CurrencyDecimalSeparator`, `CurrencyGroupSeparator` | Integer parsing with `AllowCurrencySymbol`; this does not add numeric `C` formatting. |
+
+`NumberFormatInfo.Clone`, `IsReadOnly`, `CurrentInfo`, and `GetInstance(IFormatProvider)` are supported. Invalid property values and attempts to modify read-only instances raise managed exceptions. Culture-sensitive comparisons, localized date/time formatting, and standard numeric grouping/currency/percent formatting remain outside this adapter.
 
 ## Format contract
 
@@ -33,3 +45,8 @@ See Microsoft's [standard numeric format documentation](https://learn.microsoft.
 `tests/cad-format-fixture.cs` is compiled and invoked by the actual .NET 10 WebAssembly runtime. `tests/cad-format-baseline.json` records the runtime version, SHA-256 of the C# source, and 1,305 raw formatting results. `tests/cad-format-fixture.json` preserves the Roslyn IL inspection model.
 
 `node tests/cad-format-integration.mjs --update` regenerates the oracle and verifies JavaScript optimization modes `false`, `blocks`, and `true`, plus native WebAssembly optimization modes `false` and `true`. Native artifacts must pass `WebAssembly.validate`. `node --test tests/cad-format.test.mjs` replays the preserved oracle in the same five modes and checks signature admission and explicit runtime limitations.
+
+
+`tests/cad-culture-fixture.cs` adds 555 .NET oracle outputs for mutable/current providers, composite formatting, managed formatting callbacks, escaped braces and malformed items, character repetition/removal, all five `Math.Round` modes, conversion overflow, and Enum whitespace. `tests/cad-parse-fixture.cs` adds 9,545 integer Parse/TryParse comparison cases with the provider fields above. Both are replayed in the same five generated modes and compared with native .NET 10. See [cad-bcl.md](cad-bcl.md) for the culture, rounding, parsing, and callback boundaries.
+
+The culture fixture also compares typed Console numeric output and interpolated strings after changing the current culture: decimal separators and exponent spelling match native .NET, managed Wasm, and both generated backends. The managed host captures output with a writer whose format provider follows `CurrentCulture`.

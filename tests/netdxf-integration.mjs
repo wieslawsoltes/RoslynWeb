@@ -81,7 +81,8 @@ try {
       assert.equal(loaded.stats.layerCount, 7);
       assert(loaded.stats.renderedEntities > 100);
       assert(loaded.issues.some(issue => issue.code === 'DXF_ENTITY_NOT_RENDERED'));
-      assert(loaded.issues.some(issue => issue.code === 'DXF_HATCH_PATTERN_NOT_RENDERED'));
+      assert(loaded.scene.entities.some(entity => entity.type === 'HATCH' && entity.pattern?.lines?.length));
+      assert(!loaded.issues.some(issue => issue.code === 'DXF_HATCH_PATTERN_NOT_RENDERED'));
       assert(!loaded.issues.some(issue => issue.code === 'DXF_GEOMETRY_ERROR'), JSON.stringify(loaded.issues));
       const roundtrips = [];
       for (const binary of [false, true]) {

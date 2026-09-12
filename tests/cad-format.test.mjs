@@ -26,8 +26,10 @@ const ref={declaringType:'System.Double',name:'ToString',isStatic:false,returnTy
 const invariant={$type:'System.Globalization.CultureInfo',name:''};
 test('numeric formatting admission requires exact signatures',()=>{
   assert.ok(isCadFormatBuiltin(ref));
-  for(const altered of [{isStatic:true},{returnType:'System.Object'},{genericParameterCount:1},{parameters:[{type:'System.Object'},{type:'System.IFormatProvider'}]},{parameters:[{type:'System.String'}]}])assert.equal(isCadFormatBuiltin({...ref,...altered}),false);
+  for(const altered of [{isStatic:true},{returnType:'System.Object'},{genericParameterCount:1},{parameters:[{type:'System.Object'},{type:'System.IFormatProvider'}]},{parameters:[{type:'System.Int32'}]}])assert.equal(isCadFormatBuiltin({...ref,...altered}),false);
 });
-test('current culture, foreign providers, unimplemented formats, and excess precision are explicit limitations',()=>{
-  for(const [format,provider] of [['G',null],['G',{$type:'System.Globalization.CultureInfo',name:'fr-FR'}],['G',{}],['N',invariant],['#,##0.00',invariant],['F1001',invariant]])assert.throws(()=>invokeCadFormatBuiltin({},ref,[format,provider],r8(1.25)),e=>e.details?.runtimeLimitation===true||e.runtimeLimitation===true);
+test('foreign providers, unimplemented formats, and excess precision are explicit limitations',()=>{
+  for(const [format,provider] of [['G',{$type:'System.Globalization.CultureInfo',name:'fr-FR'}],['G',{}],['N',invariant],['#,##0.00',invariant],['F1001',invariant]])assert.throws(()=>invokeCadFormatBuiltin({},ref,[format,provider],r8(1.25)),e=>e.details?.runtimeLimitation===true||e.runtimeLimitation===true);
 });
+
+test('null numeric format providers use deterministic invariant current culture',()=>assert.equal(invokeCadFormatBuiltin({},ref,['G',null],r8(1.25)).value,'1.25'));

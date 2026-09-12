@@ -11,26 +11,33 @@ The full pinned 272-file netDxf source snapshot compiles without C# diagnostics 
 | Full managed library, pinned fixtures, round trips, ownership and failed-load cleanup | 13 checks passed | `docs/netdxf-verification.json` |
 | Source/compiler provenance and emitted hashes | All 272 original source hashes verified | `vendor/netDxf/provenance.json`, `docs/netdxf-build-verification.json` |
 | Actual kernel compilation/execution and full-library rejection probes | 7 checks passed, including 279 geometry/entity/color cases on each generated backend | `docs/netdxf-backends-verification.json` |
-| Geometry, text, hatch topology and WebGPU resource/camera lifecycle | 97 tests passed | `tests/dxf-renderer.test.mjs`, `tests/dxf-text.test.mjs`, `tests/dxf-polygon.test.mjs` |
+| Geometry, text, hatch topology and WebGPU resource/camera lifecycle | 119 tests passed | `tests/dxf-renderer.test.mjs`, `tests/dxf-text.test.mjs`, `tests/dxf-polygon.test.mjs`, `tests/dxf-patterns.test.mjs` |
 | Curved hatch extraction and round trips | 18 checks passed | `tests/netdxf-hatch-edges.mjs` |
-| Actual netDxf entity mutations and exceptions in generated code | 28 checks, 140 execution comparisons passed | `docs/netdxf-entities-verification.json` |
+| Actual netDxf entity mutations and exceptions in generated code | 30 checks, 142 execution comparisons passed | `docs/netdxf-entities-verification.json` |
 | Enum, Color and ordinal string framework behavior | Six scenarios matched managed Wasm in five generated modes | `tests/cad-bcl-integration.mjs` |
 | Invariant numeric formatting | 1,305 oracle results matched in five generated modes | `tests/cad-format-integration.mjs` |
 | Delegates, event accessors, atomics and comparer collections | 64 generated comparisons passed; two managed-Wasm delegate discrepancies recorded against native CLR | `tests/events-integration.mjs`, `tests/events-native-baseline.json` |
+| Patterned hatch extraction, transforms and round trips | 18 checks passed | `docs/netdxf-pattern-verification.json` |
+| UTF-16 source/metadata/string/char transport and Path rules | Managed execution and 70 generated comparisons passed | `tests/utf16-integration.mjs` |
+| Collection CopyTo, reference tuples, array clones and value enumerators | 26 scenarios matched managed Wasm in five generated modes | `tests/collection-copy-integration.mjs` |
+| Enum RVA, generic delegate identity and inherited enumeration | 15 scenarios matched managed Wasm in five generated modes | `tests/rva-enums-integration.mjs`, `tests/delegate-generics-integration.mjs`, `tests/enumerable-inheritance-integration.mjs` |
+| Managed spans and compiler-generated inline arrays | Genuine C# storage, alias, copy, bounds and format fixtures match five generated modes | `tests/spans-integration.mjs` |
+| Composite formatting, invariant culture and rounding | 555 results matched managed Wasm in five generated modes | `tests/cad-culture-integration.mjs` |
+| Integer Parse/TryParse and NumberStyles | 9,545 paired results matched managed Wasm in five generated modes | `tests/cad-parse-integration.mjs` |
 | Conservative JavaScript export selection | 12 tests passed, including implicit callbacks, reflection and MethodImpl regressions | `tests/javascript-exports.test.mjs` |
 | Argument-exception overload semantics | Six grouped scenarios matched real managed Wasm across five generated compiler modes | `tests/argument-exceptions-integration.mjs` |
-| Actual Chromium/WebGPU sample | 11 checks passed, including glyph, hatch-hole and wipeout pixels, source compilation, download/reload, three kernel backends and recovery | `docs/netdxf-browser-verification.json`; CI uploads screenshots |
+| Actual Chromium/WebGPU sample | 12 checks passed, including glyph, hatch-hole, pattern dash/dot and wipeout pixels, source compilation, download/reload, three kernel backends and recovery | `docs/netdxf-browser-verification.json`; CI uploads screenshots |
 | Existing Chromium compiler lab/browser suite | 34 checks passed | `artifacts/browser-chromium/verification.json`; CI reruns it |
 | Production Node and CLI/package regression | 7 Node, 5 session, 3 watch and 30 CLI checks passed | Existing Node/CLI verification reports |
 | TypeScript public API | Strict NodeNext check passed | `tests/compiler-types.test.ts` |
 
-The original upstream text and binary DXF fixtures each retain 58 modelspace entities, seven layers and 19 blocks through both export formats. The geometry adapter produces 248 primitives, reports four unsupported entities and has no geometry conversion errors for these fixtures. The WebGPU test uses Chromium with Vulkan/SwiftShader and validates visible pixel output. Hardware GPU behavior, other browser engines and mobile GPU performance are not established by that test. See [NETDXF.md](NETDXF.md) for rendering and compiler limits.
+The original upstream text and binary DXF fixtures each retain 58 modelspace entities, seven layers and 19 blocks through both export formats. The geometry adapter produces 245 primitives, reports four unsupported entities and has no geometry conversion errors for these fixtures. The WebGPU test uses Chromium with Vulkan/SwiftShader and validates visible pixel output. Hardware GPU behavior, other browser engines and mobile GPU performance are not established by that test. See [NETDXF.md](NETDXF.md) for rendering and compiler limits.
 
 ## Results
 
 | Layer | Result | Evidence |
 | --- | --- | --- |
-| JavaScript unit and real-IL fixture tests | **5,557 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract, Node/CLI and transport tests |
+| JavaScript unit and real-IL fixture tests | **5,796 passed, 0 failed, 0 skipped** | `npm test`: IL, package/project, native WASM, DOM-contract, Node/CLI and transport tests |
 | Optimized JavaScript/native public compiler APIs | **15 passed, 0 failed** | `npm run test:compilers`; `docs/compiler-v6-worker-verification.json` |
 | Typed kernels, intrinsics and tuple public APIs | **6 passed, 0 failed** | `npm run test:compilers-v7`; `docs/compiler-v7-worker-verification.json` |
 | Extended numeric five-mode compiler conformance | **448 grouped tests passed** | 2,296 independent native CLR cases × five modes = 11,480 comparisons, plus fresh-process Wasm proofs; included in unit tests |
@@ -44,7 +51,7 @@ The original upstream text and binary DXF fixtures each retain 58 modelspace ent
 | Native compiler differential execution | **438 real .NET cases passed** | Included in `npm test`; `tests/wasm-native-baseline.json` and real Roslyn PE/IL fixtures |
 | Actual .NET WebAssembly through the public JS API | **21 passed, 0 failed** | `npm run test:wasm`; `docs/wasm-verification.json` |
 | Actual WebAssembly and worker RPC in Node worker threads | **12 passed, 0 failed** | `npm run test:worker`; `docs/worker-verification.json` |
-| Native managed bridge assertions | **93 passed** | `managed/SelfTest` |
+| Native managed bridge assertions | **104 passed** | `managed/SelfTest` |
 | Actual WASM compiler extension/object tooling | **21 passed, 0 failed** | `node managed/runtime-tooling-tests.mjs`; `docs/wasm-tooling-verification.json` |
 | Extended public API through Worker | **9 passed, 0 failed** | `npm run test:compat`; `docs/compatibility-verification.json` |
 | Actual WASM custom task and resource ABI | **20 passed, 0 failed** | `node managed/runtime-build-tests.mjs`; `docs/wasm-build-verification.json` |

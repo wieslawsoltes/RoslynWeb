@@ -1,0 +1,78 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "ed4404b825c70771d9c1d314280d460fc20c3c2bdb23af7e74d2d022fff818c4",
+  "cases": [
+    {
+      "method": "InlineIntegers",
+      "result": "8|42|4|21"
+    },
+    {
+      "method": "InlineObjects",
+      "result": "one|42|True"
+    },
+    {
+      "method": "ArrayAlias",
+      "result": "6,9,9,9,5|5|False"
+    },
+    {
+      "method": "Overlap",
+      "result": "0,1,2,3,4"
+    },
+    {
+      "method": "OverlapLeft",
+      "result": "2,3,4,5,5"
+    },
+    {
+      "method": "ReferenceAlias",
+      "result": "88|99|99"
+    },
+    {
+      "method": "LocalReference",
+      "result": "12|12"
+    },
+    {
+      "method": "StringSpan",
+      "result": "Ω🚀|3|55357"
+    },
+    {
+      "method": "Empty",
+      "result": "0|True|0|0"
+    },
+    {
+      "method": "Equality",
+      "result": "True|False|True"
+    },
+    {
+      "method": "Errors",
+      "result": "index;slice;False;copy"
+    },
+    {
+      "method": "StructCopy",
+      "result": "2|8|9"
+    },
+    {
+      "method": "NonCharacterText",
+      "result": "System.Span<Int32>[2]|System.ReadOnlySpan<Pair>[3]"
+    },
+    {
+      "method": "ReassignedInline",
+      "result": "9|True"
+    },
+    {
+      "method": "EmptyIdentity",
+      "result": "True|True|True"
+    },
+    {
+      "method": "CovariantArray",
+      "result": "two|rejected"
+    },
+    {
+      "method": "FieldIdentity",
+      "result": "True|7"
+    },
+    {
+      "method": "FormatFour",
+      "result": "a|2|3.5|True"
+    }
+  ]
+}

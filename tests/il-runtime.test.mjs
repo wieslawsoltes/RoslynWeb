@@ -206,8 +206,8 @@ test('real Roslyn comprehensive fixture covers object, struct, collection, deleg
 
 test('builtin preflight rejects unsupported overloads before any program output', () => {
   const unsupportedRefs = [
-    ref('.ctor', ['System.Char', int], voidType, { declaringType: 'System.String', isStatic: false }),
-    ref('Round', ['System.Double', int], 'System.Double', { declaringType: 'System.Math' }),
+    ref('.ctor', ['System.Char*', int, int], voidType, { declaringType: 'System.String', isStatic: false }),
+    ref('Round', ['System.Double', int, 'System.Boolean'], 'System.Double', { declaringType: 'System.Math' }),
     ref('Compare', [str, str, 'System.Boolean', 'System.Globalization.CultureInfo'], int, { declaringType: 'System.String' }),
     ref('WriteLine', ['System.Char[]', int, int], voidType, { declaringType: 'System.Console' }),
   ];

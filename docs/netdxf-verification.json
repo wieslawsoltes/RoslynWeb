@@ -1,12 +1,12 @@
 {
-  "testedAt": "2026-09-12T06:31:47.443Z",
+  "testedAt": "2026-09-12T08:50:52.798Z",
   "node": "v24.19.0",
   "passed": true,
   "checks": [
     {
       "name": "All 272 vendored C# files and both upstream DXF fixtures match the pinned source hashes",
       "passed": true,
-      "milliseconds": 46.99959799999999,
+      "milliseconds": 255.246649,
       "evidence": {
         "commit": "5b562312f683fc635405c149537ca488e4ec4d39",
         "sourceFiles": 272,
@@ -17,7 +17,7 @@
     {
       "name": "The public Node host loads the complete netDxf assembly into managed WebAssembly",
       "passed": true,
-      "milliseconds": 552.28963,
+      "milliseconds": 1097.949189,
       "evidence": {
         "library": {
           "file": "netDxf.netstandard.dll",
@@ -41,7 +41,7 @@
     {
       "name": "The sample exercises layers, blocks, bulges, circles, arcs, ellipses and solids",
       "passed": true,
-      "milliseconds": 501.60472300000004,
+      "milliseconds": 733.5267979999999,
       "evidence": {
         "stats": {
           "entityCount": 18,
@@ -74,11 +74,11 @@
     {
       "name": "Real text and binary DXF exports reload with the same modelspace geometry",
       "passed": true,
-      "milliseconds": 322.05080399999997,
+      "milliseconds": 361.5396090000004,
       "evidence": [
         {
           "binary": false,
-          "bytes": 14668,
+          "bytes": 14669,
           "stats": {
             "entityCount": 18,
             "layerCount": 7,
@@ -113,7 +113,7 @@
     {
       "name": "The original complex upstream text and binary drawings preserve all 58 modelspace entities across both export formats",
       "passed": true,
-      "milliseconds": 1341.3525509999997,
+      "milliseconds": 2757.161316,
       "evidence": [
         {
           "fixture": "sample.dxf",
@@ -121,7 +121,7 @@
             "entityCount": 58,
             "layerCount": 7,
             "sourceEntities": 58,
-            "renderedEntities": 248,
+            "renderedEntities": 245,
             "hiddenEntities": 1,
             "unsupportedEntities": 4,
             "layers": 7,
@@ -135,12 +135,6 @@
               "entityType": "LWPOLYLINE",
               "handle": "23C",
               "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
-            },
-            {
-              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
-              "entityType": "HATCH",
-              "handle": "240",
-              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
               "code": "DXF_ENTITY_NOT_RENDERED",
@@ -185,16 +179,16 @@
               "message": "Leader vertices are rendered as a polyline; arrowhead styling and spline interpolation remain in the DXF document."
             },
             {
-              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BD9",
-              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
             },
             {
-              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BDA",
-              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
             },
             {
               "code": "DXF_POLYLINE_WIDTH",
@@ -217,7 +211,7 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 248,
+                "renderedEntities": 245,
                 "hiddenEntities": 1,
                 "unsupportedEntities": 4,
                 "layers": 7,
@@ -233,7 +227,7 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 248,
+                "renderedEntities": 245,
                 "hiddenEntities": 1,
                 "unsupportedEntities": 4,
                 "layers": 7,
@@ -250,7 +244,7 @@
             "entityCount": 58,
             "layerCount": 7,
             "sourceEntities": 58,
-            "renderedEntities": 248,
+            "renderedEntities": 245,
             "hiddenEntities": 1,
             "unsupportedEntities": 4,
             "layers": 7,
@@ -264,12 +258,6 @@
               "entityType": "LWPOLYLINE",
               "handle": "23C",
               "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
-            },
-            {
-              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
-              "entityType": "HATCH",
-              "handle": "240",
-              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
               "code": "DXF_ENTITY_NOT_RENDERED",
@@ -314,16 +302,16 @@
               "message": "Leader vertices are rendered as a polyline; arrowhead styling and spline interpolation remain in the DXF document."
             },
             {
-              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BD9",
-              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
             },
             {
-              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BDA",
-              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
             },
             {
               "code": "DXF_POLYLINE_WIDTH",
@@ -346,7 +334,7 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 248,
+                "renderedEntities": 245,
                 "hiddenEntities": 1,
                 "unsupportedEntities": 4,
                 "layers": 7,
@@ -362,7 +350,7 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 248,
+                "renderedEntities": 245,
                 "hiddenEntities": 1,
                 "unsupportedEntities": 4,
                 "layers": 7,
@@ -378,7 +366,7 @@
     {
       "name": "Nested nonuniform block transforms preserve origins, layer zero and ByBlock color inheritance",
       "passed": true,
-      "milliseconds": 1135.2929439999998,
+      "milliseconds": 1955.450425,
       "evidence": {
         "type": "LINE",
         "layer": "visible",
@@ -408,7 +396,7 @@
     {
       "name": "Managed text, attributes and hatch islands preserve transforms and document round-trip values",
       "passed": true,
-      "milliseconds": 189.95764899999995,
+      "milliseconds": 249.43757900000037,
       "evidence": {
         "text": "Ω ± Ø",
         "attribute": "部品",
@@ -419,7 +407,7 @@
     {
       "name": "Queued loads snapshot caller bytes; corruption, size limits and disposal produce explicit errors",
       "passed": true,
-      "milliseconds": 50.75518699999975,
+      "milliseconds": 88.77300000000014,
       "evidence": {
         "snapshottedInput": true,
         "invalidDxfRejected": true,
@@ -430,7 +418,7 @@
     {
       "name": "Initially hidden layers retain geometry and nested inserts preserve ancestor layer visibility",
       "passed": true,
-      "milliseconds": 102.75943999999981,
+      "milliseconds": 125.11058300000059,
       "evidence": {
         "retainedGeometry": 3,
         "ancestorVisibilityLayers": [
@@ -442,7 +430,7 @@
     {
       "name": "Asset integrity validation rejects mismatched generated assemblies before registration",
       "passed": true,
-      "milliseconds": 1.7931449999996403,
+      "milliseconds": 1.894166000000041,
       "evidence": {
         "corruptedAssemblyRejected": true
       }
@@ -450,7 +438,7 @@
     {
       "name": "Failed scene serialization does not retain an unreachable managed document",
       "passed": true,
-      "milliseconds": 301.95562100000006,
+      "milliseconds": 379.8064880000002,
       "evidence": {
         "countBefore": 1,
         "countAfter": 1,
@@ -460,15 +448,15 @@
     {
       "name": "Source mode compiles every pinned netDxf C# file using real Roslyn WebAssembly and runs its output",
       "passed": true,
-      "milliseconds": 23633.436499000003,
+      "milliseconds": 26293.884932,
       "evidence": {
         "sourceCount": 272,
         "deterministicLibraryHash": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd",
         "performance": {
-          "parseMs": 2201.3912,
-          "compilationMs": 2.5797,
-          "extensionsMs": 0.6487,
-          "emitMs": 20139.1686,
+          "parseMs": 2528.4808,
+          "compilationMs": 3.1507,
+          "extensionsMs": 0.8084,
+          "emitMs": 21970.0544,
           "cache": {
             "enabled": true,
             "syntaxHits": 0,
@@ -510,7 +498,7 @@
     {
       "name": "Session disposal releases all owned documents and leaves the shared compiler usable",
       "passed": true,
-      "milliseconds": 67.29469600000084,
+      "milliseconds": 74.1275780000069,
       "evidence": {
         "documentsReleased": true,
         "compilerStillUsable": true

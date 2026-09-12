@@ -1,0 +1,30 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "82b5628da4e9d9f33db536bf9bbe0869aa5b76f2b4197480d52191a323aeae7e",
+  "cases": [
+    {
+      "method": "InheritedSource",
+      "result": [
+        0,
+        2,
+        4
+      ]
+    },
+    {
+      "method": "InheritedEnumeratorCallbacks",
+      "result": [
+        3,
+        6,
+        9
+      ]
+    },
+    {
+      "method": "InheritedGenericSource",
+      "result": [
+        7,
+        11,
+        13
+      ]
+    }
+  ]
+}

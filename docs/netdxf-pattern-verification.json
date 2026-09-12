@@ -1,0 +1,129 @@
+{
+  "testedAt": "2026-09-12T08:51:08.140Z",
+  "managedWebAssembly": true,
+  "checks": [
+    {
+      "name": "Normal islands",
+      "binary": false,
+      "passed": true,
+      "lineSegments": 18,
+      "triangles": 0
+    },
+    {
+      "name": "Normal islands",
+      "binary": true,
+      "passed": true,
+      "lineSegments": 18,
+      "triangles": 0
+    },
+    {
+      "name": "Outer islands",
+      "binary": false,
+      "passed": true,
+      "lineSegments": 16,
+      "triangles": 0
+    },
+    {
+      "name": "Outer islands",
+      "binary": true,
+      "passed": true,
+      "lineSegments": 16,
+      "triangles": 0
+    },
+    {
+      "name": "Ignore islands",
+      "binary": false,
+      "passed": true,
+      "lineSegments": 10,
+      "triangles": 0
+    },
+    {
+      "name": "Ignore islands",
+      "binary": true,
+      "passed": true,
+      "lineSegments": 10,
+      "triangles": 0
+    },
+    {
+      "name": "negative-coordinate staggered dashes",
+      "binary": false,
+      "passed": true,
+      "lineSegments": 36,
+      "triangles": 0
+    },
+    {
+      "name": "negative-coordinate staggered dashes",
+      "binary": true,
+      "passed": true,
+      "lineSegments": 36,
+      "triangles": 0
+    },
+    {
+      "name": "rotated/scaled/origin/OCS/nonuniform INSERT",
+      "binary": false,
+      "passed": true,
+      "lineSegments": 37,
+      "triangles": 0
+    },
+    {
+      "name": "rotated/scaled/origin/OCS/nonuniform INSERT",
+      "binary": true,
+      "passed": true,
+      "lineSegments": 37,
+      "triangles": 0
+    },
+    {
+      "name": "predefined dots",
+      "binary": false,
+      "passed": true,
+      "lineSegments": 0,
+      "triangles": 50
+    },
+    {
+      "name": "predefined dots",
+      "binary": true,
+      "passed": true,
+      "lineSegments": 0,
+      "triangles": 50
+    },
+    {
+      "name": "predefined crossed grid",
+      "binary": false,
+      "passed": true,
+      "lineSegments": 12,
+      "triangles": 0
+    },
+    {
+      "name": "predefined crossed grid",
+      "binary": true,
+      "passed": true,
+      "lineSegments": 12,
+      "triangles": 0
+    },
+    {
+      "name": "degenerate family rejection",
+      "binary": false,
+      "passed": true
+    },
+    {
+      "name": "degenerate family rejection",
+      "binary": true,
+      "passed": true
+    },
+    {
+      "name": "Pinned upstream sample.dxf",
+      "passed": true,
+      "hatches": 1,
+      "lineSegments": 22,
+      "triangles": 0
+    },
+    {
+      "name": "Pinned upstream sample-binary.dxf",
+      "passed": true,
+      "hatches": 1,
+      "lineSegments": 22,
+      "triangles": 0
+    }
+  ],
+  "passed": 18
+}

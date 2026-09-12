@@ -87,13 +87,14 @@
     "benchmark:compilers-v7": "node scripts/benchmark-compilers-v7.mjs",
     "benchmark:host-cache": "node scripts/benchmark-host-cache.mjs",
     "build:netdxf": "node scripts/build-netdxf.mjs",
-    "test:netdxf": "node tests/netdxf-integration.mjs && node tests/netdxf-hatch-edges.mjs",
+    "test:netdxf": "node tests/netdxf-integration.mjs && node tests/netdxf-hatch-edges.mjs && node tests/netdxf-patterns.mjs",
     "test:netdxf-compilers": "node tests/netdxf-compilers.mjs",
     "test:netdxf-browser": "node scripts/test-dxf-browser.mjs",
     "test:events": "node tests/events-integration.mjs",
     "test:cad-bcl": "node tests/cad-bcl-integration.mjs",
     "test:cad-format": "node tests/cad-format-integration.mjs",
-    "test:netdxf-entities": "node tests/netdxf-entities.mjs"
+    "test:netdxf-entities": "node tests/netdxf-entities.mjs",
+    "test:compiler-services": "node tests/utf16-integration.mjs && node tests/rva-enums-integration.mjs && node tests/delegate-generics-integration.mjs && node tests/collection-copy-integration.mjs && node tests/enumerable-inheritance-integration.mjs && node tests/spans-integration.mjs && node tests/cad-culture-integration.mjs && node tests/cad-parse-integration.mjs"
   },
   "engines": {
     "node": ">=22"

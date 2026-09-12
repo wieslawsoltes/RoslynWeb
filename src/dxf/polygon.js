@@ -58,7 +58,7 @@ function contains(ring, point) {
  * planes and avoids losing precision by reconstructing large world coordinates
  * from a normalized projection. maxVertices bounds the output before allocation.
  */
-export function triangulateDxfLoops(loops, { style = 'Normal', maxVertices = 4_000_000 } = {}) {
+export function triangulateDxfLoops(loops, { style = 'Normal', maxVertices = 4_000_000, work } = {}) {
   const styles = { normal: 0, outer: 1, ignore: 2 };
   const mode = typeof style === 'string' ? styles[style.toLowerCase()] : style;
   if (![0, 1, 2].includes(mode)) throw invalid('hatch style must be Normal, Outer, or Ignore (0, 1, or 2).');
@@ -68,6 +68,7 @@ export function triangulateDxfLoops(loops, { style = 'Normal', maxVertices = 4_0
   const ringExtents = [];
   const worldLoops = loops.map(loop => {
     if (!Array.isArray(loop)) throw invalid('each loop must be an array of points.');
+    work?.(loop.length);
     const raw = loop.map(worldPoint), points = [];
     let extent = 0;
     for (const p of raw) for (let i = 0; i < 3; i++) extent = Math.max(extent, Math.abs(p[i] - raw[0][i]));
@@ -148,6 +149,7 @@ export function triangulateDxfLoops(loops, { style = 'Normal', maxVertices = 4_0
   for (let i = 0; i < ordered.length; i++) {
     const a = ordered[i];
     for (let j = i + 1; j < ordered.length && ordered[j].minX <= a.maxX + EPSILON; j++) {
+      work?.(1);
       const b = ordered[j];
       if (b.minY > a.maxY + EPSILON || a.minY > b.maxY + EPSILON) continue;
       if (a.ring === b.ring) {
@@ -157,7 +159,10 @@ export function triangulateDxfLoops(loops, { style = 'Normal', maxVertices = 4_0
       if (intersects(a.a, a.b, b.a, b.b)) throw invalid('perimeter edges intersect or touch.');
     }
   }
-  for (const ring of rings) for (const other of rings) if (ring !== other && contains(other, ring.points[0])) ring.depth++;
+  for (const ring of rings) for (const other of rings) {
+    work?.(other.points.length);
+    if (ring !== other && contains(other, ring.points[0])) ring.depth++;
+  }
 
   const events = new Map();
   const event = y => {
@@ -200,6 +205,7 @@ export function triangulateDxfLoops(loops, { style = 'Normal', maxVertices = 4_0
     // midpoint can round to an endpoint. Average the endpoint intersections and
     // break ties by those endpoints instead of sampling a boundary-aligned Y.
     const crossings = [...active].map(edge => {
+      work?.(1);
       const lower = at(edge, low), upper = at(edge, high);
       return { lower, upper, x: lower.x + (upper.x - lower.x) / 2 };
     }).sort((a, b) => a.x - b.x || a.lower.x - b.lower.x || a.upper.x - b.upper.x);

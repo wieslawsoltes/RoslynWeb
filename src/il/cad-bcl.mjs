@@ -4,7 +4,9 @@
 import {ILExecutionError} from './capabilities.mjs';
 import {ManagedException, Numeric, i4, i8} from './runtime.mjs';
 import {reflectionType} from './reflection.mjs';
-import {isCadFormatBuiltin,invokeCadFormatBuiltin} from './cad-format.mjs';
+import {isCadFormatBuiltin,invokeCadFormatBuiltin,cadProviderInfo,formatCadNumeric} from './cad-format.mjs';
+import {isCadCultureBuiltin,invokeCadCultureBuiltin} from './cad-culture.mjs';
+import {isCadParseBuiltin,invokeCadParseBuiltin} from './cad-parse.mjs';
 
 const ptypes = ref => (ref.parameters ?? []).map(p => p.type ?? p);
 const raw = v => v?.$byref ? raw(v.get()) : v?.$box ? raw(v.value) : v instanceof Numeric ? v.value : typeof v?.$int64==='string' ? BigInt(v.$int64) : v;
@@ -48,7 +50,7 @@ for(const type of ['System.StringComparer','System.Collections.Generic.IEquality
 }
 
 export function isCadBuiltin(ref) {
-  if(isCadFormatBuiltin(ref))return true;
+  if(isCadParseBuiltin(ref)||isCadCultureBuiltin(ref)||isCadFormatBuiltin(ref))return true;
   if (!ref || (ref.genericParameterCount ?? 0) || ref.genericArguments?.length) return false;
   return signatures.get(`${ref.declaringType}|${ref.name}|${ref.isStatic}|${ref.returnType}`)?.has(ptypes(ref).join('|')) ?? false;
 }
@@ -100,6 +102,7 @@ export function formatCadValue(rt,value,format,typeHint) {
   const type=typeHint??rt.typeName(value);
   if(rt.closeType(type)?.isEnum)return enumText(enumInfo(rt,type),value,format);
   if(type===COLOR)return colorText(value?.$box?value.value:value);
+  if(integral.has(type)||type==='System.Double'||type==='System.Single')return formatCadNumeric(raw(value),type,format,cadProviderInfo(rt,null));
   return undefined;
 }
 
@@ -125,6 +128,10 @@ export function defaultCadValue(type) {return type===COLOR?color(0,null,true):un
 function channel(value,name) {value=Number(raw(value));if(value<0||value>255)fail('ArgumentException',`Value of '${value}' is not valid for '${name}'. '${name}' should be greater than or equal to 0 and less than or equal to 255.`);return value;}
 
 export function invokeCadBuiltin(rt,ref,args,self) {
+  const parsed=invokeCadParseBuiltin(rt,ref,args);
+  if(parsed.handled)return parsed;
+  const culture=invokeCadCultureBuiltin(rt,ref,args,self);
+  if(culture.handled)return culture;
   const numericFormat=invokeCadFormatBuiltin(rt,ref,args,self);
   if(numericFormat.handled)return numericFormat;
   if(ref.declaringType==='System.Object'&&ref.name==='Equals'&&ref.isStatic&&ref.returnType===B&&ptypes(ref).join(',')===`${O},${O}`) {
@@ -151,10 +158,10 @@ export function invokeCadBuiltin(rt,ref,args,self) {
     if(name==='GetName') {const value=enumNameValue(rt,args[1]);return done(info.constants.find(c=>BigInt.asUintN(64,info.signed?BigInt.asIntN(info.bits,c.value):c.value)===value)?.name??null);}
     if(name==='ToObject') {nonnull(args[1],'value');const valueType=rt.typeName(args[1]);if(!integral.has(p[1])&&!integral.has(valueType)&&!['System.Boolean','System.Char'].includes(valueType)&&!rt.closeType(valueType)?.isEnum)fail('ArgumentException','The value passed in must be an enum base or an underlying type for an enum.');return done(rt.box(info.scalar(raw(args[1])),info.name));}
     if(name==='Parse') {
-      let text=nonnull(args[1],'value').trim(),value=0n;
+      let text=nonnull(args[1],'value').replace(/^[\u0009-\u000d\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+/,''),value=0n;
       if(!text)fail('ArgumentException','Must specify valid information for parsing in the string.');
-      if(/^[+-]?\d+$/.test(text)) {value=BigInt(text);const min=info.signed?-(1n<<BigInt(info.bits-1)):0n,max=(1n<<BigInt(info.bits-(info.signed?1:0)))-1n;if(value<min||value>max)fail('OverflowException','Value was either too large or too small for the enum underlying type.');}
-      else {const ignore=!!a[2];for(const part of text.split(',')){const key=part.trim(),found=info.constants.find(c=>compare(c.name,key,ignore)===0);if(!key||!found)fail('ArgumentException',`Requested value '${text}' was not found.`);value|=found.value;}}
+      if(/^[+-]?\d+[\u0009-\u000d\u0020]*$/.test(text)) {value=BigInt(text);const min=info.signed?-(1n<<BigInt(info.bits-1)):0n,max=(1n<<BigInt(info.bits-(info.signed?1:0)))-1n;if(value<min||value>max)fail('OverflowException','Value was either too large or too small for the enum underlying type.');}
+      else {const ignore=!!a[2];for(const part of text.split(',')){const key=part.replace(/^[\u0009-\u000d\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+|[\u0009-\u000d\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]+$/g,''),found=info.constants.find(c=>compare(c.name,key,ignore)===0);if(!key||!found)fail('ArgumentException',`Requested value '${text}' was not found.`);value|=found.value;}}
       return done(rt.box(info.scalar(value),info.name));
     }
     if(name==='ToString')return done(enumText(info,self,a[0]));

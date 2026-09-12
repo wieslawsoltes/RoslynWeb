@@ -10,6 +10,7 @@ import { isCollectionsBuiltin } from './collections-extra.mjs';
 import { isIoBuiltin } from './io.mjs';
 import { isEventBuiltin, isEventField } from './events.mjs';
 import { isCadBuiltin } from './cad-bcl.mjs';
+import { isSpanBuiltin } from './spans.mjs';
 import { isJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isStandardValueBuiltin, isStandardValueField } from './standard-values.mjs';
 import { selectJavaScriptExports } from './reachability.mjs';
@@ -42,9 +43,9 @@ export function isOpcodeSupported(opcode) {
 }
 
 /** This is a deliberately finite bridge, not a replacement implementation of the .NET BCL. */
-export function isBuiltinCandidate(ref) {
+export function isBuiltinCandidate(ref, context) {
   if (!ref || typeof ref !== 'object') return false;
-  if (isCadBuiltin(ref) || isEventBuiltin(ref) || isJavaScriptIntrinsic(ref) || isStandardValueBuiltin(ref) || isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
+  if (isSpanBuiltin(ref, context) || isCadBuiltin(ref) || isEventBuiltin(ref) || isJavaScriptIntrinsic(ref) || isStandardValueBuiltin(ref) || isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
   if (/\[[,]+\]$/.test(ref.declaringType ?? '')) { const rank = ref.declaringType.slice(ref.declaringType.lastIndexOf('[')).split(',').length, n = ref.parameters?.length ?? 0; return ref.name === '.ctor' && n === rank || ['Get','Address'].includes(ref.name) && n === rank || ref.name === 'Set' && n === rank + 1; }
   const type = String(ref.declaringType ?? '').split(/[<\[]/)[0], name = ref.name, p = (ref.parameters ?? []).map(p => p.type ?? p), n = p.length;
   const numeric = t => /^System\.(Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|Int64|UInt64|IntPtr|UIntPtr|Single|Double)$/.test(t);
@@ -150,6 +151,7 @@ export function analyzeAssembly(model, options = {}) {
   const methodKeys = new Set(linked.map(methodKey)), tokens = new Set(methods.map(method => method.token));
   const fieldKeys = new Set([model, ...(options.assemblies ?? [])].flatMap(assembly => assembly.types.flatMap(type => (type.fields ?? []).map(field => `${field.declaringType ?? type.name}::${field.name}`))));
   const calls = new Map(), instructionCounts = new Map();
+  const builtinContext={types:new Map([model,...(options.assemblies??[])].flatMap(assembly=>assembly.types.map(type=>[type.name,type])))};
   let supportedInstructions = 0, totalInstructions = 0;
   for (const method of linked) {
     const key = methodKey(method), body = bodyOf(method), offsets = new Set(body.map(i => i.offset));
@@ -184,7 +186,7 @@ export function analyzeAssembly(model, options = {}) {
         if (!Array.isArray(ref.parameters)) add('IL_METHOD_SIGNATURE', `Call operand '${target}' must include its parameter signature.`, instruction);
         if (ref.isStatic === undefined && !['newobj', 'ldftn', 'ldvirtftn'].includes(op)) add('IL_METHOD_SIGNATURE', `Call operand '${target}' must specify isStatic.`, instruction);
         if (!methodKeys.has(target) && !linked.some(m => matchesMethodReference(m, ref)) && !externalExists(options.externals, ref)) {
-          if (isBuiltinCandidate(ref)) calls.set(target, { method: ref, kind: 'builtin', overloadValidatedAtRuntime: false });
+          if (isBuiltinCandidate(ref,builtinContext)) calls.set(target, { method: ref, kind: 'builtin', overloadValidatedAtRuntime: false });
           else { calls.set(target, { method: ref, kind: 'unresolved' }); add('IL_UNRESOLVED_CALL', `No linked implementation or JavaScript external for '${target}'.`, instruction); }
         }
       }
