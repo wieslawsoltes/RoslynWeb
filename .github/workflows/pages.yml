@@ -10,13 +10,12 @@ concurrency:
   group: roslynweb-pages-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 jobs:
-  build:
+  prepare:
+    name: Build once and generate native fixtures
     runs-on: ubuntu-latest
-    timeout-minutes: 60
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -27,100 +26,144 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-roslynweb-nuget-${{ hashFiles('global.json', 'managed/**/*.csproj') }}
-          restore-keys: ${{ runner.os }}-roslynweb-nuget-
+          key: ${{ runner.os }}-${{ runner.arch }}-roslynweb-nuget-${{ hashFiles('global.json', 'managed/**/*.csproj', 'scripts/desktop-fixtures/*.csproj') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ runner.arch }}-roslynweb-nuget-
+            ${{ runner.os }}-roslynweb-nuget-
       - name: Restore public test fixtures
         run: node scripts/prepare-fixtures.mjs
       - name: Build compiler WebAssembly
+        env:
+          # CI and Pages serve the original assets; avoid generating unused
+          # gzip/Brotli copies (the current .NET SDK property, not the legacy flag).
+          CompressionEnabled: 'false'
         run: npm run build
       - name: Native managed assertions and real IL fixture generation
         run: dotnet run --project managed/SelfTest/SelfTest.csproj -c Release
+      # These commands regenerate the PE/model/oracle files consumed by the
+      # parallel jobs. Share their outputs, not the checked-in fixture copies.
       - name: Native CLR and MSBuild differential baselines
-        run: |
-          DOTNET=dotnet node tests/il-types-verify-native.mjs
-          DOTNET=dotnet node tests/il-collections-verify-native.mjs
-          DOTNET=dotnet node tests/projects-v4-verify-native.mjs
-          DOTNET=dotnet node tests/wasm-native-verify-native.mjs
-          DOTNET=dotnet node tests/compiler-v6-verify-native.mjs
-          DOTNET=dotnet node tests/compiler-v7-verify-native.mjs
-          DOTNET=dotnet node tests/standard-values-verify-native.mjs
-          DOTNET=dotnet node tests/float-literals-verify-native.mjs
-          DOTNET=dotnet node tests/value-interfaces-verify-native.mjs
-          DOTNET=dotnet node tests/events-verify-native.mjs
-          DOTNET=dotnet npm run test:compiler-services-native
-      - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
-        run: bash scripts/prepare-desktop-fixtures.sh --check
-      - name: JavaScript and project tests
-        run: npm test
-      - name: CAD framework and event compiler differential tests
         env:
           DOTNET: dotnet
         run: |
-          npm run test:events
-          npm run test:cad-bcl
-          npm run test:cad-format
-          npm run test:compiler-services
-      - name: Actual WebAssembly integration
-        run: npm run test:wasm
-      - name: Worker integration
-        run: npm run test:worker
-      - name: Production Node host and command-line integration with installed package
+          node tests/il-types-verify-native.mjs
+          node tests/il-collections-verify-native.mjs
+          node tests/projects-v4-verify-native.mjs
+          node tests/wasm-native-verify-native.mjs
+          node tests/compiler-v6-verify-native.mjs
+          node tests/compiler-v7-verify-native.mjs
+          node tests/standard-values-verify-native.mjs
+          node tests/float-literals-verify-native.mjs
+          node tests/value-interfaces-verify-native.mjs
+          node tests/events-verify-native.mjs
+          npm run test:compiler-services-native
+      - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
+        run: bash scripts/prepare-desktop-fixtures.sh --check
+      - name: Package the current build and generated fixtures
         run: |
-          npm run test:node
-          npm run test:cli
-      - name: Managed compiler extension integration
-        run: node managed/runtime-tooling-tests.mjs
-      - name: Extended compatibility integration
-        run: npm run test:compat
-      - name: Managed tasks and resources in WebAssembly
-        run: node managed/runtime-build-tests.mjs
-      - name: Public resource, task and Reflection.Emit APIs
-        run: npm run test:build
-      - name: Actual Worker project builds
-        run: npm run test:projects-wasm
-      - name: Managed filesystem and persistent workspace ABI
-        run: node managed/runtime-files-tests.mjs
-      - name: Public managed files and native WASI Worker APIs
-        run: node scripts/test-v4.mjs
-      - name: Original desktop binaries in actual WebAssembly
-        run: node tests/desktop/wasm.mjs
-      - name: Direct C# to native WebAssembly integration
-        run: npm run test:wasm-native
-      - name: Optimized JavaScript and native Wasm public compiler APIs
-        run: npm run test:compilers
-      - name: Typed numeric kernels, native intrinsics and tuple interfaces through Worker
-        run: npm run test:compilers-v7
-      - name: Full netDxf library in managed Wasm and generated compiler backends
-        run: |
-          npm run test:netdxf
-          npm run test:netdxf-compilers
-          npm run test:netdxf-entities
-          npm run test:netdxf-document
-          node tests/argument-exceptions-integration.mjs
-      - name: TypeScript public API contract
-        run: npx --yes --package typescript@5.9.3 tsc --strict --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 tests/compiler-types.test.ts
-      - name: Roslyn cache semantics and actual WebAssembly compilation latency
-        run: npm run test:performance
-      - name: Direct WebAssembly pipeline and execution benchmarks
-        run: npm run benchmark:wasm
-      - name: Compare compiler modes and compilation caches
-        run: npm run benchmark:compilers
-      - name: Compare typed numeric kernels and native intrinsic performance
-        run: npm run benchmark:compilers-v7
-      - name: Compare warm emission against the previous host implementation
-        run: npm run benchmark:host-cache -- --output docs/host-performance-v7.json
-      - name: Upload compiler verification and performance reports
+          mkdir -p artifacts
+          tar -I 'gzip -1' -cf artifacts/ci-build.tar.gz \
+            --exclude='tests/**/bin' --exclude='tests/**/obj' \
+            --exclude='dist/_framework/*.gz' --exclude='dist/_framework/*.br' \
+            dist tests managed/SelfTest/bin/Release/net10.0/il-fixture.json \
+            docs/netdxf-build-verification.json
+          (cd artifacts && sha256sum ci-build.tar.gz > ci-build.tar.gz.sha256)
+      - uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ci-build
+          path: artifacts/ci-build.tar.gz*
+          compression-level: 0
+          retention-days: 7
+          if-no-files-found: error
+
+  verify:
+    name: Verify (${{ matrix.suite }})
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - suite: unit
+            history: 1
+          - suite: runtime
+            history: 1
+          - suite: cli
+            history: 1
+          - suite: cad
+            history: 1
+          - suite: netdxf
+            history: 1
+          - suite: performance
+            history: 0
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Only the host performance comparison reads a historical commit.
+          fetch-depth: ${{ matrix.history }}
+      - uses: ./.github/actions/restore-ci-build
+      - uses: actions/setup-dotnet@v4
+        if: matrix.suite == 'cad'
+        with:
+          dotnet-version: '10.0.100'
+      - name: Cache pinned npm tooling downloads
+        if: matrix.suite == 'unit'
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-roslynweb-npm-node22-typescript5.9.3-playwright1.55.1
+      - name: Run complete verification suite
+        env:
+          # cad-collections must keep its independent native CLR oracle.
+          DOTNET: ${{ matrix.suite == 'cad' && 'dotnet' || '' }}
+        run: node scripts/ci-suite.mjs ${{ matrix.suite }}
+      - name: Upload fresh suite reports and timings
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: compiler-verification
-          path: |
-            docs/*verification.json
-            docs/*performance.json
-            docs/compiler-performance-v6.json
-            docs/compiler-performance-v7.json
-            docs/host-performance-v7.json
-          if-no-files-found: ignore
+          overwrite: true
+          name: ci-reports-${{ matrix.suite }}
+          path: artifacts/ci-reports
+          if-no-files-found: error
+
+  documents:
+    name: DXF document matrix (${{ matrix.shard }}/2)
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/restore-ci-build
+      - name: Execute every backend pairing for this case shard
+        run: node tests/netdxf-document-integration.mjs --shard ${{ matrix.shard }}/2 --output artifacts/netdxf-document-${{ matrix.shard }}.json
+      - name: Upload document shard evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: ci-document-${{ matrix.shard }}
+          path: artifacts/netdxf-document-${{ matrix.shard }}.json
+          if-no-files-found: error
+
+  browser:
+    name: Chromium and WebGPU
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/restore-ci-build
+      - name: Cache pinned npm tooling downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-roslynweb-npm-node22-typescript5.9.3-playwright1.55.1
       - name: Stage browser application
         run: node scripts/stage-pages.mjs
       - name: Install Chromium browser test runtime
@@ -137,15 +180,74 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: browser-verification
           path: |
             artifacts/browser-*
             artifacts/dxf-browser
-          if-no-files-found: ignore
+          if-no-files-found: error
+
+  # Keep the original required-check name as the final all-suite gate.
+  build:
+    if: ${{ always() }}
+    needs: [prepare, verify, documents, browser]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Require every verification job to succeed
+        env:
+          JOB_RESULTS: ${{ toJSON(needs) }}
+        run: |
+          node --input-type=module -e '
+            const jobs = JSON.parse(process.env.JOB_RESULTS);
+            for (const [name, job] of Object.entries(jobs)) {
+              if (job.result !== "success") throw new Error(`${name}: ${job.result}`);
+            }
+          '
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/restore-ci-build
+      - name: Download fresh compiler reports
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ci-reports-*
+          path: docs
+          merge-multiple: true
+      - name: Download all document matrix shards
+        uses: actions/download-artifact@v4
+        with:
+          pattern: ci-document-*
+          path: artifacts/document-shards
+          merge-multiple: true
+      - name: Require complete DXF interchange coverage
+        run: node tests/netdxf-document-aggregate.mjs --output docs/netdxf-document-verification.json artifacts/document-shards/*.json
+      - name: Download browser evidence for the runnable build
+        uses: actions/download-artifact@v4
+        with:
+          name: browser-verification
+          path: artifacts
+      - name: Record the current browser result
+        run: cp artifacts/dxf-browser/verification.json docs/netdxf-browser-verification.json
+      - name: Upload compiler verification and performance reports
+        uses: actions/upload-artifact@v4
+        with:
+          overwrite: true
+          name: compiler-verification
+          path: |
+            docs/*verification.json
+            docs/*performance.json
+            docs/compiler-performance-v6.json
+            docs/compiler-performance-v7.json
+            docs/host-performance-v7.json
+            docs/ci-suite-*.json
+          if-no-files-found: error
+      - name: Stage verified browser application and reports
+        run: node scripts/stage-pages.mjs
       - name: Upload complete runnable project artifact
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: roslynweb-source-and-wasm
+          compression-level: 1
           path: |
             src
             bin
@@ -212,6 +314,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
+          overwrite: true
           name: deployed-browser-verification
           path: |
             artifacts/browser-*

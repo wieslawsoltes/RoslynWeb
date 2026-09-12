@@ -304,7 +304,13 @@ export async function loadWasm(input, options = {}) {
     module:compiled.module,instance,exports:instance.exports,manifest,invoke,run,
     get stdout(){return stdout;},get stderr(){return stderr;},
     stats:Object.freeze({cacheHit:compiled.cacheHit,nativeCompilationMs:compiled.nativeCompilationMs,instantiationMs:now()-instantiateStart,methodCount:manifest.methods.length,importCount:manifest.imports.length}),
-    dispose(){if(disposed)return;disposed=true;runtime?.compiled.clear();runtime?.staticFields.clear();runtime?.methods.clear();runtime?.types.clear();runtime?.assemblies.clear();stdout='';stderr='';}
+    dispose(){
+      if(disposed)return;
+      disposed=true;
+      runtime?.compiled.clear();runtime?.staticFields.clear();runtime?.methods.clear();runtime?.types.clear();runtime?.assemblies.clear();
+      if(runtime)runtime.methodIndex=null;
+      stdout='';stderr='';
+    }
   };
 }
 

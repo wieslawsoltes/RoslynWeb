@@ -438,6 +438,8 @@ The GitHub Actions workflow builds and verifies the project, uploads the complet
 
 ## Validation and capability boundaries
 
+The [CI guide](docs/CI.md) explains the parallel verification jobs, complete DXF coverage gate, and measured runtime optimization.
+
 See `docs/VERIFICATION.md`, `docs/wasm-verification.json`, `docs/worker-verification.json` and `tests/fixtures/newtonsoft-validation.json` for the checks performed on this delivery. Open `/tests/browser.html` when serving the project to run browser-engine verification. An optional local Playwright runner is provided via `npm run test:browser`; install Playwright separately to use it.
 
 | Capability | Delivered behavior |

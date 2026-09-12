@@ -259,6 +259,9 @@ export class ILRuntime {
   }
 
   addAssembly(model, compiledMethods = {}) {
+    // Linked metadata may add a method after an earlier lookup missed. Invalidate
+    // before any mutation, including an assembly that fails partway through linking.
+    this.methodIndex = null;
     this.assemblies.set(model.name, model);
     for (const type of model.types ?? []) {
       const typeName = type.name ?? type.fullName;
@@ -419,6 +422,24 @@ export class ILRuntime {
     return specialized;
   }
 
+  methodCandidates(ref) {
+    if (!this.methodIndex) {
+      const owners = new Map();
+      for (const method of this.methods.values()) {
+        const owner = genericDefinitionName(method.declaringType);
+        let names = owners.get(owner);
+        if (!names) owners.set(owner, names = new Map());
+        let candidates = names.get(method.name);
+        if (!candidates) names.set(method.name, candidates = []);
+        candidates.push(method);
+      }
+      this.methodIndex = owners;
+    }
+    // These are the first two predicates of matchesMethodReference. Keep the
+    // original insertion order and full signature check within this candidate set.
+    return this.methodIndex.get(genericDefinitionName(ref.declaringType))?.get(ref.name) ?? [];
+  }
+
   resolveMethod(ref, assembly = this.model.name) {
     if (typeof ref === 'number' || typeof ref === 'string') {
       const direct = this.methodsByToken.get(`${assembly}:${ref}`) ?? this.methods.get(String(ref));
@@ -433,7 +454,7 @@ export class ILRuntime {
     const token = ref.definitionToken ?? ref.token;
     const direct = (Number(token) >>> 24) === 6 ? this.methodsByToken.get(`${sameAssembly}:${token}`) : null;
     const exact = this.methods.get(methodKey(ref));
-    const found = direct && genericDefinitionName(direct.declaringType) === genericDefinitionName(ref.declaringType ?? direct.declaringType) ? direct : exact && matchesMethodReference(exact,ref) ? exact : [...this.methods.values()].find(m => matchesMethodReference(m, ref));
+    const found = direct && genericDefinitionName(direct.declaringType) === genericDefinitionName(ref.declaringType ?? direct.declaringType) ? direct : exact && matchesMethodReference(exact,ref) ? exact : this.methodCandidates(ref).find(m => matchesMethodReference(m, ref));
     if (!found) return null;
     const typeArguments = splitTypeArguments(ref.declaringType), methodArguments = ref.genericArguments ?? ref.$methodArguments ?? [];
     if (typeArguments.length || methodArguments.length || ref.$typeArguments?.length) return this.specializeMethod(found, typeArguments.length ? typeArguments : ref.$typeArguments, methodArguments, ref.declaringType);
