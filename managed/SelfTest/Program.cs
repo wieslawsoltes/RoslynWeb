@@ -38,6 +38,11 @@ Check(run["success"]!.GetValue<bool>() && run["exitCode"]!.GetValue<int>() == 7 
 var inspect = program["inspection"]!;
 Check(inspect["types"]!.AsArray().Count > 2 && inspect["entryPoint"]!.GetValue<int>() != 0, "PE metadata and generated state-machine inspection");
 Check(!inspect["types"]!.AsArray().SelectMany(t => t!["methods"]!.AsArray()).Any(m => m!["decodeError"] is not null), "all emitted IL instructions decode");
+var enumMetadata = Compile("[System.Flags] public enum FlagsValue:ulong { None=0, First=1, High=0x8000000000000000UL } public enum PlainValue:short { First=-1 } public struct NotAnEnum {}", "library", "EnumMetadata");
+Image(enumMetadata);
+var enumTypes = enumMetadata["inspection"]!["types"]!.AsArray();
+Check(enumTypes.Single(t => t!["name"]!.GetValue<string>() == "FlagsValue")!["isFlagsEnum"]!.GetValue<bool>(), "FlagsAttribute preserved in PE inspection");
+Check(!enumTypes.Single(t => t!["name"]!.GetValue<string>() == "PlainValue")!["isFlagsEnum"]!.GetValue<bool>() && !enumTypes.Single(t => t!["name"]!.GetValue<string>() == "NotAnEnum")!["isFlagsEnum"]!.GetValue<bool>(), "plain enum and non-enum flags metadata stays false");
 var library = Compile("namespace MathPackage; public static class Calculator { public static int Twice(int value) => value * 2; }", "library", "MathPackage");
 var libraryImage = Image(library);
 Check(Parse(CompilerBridge.AddReference("MathPackage.dll", libraryImage))["success"]!.GetValue<bool>(), "DLL registered as metadata reference");

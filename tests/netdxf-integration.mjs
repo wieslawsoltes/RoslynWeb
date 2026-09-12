@@ -4,6 +4,7 @@ import { createHash } from 'node:crypto';
 import { readFile, writeFile } from 'node:fs/promises';
 import { createRoslyn } from '../src/node/index.js';
 import { createNetDxf } from '../src/dxf/index.js';
+import { tessellateDxfScene } from '../src/dxf/geometry.js';
 
 const root = new URL('../', import.meta.url);
 const checks = [];
@@ -45,13 +46,13 @@ try {
   let sample, text, binary;
   await check('The sample exercises layers, blocks, bulges, circles, arcs, ellipses and solids', async () => {
     sample = await session.createSample();
-    assert.equal(sample.stats.entityCount, 12);
-    assert.equal(sample.stats.layerCount, 5);
-    assert.equal(sample.stats.renderedEntities, 24);
-    assert.deepEqual(sample.issues, []);
+    assert.equal(sample.stats.entityCount, 18);
+    assert.equal(sample.stats.layerCount, 7);
+    assert.equal(sample.stats.renderedEntities, 30);
+    assert.deepEqual(sample.issues.map(issue => issue.code), ['DXF_WIPEOUT_SOURCE_ORDER']);
     const types = [...new Set(sample.scene.entities.map(entity => entity.type))];
-    for (const type of ['LWPOLYLINE', 'CIRCLE', 'ARC', 'ELLIPSE', 'SOLID', 'LINE', 'SEGMENTS']) assert(types.includes(type), type);
-    assert.equal(sample.scene.layers.length, 5);
+    for (const type of ['LWPOLYLINE', 'CIRCLE', 'ARC', 'ELLIPSE', 'SOLID', 'LINE', 'SEGMENTS', 'HATCH', 'TEXT', 'MTEXT', 'ATTRIB', 'WIPEOUT']) assert(types.includes(type), type);
+    assert.equal(sample.scene.layers.length, 7);
     assert.deepEqual(await sample.refresh(), sample.scene);
     return { stats: sample.stats, types };
   });
@@ -65,7 +66,7 @@ try {
       assert.equal(loaded.stats.entityCount, sample.stats.entityCount);
       assert.equal(loaded.stats.renderedEntities, sample.stats.renderedEntities);
       assert.equal(loaded.stats.layerCount, sample.stats.layerCount);
-      assert.deepEqual(loaded.issues, []);
+      assert.deepEqual(loaded.issues.map(issue => issue.code), sample.issues.map(issue => issue.code));
       assert.deepEqual(loaded.scene.entities.map(entity => entity.type), sample.scene.entities.map(entity => entity.type));
       evidence.push({ binary: isBinary, bytes: data.length, stats: loaded.stats });
       await loaded.dispose();
@@ -80,7 +81,7 @@ try {
       assert.equal(loaded.stats.layerCount, 7);
       assert(loaded.stats.renderedEntities > 100);
       assert(loaded.issues.some(issue => issue.code === 'DXF_ENTITY_NOT_RENDERED'));
-      assert(loaded.issues.some(issue => issue.code === 'DXF_HATCH_BOUNDARY_ONLY'));
+      assert(loaded.issues.some(issue => issue.code === 'DXF_HATCH_PATTERN_NOT_RENDERED'));
       assert(!loaded.issues.some(issue => issue.code === 'DXF_GEOMETRY_ERROR'), JSON.stringify(loaded.issues));
       const roundtrips = [];
       for (const binary of [false, true]) {
@@ -126,12 +127,62 @@ public static class AffineDxfFixture {
     await doc.dispose();
     return line;
   });
+  await check('Managed text, attributes and hatch islands preserve transforms and document round-trip values', async () => {
+    const assembly = success(await compiler.compile(`using System; using System.IO; using netDxf; using netDxf.Entities; using netDxf.Blocks; using netDxf.Tables;
+public static class TextFillFixture {
+ public static string Create() {
+  var font=new TextStyle("Unicode", "sans-serif", FontStyle.Regular);
+  var inner=new Block("text") { Origin=new Vector3(1,2,0) };
+  inner.Entities.Add(new Text("Ω ± Ø",new Vector3(1,2,0),2,font) { Rotation=90, Color=AciColor.ByBlock });
+  inner.Entities.Add(new MText("One\\\\PTwo",new Vector2(3,4),3,12,font) { AttachmentPoint=MTextAttachmentPoint.MiddleCenter });
+  inner.AttributeDefinitions.Add(new AttributeDefinition("TAG",2,font) { Position=new Vector3(1,2,0),Value="部品",Color=AciColor.ByBlock });
+  inner.AttributeDefinitions.Add(new AttributeDefinition("HIDDEN",2,font) { Value="hidden",Flags=AttributeFlags.Hidden });
+  var insert=new Insert(inner,new Vector3(10,20,0)) { Scale=new Vector3(2,3,1),Rotation=90,Layer=new Layer("Labels") { Color=new AciColor((short)1) } };
+  insert.TransformAttributes(); var doc=new DxfDocument(); doc.Entities.Add(insert);
+  doc.Entities.Add(new Hatch(HatchPattern.Solid,new[] {
+    new HatchBoundaryPath(new EntityObject[] { new Polyline2D(new[]{new Vector2(0,0),new Vector2(10,0),new Vector2(10,10),new Vector2(0,10)},true) }),
+    new HatchBoundaryPath(new EntityObject[] { new Polyline2D(new[]{new Vector2(2,2),new Vector2(8,2),new Vector2(8,8),new Vector2(2,8)},true) }),
+    new HatchBoundaryPath(new EntityObject[] { new Polyline2D(new[]{new Vector2(4,4),new Vector2(6,4),new Vector2(6,6),new Vector2(4,6)},true) })
+  },false) { Elevation=7 });
+  using var stream=new MemoryStream(); if(!doc.Save(stream,false))throw new Exception("Save failed"); return Convert.ToBase64String(stream.ToArray());
+ }
+}`, { assemblyName: 'TextFillFixture', outputKind: 'library', emitPdb: false }));
+    const encoded = success(await compiler.invoke(assembly.assemblyId, 'TextFillFixture', 'Create', [])).result;
+    const document = await session.load(Uint8Array.from(atob(encoded), character => character.charCodeAt(0)));
+    assert.deepEqual(document.issues, []);
+    const textEntity = document.scene.entities.find(entity => entity.type === 'TEXT');
+    const attribute = document.scene.entities.find(entity => entity.type === 'ATTRIB');
+    const hatch = document.scene.entities.find(entity => entity.type === 'HATCH');
+    const near = (a, b) => assert(Math.abs(a - b) < 1e-8, `${a} differs from ${b}`);
+    assert.equal(textEntity.text, 'Ω ± Ø'); assert.equal(attribute.text, '部品');
+    near(textEntity.position.x, 10); near(textEntity.position.y, 20);
+    near(textEntity.axisX.x, -6); near(textEntity.axisX.y, 0); near(textEntity.axisY.x, 0); near(textEntity.axisY.y, -4);
+    near(attribute.position.x, 10); near(attribute.position.y, 20); near(attribute.axisX.x, 0);
+    // netDxf stores nonuniform ATTRIB scale in Height and WidthFactor; the
+    // bridge's axes carry Height once and the GPU layout applies WidthFactor.
+    near(attribute.axisX.y * attribute.widthFactor, 4); near(Math.hypot(attribute.axisY.x, attribute.axisY.y), 6);
+    assert.deepEqual(attribute.color, [1, 0, 0, 1]);
+    assert(!document.scene.entities.some(entity => entity.text === 'hidden'));
+    assert.equal(hatch.loops.length, 3); assert(hatch.loops.every(loop => loop.every(p => p.z === 7)));
+    const geometry = tessellateDxfScene(document.scene);
+    assert.deepEqual(geometry.issues, []); assert.equal(geometry.texts.length, 3);
+    const positions = geometry.triangles.positions; let area = 0;
+    for (let i=0; i<positions.length; i+=9) area += Math.abs((positions[i+3]-positions[i])*(positions[i+7]-positions[i+1])-(positions[i+4]-positions[i+1])*(positions[i+6]-positions[i]))/2;
+    near(area, 68);
+    for (const binary of [false, true]) {
+      const reloaded = await session.load(await document.export({ binary }));
+      assert.deepEqual(reloaded.scene.entities.filter(e => e.text).map(e => e.text), document.scene.entities.filter(e => e.text).map(e => e.text));
+      assert.equal(reloaded.scene.entities.find(e => e.type === 'HATCH').loops.length, 3); await reloaded.dispose();
+    }
+    await document.dispose();
+    return { text: textEntity.text, attribute: attribute.text, hatchArea: area, textQuads: geometry.texts.length };
+  });
   await check('Queued loads snapshot caller bytes; corruption, size limits and disposal produce explicit errors', async () => {
     const input = text.slice();
     const loading = session.load(input);
     input.fill(0);
     const doc = await loading;
-    assert.equal(doc.stats.entityCount, 12);
+    assert.equal(doc.stats.entityCount, 18);
     await doc.dispose();
     await doc.dispose();
     assert.equal(doc.disposed, true);
@@ -204,7 +255,7 @@ public static class InvalidCoordinateFixture {
     assert.equal(hash(sourceSession.compilation.bridge.pe), sourceSession.info.bridge.sha256);
     assert(events.some(event => event.stage === 'compile-library' && event.sourceCount === 272));
     const doc = await sourceSession.load(binary);
-    assert.equal(doc.stats.entityCount, 12);
+    assert.equal(doc.stats.entityCount, 18);
     await doc.dispose();
     return { sourceCount: 272, deterministicLibraryHash: hash(sourceSession.compilation.library.pe), performance: sourceSession.compilation.library.performance, events };
   });

@@ -33,6 +33,7 @@ public static class IlInspector
                 baseType = type.BaseType.IsNil ? null : provider.GetTypeName(reader, type.BaseType),
                 isValueType = !type.BaseType.IsNil && provider.GetTypeName(reader, type.BaseType) is "System.ValueType" or "System.Enum",
                 isEnum = !type.BaseType.IsNil && provider.GetTypeName(reader, type.BaseType) == "System.Enum",
+                isFlagsEnum = !type.BaseType.IsNil && provider.GetTypeName(reader, type.BaseType) == "System.Enum" && type.GetCustomAttributes().Any(h => CustomAttributeTypeName(reader, provider, h) == "System.FlagsAttribute"),
                 isByRefLike = type.GetCustomAttributes().Any(h => CustomAttributeTypeName(reader, provider, h) == "System.Runtime.CompilerServices.IsByRefLikeAttribute"),
                 genericParameters = type.GetGenericParameters().Select(p => reader.GetString(reader.GetGenericParameter(p).Name)).ToArray(),
                 interfaces = type.GetInterfaceImplementations().Select(i => provider.GetTypeName(reader, reader.GetInterfaceImplementation(i).Interface)).ToArray(),

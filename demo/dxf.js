@@ -91,7 +91,7 @@ async function initialize() {
   $('layers').replaceChildren(); $('filename').textContent = 'No drawing loaded';
   $('drawing-title').textContent = 'Untitled drawing';
   $('kernel-results').textContent = 'Runs on demand. The sample drawing is unchanged.';
-  for (const id of ['entity-count', 'layer-count', 'segment-count', 'load-time']) $(id).textContent = '—';
+  for (const id of ['entity-count', 'layer-count', 'segment-count', 'triangle-count', 'text-count', 'load-time']) $(id).textContent = '—';
   emptyState('Preparing your drawing workspace', 'The compiler and netDxf library are loading. Progress appears below.');
   status('Starting compiler worker…', 'busy'); log('Starting compiler worker.'); controls();
   const started = performance.now();
@@ -179,7 +179,11 @@ function layerColor(color) {
   return '#97a9be';
 }
 
-function updateRenderMetrics() { $('segment-count').textContent = number(renderer?.stats?.lineSegments); }
+function updateRenderMetrics() {
+  $('segment-count').textContent = number(renderer?.stats?.lineSegments);
+  $('triangle-count').textContent = number(renderer?.stats?.triangles);
+  $('text-count').textContent = number(renderer?.stats?.textQuads);
+}
 
 function renderLayers() {
   $('layers').replaceChildren(); hiddenLayers.clear();
@@ -279,8 +283,8 @@ $('show-all').addEventListener('click', () => {
 $('compare-kernels').addEventListener('click', () => operation('Compiling netDxf geometry kernels…', async context => {
   const measurements = [
     { name: 'Distance2', args: [0, 0, 3, 4], label: 'Distance (0,0) → (3,4)', expected: 5 },
-    { name: 'RotateY', args: [1, 0, Math.PI / 2], label: 'Rotate (1,0) by 90° · Y', expected: 1 },
-    { name: 'CubicBezierCoordinate', args: [0, 10, 10, 0, 0.5], label: 'Cubic Bézier · t = 0.5', expected: 7.5 }
+    { name: 'LineLength', args: [0, 0, 0, 2, 3, 6], label: 'Entity line length', expected: 7 },
+    { name: 'CircleArea', args: [5], label: 'Entity circle area', expected: Math.PI * 25 }
   ];
   const rows = [];
   $('kernel-results').textContent = 'Compiling selected geometry methods…';

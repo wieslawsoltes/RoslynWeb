@@ -33,7 +33,7 @@ public static class NetDxfIoProbe {
  }
 }`;
 try{
- compiler=await createRoslyn({startupTimeoutMs:90000});report.compiler=compiler.info;
+ compiler=await createRoslyn({startupTimeoutMs:90000,timeoutMs:300000});report.compiler=compiler.info;
  let assembly;
  await check('All 272 unchanged pinned netDxf C# sources compile in Roslyn WebAssembly without diagnostics',async()=>{
   const sources=await Promise.all(provenance.sources.map(async item=>{const bytes=await readFile(new URL('vendor/netDxf/source/'+item.path,root));assert.equal(createHash('sha256').update(bytes).digest('hex'),item.sha256,item.path);return {path:'netDxf/'+item.path,text:bytes.toString('utf8')};}));
@@ -51,21 +51,22 @@ try{
   return Object.fromEntries(Object.entries(report.fullLibrarySupport).map(([backend,result])=>[backend,{supported:result.supported,diagnostics:result.diagnosticCount,codes:result.codes}]));
  });
  const source=await readFile(new URL('src/dxf/NetDxfKernel.cs',root),'utf8');
- const cases=[['Distance2',[0,0,3,4]],['Distance3',[0,0,0,2,3,6]],['RotateX',[1,0,Math.PI/2]],['RotateY',[1,0,Math.PI/2]],['CrossZ',[2,0,0,4]],['NormalizeAngle',[-30]],['CubicBezierCoordinate',[0,10,10,0,0.5]]];
+ const cases=[['Distance2',[0,0,3,4]],['Distance3',[0,0,0,2,3,6]],['RotateX',[1,0,Math.PI/2]],['RotateY',[1,0,Math.PI/2]],['CrossZ',[2,0,0,4]],['NormalizeAngle',[-30]],['CubicBezierCoordinate',[0,10,10,0,0.5]],['LineLength',[0,0,0,2,3,6]],['CircleArea',[5]],['ArcSweep',[-30,45]],['TrueColorArgb',[12,34,56]]];
  let state=0x17adfb4;const random=()=>{state=(Math.imul(state,1664525)+1013904223)>>>0;return state/4294967296;};const value=()=>(random()-.5)*2000;
  for(let i=0;i<24;i++){
   cases.push(['Distance2',[value(),value(),value(),value()]],['Distance3',[value(),value(),value(),value(),value(),value()]],
    ['RotateX',[value(),value(),value()]],['RotateY',[value(),value(),value()]],['CrossZ',[value(),value(),value(),value()]],
-   ['NormalizeAngle',[value()]],['CubicBezierCoordinate',[value(),value(),value(),value(),random()]]);
+   ['NormalizeAngle',[value()]],['CubicBezierCoordinate',[value(),value(),value(),value(),random()]],
+   ['LineLength',[value(),value(),value(),value(),value(),value()]],['CircleArea',[random()*100+0.01]],['ArcSweep',[value(),value()]],['TrueColorArgb',[Math.floor(random()*256),Math.floor(random()*256),Math.floor(random()*256)]]);
  }
  cases.push(['CubicBezierCoordinate',[2,3,9,20,0]],['CubicBezierCoordinate',[2,3,9,20,1]],['Distance2',[-1e100,1e100,1e100,-1e100]],['NormalizeAngle',[-720]]);
  const programs={};
  try{
-  await check('Public kernel API compiles seven real netDxf geometry exports on all three backends',async()=>{
+  await check('Public kernel API compiles eleven real netDxf geometry, entity and color exports on all three backends',async()=>{
    for(const backend of ['wasm','javascript','native-wasm']){programs[backend]=await createNetDxfKernel({compiler,backend,source});assert.equal(programs[backend].info.diagnostics,0);assert.deepEqual(programs[backend].info.methods,netDxfKernelMethods);}
    return Object.fromEntries(Object.entries(programs).map(([backend,program])=>[backend,program.info]));
   });
-  await check('179 deterministic geometry cases match the .NET WebAssembly oracle on both generated backends',async()=>{
+  await check('279 deterministic geometry, entity and color cases match the .NET WebAssembly oracle on both generated backends',async()=>{
    const results=[];
    for(const [method,args] of cases){const expected=await programs.wasm.invoke(method,args);const actual={};for(const backend of ['javascript','native-wasm']){actual[backend]=await programs[backend].invoke(method,args);assert(Math.abs(actual[backend]-expected)<=Math.max(1,Math.abs(expected))*2e-13,`${backend} ${method}(${args}): ${actual[backend]} != ${expected}`);}results.push({method,args,expected,...actual});}
    return {caseCount:cases.length,cases:results};
@@ -75,6 +76,13 @@ try{
    return {parameters:[-0.01,1.01],exception:'System.ArgumentOutOfRangeException'};
   });
  }finally{for(const program of Object.values(programs))program.dispose();}
+ await check('Entity construction and RGB validation preserve ArgumentOutOfRangeException on all backends',async()=>{
+  const invalid=[['CircleArea',[-1]],['CircleArea',[0]],['TrueColorArgb',[-1,0,0]],['TrueColorArgb',[0,256,0]],['TrueColorArgb',[0,0,256]]];
+  const programs=[];
+  try{for(const backend of ['wasm','javascript','native-wasm']){const kernel=await createNetDxfKernel({compiler,backend,source});programs.push(kernel);for(const [method,args] of invalid)await assert.rejects(async()=>await kernel.invoke(method,args),error=>[error.$type,error.managedType,error.type].includes('System.ArgumentOutOfRangeException'));}}
+  finally{for(const kernel of programs)kernel.dispose();}
+  return {caseCount:invalid.length,backends:3,exception:'System.ArgumentOutOfRangeException'};
+ });
  await check('The full managed library round-trips ASCII and binary DXF documents',async()=>{
   const io=requireSuccess(await compiler.compile(ioSource,{assemblyName:'NetDxfIoProbe',outputKind:'library',optimization:'release',emitPdb:false}));
   for(const binary of [false,true])assert.equal(requireSuccess(await compiler.invoke(io.assemblyId,'NetDxfIoProbe','RoundTrip',[binary])).result,101);

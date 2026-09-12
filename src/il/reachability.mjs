@@ -1,3 +1,4 @@
+import {isEventBuiltin} from './events.mjs';
 import {genericDefinitionName, matchesMethodReference, splitTypeArguments, substituteType} from './generics.mjs';
 
 const signature = method => `${method.declaringType}::${method.name}(${(method.parameters ?? []).map(p => p.type ?? p).join(',')})`;
@@ -26,6 +27,37 @@ export function selectJavaScriptExports(model, options = {}) {
   const initializer = (type, assemblyName) => {
     for (const item of byMember.get(`${genericDefinitionName(type)}|.cctor`) ?? []) if (!assemblyName || item.assembly.name === assemblyName) enqueue(item);
   };
+  const typesByAssembly=new Map(),typesByName=new Map();
+  for(const assembly of assemblies)for(const type of assembly.types ?? []){const item={assembly,type};typesByAssembly.set(`${assembly.name}|${type.name}`,item);if(!typesByName.has(type.name))typesByName.set(type.name,item);}
+  const derivesCache=new Map();
+  const derivesFrom = (item, base, seen = new Set()) => {
+    const name=genericDefinitionName(item.type.name), target=genericDefinitionName(base);
+    if(name === target || target === 'System.Object')return true;
+    const key=`${item.assembly.name}|${name}`,cacheKey=`${key}|${target}`;if(derivesCache.has(cacheKey))return derivesCache.get(cacheKey);if(seen.has(key))return false;seen.add(key);
+    for(const ancestor of [item.type.baseType,...(item.type.interfaces ?? [])].filter(Boolean)) {
+      if(genericDefinitionName(ancestor) === target)return true;
+      const parent=typesByAssembly.get(`${item.assembly.name}|${genericDefinitionName(ancestor)}`) ?? typesByName.get(genericDefinitionName(ancestor));
+      if(parent&&derivesFrom(parent,base,seen)){derivesCache.set(cacheKey,true);return true;}
+    }
+    derivesCache.set(cacheKey,false);return false;
+  };
+  // An interface can be introduced on a derived receiver while its concrete
+  // implementation is inherited from a base that never declared the interface.
+  // Retain implementations from every ancestor of each compatible receiver.
+  const dispatchOwnerCache=new Map();
+  const dispatchOwners=base=>{
+    const target=genericDefinitionName(base);if(dispatchOwnerCache.has(target))return dispatchOwnerCache.get(target);
+    const owners=new Set(),visited=new Set();
+    const addAncestors=item=>{
+      const key=`${item.assembly.name}|${item.type.name}`;if(visited.has(key))return;visited.add(key);owners.add(key);
+      for(const name of [item.type.baseType,...(item.type.interfaces ?? [])].filter(Boolean)){
+        const ancestor=typesByAssembly.get(`${item.assembly.name}|${genericDefinitionName(name)}`) ?? typesByName.get(genericDefinitionName(name));
+        if(ancestor)addAncestors(ancestor);
+      }
+    };
+    for(const receiver of typesByAssembly.values())if(derivesFrom(receiver,target))addAncestors(receiver);
+    dispatchOwnerCache.set(target,owners);return owners;
+  };
   const rootCandidates = methods.filter(item => item.assembly === model);
   if (!Array.isArray(options.exports)) report('exports must be an array of method selectors.');
   else for (const selector of options.exports) {
@@ -48,13 +80,13 @@ export function selectJavaScriptExports(model, options = {}) {
   };
   // Implicit framework callbacks must not disappear merely because their calls
   // occur inside a bridge service rather than in inspected IL.
-  const callbackNames = new Set(), serviceTypes = new Set();
+  const callbackNames = new Set(), serviceTypes = new Set(), comparerArgumentCache = new Map();
   const noteServiceType = type => {
     type = String(type ?? '').replace(/&$/, '').replace(/\[[,]*\]$/, '');
     if (!type || /!\d/.test(type)) return;
     const name = genericDefinitionName(type);
     if (!serviceTypes.has(name)) {
-      serviceTypes.add(name);
+      serviceTypes.add(name); comparerArgumentCache.clear();
       const definition = methods.find(item => item.type.name === name)?.type;
       if (definition?.baseType) noteServiceType(substituteType(definition.baseType,splitTypeArguments(type)));
     }
@@ -67,10 +99,20 @@ export function selectJavaScriptExports(model, options = {}) {
       const name = item.method.name.split('.').at(-1), parameters = (item.method.parameters ?? []).map(p => p.type ?? p);
       if (!callbackNames.has(name)) continue;
       const sameOrObject = p => genericDefinitionName(p) === item.type.name || p === 'System.Object';
-      const comparerArguments = [item.type.baseType,...(item.type.interfaces ?? [])]
-        .filter(type => /^System\.Collections\.Generic\.(?:IComparer|IEqualityComparer|Comparer|EqualityComparer)`1</.test(type ?? ''))
-        .map(type => splitTypeArguments(type)[0]);
-      const comparerParameters = parameters.every(p => p === 'System.Object' || comparerArguments.includes(p));
+      const ownerKey=`${item.assembly.name}|${item.type.name}`;
+      let comparerArguments=comparerArgumentCache.get(ownerKey);
+      if(!comparerArguments){
+        comparerArguments=[...typesByAssembly.values()]
+          .filter(receiver=>serviceTypes.has(receiver.type.name)&&derivesFrom(receiver,item.type.name))
+          .flatMap(receiver=>[receiver.type.baseType,...(receiver.type.interfaces ?? [])])
+          .filter(type => /^System\.Collections\.Generic\.(?:IComparer|IEqualityComparer|Comparer|EqualityComparer)`1</.test(type ?? ''))
+          .map(type => splitTypeArguments(type)[0]);
+        comparerArgumentCache.set(ownerKey,comparerArguments);
+      }
+      // The retained method remains an open definition. Its inherited generic
+      // parameters are closed by the runtime for each receiver specialization;
+      // keep them conservatively when a compatible receiver supplies a comparer.
+      const comparerParameters = parameters.every(p => p === 'System.Object' || comparerArguments.includes(p) || comparerArguments.length > 0 && /!\d/.test(p));
       const valid = name === 'ToString' ? parameters.length === 0 && item.method.returnType === 'System.String'
         : name === 'CompareTo' ? parameters.length === 1 && sameOrObject(parameters[0]) && item.method.returnType === 'System.Int32'
         : name === 'Compare' ? parameters.length === 2 && comparerParameters && item.method.returnType === 'System.Int32'
@@ -120,10 +162,11 @@ export function selectJavaScriptExports(model, options = {}) {
         // across interfaces, inheritance and runtime generic instantiations.
         for (const item of methods) if (!item.method.isStatic && !item.method.isAbstract
           && (item.method.name === ref.name || item.method.name.endsWith(`.${ref.name}`))
-          && item.method.parameters?.length === ref.parameters?.length) enqueue(item);
+          && item.method.parameters?.length === ref.parameters?.length
+          && dispatchOwners(ref.declaringType).has(`${item.assembly.name}|${item.type.name}`)) enqueue(item);
       }
       const type = String(ref.declaringType ?? '');
-      if ((/^System\.(?:Reflection(?:\.|$)|Activator$|Delegate$|Linq\.Expressions\.)/.test(type) || type === 'System.Type' && !['GetTypeFromHandle','get_Name','get_FullName','get_Namespace','get_AssemblyQualifiedName','op_Equality','op_Inequality'].includes(ref.name)) && !retainsAll) {
+      if (!isEventBuiltin(ref) && (/^System\.(?:Reflection(?:\.|$)|Activator$|Delegate$|Linq\.Expressions\.)/.test(type) || type === 'System.Type' && !['GetTypeFromHandle','get_Name','get_FullName','get_Namespace','get_AssemblyQualifiedName','op_Equality','op_Inequality'].includes(ref.name)) && !retainsAll) {
         retainsAll = true; for (const item of methods) enqueue(item);
       }
       if (/^System\.(?:Console|String|Object|Text\.StringBuilder|ValueTuple(?:`\d+)?(?:<.*>)?)$/.test(type) && /^(?:Write|WriteLine|Concat|Format|Append|AppendLine|Join|ToString)$/.test(ref.name)) retainCallbacks(['ToString']);

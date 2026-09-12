@@ -166,7 +166,8 @@ test('TimeSpan exact signed ticks, component truncation, constant format and ove
   assert.throws(()=>invoke(r,t,'FromSeconds',['System.Double'],[r8(Infinity)],null,t,true),errorIs('OverflowException'));
 });
 test('framework adapter rejects unsupported overloads instead of advertising unrestricted framework parity',()=>{
-  assert.equal(isExtendedBuiltin(ref('System.Collections.Generic.Dictionary`2<System.String,System.Int32>','.ctor',['System.Collections.Generic.IEqualityComparer`1<System.String>'])),false);
+  assert.equal(isExtendedBuiltin(ref('System.Collections.Generic.Dictionary`2<System.String,System.Int32>','.ctor',['System.Runtime.Serialization.SerializationInfo','System.Runtime.Serialization.StreamingContext'])),false);
+  assert.equal(isExtendedBuiltin(ref('System.Collections.Generic.Dictionary`2<System.String,System.Int32>','.ctor',['System.Collections.Generic.IEqualityComparer`1<System.String>'])),true);
   assert.equal(isExtendedBuiltin(ref('System.Linq.Enumerable','Distinct',[sourceType,'System.Collections.Generic.IEqualityComparer`1<System.Int32>'])),false);
   assert.equal(isExtendedBuiltin(ref('System.Linq.Enumerable','Sum',['System.Collections.Generic.IEnumerable`1<System.Decimal>'],'System.Decimal',true)),false);
   assert.equal(isExtendedBuiltin(ref('System.DateTime','ToString',['System.String'],'System.String')),false);

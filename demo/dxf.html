@@ -18,7 +18,7 @@
     <aside class="sidebar" aria-label="Drawing controls">
       <div class="section-label">DRAWING</div>
       <h1>DXF, in your browser.</h1>
-      <p class="intro">The complete netDxf library reads and writes your drawing in a .NET WebAssembly worker. WebGPU draws the extracted geometry.</p>
+      <p class="intro">The complete netDxf library reads and writes your drawing in a .NET WebAssembly worker. WebGPU draws curves, solid fills with holes, masks, and text labels.</p>
       <button id="sample" class="primary" disabled>Create sample drawing</button>
       <button id="open" class="secondary" disabled>Open DXF…</button>
       <input id="file" type="file" accept=".dxf" hidden>
@@ -31,6 +31,8 @@
           <div><b id="entity-count">—</b><span>entities</span></div>
           <div><b id="layer-count">—</b><span>layers</span></div>
           <div><b id="segment-count">—</b><span>segments</span></div>
+          <div><b id="triangle-count">—</b><span>fill triangles</span></div>
+          <div><b id="text-count">—</b><span>text labels</span></div>
           <div><b id="load-time">—</b><span>load / extract</span></div>
         </div>
         <div class="export-actions"><button id="export-text" class="secondary" disabled>↓ Text DXF</button><button id="export-binary" class="secondary" disabled>↓ Binary DXF</button></div>
@@ -65,7 +67,7 @@
       <div class="status-bar"><span class="status-dot" aria-hidden="true"></span><span id="status" role="status" aria-live="polite">Loading application modules…</span><span id="operation-time"></span></div>
       <div id="error" class="error-banner" role="alert" hidden></div>
       <section id="issue-panel" class="issue-panel" aria-label="Drawing issues" hidden><div class="section-heading"><strong id="issue-title">Drawing notices</strong></div><ul id="issues"></ul></section>
-      <details class="kernel-panel"><summary>Compare compiled netDxf geometry</summary><p>Compile selected netDxf mathematics to native WebAssembly and JavaScript, then compare real results with managed Wasm. This experiment covers scalar geometry methods; the full DXF parser continues to run in .NET WebAssembly.</p><button id="compare-kernels" class="secondary" disabled>Compile &amp; compare geometry</button><div id="kernel-results" class="kernel-results" aria-live="polite">Runs on demand. The sample drawing is unchanged.</div></details>
+      <details class="kernel-panel"><summary>Compare compiled netDxf geometry</summary><p>Compile selected netDxf geometry, entity constructors, and color operations to native WebAssembly and JavaScript, then compare real results with managed Wasm. This experiment covers the listed exported methods; the full DXF parser continues to run in .NET WebAssembly.</p><button id="compare-kernels" class="secondary" disabled>Compile &amp; compare geometry</button><div id="kernel-results" class="kernel-results" aria-live="polite">Runs on demand. The sample drawing is unchanged.</div></details>
       <details class="activity-panel"><summary>Runtime activity <span id="activity-count">0 events</span></summary><pre id="activity" role="log" aria-live="off">Loading application modules…</pre></details>
       <details class="usage-panel"><summary>Use this in your app</summary><p>Import the reusable library and renderer. Parsing and saving run through the complete managed netDxf assembly; the scene contains the supported display primitives and per-entity issues.</p><pre><code>import { createRoslyn } from '../src/browser.js';
 import { createNetDxf, createDxfRenderer } from '../src/dxf/index.js';

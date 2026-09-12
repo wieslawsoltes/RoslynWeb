@@ -2,6 +2,7 @@
  * preserve comparer semantics, and deliberately reject culture-sensitive collation.
  */
 import { ManagedException, Numeric, i4, copyValue } from './runtime.mjs';
+import { delegateEquals } from './events.mjs';
 import { ILExecutionError } from './capabilities.mjs';
 import { sequenceItems } from './framework.mjs';
 const G = 'System.Collections.Generic.';
@@ -98,6 +99,7 @@ function equals(rt,a,b) {
   if(a?.$box&&b?.$box&&a.$type!==b.$type)return false;
   if(a?.$box)a=a.value;if(b?.$box)b=b.value;
   const av=raw(a),bv=raw(b);if(av===bv||Number.isNaN(av)&&Number.isNaN(bv))return true;if(av==null||bv==null)return false;
+  if(a?.$delegate)return delegateEquals(a,b);
   const fn=managedMethod(rt,a,'Equals',1);if(fn)return !!raw(rt.invokeManaged(fn,[b],a));
   if(a?.$valueType&&b?.$valueType&&a.$type===b.$type){if('$ticks'in a)return a.$ticks===b.$ticks;const k=Object.keys(a.fields??{});return k.length===Object.keys(b.fields??{}).length&&k.every(key=>equals(rt,a.fields[key],b.fields[key]));}return false;
 }

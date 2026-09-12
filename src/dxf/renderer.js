@@ -1,4 +1,5 @@
 import { tessellateDxfScene, validateDxfGeometry } from './geometry.js';
+import { prepareDxfText } from './text.js';
 
 // One orthographic XY projection, shared by both topology pipelines. Z remains in
 // scene buffers for consumers that provide their own 3D rendering implementation.
@@ -13,6 +14,21 @@ struct VertexOutput { @builtin(position) position: vec4f, @location(0) color: ve
   return output;
 }
 @fragment fn fragmentMain(input: VertexOutput) -> @location(0) vec4f { return input.color; }
+`;
+const TEXT_SHADER = `
+struct View { transform: vec4f }
+@group(0) @binding(0) var<uniform> view: View;
+@group(1) @binding(0) var textSampler: sampler;
+@group(1) @binding(1) var textTexture: texture_2d<f32>;
+struct VertexOutput { @builtin(position) position: vec4f, @location(0) uv: vec2f, @location(1) color: vec4f }
+@vertex fn vertexMain(@location(0) position: vec3f, @location(1) uv: vec2f, @location(2) color: vec4f) -> VertexOutput {
+  var output: VertexOutput;
+  output.position = vec4f((position.xy - view.transform.zw) * view.transform.xy, 0.0, 1.0);
+  output.uv = uv; output.color = color; return output;
+}
+@fragment fn fragmentMain(input: VertexOutput) -> @location(0) vec4f {
+  return vec4f(input.color.rgb, input.color.a * textureSample(textTexture, textSampler, input.uv).a);
+}
 `;
 const USAGE = { COPY_DST: 0x0008, VERTEX: 0x0020, UNIFORM: 0x0040 };
 function failure(message, code, cause) { const e = new Error(message, cause ? { cause } : undefined); e.code = code; return e; }
@@ -48,6 +64,7 @@ class DxfRenderer {
     this.canvas = canvas; this.device = device; this.context = context;
     this.options = options; this.ownsDevice = ownsDevice;
     this.geometry = null; this.buffers = {}; this.visibility = new Map();
+    this.textResources = []; this.displayBounds = null;
     this.camera = { x: 0, y: 0, scale: 1 };
     this.disposed = false; this.lost = null; this.frame = null; this.listeners = [];
     this.width = 1; this.height = 1; this.frames = 0; this.drawCalls = 0;
@@ -55,6 +72,8 @@ class DxfRenderer {
     if (!Array.isArray(this.background) || this.background.length !== 4 || !this.background.every(v => Number.isFinite(v) && v >= 0 && v <= 1)) throw new RangeError('background must have four normalized color components.');
     this.maxBufferBytes = options.maxBufferBytes ?? 256 * 1024 * 1024;
     if (!Number.isSafeInteger(this.maxBufferBytes) || this.maxBufferBytes < 16) throw new RangeError('maxBufferBytes must be an integer of at least 16.');
+    this.maxTextTextureBytes = options.maxTextTextureBytes ?? 64 * 1024 * 1024;
+    if (!Number.isSafeInteger(this.maxTextTextureBytes) || this.maxTextTextureBytes < 4) throw new RangeError('maxTextTextureBytes must be a positive integer of at least four.');
     this.errorListener = event => this.report(failure(event.error?.message ?? 'Uncaptured WebGPU error.', 'WEBGPU_ERROR', event.error));
     device.addEventListener?.('uncapturederror', this.errorListener);
     device.lost?.then(info => {
@@ -88,6 +107,20 @@ class DxfRenderer {
         device.createRenderPipelineAsync(descriptor('line-list')),
         device.createRenderPipelineAsync(descriptor('triangle-list')),
       ]);
+      const textShader = device.createShaderModule({ label: 'DXF text coverage shader', code: TEXT_SHADER });
+      this.textLayout = device.createBindGroupLayout({ entries: [
+        { binding: 0, visibility: 2, sampler: { type: 'filtering' } },
+        { binding: 1, visibility: 2, texture: { sampleType: 'float' } },
+      ] });
+      const textDescriptor = descriptor('triangle-list');
+      textDescriptor.label = 'DXF shaped Unicode text';
+      textDescriptor.layout = device.createPipelineLayout({ bindGroupLayouts: [layout, this.textLayout] });
+      textDescriptor.vertex = { module: textShader, entryPoint: 'vertexMain', buffers: [
+        { arrayStride: 20, attributes: [{ shaderLocation: 0, offset: 0, format: 'float32x3' }, { shaderLocation: 1, offset: 12, format: 'float32x2' }] },
+        { arrayStride: 16, attributes: [{ shaderLocation: 2, offset: 0, format: 'float32x4' }] },
+      ] };
+      textDescriptor.fragment.module = textShader;
+      this.textPipeline = await device.createRenderPipelineAsync(textDescriptor);
       this.uniform = device.createBuffer({ label: 'DXF view', size: 16, usage: USAGE.UNIFORM | USAGE.COPY_DST });
       this.bindGroup = device.createBindGroup({ layout, entries: [{ binding: 0, resource: { buffer: this.uniform } }] });
     } catch (error) { pipelineError = error; }
@@ -108,7 +141,7 @@ class DxfRenderer {
   report(error) { this.options.onError?.(error); }
   get stats() {
     const g = this.geometry;
-    return { lineSegments: g?.lines.positions.length / 6 || 0, triangles: g?.triangles.positions.length / 9 || 0, vertices: (g?.lines.positions.length ?? 0) / 3 + (g?.triangles.positions.length ?? 0) / 3, drawCalls: this.drawCalls, frames: this.frames, width: this.canvas.width, height: this.canvas.height, disposed: this.disposed, lost: Boolean(this.lost) };
+    return { lineSegments: g?.lines.positions.length / 6 || 0, triangles: g?.triangles.positions.length / 9 || 0, textQuads: this.textResources.length, vertices: (g?.lines.positions.length ?? 0) / 3 + (g?.triangles.positions.length ?? 0) / 3 + this.textResources.length * 6, drawCalls: this.drawCalls, frames: this.frames, width: this.canvas.width, height: this.canvas.height, disposed: this.disposed, lost: Boolean(this.lost) };
   }
   setScene(scene, options = {}) {
     this.assertActive();
@@ -123,19 +156,62 @@ class DxfRenderer {
     const deviceLimit = this.device.limits?.maxBufferSize ?? 256 * 1024 * 1024;
     if (arrays.some(a => a.byteLength > deviceLimit) || arrays.reduce((sum, a) => sum + a.byteLength, 16) > this.maxBufferBytes) throw failure('DXF geometry exceeds the GPU buffer budget. Increase tessellation tolerance or maxBufferBytes.', 'DXF_GPU_BUFFER_LIMIT');
     const replacement = {};
+    const replacementTexts = [], textIssues = [];
+    let displayBounds = geometry.bounds;
     try {
+      // Browser shaping supplies glyph coverage only. Every final label is drawn
+      // by the WebGPU text pipeline with world-space position and layer ordering.
+      let textureBytes = 0;
+      const textLayouts = (geometry.texts ?? []).map(text => {
+        const layout = prepareDxfText(text, { ...this.options.text, maxTextureDimension: Math.min(this.options.text?.maxTextureDimension ?? 4096, this.device.limits?.maxTextureDimension2D ?? 8192) });
+        textureBytes += layout.width * layout.height * 4;
+        if (textureBytes > this.maxTextTextureBytes) throw failure('DXF text exceeds the GPU texture budget.', 'DXF_TEXT_TEXTURE_LIMIT');
+        for (const issue of layout.issues) textIssues.push({ ...issue, entityIndex: text.entityIndex, type: text.type });
+        return layout;
+      });
+      const totalBufferBytes = arrays.reduce((sum, a) => sum + a.byteLength, 16) + textLayouts.length * 6 * 36;
+      if (totalBufferBytes > this.maxBufferBytes) throw failure('DXF geometry and text exceed the GPU buffer budget.', 'DXF_GPU_BUFFER_LIMIT');
+      const triangleColors = geometry.draws?.some(draw => draw.kind === 'mask') ? geometry.triangles.colors.slice() : geometry.triangles.colors;
+      for (const draw of geometry.draws ?? []) if (draw.kind === 'mask') for (let i = draw.first; i < draw.first + draw.count; i++) triangleColors.set([...this.background.slice(0, 3), 1], i * 4);
       for (const name of ['lines', 'triangles']) {
         replacement[name] = {};
         for (const attribute of ['positions', 'colors']) {
-          const array = geometry[name][attribute];
+          const array = name === 'triangles' && attribute === 'colors' ? triangleColors : geometry[name][attribute];
           if (!array.byteLength) continue;
           const buffer = this.device.createBuffer({ label: `DXF ${name} ${attribute}`, size: array.byteLength, usage: USAGE.VERTEX | USAGE.COPY_DST });
           replacement[name][attribute] = buffer;
           this.device.queue.writeBuffer(buffer, 0, array);
         }
       }
-    } catch (error) { this.destroyBuffers(replacement); throw error; }
+      if (textLayouts.length) {
+        const b = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
+        const include = p => { b.minX = Math.min(b.minX, p[0]); b.minY = Math.min(b.minY, p[1]); b.maxX = Math.max(b.maxX, p[0]); b.maxY = Math.max(b.maxY, p[1]); };
+        for (const batch of [geometry.lines, geometry.triangles]) for (let i = 0; i < batch.positions.length; i += 3) include([batch.positions[i] + geometry.origin[0], batch.positions[i + 1] + geometry.origin[1]]);
+        const sampler = this.device.createSampler({ magFilter: 'linear', minFilter: 'linear' });
+        for (let index = 0; index < textLayouts.length; index++) {
+          const layout = textLayouts[index], text = geometry.texts[index], resource = {};
+          replacementTexts.push(resource);
+          const vertices = new Float32Array(6 * 5), colors = new Float32Array(6 * 4), uv = [[0, 0], [1, 0], [1, 1], [0, 1]];
+          [0, 1, 2, 0, 2, 3].forEach((corner, vertex) => {
+            const p = layout.corners[corner]; include(p);
+            vertices.set([p[0] - geometry.origin[0], p[1] - geometry.origin[1], p[2] - geometry.origin[2], ...uv[corner]], vertex * 5);
+            const rgba = text.color ?? [1, 1, 1, 1];
+            colors.set([rgba[0], rgba[1], rgba[2], rgba[3] ?? 1], vertex * 4);
+          });
+          if (!vertices.every(Number.isFinite)) throw failure('Text bounds exceed Float32 geometry limits.', 'DXF_TEXT_BOUNDS_LIMIT');
+          resource.positions = this.device.createBuffer({ label: 'DXF text quad', size: vertices.byteLength, usage: USAGE.VERTEX | USAGE.COPY_DST });
+          resource.colors = this.device.createBuffer({ label: 'DXF text color', size: colors.byteLength, usage: USAGE.VERTEX | USAGE.COPY_DST });
+          this.device.queue.writeBuffer(resource.positions, 0, vertices); this.device.queue.writeBuffer(resource.colors, 0, colors);
+          resource.texture = this.device.createTexture({ label: 'DXF shaped text coverage', size: [layout.width, layout.height, 1], format: 'rgba8unorm', usage: 0x02 | 0x04 | 0x10 });
+          this.device.queue.copyExternalImageToTexture({ source: layout.canvas }, { texture: resource.texture }, [layout.width, layout.height]);
+          resource.bindGroup = this.device.createBindGroup({ layout: this.textLayout, entries: [{ binding: 0, resource: sampler }, { binding: 1, resource: resource.texture.createView() }] });
+        }
+        displayBounds = b;
+      }
+    } catch (error) { this.destroyBuffers(replacement); this.destroyTextResources(replacementTexts); throw error; }
     this.destroyBuffers(this.buffers); this.buffers = replacement;
+    this.destroyTextResources(this.textResources); this.textResources = replacementTexts; this.displayBounds = displayBounds;
+    for (const issue of textIssues) if (!geometry.issues.some(old => old.code === issue.code && old.entityIndex === issue.entityIndex && old.message === issue.message)) geometry.issues.push(issue);
     this.geometry = geometry;
     this.visibility = new Map(geometry.layers.map(layer => [layer.name, layer.visible !== false]));
     for (const layer of geometry.layerStates ?? []) this.visibility.set(layer.name, layer.visible !== false);
@@ -143,6 +219,7 @@ class DxfRenderer {
     return this;
   }
   destroyBuffers(buffers) { for (const batch of Object.values(buffers)) for (const buffer of Object.values(batch)) buffer.destroy(); }
+  destroyTextResources(resources) { for (const resource of resources) { resource.positions?.destroy(); resource.colors?.destroy(); resource.texture?.destroy(); } }
   setLayerVisibility(name, visible) {
     this.assertActive();
     if (!this.visibility.has(name)) return false;
@@ -151,7 +228,7 @@ class DxfRenderer {
   fit(padding = 0.08) {
     this.assertActive(); finite(padding, 'padding');
     if (padding < 0 || padding >= 0.5) throw new RangeError('padding must be between zero and 0.5.');
-    const b = this.geometry?.bounds;
+    const b = this.displayBounds ?? this.geometry?.bounds;
     if (!b) return this;
     this.camera.x = b.minX / 2 + b.maxX / 2; this.camera.y = b.minY / 2 + b.maxY / 2;
     const range = Math.max(b.maxX - b.minX, b.maxY - b.minY, 1e-9);
@@ -222,7 +299,23 @@ class DxfRenderer {
     const encoder = this.device.createCommandEncoder({ label: 'DXF frame' });
     const pass = encoder.beginRenderPass({ colorAttachments: [{ view: this.context.getCurrentTexture().createView(), clearValue: this.background, loadOp: 'clear', storeOp: 'store' }] });
     pass.setBindGroup(0, this.bindGroup); this.drawCalls = 0;
-    if (geometry) for (const name of ['triangles', 'lines']) {
+    if (geometry?.draws) for (const draw of geometry.draws) {
+      if (!draw.count || !draw.visibilityLayers.every(name => this.visibility.get(name) !== false)) continue;
+      if (draw.kind === 'text') {
+        pass.setPipeline(this.textPipeline);
+        for (let i = draw.first; i < draw.first + draw.count; i++) {
+          const resource = this.textResources[i];
+          pass.setBindGroup(1, resource.bindGroup); pass.setVertexBuffer(0, resource.positions); pass.setVertexBuffer(1, resource.colors);
+          pass.draw(6, 1, 0, 0); this.drawCalls++;
+        }
+      } else {
+        const name = draw.kind === 'lines' ? 'lines' : 'triangles', buffers = this.buffers[name];
+        pass.setPipeline(name === 'lines' ? this.linePipeline : this.trianglePipeline);
+        pass.setVertexBuffer(0, buffers.positions); pass.setVertexBuffer(1, buffers.colors);
+        pass.draw(draw.count, 1, draw.first, 0); this.drawCalls++;
+      }
+    }
+    else if (geometry) for (const name of ['triangles', 'lines']) {
       const buffers = this.buffers[name];
       if (!buffers?.positions) continue;
       pass.setPipeline(name === 'lines' ? this.linePipeline : this.trianglePipeline);
@@ -268,6 +361,7 @@ class DxfRenderer {
     for (const remove of this.listeners) remove(); this.listeners.length = 0;
     this.device.removeEventListener?.('uncapturederror', this.errorListener);
     this.destroyBuffers(this.buffers); this.buffers = {}; this.uniform?.destroy();
+    this.destroyTextResources(this.textResources); this.textResources = []; this.displayBounds = null;
     this.context.unconfigure?.(); if (this.ownsDevice) this.device.destroy();
     this.geometry = null; this.visibility.clear();
   }

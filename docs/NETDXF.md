@@ -113,6 +113,9 @@ for (const backend of ['wasm', 'native-wasm', 'javascript']) {
   const kernel = await createNetDxfKernel({ compiler, backend });
   try {
     console.log(backend, await kernel.invoke('Distance2', [0, 0, 3, 4])); // 5
+    console.log(await kernel.invoke('LineLength', [0, 0, 0, 2, 3, 6])); // 7
+    console.log(await kernel.invoke('CircleArea', [5])); // 78.53981633974483
+    console.log(await kernel.invoke('TrueColorArgb', [12, 34, 56])); // -15982024
     console.log(kernel.info);
   } finally {
     kernel.dispose();
@@ -120,7 +123,7 @@ for (const backend of ['wasm', 'native-wasm', 'javascript']) {
 }
 ```
 
-The seven exported operations are `Distance2`, `Distance3`, `RotateX`, `RotateY`, `CrossZ`, `NormalizeAngle`, and `CubicBezierCoordinate`. Their signatures are in `src/dxf/NetDxfKernel.cs`. `wasm` supplies the managed reference result; the other two backends execute emitted code. Kernel compilation is opt-in so document startup does not inspect and translate a library unnecessarily. Repeated emissions reuse RoslynWeb's compiler caches.
+The eleven exported operations are `Distance2`, `Distance3`, `RotateX`, `RotateY`, `CrossZ`, `NormalizeAngle`, `CubicBezierCoordinate`, `LineLength`, `CircleArea`, `ArcSweep`, and `TrueColorArgb`. The entity operations construct actual netDxf `Line`, `Circle`, and `Arc` instances; the color operation uses `AciColor.ToColor`. Their validation exceptions are preserved. Their signatures are in `src/dxf/NetDxfKernel.cs`. `wasm` supplies the managed reference result; the other two backends execute emitted code. Kernel compilation is opt-in so document startup does not inspect and translate a library unnecessarily. Repeated emissions reuse RoslynWeb's compiler caches.
 
 The JavaScript compiler now accepts an explicit `exports` selection. It retains reachable calls, delegates, virtual implementations, required type initializers, and known framework callbacks before applying strict compatibility checks. Reflection/dynamic-dispatch surfaces conservatively retain the whole input. Selecting a geometry kernel does not certify unselected reader/writer methods. The native Wasm compiler uses its existing export selection.
 
@@ -132,7 +135,7 @@ The reproducible outputs in `dist/netdxf/` include the library DLL, scene bridge
 
 ## Rendering and compatibility boundaries
 
-The renderer is a top/XY CAD viewport with actual WebGPU one-pixel line and triangle pipelines. It retains Z but does not provide a 3D camera or full linetype/lineweight styling. It preserves world coordinates in the scene and rebases GPU coordinates near the drawing center before converting to Float32. Layer visibility changes reuse uploaded buffers; pan/zoom update camera uniforms. Curve tessellation has an explicit tolerance and geometry budget. These choices avoid reparsing DXF or repeatedly uploading geometry during navigation.
+The renderer is a top/XY CAD viewport with actual WebGPU one-pixel line, triangle, and textured-label pipelines. It retains Z but does not provide a 3D camera or full linetype/lineweight styling. It preserves world coordinates in the scene and rebases GPU coordinates near the drawing center before converting to Float32. Layer visibility changes reuse uploaded buffers; pan/zoom update camera uniforms. Curve tessellation has an explicit tolerance and geometry budget. These choices avoid reparsing DXF or repeatedly uploading geometry during navigation.
 
 | Entity surface | Viewer behavior |
 | --- | --- |
@@ -141,19 +144,32 @@ The renderer is a top/XY CAD viewport with actual WebGPU one-pixel line and tria
 | Block inserts | Nested transforms, block origins, nonuniform scale, layer-zero inheritance, ByBlock colors, and ancestor layer visibility |
 | Solid, trace and 3D face | Filled triangle geometry |
 | Mesh, polyface and polygon mesh | Face geometry or wireframe/control cage; subdivision limitations are reported |
-| Existing dimension blocks, leader, MLine | Available line/curve/block geometry; text remains a reported limitation |
-| Hatch and wipeout | Boundaries; missing pattern/fill/masking behavior is reported |
-| Text, attributes, raster images and other unsupported visuals | Structured issues with entity type/handle; original managed entities remain available to the library's writer |
+| Existing dimension blocks, leader, MLine | Available line/curve/block geometry and supported TEXT/MTEXT labels |
+| Solid hatch | Coplanar perimeter triangulation with holes and nested islands; Normal, Outer, and Ignore styles; tilted planes and nested transforms |
+| Pattern hatch | Boundaries with an explicit missing-pattern notice |
+| Wipeout | Background-color mask at its extracted position in display order; unsupported DXF sort-table ordering is reported |
+| TEXT, MTEXT and attributes | Unicode browser font shaping, paragraph wrapping, alignment, rotation, width factor, oblique angle, OCS and block transforms; final rendering uses WebGPU |
+| Raster images and other unsupported visuals | Structured issues with entity type/handle; original managed entities remain available to the library's writer |
 
 Block-contained curves and splines are flattened by netDxf with the bridge's reported 192-point precision where needed; the renderer's tolerance settings apply to curve DTOs it receives. Display toggles do not change the saved drawing's original layer settings. Only the document's active/model layout is shown by this sample.
 
-The viewer has a defined entity surface. Unsupported entities are reported in structured issues; they remain in the original managed document for netDxf export. The viewer does not implement an AutoCAD graphics engine, font/SHX rendering, image loading, layout printing, every dimension presentation, or every hatch pattern. Browser execution also cannot access an arbitrary local filesystem or native CAD plug-in. The pinned library's own format and fidelity limits continue to apply. Invalid/non-finite scene coordinates that cannot be represented in JSON are rejected without retaining an inaccessible document handle.
+The viewer has a defined entity surface. Unsupported entities are reported in structured issues; they remain in the original managed document for netDxf export. The viewer does not implement an AutoCAD graphics engine, CAD SHX font programs, image loading, layout printing, every dimension presentation, or every hatch pattern. Browser font substitution and unimplemented MTEXT rich formatting are reported; browser fonts do not guarantee CAD-exact text metrics. Browser execution also cannot access an arbitrary local filesystem or native CAD plug-in. The pinned library's own format and fidelity limits continue to apply. Invalid/non-finite scene coordinates that cannot be represented in JSON are rejected without retaining an inaccessible document handle.
 
 The upstream library supports text and binary DXF versions AutoCAD 2000, 2004, 2007, 2010, 2013, and 2018. It does not read DWG; its upstream documentation excludes proprietary REGION, SURFACE and 3DSOLID data and dynamic blocks. A complete source build cannot restore information the upstream parser does not support. See the [pinned upstream README](https://github.com/wieslawsoltes/netDxf/blob/5b562312f683fc635405c149537ca488e4ec4d39/README.md).
 
 Whole-library direct native-Wasm and JavaScript compilation are checked separately from managed execution. Unsupported calls and types cause strict compilation diagnostics. Do not infer whole-library compatibility from a successful selected geometry kernel. The executable backend report in `docs/netdxf-backends-verification.json` records the exact tested exports, oracle comparisons, remaining diagnostic counts and representative failures.
 
-At this pinned source revision, whole-library strict emission reports **1,019 JavaScript diagnostics** and **1,301 native-Wasm diagnostics** under the native compiler's default selection of closed public static exports and their reachable methods. The native probe does not enumerate every instance method as an independent export. These count unsupported call sites, fields and type uses, not unique missing features. Remaining dependencies include text/number formatting and globalization, delegate/event and threading APIs, tuple/framework overloads, `System.Drawing.Color`, and parts of stream/file/encoding and reflection behavior. Reader/writer execution is therefore routed through the managed Wasm library. Seven selected geometry methods emit with zero compatibility diagnostics and match 179 managed-oracle input cases on both generated backends. Argument exception overloads and implicit callback retention were extended to make those compiler paths work correctly.
+At this pinned source revision, whole-library strict emission reports **335 JavaScript diagnostics** (previously 1,019) and **616 native-Wasm diagnostics** (previously 1,301), under the native compiler's default selection of closed public static exports and their reachable methods. The native probe does not enumerate every instance method as an independent export. These count unsupported call sites, fields and type uses, not unique missing features. Remaining dependencies include span/composite string formatting, current-culture behavior, tuples, collection enumerator value layouts, stream/file/encoding APIs and reflection. Reader/writer execution is therefore routed through the managed Wasm library. The explicit reader/writer wrapper still reports 337 JS and 600 native-Wasm diagnostics.
+
+Eleven selected geometry, entity and color methods emit with zero compatibility diagnostics and match 279 managed-oracle input cases on both generated backends. The separate entity suite exercises constructor validation, property mutations, layer events, polyline operations, indexed colors and exceptions. Cloning is a separate unsupported probe: its conservative virtual `ICloneable` call graph reaches broader unimplemented framework behavior. No source methods are removed from the complete managed netDxf DLL.
+
+## Integration issues found and handled
+
+- The pinned netDxf reader skips HATCH polyline boundary group 73, and its boundary clone omits `IsClosed`. After export/reload, this loses the closing edge or closing bulge. The scene bridge closes only the temporary converted perimeter before tessellation. All 272 vendor sources remain byte-for-byte pinned. The managed curved-boundary tests cover ASCII, binary, opposite-format reload, clockwise and counterclockwise arcs/ellipses, both bulge signs, and tilted block transforms.
+- The bundled .NET 10.0.0 WebAssembly interpreter differs from native .NET for two repeated multicast delegate sequence-removal cases. `Delegate.RemoveAll(sequence + sequence, sequence)` throws `System.IndexOutOfRangeException`; nested `Delegate.Remove` returns an incorrect non-null result. The generated JavaScript/native-Wasm delegate implementation passes the native CLR oracle for these cases. `tests/events-verify-native.mjs` reproduces the native baseline, and `tests/events-integration.mjs` records the managed-Wasm discrepancy without treating it as correct expected behavior.
+- The current JSON metadata transport replaces isolated UTF-16 surrogate code units in string literals. Ordinal comparison fixtures construct those code units from `char[]` at runtime to test the comparison implementation independently. Valid Unicode strings and normal surrogate pairs work. No full arbitrary-string metadata-fidelity claim is made for this unresolved transport case.
+
+See [CAD framework services](cad-bcl.md) and [numeric formatting](CAD-NUMERIC-FORMATTING.md) for exact admitted signatures, providers, and runtime value restrictions. A supported signature can still contain an unsupported culture or format value; such execution fails explicitly and is never rerun automatically on another backend.
 
 ## Observed performance
 
@@ -161,14 +177,14 @@ These are local verification observations, not a cross-device benchmark. Reports
 
 | Operation | Observed result |
 | --- | --- |
-| Full 272-file source build in Node-hosted .NET Wasm, including startup and bridge | About 24.7 seconds |
-| Full source compilation in Chromium sample | About 25.7 seconds for the tested source-mode restart |
-| Prebuilt library/sample startup over localhost | About 1.4 seconds |
+| Full 272-file source build in Node-hosted .NET Wasm, including startup and bridge | About 26.7 seconds |
+| Full source compilation in Chromium sample | About 26.1 seconds for the tested source-mode restart |
+| Prebuilt library/sample startup over localhost | About 1.8 seconds |
 | Compiled library | 767,488 bytes; all source files retained |
-| Managed scene bridge | 31,744 bytes |
-| Generated sample display | 989 line segments and two triangles |
+| Managed scene bridge | 39,936 bytes |
+| Generated sample display | 989 line segments, 637 triangles, and four text labels |
 
-Use the prebuilt path for normal startup and keep one compiler/session alive for repeated operations. The sample creates GPU buffers once per drawing; view/layer changes submit new frames without reloading the library or recompiling C#.
+Use the prebuilt path for normal startup and keep one compiler/session alive for repeated operations. The sample creates GPU buffers and label textures once per drawing; view/layer changes submit new frames without reloading the library, reshaping text, or recompiling C#. Text texture and buffer budgets bound GPU allocations. Unsupported crossing, touching, self-intersecting, or nonplanar hatch boundaries produce issues instead of an invented fill.
 
 ## Verification
 

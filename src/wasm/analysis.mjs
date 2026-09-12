@@ -1,3 +1,4 @@
+import { isEventField, isEventHandlerType } from '../il/events.mjs';
 import { isBuiltinCandidate } from '../il/compiler.mjs';
 import { genericDefinitionName, matchesMethodReference, splitTypeArguments, substituteType } from '../il/generics.mjs';
 import { buildExceptionPlan } from './exceptions.mjs';
@@ -9,7 +10,7 @@ const primitiveKinds = new Map([
   ['System.Int64','i64'], ['System.UInt64','i64'], ['System.Single','f32'], ['System.Double','f64'],
   ['int','i32'], ['uint','i32'], ['long','i64'], ['ulong','i64'], ['float','f32'], ['double','f64'], ['bool','i32'],
 ]);
-export const nativeFrameworkEnums = new Map([['System.MidpointRounding','System.Int32'],['System.Globalization.NumberStyles','System.Int32']]);
+export const nativeFrameworkEnums = new Map([['System.MidpointRounding','System.Int32'],['System.Globalization.NumberStyles','System.Int32'],['System.StringComparison','System.Int32']]);
 const unsupportedValueTypes = /^System\.(?:Decimal|DateTime|DateTimeOffset|TimeSpan|DateOnly|TimeOnly|Guid|Nullable`1|ValueTuple(?:`\d+)?|Collections\.Generic\.KeyValuePair`2)(?:<|$)/;
 const forbiddenReferences = /(?:System\.(?:Span|ReadOnlySpan|Memory|ReadOnlyMemory)`1|methodptr\(|\*)/;
 const numericKinds = new Set(['i32','i64','f32','f64']);
@@ -36,6 +37,7 @@ export function wasmType(type, context = {}) {
   if (primitiveKinds.has(type)) return primitiveKinds.get(type);
   if (nativeFrameworkEnums.has(type)) return primitiveKinds.get(nativeFrameworkEnums.get(type));
   if (/\[[,]*\]$/.test(type)) { const element = type.replace(/\[[,]*\]$/, ''); if (!context.validatingTypes?.has(element)) wasmType(element, context); return 'externref'; }
+  if (type === 'System.Drawing.Color') return 'externref';
   if (isStandardValueType(type)) { for (const argument of splitTypeArguments(type)) wasmType(argument,context); return 'externref'; }
   const definition = context.types?.get?.(genericDefinitionName(type));
   if (definition?.isEnum) return wasmType(definition.fields?.find(f => f.name === 'value__')?.type ?? 'System.Int32', context);
@@ -124,10 +126,19 @@ export function analyzeWasmAssembly(model, options = {}) {
     definitionsByToken.set(`${definition.assemblyName}|${definition.token}`,definition);
   }
   const knownValueTypes = new Set(assemblies.flatMap(assembly => assembly.valueTypes ?? []));
-  const contextFor = assemblyName => { if (!contextCache.has(assemblyName)) contextCache.set(assemblyName,{ valueTypes:knownValueTypes, types: { get: name => typesByAssembly.get(`${assemblyName}|${name}`) ?? types.get(name) } }); return contextCache.get(assemblyName); };
+  const contextFor = assemblyName => { if (!contextCache.has(assemblyName)) contextCache.set(assemblyName,{ typeKinds:new Map(), valueTypes:knownValueTypes, types: { get: name => typesByAssembly.get(`${assemblyName}|${name}`) ?? types.get(name) } }); return contextCache.get(assemblyName); };
   const kind = (type, descriptor, instruction, allowVoid = false) => {
-    try { const result = wasmType(type, contextFor(descriptor?.assemblyName)); if (result === null && !allowVoid) throw new TypeError('System.Void is not a value type.'); return result; }
-    catch (error) { report('WASM_UNSUPPORTED_TYPE', error.message, descriptor, instruction); return 'externref'; }
+    // Type graphs are immutable for one analysis. Cache their classification,
+    // including failures, while retaining a diagnostic at every original use.
+    const context = contextFor(descriptor?.assemblyName), key = String(typeName(type) ?? 'System.Void');
+    if (!context.typeKinds.has(key)) {
+      try { context.typeKinds.set(key, {result:wasmType(type, context)}); }
+      catch (error) { context.typeKinds.set(key, {error:error.message}); }
+    }
+    const classification = context.typeKinds.get(key);
+    const error = classification.error ?? (classification.result === null && !allowVoid ? 'System.Void is not a value type.' : null);
+    if (error) { report('WASM_UNSUPPORTED_TYPE', error, descriptor, instruction); return 'externref'; }
+    return classification.result;
   };
   const checkLinkedIdentity = (assemblyName, caller) => {
     if (!caller || assemblyName === caller.assemblyName) return;
@@ -175,14 +186,14 @@ export function analyzeWasmAssembly(model, options = {}) {
       while (type && !visited.has(actual)) {
         visited.add(actual);
         for (const callback of serviceCallbacks.values()) {
-          const key = `${assemblyName}|${actual}|${callback.name}|${callback.count}`;
+          const key = `${assemblyName}|${actual}|${callback.name}|${callback.count}|${callback.keyType ?? ''}`;
           if (serviceRetained.has(key)) continue;
           serviceRetained.add(key);
           for (const method of type.methods ?? []) {
             if (method.isStatic || method.isAbstract || method.isPInvoke || method.isRuntime || method.isExternal || method.genericParameters?.length) continue;
             if (!(method.name === callback.name || method.name.endsWith(`.${callback.name}`)) || method.parameters?.length !== callback.count) continue;
             const parameters=method.parameters.map(p=>substituteType(typeName(p),splitTypeArguments(actual)));
-            if (callback.comparer ? parameters.some(p=>p!=='System.Object') : parameters.some(p=>p!==actual&&p!=='System.Object')) continue;
+            if (callback.comparer ? parameters.some(p=>p!=='System.Object'&&p!==callback.keyType) : parameters.some(p=>p!==actual&&p!=='System.Object')) continue;
             const definition = definitionsByToken.get(`${type.assemblyName}|${method.token}`);
             if (definition) enqueue(definition, {...definition, declaringType:actual});
           }
@@ -205,6 +216,11 @@ export function analyzeWasmAssembly(model, options = {}) {
       serviceCallbacks.set('ToString|0', { name: 'ToString', count: 0 });
       retainServiceCallbacks();
       return;
+    }
+    if (['System.Collections.Generic.Dictionary`2','System.Collections.Generic.HashSet`1'].includes(genericDefinitionName(type))) {
+      const keyType=splitTypeArguments(type)[0];
+      for(const callback of [{name:'Equals',count:2,comparer:true,keyType},{name:'GetHashCode',count:1,comparer:true,keyType},{name:'Equals',count:1},{name:'GetHashCode',count:0}]) serviceCallbacks.set(`${callback.name}|${callback.count}|${keyType}`,callback);
+      retainServiceCallbacks();
     }
     const structural = ['System.Collections.IStructuralEquatable','System.Collections.IStructuralComparable','System.Collections.IEqualityComparer','System.Collections.IComparer'].includes(type);
     if (!structural && !isStandardValueType(type) && !['System.IComparable','System.IComparable`1','System.IEquatable`1'].includes(genericDefinitionName(type))) return;
@@ -270,11 +286,21 @@ export function analyzeWasmAssembly(model, options = {}) {
     if (!resolvedRef || typeof resolvedRef !== 'object' || !Array.isArray(resolvedRef.parameters)) { report('WASM_METHOD_SIGNATURE', 'Call operands require resolved parameter metadata.', descriptor, instruction); return null; }
     const params = [...(!resolvedRef.isStatic && opcodeOf(instruction) !== 'newobj' ? ['externref'] : []), ...resolvedRef.parameters.map(p => kind(typeName(p), descriptor, instruction))];
     const declaringDefinition = typesByAssembly.get(`${resolvedRef.assemblyName ?? descriptor.assemblyName}|${genericDefinitionName(resolvedRef.declaringType)}`) ?? types.get(genericDefinitionName(resolvedRef.declaringType));
-    const isDelegate = /^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(resolvedRef.declaringType) || ['System.Delegate','System.MulticastDelegate'].includes(declaringDefinition?.baseType);
+    const isDelegate = isEventHandlerType(resolvedRef.declaringType) || /^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(resolvedRef.declaringType) || ['System.Delegate','System.MulticastDelegate'].includes(declaringDefinition?.baseType);
     if (isDelegate && opcodeOf(instruction) === 'newobj' && resolvedRef.name === '.ctor' && params.length === 2) params[1] = 'externref';
     const result = opcodeOf(instruction) === 'newobj' ? kind(resolvedRef.declaringType, descriptor, instruction) : kind(resolvedRef.returnType, descriptor, instruction, true);
-    const derivedFrom = (type, base, seen = new Set()) => { if (!type || seen.has(`${type.assemblyName}|${type.name}`)) return false; if (type.name === genericDefinitionName(base) || genericDefinitionName(type.baseType) === genericDefinitionName(base)) return true; seen.add(`${type.assemblyName}|${type.name}`); return derivedFrom(typesByAssembly.get(`${type.assemblyName}|${genericDefinitionName(type.baseType)}`) ?? types.get(genericDefinitionName(type.baseType)), base, seen) || (type.interfaces ?? []).some(name => genericDefinitionName(name) === genericDefinitionName(base)); };
-    const virtualImplementations = () => definitions.filter(m => !m.isStatic && !m.isAbstract && !m.isPInvoke && !m.isRuntime && !m.isExternal && (m.name === resolvedRef.name || m.name.endsWith(`.${resolvedRef.name}`)) && m.parameters?.length === resolvedRef.parameters.length && m.parameters.every((p,i) => typeName(p) === typeName(resolvedRef.parameters[i])) && derivedFrom(m.$type,resolvedRef.declaringType)).map(m => enqueue(m, { ...resolvedRef, declaringType:m.declaringType }));
+    const derivedFrom = (type, base, seen = new Set()) => {
+      if (!type || seen.has(`${type.assemblyName}|${type.name}`)) return false;
+      if (type.name === genericDefinitionName(base)) return true;
+      seen.add(`${type.assemblyName}|${type.name}`);
+      return [type.baseType,...(type.interfaces ?? [])].filter(Boolean).some(name=>genericDefinitionName(name)===genericDefinitionName(base)||derivedFrom(typesByAssembly.get(`${type.assemblyName}|${genericDefinitionName(name)}`) ?? types.get(genericDefinitionName(name)),base,seen));
+    };
+    const virtualImplementations = () => {
+      // Static calls and finite runtime services never require this graph walk.
+      const receiverTypes=[...typesByAssembly.values()].filter(type=>derivedFrom(type,resolvedRef.declaringType));
+      const dispatchOwner=method=>derivedFrom(method.$type,resolvedRef.declaringType)||receiverTypes.some(receiver=>derivedFrom(receiver,method.declaringType));
+      return definitions.filter(m => !m.isStatic && !m.isAbstract && !m.isPInvoke && !m.isRuntime && !m.isExternal && (m.name === resolvedRef.name || m.name.endsWith(`.${resolvedRef.name}`)) && m.parameters?.length === resolvedRef.parameters.length && m.parameters.every((p,i) => typeName(p) === typeName(resolvedRef.parameters[i])) && dispatchOwner(m)).map(m => enqueue(m, { ...resolvedRef, declaringType:m.declaringType }));
+    };
     if (opcodeOf(instruction) === 'callvirt' && (definition?.isAbstract || !definition && types.get(genericDefinitionName(resolvedRef.declaringType))?.attributes?.includes('Interface'))) {
       const targets = virtualImplementations();
       if (targets.length) { const call = { kind:'virtual', targetId:null, virtualTargets:targets.map(m => m.id), virtual:true, ref:resolvedRef, params,result }; calls.set(methodSignature(resolvedRef),call); return call; }
@@ -288,7 +314,7 @@ export function analyzeWasmAssembly(model, options = {}) {
       if (resolvedRef.isStatic || opcodeOf(instruction) === 'newobj') ensureInitializer(resolvedRef.declaringType, target.assemblyName, descriptor, instruction);
       calls.set(target.key, call); return call;
     }
-    if (isNativeWasmBuiltin(resolvedRef) || isDelegate && ['.ctor','Invoke'].includes(resolvedRef.name)) { noteServiceCall(resolvedRef); const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
+    if (isNativeWasmBuiltin(resolvedRef) || isDelegate && !isEventHandlerType(resolvedRef.declaringType) && ['.ctor','Invoke'].includes(resolvedRef.name)) { noteServiceCall(resolvedRef); const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
     report(definition?.isPInvoke ? 'WASM_PINVOKE' : definition?.isAbstract ? 'WASM_ABSTRACT_DISPATCH' : 'WASM_UNRESOLVED_CALL', `No native WebAssembly implementation or supported runtime service for '${methodSignature(resolvedRef)}'.`, descriptor, instruction);
     return { kind:'unresolved', ref:resolvedRef, params, result };
   };
@@ -394,7 +420,7 @@ export function analyzeWasmAssembly(model, options = {}) {
         const fieldType = kind(operand?.type, descriptor, instruction), declaring = typesByAssembly.get(`${operand?.assemblyName ?? descriptor.assemblyName}|${genericDefinitionName(operand?.declaringType)}`) ?? types.get(genericDefinitionName(operand?.declaringType));
         const known = declaring?.fields?.some(f => f.name === operand?.name);
         if (declaring) checkLinkedIdentity(declaring.assemblyName,descriptor);
-        if (!known && !isStandardValueField(operand) && !(op === 'ldsfld' && ['System.String::Empty','System.Type::EmptyTypes','System.IntPtr::Zero','System.UIntPtr::Zero'].includes(`${operand?.declaringType}::${operand?.name}`))) report('WASM_UNRESOLVED_FIELD', `No linked storage for '${operand?.declaringType}::${operand?.name}'.`, descriptor, instruction);
+        if (!known && !(op === 'ldsfld' && isEventField(operand)) && !isStandardValueField(operand) && !(op === 'ldsfld' && ['System.String::Empty','System.Type::EmptyTypes','System.IntPtr::Zero','System.UIntPtr::Zero'].includes(`${operand?.declaringType}::${operand?.name}`))) report('WASM_UNRESOLVED_FIELD', `No linked storage for '${operand?.declaringType}::${operand?.name}'.`, descriptor, instruction);
         if (op.startsWith('st')) pop(fieldType); if (!op.includes('sf')) pop('externref'); if (op.startsWith('ld')) push(op.endsWith('a') ? 'externref' : fieldType);
         if (op.includes('sf')) ensureInitializer(operand?.declaringType, operand?.assemblyName ?? declaring?.assemblyName, descriptor, instruction);
       } else if (/^(?:ldind|stind)\.(?:i1|u1|i2|u2|i4|u4|i8|i|r4|r8|ref)$/.test(op)) {

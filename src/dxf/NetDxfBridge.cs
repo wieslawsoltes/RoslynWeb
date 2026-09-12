@@ -30,6 +30,13 @@ public static class NetDxfBridge
         var holes = new Layer("Holes") { Color = new AciColor((byte)255, (byte)176, (byte)86) };
         var construction = new Layer("Construction") { Color = new AciColor((byte)112, (byte)139, (byte)166) };
         var detail = new Layer("Detail") { Color = new AciColor((byte)121, (byte)224, (byte)172) };
+        var annotations = new Layer("Annotations") { Color = new AciColor((byte)224, (byte)233, (byte)242) };
+        var fills = new Layer("Solid fills") { Color = new AciColor((byte)48, (byte)99, (byte)129) };
+        var font = new TextStyle("BrowserSans", "sans-serif", FontStyle.Regular);
+        doc.Entities.Add(new Hatch(HatchPattern.Solid, new[] {
+            new HatchBoundaryPath(new EntityObject[] { new Polyline2D(new[] { new Vector2(45, 25), new Vector2(115, 25), new Vector2(115, 75), new Vector2(45, 75) }, true) }),
+            new HatchBoundaryPath(new EntityObject[] { new Circle(new Vector2(80, 50), 15) })
+        }, false) { Layer = fills });
         doc.Entities.Add(new Polyline2D(new[] {
             new Polyline2DVertex(0, 0), new Polyline2DVertex(150, 0, 0.414213562373095),
             new Polyline2DVertex(160, 10), new Polyline2DVertex(160, 90, 0.414213562373095),
@@ -50,6 +57,16 @@ public static class NetDxfBridge
         doc.Entities.Add(new Insert(bolt, new Vector2(200, 75)) { Layer = detail, Rotation = 30 });
         // Nonuniform block scaling is intentionally exercised by the sample.
         doc.Entities.Add(new Insert(bolt, new Vector2(200, 35)) { Layer = holes, Scale = new Vector3(1.3, 0.8, 1), Rotation = -20 });
+        doc.Entities.Add(new Text("PLATE 160 × 100", new Vector2(0, 119), 6, font) { Layer = annotations });
+        doc.Entities.Add(new MText("SOLID HATCH\\PTransparent circular island", new Vector2(45, -8), 3.5, 110, font) { Layer = annotations });
+        // A label background masks the existing centerline and remains ordered
+        // before the subsequent label, just as in the DXF entity collection.
+        doc.Entities.Add(new Wipeout(new Vector2(63, 44), new Vector2(98, 55)) { Layer = annotations });
+        doc.Entities.Add(new Text("Ø 30", new Vector2(80, 49), 5, font) { Layer = annotations, Alignment = TextAlignment.MiddleCenter });
+        var tag = new Block("PartTag");
+        tag.AttributeDefinitions.Add(new AttributeDefinition("PART", 4, font) { Value = "A-01", Color = AciColor.ByBlock });
+        var tagInsert = new Insert(tag, new Vector2(185, 4)) { Layer = annotations, Rotation = 12 };
+        tagInsert.TransformAttributes(); doc.Entities.Add(tagInsert);
         return Register(doc);
     }
 
@@ -113,6 +130,69 @@ public static class NetDxfBridge
 
     private static object Point(Vector3 p) { return new { x = p.X, y = p.Y, z = p.Z }; }
     private static Vector3 Ocs(Vector2 p, double elevation, Vector3 normal) { return MathHelper.ArbitraryAxis(normal) * new Vector3(p.X, p.Y, elevation); }
+
+    private static void AddText(Dictionary<string, object> item, string value, Vector3 position, Vector3 normal,
+        double rotation, double height, TextStyle style, Matrix3 transform, Vector3 translation)
+    {
+        double angle = rotation * Math.PI / 180;
+        var basis = transform * MathHelper.ArbitraryAxis(normal);
+        item["text"] = value ?? ""; item["position"] = Point(transform * position + translation);
+        item["axisX"] = Point(basis * new Vector3(Math.Cos(angle) * height, Math.Sin(angle) * height, 0));
+        item["axisY"] = Point(basis * new Vector3(-Math.Sin(angle) * height, Math.Cos(angle) * height, 0));
+        item["height"] = height; item["fontFamily"] = style.FontFamilyName ?? "";
+        item["fontFile"] = style.FontFile ?? ""; item["fontStyle"] = style.FontStyle.ToString(); item["isVertical"] = style.IsVertical;
+    }
+
+    // Boundary edges are not guaranteed to arrive with a common winding. Join by
+    // endpoints before projecting the complete rings for solid-fill triangulation.
+    private static List<Vector3> HatchLoop(HatchBoundaryPath boundary)
+    {
+        var pieces = new List<List<Vector3>>();
+        foreach (var edge in boundary.Edges)
+        {
+            var part = edge.ConvertTo();
+            // The pinned reader skips HATCH polyline flag 73, and its boundary
+            // clone omits IsClosed. A hatch polyline is a perimeter: close only
+            // this temporary converted entity, including a final-edge bulge.
+            if (part is Polyline2D perimeter) perimeter.IsClosed = true;
+            List<Vector3> points;
+            bool closed = false;
+            switch (part)
+            {
+                case Line line: points = new List<Vector3> { line.StartPoint, line.EndPoint }; break;
+                case Polyline2D polyline:
+                    points = polyline.PolygonalVertexes(CurvePrecision).Select(p => new Vector3(p.X, p.Y, 0)).ToList(); closed = polyline.IsClosed; break;
+                case Circle circle:
+                    points = circle.PolygonalVertexes(CurvePrecision).Select(p => circle.Center + new Vector3(p.X, p.Y, 0)).ToList(); closed = true; break;
+                case Arc arc:
+                    points = arc.PolygonalVertexes(CurvePrecision).Select(p => arc.Center + new Vector3(p.X, p.Y, 0)).ToList(); break;
+                case Ellipse ellipse:
+                    points = ellipse.PolygonalVertexes(CurvePrecision).Select(p => ellipse.Center + new Vector3(p.X, p.Y, 0)).ToList(); closed = ellipse.IsFullEllipse; break;
+                case Spline spline:
+                    points = spline.PolygonalVertexes(CurvePrecision); closed = spline.IsClosed || spline.IsClosedPeriodic; break;
+                default: throw new InvalidDataException("Unsupported hatch boundary edge.");
+            }
+            if (points.Count < 2) throw new InvalidDataException("Hatch boundary edge has too few points.");
+            if (closed) points.Add(points[0]);
+            pieces.Add(points);
+        }
+        if (pieces.Count == 0) throw new InvalidDataException("Hatch boundary has no edges.");
+        var all = pieces.SelectMany(p => p).ToArray();
+        double tolerance = Math.Max(1e-10, Math.Max(all.Max(p => p.X) - all.Min(p => p.X), all.Max(p => p.Y) - all.Min(p => p.Y)) * 1e-9);
+        bool Near(Vector3 a, Vector3 b) { return Vector3.Distance(a, b) <= tolerance; }
+        var result = pieces[0]; pieces.RemoveAt(0);
+        while (pieces.Count > 0)
+        {
+            int found = pieces.FindIndex(p => Near(result[result.Count - 1], p[0]) || Near(result[result.Count - 1], p[p.Count - 1]));
+            if (found < 0) throw new InvalidDataException("Hatch boundary edges do not form one continuous ring.");
+            var next = pieces[found]; pieces.RemoveAt(found);
+            if (!Near(result[result.Count - 1], next[0])) next.Reverse();
+            result.AddRange(next.Skip(1));
+        }
+        if (!Near(result[0], result[result.Count - 1])) throw new InvalidDataException("Hatch boundary ring is open.");
+        result.RemoveAt(result.Count - 1);
+        return result;
+    }
 
     private sealed class SceneBuilder
     {
@@ -180,9 +260,18 @@ public static class NetDxfBridge
                             foreach (var child in insert.Block.Entities) Visit(child, combined, offset, layer, color, opacity, depth + 1, blockPath, visibilityLayers);
                             foreach (var attribute in insert.Attributes)
                             {
-                                UnsupportedEntities++;
-                                Issues.Add(new { code = "DXF_TEXT_NOT_RENDERED", entityType = "ATTRIB", handle = attribute.Handle,
-                                    message = "Block attribute text is preserved in the DXF document; font shaping is not part of this geometry renderer." });
+                                if (!attribute.IsVisible || (attribute.Flags & AttributeFlags.Hidden) != 0) { HiddenEntities++; continue; }
+                                // Attribute coordinates already include this insert's transform.
+                                // Only enclosing INSERT transforms are applied here.
+                                var text = new Text(attribute.Value, attribute.Position, attribute.Height, attribute.Style) {
+                                    Layer = attribute.Layer, Color = attribute.Color, Transparency = attribute.Transparency,
+                                    Normal = attribute.Normal, Rotation = attribute.Rotation, Alignment = attribute.Alignment,
+                                    Width = attribute.Width, WidthFactor = attribute.WidthFactor, ObliqueAngle = attribute.ObliqueAngle,
+                                    IsBackward = attribute.IsBackward, IsUpsideDown = attribute.IsUpsideDown
+                                };
+                                int first = Entities.Count;
+                                Visit(text, transform, translation, layer, color, opacity, depth + 1, blockPath, visibilityLayers);
+                                for (int i = first; i < Entities.Count; i++) { Entities[i]["type"] = "ATTRIB"; Entities[i]["sourceType"] = "ATTRIB"; Entities[i]["handle"] = attribute.Handle ?? ""; }
                             }
                         }
                         finally { blockPath.Remove(insert.Block); }
@@ -219,9 +308,25 @@ public static class NetDxfBridge
                             var a = boundary[0]; var b = boundary[1];
                             points = new[] { a, new Vector2(b.X, a.Y), b, new Vector2(a.X, b.Y) };
                         }
-                        AddVertices("POLYLINE", points.Select(p => Ocs(p, wipeout.Elevation, wipeout.Normal)), true);
-                        Issue(entity, "DXF_WIPEOUT_BOUNDARY_ONLY", "Wipeout boundaries are rendered; masking and draw-order occlusion are preserved in the DXF but are not applied by this renderer.");
+                        var item = Shape("WIPEOUT"); item["loops"] = new[] { points.Select(p => Point(World(Ocs(p, wipeout.Elevation, wipeout.Normal)))).ToArray() }; Entities.Add(item);
+                        Issue(entity, "DXF_WIPEOUT_SOURCE_ORDER", "Wipeout masks follow source entity order. Custom SORTENTSTABLE draw-order overrides are not exposed by the pinned netDxf library.");
                         return;
+                    }
+                    case Text text:
+                    {
+                        var item = Shape("TEXT");
+                        AddText(item, text.Value, text.Position, text.Normal, text.Rotation, text.Height, text.Style, transform, translation);
+                        item["width"] = text.Width; item["widthFactor"] = text.WidthFactor; item["obliqueAngle"] = text.ObliqueAngle;
+                        item["alignment"] = text.Alignment.ToString(); item["isBackward"] = text.IsBackward; item["isUpsideDown"] = text.IsUpsideDown;
+                        Entities.Add(item); return;
+                    }
+                    case MText text:
+                    {
+                        var item = Shape("MTEXT");
+                        AddText(item, text.Value, text.Position, text.Normal, text.Rotation, text.Height, text.Style, transform, translation);
+                        item["width"] = text.RectangleWidth; item["attachmentPoint"] = (int)text.AttachmentPoint;
+                        item["lineSpacingFactor"] = text.LineSpacingFactor; item["drawingDirection"] = text.DrawingDirection.ToString();
+                        Entities.Add(item); return;
                     }
                     case Line line:
                     {
@@ -308,14 +413,21 @@ public static class NetDxfBridge
                     {
                         var hatchTransform = transform * MathHelper.ArbitraryAxis(hatch.Normal);
                         var hatchOffset = World(Ocs(Vector2.Zero, hatch.Elevation, hatch.Normal));
+                        if (hatch.Pattern.Fill == HatchFillType.SolidFill && !(hatch.Pattern is HatchGradientPattern))
+                        {
+                            var item = Shape("HATCH"); item["hatchStyle"] = hatch.Pattern.Style.ToString();
+                            item["loops"] = hatch.BoundaryPaths.Select(boundary => HatchLoop(boundary).Select(p => Point(hatchTransform * p + hatchOffset)).ToArray()).ToArray();
+                            Entities.Add(item); return;
+                        }
                         foreach (var boundary in hatch.BoundaryPaths)
                         foreach (var edge in boundary.Edges)
                         {
                             var part = edge.ConvertTo();
+                            if (part is Polyline2D perimeter) perimeter.IsClosed = true;
                             part.Layer = layer; part.Color = color;
                             Visit(part, hatchTransform, hatchOffset, layer, color, opacity, Math.Max(1, depth), blockPath, visibilityLayers);
                         }
-                        Issue(entity, "DXF_HATCH_BOUNDARY_ONLY", "Hatch boundaries are rendered; pattern and solid hatch fills are preserved in the DXF but are not tessellated by this adapter.");
+                        Issue(entity, "DXF_HATCH_PATTERN_NOT_RENDERED", "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter.");
                         return;
                     }
                     case MLine mline:

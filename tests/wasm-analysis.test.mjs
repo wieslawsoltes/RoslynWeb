@@ -162,3 +162,19 @@ test('constrained class receivers use dereferencing dispatch and malformed prefi
   const result=analyzeWasmAssembly(assembly([root]));assert.equal(result.supported,true,JSON.stringify(result.diagnostics));assert.equal(result.methods[0].instructions[2].call.constrainedMode,'reference');
   root.body[2]=instruction(2,'call',root.body[2].operand);assert.ok(codes(analyzeWasmAssembly(assembly([root]))).includes('WASM_CONSTRAINED_CALL'));
 });
+
+test('repeated unsupported type uses retain every original preflight location',()=>{
+  const call=ref('Take',{declaringType:'MissingApi',returnType:'System.Void',parameters:[{type:'Unavailable.Value'}]});
+  const main=method('Main',[instruction(0,'ldnull'),instruction(1,'call',call),instruction(2,'ldnull'),instruction(3,'call',call),instruction(4,'ldc.i4.0'),instruction(5,'ret')]);
+  const result=analyzeWasmAssembly(assembly([main],{valueTypes:['Unavailable.Value']}));
+  assert.equal(result.supported,false);
+  const uses=result.diagnostics.filter(d=>d.code==='WASM_UNSUPPORTED_TYPE'&&d.message.includes('Unavailable.Value'));
+  assert.deepEqual(uses.map(d=>d.offset),[1,3]);
+});
+
+test('native type classification remains local to each assembly analysis',()=>{
+  const build=underlying=>assembly([method('Value',[instruction(0,underlying==='System.Int64'?'ldc.i8':'ldc.i4',7),instruction(1,'ret')],{returnType:'LocalEnum'})],{types:[{name:'Example',methods:[method('Value',[instruction(0,underlying==='System.Int64'?'ldc.i8':'ldc.i4',7),instruction(1,'ret')],{returnType:'LocalEnum'})],fields:[]},{name:'LocalEnum',isEnum:true,isValueType:true,fields:[{name:'value__',type:underlying}],methods:[]}]});
+  assert.equal(analyzeWasmAssembly(build('System.Int32')).exports[0].result,'i32');
+  assert.equal(analyzeWasmAssembly(build('System.Int64')).exports[0].result,'i64');
+  assert.equal(analyzeWasmAssembly(build('System.Int32')).exports[0].result,'i32');
+});

@@ -8,6 +8,8 @@ import { isReflectionBuiltin } from './reflection.mjs';
 import { isEmitBuiltin, isEmitField } from './reflection-emit.mjs';
 import { isCollectionsBuiltin } from './collections-extra.mjs';
 import { isIoBuiltin } from './io.mjs';
+import { isEventBuiltin, isEventField } from './events.mjs';
+import { isCadBuiltin } from './cad-bcl.mjs';
 import { isJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isStandardValueBuiltin, isStandardValueField } from './standard-values.mjs';
 import { selectJavaScriptExports } from './reachability.mjs';
@@ -42,7 +44,7 @@ export function isOpcodeSupported(opcode) {
 /** This is a deliberately finite bridge, not a replacement implementation of the .NET BCL. */
 export function isBuiltinCandidate(ref) {
   if (!ref || typeof ref !== 'object') return false;
-  if (isJavaScriptIntrinsic(ref) || isStandardValueBuiltin(ref) || isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
+  if (isCadBuiltin(ref) || isEventBuiltin(ref) || isJavaScriptIntrinsic(ref) || isStandardValueBuiltin(ref) || isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
   if (/\[[,]+\]$/.test(ref.declaringType ?? '')) { const rank = ref.declaringType.slice(ref.declaringType.lastIndexOf('[')).split(',').length, n = ref.parameters?.length ?? 0; return ref.name === '.ctor' && n === rank || ['Get','Address'].includes(ref.name) && n === rank || ref.name === 'Set' && n === rank + 1; }
   const type = String(ref.declaringType ?? '').split(/[<\[]/)[0], name = ref.name, p = (ref.parameters ?? []).map(p => p.type ?? p), n = p.length;
   const numeric = t => /^System\.(Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|Int64|UInt64|IntPtr|UIntPtr|Single|Double)$/.test(t);
@@ -168,7 +170,7 @@ export function analyzeAssembly(model, options = {}) {
       if (op === 'switch' && (!Array.isArray(instruction.operand) || instruction.operand.some(target => !offsets.has(Number(target))))) add('IL_INVALID_SWITCH', 'Switch has an invalid branch target.', instruction);
       if (fields.test(op)) {
         const f = instruction.operand, key = `${f?.declaringType}::${f?.name}`;
-        const builtin = isStandardValueField(f) || op === 'ldsfld' && (key === 'System.String::Empty' || key === 'System.Type::EmptyTypes' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) || (op === 'ldsfld' || op === 'ldsflda') && isEmitField(f);
+        const builtin = op === 'ldsfld' && isEventField(f) || isStandardValueField(f) || op === 'ldsfld' && (key === 'System.String::Empty' || key === 'System.Type::EmptyTypes' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) || (op === 'ldsfld' || op === 'ldsflda') && isEmitField(f);
         const external = options.externals instanceof Map ? options.externals.get(key) : options.externals?.[key];
         if (!fieldKeys.has(key) && !fieldKeys.has(`${genericDefinitionName(f?.declaringType)}::${f?.name}`) && !builtin && !(external && typeof external.get === 'function')) add('IL_UNRESOLVED_FIELD', `No linked storage or JavaScript external for field '${key}'.`, instruction);
       }

@@ -14,6 +14,16 @@ export interface DxfRendererOptions {
   powerPreference?: 'low-power' | 'high-performance';
   background?: [number, number, number, number];
   maxBufferBytes?: number;
+  /** Aggregate RGBA text coverage texture budget. Default: 64 MiB. */
+  maxTextTextureBytes?: number;
+  text?: {
+    /** Browser fallback for SHX or unspecified fonts. Default: sans-serif. */
+    fontFamily?: string;
+    /** Raster font size before cap-height measurement. Default: 64. */
+    fontSize?: number;
+    maxTextureDimension?: number;
+    canvasFactory?: (width: number, height: number) => HTMLCanvasElement | OffscreenCanvas;
+  };
   controls?: boolean;
   autoResize?: boolean;
   pixelRatio?: number;
@@ -22,7 +32,7 @@ export interface DxfRendererOptions {
 }
 export interface DxfCamera { x: number; y: number; scale: number; }
 export interface DxfRendererStats {
-  lineSegments: number; triangles: number; vertices: number;
+  lineSegments: number; triangles: number; vertices: number; textQuads: number;
   drawCalls: number; frames: number; width: number; height: number;
   disposed: boolean; lost: boolean;
 }

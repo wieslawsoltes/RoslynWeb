@@ -1,4 +1,6 @@
 /** CPU tessellation for the portable DXF scene format. All angles are degrees. */
+import { triangulateDxfLoops } from './polygon.js';
+import { estimateDxfTextCorners } from './text.js';
 const TAU = Math.PI * 2;
 const DEG = Math.PI / 180;
 const MAX_FLOAT = 3.4028234663852886e38;
@@ -70,6 +72,7 @@ export function tessellateDxfScene(scene, options = {}) {
   if (!Number.isFinite(settings.tolerance) || settings.tolerance < 0) throw new RangeError('tolerance must be finite and nonnegative.');
   positive(settings.pointSize, 'pointSize');
   const groups = new Map();
+  const texts = [], draws = [];
   const issues = [...(Array.isArray(scene.issues) ? scene.issues : [])];
   let vertexCount = 0, renderedEntities = 0;
   const bounds = { minX: Infinity, minY: Infinity, maxX: -Infinity, maxY: -Infinity };
@@ -85,8 +88,9 @@ export function tessellateDxfScene(scene, options = {}) {
       const visibilityLayers = [...new Set([layer, ...(entity.visibilityLayers ?? [])])];
       const rgba = color(entity.color ?? layerInfo.get(layer)?.color);
       const lines = [], triangles = [];
+      let text;
       const push = (target, points) => {
-        if (vertexCount + lines.length / 3 + triangles.length / 3 + points.length > settings.maxVertices) {
+        if (vertexCount + texts.length * 6 + lines.length / 3 + triangles.length / 3 + points.length > settings.maxVertices) {
           const error = new RangeError(`DXF geometry exceeds maxVertices (${settings.maxVertices}).`);
           error.code = 'DXF_VERTEX_LIMIT';
           throw error;
@@ -158,6 +162,13 @@ export function tessellateDxfScene(scene, options = {}) {
           if (vertices.length === 4) push(triangles, [vertices[0], vertices[2], vertices[3]]);
           if (entity.outline === true) for (let i = 0; i < vertices.length; i++) segment(vertices[i], vertices[(i + 1) % vertices.length]);
         }
+      } else if (type === 'HATCH' || type === 'WIPEOUT') {
+        if (!Array.isArray(entity.loops)) throw new TypeError('Filled boundaries need a loops array.');
+        push(triangles, triangulateDxfLoops(entity.loops.map(loop => loop.map(p => point(p))), { style: entity.hatchStyle ?? 'Normal', maxVertices: settings.maxVertices - vertexCount - texts.length * 6 }));
+      } else if (['TEXT', 'MTEXT', 'ATTRIB'].includes(type)) {
+        if (vertexCount + (texts.length + 1) * 6 > settings.maxVertices) { const error = new RangeError(`DXF geometry exceeds maxVertices (${settings.maxVertices}).`); error.code = 'DXF_VERTEX_LIMIT'; throw error; }
+        text = { ...entity, type, color: rgba, layer, visibilityLayers, entityIndex: index };
+        text.corners = estimateDxfTextCorners(text);
       } else if (type === 'POINT') {
         const [x, y, z] = point(entity.position), half = positive(entity.size ?? settings.pointSize, 'Point size') / 2;
         segment([x - half, y, z], [x + half, y, z]); segment([x, y - half, z], [x, y + half, z]);
@@ -168,6 +179,13 @@ export function tessellateDxfScene(scene, options = {}) {
       const groupKey = JSON.stringify(visibilityLayers);
       let group = groups.get(groupKey);
       if (!group) { group = { layer, visibilityLayers, visible: layerInfo.get(layer)?.visible !== false, lines: [], lineColors: [], triangles: [], triangleColors: [] }; groups.set(groupKey, group); }
+      // Draws preserve source order across layers and topology, including masks.
+      if (triangles.length) draws.push({ kind: type === 'WIPEOUT' ? 'mask' : 'triangles', first: group.triangles.length / 3, count: triangles.length / 3, group });
+      if (lines.length) draws.push({ kind: 'lines', first: group.lines.length / 3, count: lines.length / 3, group });
+      if (text) {
+        draws.push({ kind: 'text', first: texts.length, count: 1, group }); texts.push(text);
+        for (const p of text.corners) { const [x, y] = point(p); bounds.minX = Math.min(bounds.minX, x); bounds.minY = Math.min(bounds.minY, y); bounds.maxX = Math.max(bounds.maxX, x); bounds.maxY = Math.max(bounds.maxY, y); }
+      }
       for (const [positions, target, colors] of [[lines, group.lines, group.lineColors], [triangles, group.triangles, group.triangleColors]]) {
         for (let i = 0; i < positions.length; i += 3) {
           const x = number(positions[i], 'Generated X'), y = number(positions[i + 1], 'Generated Y');
@@ -177,9 +195,9 @@ export function tessellateDxfScene(scene, options = {}) {
         }
       }
       vertexCount += (lines.length + triangles.length) / 3;
-      if (lines.length || triangles.length) renderedEntities++;
+      if (lines.length || triangles.length || text) renderedEntities++;
     } catch (error) {
-      if (options.strict || error.code === 'DXF_VERTEX_LIMIT') throw error;
+      if (options.strict || error.code === 'DXF_VERTEX_LIMIT' || error.code === 'DXF_TEXT_LIMIT' || error.code === 'DXF_TEXT_LAYOUT_LIMIT') throw error;
       issues.push({ code: error.code ?? 'DXF_INVALID_ENTITY', entityIndex: index, type: entity?.type ?? null, message: error.message });
     }
   }
@@ -193,6 +211,7 @@ export function tessellateDxfScene(scene, options = {}) {
   let lineOffset = 0, triangleOffset = 0;
   for (const group of groups.values()) {
     const layer = { name: group.layer, visible: group.visible, visibilityLayers: group.visibilityLayers, lineFirst: lineOffset, lineCount: group.lines.length / 3, triangleFirst: triangleOffset, triangleCount: group.triangles.length / 3 };
+    group.lineOffset = lineOffset; group.triangleOffset = triangleOffset;
     for (const [source, target, offset, colors] of [[group.lines, lines, lineOffset, group.lineColors], [group.triangles, triangles, triangleOffset, group.triangleColors]]) {
       for (let i = 0; i < source.length; i++) {
         const relative = source[i] - origin[i % 3];
@@ -205,7 +224,15 @@ export function tessellateDxfScene(scene, options = {}) {
   }
   const layerStates = new Map((scene.layers ?? []).map(l => [l.name, { name: l.name, visible: l.visible !== false }]));
   for (const layer of layers) for (const name of layer.visibilityLayers) if (!layerStates.has(name)) layerStates.set(name, { name, visible: true });
-  return { version: 1, lines, triangles, bounds, origin, layers, layerStates: [...layerStates.values()], issues, counts: { entities: scene.entities.length, renderedEntities, lineSegments: lineCount / 2, triangles: triangleCount / 3, vertices: vertexCount } };
+  const commands = [];
+  for (const draw of draws) {
+    const { group, kind, count } = draw;
+    const first = draw.first + (kind === 'text' ? 0 : kind === 'lines' ? group.lineOffset : group.triangleOffset);
+    const previous = commands.at(-1);
+    if (kind !== 'text' && previous?.kind === kind && previous.first + previous.count === first && previous.layer === group.layer && JSON.stringify(previous.visibilityLayers) === JSON.stringify(group.visibilityLayers)) previous.count += count;
+    else commands.push({ kind, first, count, layer: group.layer, visibilityLayers: group.visibilityLayers });
+  }
+  return { version: 1, lines, triangles, texts, draws: commands, bounds, origin, layers, layerStates: [...layerStates.values()], issues, counts: { entities: scene.entities.length, renderedEntities, lineSegments: lineCount / 2, triangles: triangleCount / 3, vertices: vertexCount, textQuads: texts.length } };
 }
 
 /** Validate externally supplied GPU geometry before allocating device resources. */
@@ -227,6 +254,19 @@ export function validateDxfGeometry(geometry) {
     for (const name of ['line', 'triangle']) {
     const first = layer[`${name}First`], count = layer[`${name}Count`], stride = name === 'line' ? 2 : 3;
     if (!Number.isSafeInteger(first) || !Number.isSafeInteger(count) || first < 0 || count < 0 || first % stride || count % stride || first + count > geometry[`${name}s`].positions.length / 3) throw new RangeError('Layer draw range is invalid.');
+    }
+  }
+  if (geometry.texts !== undefined && !Array.isArray(geometry.texts)) throw new TypeError('Geometry texts must be an array.');
+  if (geometry.texts?.length && !Array.isArray(geometry.draws)) throw new TypeError('Text geometry requires ordered draw commands.');
+  if (geometry.texts?.length && !Array.isArray(geometry.issues)) throw new TypeError('Text geometry requires an issues array.');
+  for (const text of geometry.texts ?? []) { estimateDxfTextCorners(text); color(text.color); }
+  if (geometry.draws !== undefined) {
+    if (!Array.isArray(geometry.draws)) throw new TypeError('Geometry draws must be an array.');
+    for (const draw of geometry.draws) {
+      if (!['lines', 'triangles', 'mask', 'text'].includes(draw.kind) || typeof draw.layer !== 'string' || !Array.isArray(draw.visibilityLayers) || !draw.visibilityLayers.every(v => typeof v === 'string')) throw new TypeError('Geometry draw command is invalid.');
+      const stride = draw.kind === 'lines' ? 2 : draw.kind === 'text' ? 1 : 3;
+      const limit = draw.kind === 'text' ? (geometry.texts?.length ?? 0) : geometry[draw.kind === 'lines' ? 'lines' : 'triangles'].positions.length / 3;
+      if (!Number.isSafeInteger(draw.first) || !Number.isSafeInteger(draw.count) || draw.first < 0 || draw.count < 0 || draw.first % stride || draw.count % stride || draw.first + draw.count > limit) throw new RangeError('Geometry draw range is invalid.');
     }
   }
   return geometry;

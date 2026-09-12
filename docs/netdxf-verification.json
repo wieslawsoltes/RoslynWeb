@@ -1,12 +1,12 @@
 {
-  "testedAt": "2026-09-11T22:27:26.841Z",
+  "testedAt": "2026-09-12T06:31:47.443Z",
   "node": "v24.19.0",
   "passed": true,
   "checks": [
     {
       "name": "All 272 vendored C# files and both upstream DXF fixtures match the pinned source hashes",
       "passed": true,
-      "milliseconds": 48.15457099999999,
+      "milliseconds": 46.99959799999999,
       "evidence": {
         "commit": "5b562312f683fc635405c149537ca488e4ec4d39",
         "sourceFiles": 272,
@@ -17,7 +17,7 @@
     {
       "name": "The public Node host loads the complete netDxf assembly into managed WebAssembly",
       "passed": true,
-      "milliseconds": 688.772335,
+      "milliseconds": 552.28963,
       "evidence": {
         "library": {
           "file": "netDxf.netstandard.dll",
@@ -41,64 +41,69 @@
     {
       "name": "The sample exercises layers, blocks, bulges, circles, arcs, ellipses and solids",
       "passed": true,
-      "milliseconds": 490.73889399999996,
+      "milliseconds": 501.60472300000004,
       "evidence": {
         "stats": {
-          "entityCount": 12,
-          "layerCount": 5,
-          "sourceEntities": 12,
-          "renderedEntities": 24,
+          "entityCount": 18,
+          "layerCount": 7,
+          "sourceEntities": 18,
+          "renderedEntities": 30,
           "hiddenEntities": 0,
           "unsupportedEntities": 0,
-          "layers": 5,
-          "blocks": 2,
+          "layers": 7,
+          "blocks": 3,
           "curvePrecision": 192,
           "layout": "Model"
         },
         "types": [
+          "HATCH",
           "LWPOLYLINE",
           "CIRCLE",
           "ELLIPSE",
           "ARC",
           "LINE",
           "SOLID",
-          "SEGMENTS"
+          "SEGMENTS",
+          "TEXT",
+          "MTEXT",
+          "WIPEOUT",
+          "ATTRIB"
         ]
       }
     },
     {
       "name": "Real text and binary DXF exports reload with the same modelspace geometry",
       "passed": true,
-      "milliseconds": 182.00924899999995,
+      "milliseconds": 322.05080399999997,
       "evidence": [
         {
           "binary": false,
-          "bytes": 11641,
+          "bytes": 14668,
           "stats": {
-            "entityCount": 12,
-            "layerCount": 5,
-            "sourceEntities": 12,
-            "renderedEntities": 24,
+            "entityCount": 18,
+            "layerCount": 7,
+            "sourceEntities": 18,
+            "renderedEntities": 30,
             "hiddenEntities": 0,
             "unsupportedEntities": 0,
-            "layers": 5,
-            "blocks": 3,
+            "layers": 7,
+            "blocks": 4,
             "curvePrecision": 192,
             "layout": "Model"
           }
         },
         {
           "binary": true,
-          "bytes": 11459,
+          "bytes": 14545,
           "stats": {
-            "entityCount": 12,
-            "layerCount": 5,
-            "sourceEntities": 12,
-            "renderedEntities": 24,
+            "entityCount": 18,
+            "layerCount": 7,
+            "sourceEntities": 18,
+            "renderedEntities": 30,
             "hiddenEntities": 0,
             "unsupportedEntities": 0,
-            "layers": 5,
-            "blocks": 3,
+            "layers": 7,
+            "blocks": 4,
             "curvePrecision": 192,
             "layout": "Model"
           }
@@ -108,7 +113,7 @@
     {
       "name": "The original complex upstream text and binary drawings preserve all 58 modelspace entities across both export formats",
       "passed": true,
-      "milliseconds": 1235.9986020000001,
+      "milliseconds": 1341.3525509999997,
       "evidence": [
         {
           "fixture": "sample.dxf",
@@ -116,9 +121,9 @@
             "entityCount": 58,
             "layerCount": 7,
             "sourceEntities": 58,
-            "renderedEntities": 227,
+            "renderedEntities": 248,
             "hiddenEntities": 1,
-            "unsupportedEntities": 25,
+            "unsupportedEntities": 4,
             "layers": 7,
             "blocks": 19,
             "curvePrecision": 192,
@@ -132,33 +137,15 @@
               "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
             },
             {
-              "code": "DXF_HATCH_BOUNDARY_ONLY",
+              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "240",
-              "message": "Hatch boundaries are rendered; pattern and solid hatch fills are preserved in the DXF but are not tessellated by this adapter."
+              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
               "code": "DXF_ENTITY_NOT_RENDERED",
               "entityType": "IMAGE",
               "handle": "249",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_TEXT_NOT_RENDERED",
-              "entityType": "ATTRIB",
-              "handle": "264",
-              "message": "Block attribute text is preserved in the DXF document; font shaping is not part of this geometry renderer."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "273",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "TEXT",
-              "handle": "28F",
               "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
             },
             {
@@ -180,10 +167,10 @@
               "message": "The mesh control cage is rendered; subdivision surface evaluation is not implemented."
             },
             {
-              "code": "DXF_WIPEOUT_BOUNDARY_ONLY",
+              "code": "DXF_WIPEOUT_SOURCE_ORDER",
               "entityType": "WIPEOUT",
               "handle": "5DB",
-              "message": "Wipeout boundaries are rendered; masking and draw-order occlusion are preserved in the DXF but are not applied by this renderer."
+              "message": "Wipeout masks follow source entity order. Custom SORTENTSTABLE draw-order overrides are not exposed by the pinned netDxf library."
             },
             {
               "code": "DXF_ENTITY_NOT_RENDERED",
@@ -198,64 +185,16 @@
               "message": "Leader vertices are rendered as a polyline; arrowhead styling and spline interpolation remain in the DXF document."
             },
             {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "981",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "A30",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1C3F",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "AA3",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "AE0",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "AE6",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "B2D",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "B26",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_HATCH_BOUNDARY_ONLY",
+              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BD9",
-              "message": "Hatch boundaries are rendered; pattern and solid hatch fills are preserved in the DXF but are not tessellated by this adapter."
+              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
-              "code": "DXF_HATCH_BOUNDARY_ONLY",
+              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BDA",
-              "message": "Hatch boundaries are rendered; pattern and solid hatch fills are preserved in the DXF but are not tessellated by this adapter."
+              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
               "code": "DXF_POLYLINE_WIDTH",
@@ -268,66 +207,6 @@
               "entityType": "LWPOLYLINE",
               "handle": "11FD",
               "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "16C7",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1798",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1799",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "179A",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "179B",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "179E",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "17A0",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "17B3",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "17B4",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1CCE",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
             }
           ],
           "roundtrips": [
@@ -338,9 +217,9 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 227,
+                "renderedEntities": 248,
                 "hiddenEntities": 1,
-                "unsupportedEntities": 25,
+                "unsupportedEntities": 4,
                 "layers": 7,
                 "blocks": 19,
                 "curvePrecision": 192,
@@ -354,9 +233,9 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 227,
+                "renderedEntities": 248,
                 "hiddenEntities": 1,
-                "unsupportedEntities": 25,
+                "unsupportedEntities": 4,
                 "layers": 7,
                 "blocks": 19,
                 "curvePrecision": 192,
@@ -371,9 +250,9 @@
             "entityCount": 58,
             "layerCount": 7,
             "sourceEntities": 58,
-            "renderedEntities": 227,
+            "renderedEntities": 248,
             "hiddenEntities": 1,
-            "unsupportedEntities": 25,
+            "unsupportedEntities": 4,
             "layers": 7,
             "blocks": 19,
             "curvePrecision": 192,
@@ -387,33 +266,15 @@
               "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
             },
             {
-              "code": "DXF_HATCH_BOUNDARY_ONLY",
+              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "240",
-              "message": "Hatch boundaries are rendered; pattern and solid hatch fills are preserved in the DXF but are not tessellated by this adapter."
+              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
               "code": "DXF_ENTITY_NOT_RENDERED",
               "entityType": "IMAGE",
               "handle": "249",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_TEXT_NOT_RENDERED",
-              "entityType": "ATTRIB",
-              "handle": "264",
-              "message": "Block attribute text is preserved in the DXF document; font shaping is not part of this geometry renderer."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "273",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "TEXT",
-              "handle": "28F",
               "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
             },
             {
@@ -435,10 +296,10 @@
               "message": "The mesh control cage is rendered; subdivision surface evaluation is not implemented."
             },
             {
-              "code": "DXF_WIPEOUT_BOUNDARY_ONLY",
+              "code": "DXF_WIPEOUT_SOURCE_ORDER",
               "entityType": "WIPEOUT",
               "handle": "5DB",
-              "message": "Wipeout boundaries are rendered; masking and draw-order occlusion are preserved in the DXF but are not applied by this renderer."
+              "message": "Wipeout masks follow source entity order. Custom SORTENTSTABLE draw-order overrides are not exposed by the pinned netDxf library."
             },
             {
               "code": "DXF_ENTITY_NOT_RENDERED",
@@ -453,64 +314,16 @@
               "message": "Leader vertices are rendered as a polyline; arrowhead styling and spline interpolation remain in the DXF document."
             },
             {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "981",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "A30",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1C3F",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "AA3",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "AE0",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "AE6",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "B2D",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "B26",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_HATCH_BOUNDARY_ONLY",
+              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BD9",
-              "message": "Hatch boundaries are rendered; pattern and solid hatch fills are preserved in the DXF but are not tessellated by this adapter."
+              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
-              "code": "DXF_HATCH_BOUNDARY_ONLY",
+              "code": "DXF_HATCH_PATTERN_NOT_RENDERED",
               "entityType": "HATCH",
               "handle": "BDA",
-              "message": "Hatch boundaries are rendered; pattern and solid hatch fills are preserved in the DXF but are not tessellated by this adapter."
+              "message": "Pattern or gradient hatch boundaries are rendered; patterned and gradient fills are not supported by this adapter."
             },
             {
               "code": "DXF_POLYLINE_WIDTH",
@@ -523,66 +336,6 @@
               "entityType": "LWPOLYLINE",
               "handle": "11FD",
               "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "16C7",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1798",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1799",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "179A",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "179B",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "179E",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "17A0",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "17B3",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "17B4",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
-            },
-            {
-              "code": "DXF_ENTITY_NOT_RENDERED",
-              "entityType": "MTEXT",
-              "handle": "1CCE",
-              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
             }
           ],
           "roundtrips": [
@@ -593,9 +346,9 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 227,
+                "renderedEntities": 248,
                 "hiddenEntities": 1,
-                "unsupportedEntities": 25,
+                "unsupportedEntities": 4,
                 "layers": 7,
                 "blocks": 19,
                 "curvePrecision": 192,
@@ -609,9 +362,9 @@
                 "entityCount": 58,
                 "layerCount": 7,
                 "sourceEntities": 58,
-                "renderedEntities": 227,
+                "renderedEntities": 248,
                 "hiddenEntities": 1,
-                "unsupportedEntities": 25,
+                "unsupportedEntities": 4,
                 "layers": 7,
                 "blocks": 19,
                 "curvePrecision": 192,
@@ -625,7 +378,7 @@
     {
       "name": "Nested nonuniform block transforms preserve origins, layer zero and ByBlock color inheritance",
       "passed": true,
-      "milliseconds": 1437.8214080000002,
+      "milliseconds": 1135.2929439999998,
       "evidence": {
         "type": "LINE",
         "layer": "visible",
@@ -653,9 +406,20 @@
       }
     },
     {
+      "name": "Managed text, attributes and hatch islands preserve transforms and document round-trip values",
+      "passed": true,
+      "milliseconds": 189.95764899999995,
+      "evidence": {
+        "text": "Ω ± Ø",
+        "attribute": "部品",
+        "hatchArea": 68,
+        "textQuads": 3
+      }
+    },
+    {
       "name": "Queued loads snapshot caller bytes; corruption, size limits and disposal produce explicit errors",
       "passed": true,
-      "milliseconds": 60.71892099999968,
+      "milliseconds": 50.75518699999975,
       "evidence": {
         "snapshottedInput": true,
         "invalidDxfRejected": true,
@@ -666,7 +430,7 @@
     {
       "name": "Initially hidden layers retain geometry and nested inserts preserve ancestor layer visibility",
       "passed": true,
-      "milliseconds": 124.24857299999985,
+      "milliseconds": 102.75943999999981,
       "evidence": {
         "retainedGeometry": 3,
         "ancestorVisibilityLayers": [
@@ -678,7 +442,7 @@
     {
       "name": "Asset integrity validation rejects mismatched generated assemblies before registration",
       "passed": true,
-      "milliseconds": 2.343801999999414,
+      "milliseconds": 1.7931449999996403,
       "evidence": {
         "corruptedAssemblyRejected": true
       }
@@ -686,7 +450,7 @@
     {
       "name": "Failed scene serialization does not retain an unreachable managed document",
       "passed": true,
-      "milliseconds": 315.2605990000002,
+      "milliseconds": 301.95562100000006,
       "evidence": {
         "countBefore": 1,
         "countAfter": 1,
@@ -696,15 +460,15 @@
     {
       "name": "Source mode compiles every pinned netDxf C# file using real Roslyn WebAssembly and runs its output",
       "passed": true,
-      "milliseconds": 22670.001396,
+      "milliseconds": 23633.436499000003,
       "evidence": {
         "sourceCount": 272,
         "deterministicLibraryHash": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd",
         "performance": {
-          "parseMs": 2251.8762,
-          "compilationMs": 3.0432,
-          "extensionsMs": 0.7564,
-          "emitMs": 19102.0462,
+          "parseMs": 2201.3912,
+          "compilationMs": 2.5797,
+          "extensionsMs": 0.6487,
+          "emitMs": 20139.1686,
           "cache": {
             "enabled": true,
             "syntaxHits": 0,
@@ -746,7 +510,7 @@
     {
       "name": "Session disposal releases all owned documents and leaves the shared compiler usable",
       "passed": true,
-      "milliseconds": 84.02893899999981,
+      "milliseconds": 67.29469600000084,
       "evidence": {
         "documentsReleased": true,
         "compilerStillUsable": true

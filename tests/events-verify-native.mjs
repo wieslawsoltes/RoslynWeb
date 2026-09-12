@@ -1,0 +1,15 @@
+// DOTNET=/path/to/dotnet node tests/events-verify-native.mjs
+import {mkdtemp,copyFile,writeFile,rm} from 'node:fs/promises';
+import {spawnSync} from 'node:child_process';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+const directory=await mkdtemp(join(tmpdir(),'roslynweb-events-native-'));
+try {
+ await copyFile(new URL('./events-fixture.cs',import.meta.url),join(directory,'EventFixture.cs'));
+ await writeFile(join(directory,'Program.cs'),`using System;using System.Collections.Generic;using System.Reflection;using System.Text.Json;
+var results=new SortedDictionary<string,object>();foreach(var method in typeof(EventFixture).GetMethods(BindingFlags.Public|BindingFlags.Static))results[method.Name]=method.Invoke(null,null)!;Console.Write(JsonSerializer.Serialize(new{runtime=Environment.Version.ToString(),results}));`);
+ await writeFile(join(directory,'Native.csproj'),'<Project Sdk="Microsoft.NET.Sdk"><PropertyGroup><TargetFramework>net10.0</TargetFramework><OutputType>Exe</OutputType><WarningLevel>0</WarningLevel></PropertyGroup></Project>');
+ const result=spawnSync(process.env.DOTNET??'dotnet',['run','--project',join(directory,'Native.csproj'),'--configuration','Release','--verbosity','quiet'],{encoding:'utf8'});
+ if(result.status!==0)throw Error(result.stderr||result.stdout||String(result.error));
+ const data=JSON.parse(result.stdout);await writeFile(new URL('./events-native-baseline.json',import.meta.url),JSON.stringify(data,null,2)+'\n');console.log(`Native .NET ${data.runtime}: ${Object.keys(data.results).length} delegate/event/collection cases recorded.`);
+}finally{await rm(directory,{recursive:true,force:true});}

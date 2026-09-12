@@ -32,22 +32,22 @@
   },
   "bridge": {
     "file": "RoslynWeb.NetDxfBridge.dll",
-    "bytes": 31744,
-    "sha256": "472e743ca0bdfa3bd8e913c0e8664bb80f9f6325bdff830f4bd33b5fde5c51cd"
+    "bytes": 39936,
+    "sha256": "b2274029f21ca9936f5bdbc9de4aa427e084e94a0212d81455206083face63a1"
   },
   "sourceBundle": {
     "file": "source-bundle.json",
-    "bytes": 3730669,
-    "sha256": "61176c90e05641468097d1fad03b5bc174310dc617fdc926f61f3ad35eccae50"
+    "bytes": 3739534,
+    "sha256": "82216abe3f409f08c0b74021156047198fbdea4d8fa050a7c2f5fe8fefbd399f"
   },
-  "testedAt": "2026-09-11T22:26:59.034Z",
-  "elapsedMs": 24485.479499,
+  "testedAt": "2026-09-12T06:30:19.176Z",
+  "elapsedMs": 26733.79522,
   "performance": {
     "library": {
-      "parseMs": 2432.6216,
-      "compilationMs": 45.3363,
-      "extensionsMs": 4.0818,
-      "emitMs": 20290.7704,
+      "parseMs": 2889.0334,
+      "compilationMs": 57.5755,
+      "extensionsMs": 4.8284,
+      "emitMs": 21417.6012,
       "cache": {
         "enabled": true,
         "syntaxHits": 0,
@@ -61,10 +61,10 @@
       }
     },
     "bridge": {
-      "parseMs": 20.7184,
-      "compilationMs": 1.1846,
-      "extensionsMs": 0.074,
-      "emitMs": 830.1513,
+      "parseMs": 33.8256,
+      "compilationMs": 1.1981,
+      "extensionsMs": 0.068,
+      "emitMs": 1103.1639,
       "cache": {
         "enabled": true,
         "syntaxHits": 0,
@@ -72,7 +72,7 @@
         "syntaxMisses": 1,
         "compilationReused": false,
         "retainedTrees": 64,
-        "retainedSourceBytes": 1120774,
+        "retainedSourceBytes": 1138088,
         "maxRetainedTrees": 64,
         "maxRetainedSourceBytes": 16777216
       }

@@ -208,7 +208,7 @@ test('builtin preflight rejects unsupported overloads before any program output'
   const unsupportedRefs = [
     ref('.ctor', ['System.Char', int], voidType, { declaringType: 'System.String', isStatic: false }),
     ref('Round', ['System.Double', int], 'System.Double', { declaringType: 'System.Math' }),
-    ref('Equals', [str, str, 'System.StringComparison'], 'System.Boolean', { declaringType: 'System.String' }),
+    ref('Compare', [str, str, 'System.Boolean', 'System.Globalization.CultureInfo'], int, { declaringType: 'System.String' }),
     ref('WriteLine', ['System.Char[]', int, int], voidType, { declaringType: 'System.Console' }),
   ];
   for (const call of unsupportedRefs) {
@@ -220,6 +220,9 @@ test('builtin preflight rejects unsupported overloads before any program output'
   const analysis = analyzeAssembly(supported);
   assert.equal(analysis.supported, true);
   assert.equal(analysis.dependencies[0].overloadValidatedAtRuntime, false);
+  const ordinal = model([method('Main', [ins('ldstr','Layer'),ins('ldstr','LAYER'),ins('ldc.i4.5'),ins('call',ref('Equals',[str,str,'System.StringComparison'],'System.Boolean',{declaringType:'System.String'})),ins('ret')],{returnType:'System.Boolean'})]);
+  assert.equal(analyzeAssembly(ordinal).supported,true);
+  assert.equal(compileAssembly(ordinal,{strict:true}).invoke('Main'),true);
 });
 
 test('portable generated modules embed linked managed assemblies', async () => {

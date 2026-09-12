@@ -1,0 +1,21 @@
+{
+  "runtime": "10.0.0",
+  "results": {
+    "CollectionEquality": "7:1:True:0:True:True:True",
+    "ComparerCollections": "1:3:True:2:yes:2:2",
+    "Delegates": "ABABA:ABA:12:True:3",
+    "Equality": "True:False:True:True:True:False:True:True",
+    "Events": "1211221",
+    "Exceptional": "AX!CR",
+    "FloatAtomics": "-9223372036854775808:8:2143294004:3:4",
+    "GenericEvents": "GG:True",
+    "IntegerAtomics": "-2147483648:9223372036854775807:-2147483648:23:16:True:True:True:True",
+    "NullComparerCollection": "False:True:True:0",
+    "Nulls": "True:True:True:True:True:True",
+    "ReadOnlyLists": "7:5:2:1:LA:True:True",
+    "RemoveAllRepeatedSequences": true,
+    "RemoveRepeatedSequences": true,
+    "Snapshot": "UBU",
+    "ThreadIdentity": true
+  }
+}

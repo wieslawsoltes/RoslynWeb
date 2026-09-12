@@ -87,9 +87,13 @@
     "benchmark:compilers-v7": "node scripts/benchmark-compilers-v7.mjs",
     "benchmark:host-cache": "node scripts/benchmark-host-cache.mjs",
     "build:netdxf": "node scripts/build-netdxf.mjs",
-    "test:netdxf": "node tests/netdxf-integration.mjs",
+    "test:netdxf": "node tests/netdxf-integration.mjs && node tests/netdxf-hatch-edges.mjs",
     "test:netdxf-compilers": "node tests/netdxf-compilers.mjs",
-    "test:netdxf-browser": "node scripts/test-dxf-browser.mjs"
+    "test:netdxf-browser": "node scripts/test-dxf-browser.mjs",
+    "test:events": "node tests/events-integration.mjs",
+    "test:cad-bcl": "node tests/cad-bcl-integration.mjs",
+    "test:cad-format": "node tests/cad-format-integration.mjs",
+    "test:netdxf-entities": "node tests/netdxf-entities.mjs"
   },
   "engines": {
     "node": ">=22"

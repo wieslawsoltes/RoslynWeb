@@ -46,10 +46,16 @@ jobs:
           DOTNET=dotnet node tests/standard-values-verify-native.mjs
           DOTNET=dotnet node tests/float-literals-verify-native.mjs
           DOTNET=dotnet node tests/value-interfaces-verify-native.mjs
+          DOTNET=dotnet node tests/events-verify-native.mjs
       - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
         run: bash scripts/prepare-desktop-fixtures.sh --check
       - name: JavaScript and project tests
         run: npm test
+      - name: CAD framework and event compiler differential tests
+        run: |
+          npm run test:events
+          npm run test:cad-bcl
+          npm run test:cad-format
       - name: Actual WebAssembly integration
         run: npm run test:wasm
       - name: Worker integration
@@ -84,6 +90,7 @@ jobs:
         run: |
           npm run test:netdxf
           npm run test:netdxf-compilers
+          npm run test:netdxf-entities
           node tests/argument-exceptions-integration.mjs
       - name: TypeScript public API contract
         run: npx --yes --package typescript@5.9.3 tsc --strict --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 tests/compiler-types.test.ts

@@ -1,6 +1,8 @@
 /** Finite framework adapters used by the JavaScript execution tier.
  * Overload admission is explicit. These adapters do not load native framework DLLs.
  */
+import { substituteType } from './generics.mjs';
+import { delegateEquals, delegateHashCode } from './events.mjs';
 import { ILExecutionError } from './capabilities.mjs';
 import { ManagedException, Numeric, i4, i8, r8, fromJS, copyValue } from './runtime.mjs';
 
@@ -30,10 +32,17 @@ const interfaces = new Set(['System.Collections.IEnumerable', 'System.Collection
 export function isExtendedBuiltin(ref) {
   if (!ref || typeof ref !== 'object') return false;
   const type = rootOf(ref.declaringType), n = (ref.parameters ?? []).length, p = ptypes(ref), name = ref.name;
+  if (type === 'System.Collections.Generic.IReadOnlyList`1') return ref.isStatic === false && (ref.genericParameterCount ?? 0) === 0 && name === 'get_Item' && n === 1 && p[0] === 'System.Int32' && substituteType(ref.returnType,genericTypes(ref.declaringType)) === genericTypes(ref.declaringType)[0];
+  if (type === 'System.Collections.Generic.IReadOnlyCollection`1') return ref.isStatic === false && (ref.genericParameterCount ?? 0) === 0 && name === 'get_Count' && n === 0 && ref.returnType === 'System.Int32';
   if (interfaces.has(type)) return n === 0 && ['GetEnumerator', 'MoveNext', 'get_Current', 'Dispose', 'Reset'].includes(name);
   if (/^System\.Collections\.Generic\.(Dictionary`2|HashSet`1)(\+.*)?$/.test(type)) {
     if (type.includes('+')) return n === 0 && ['get_Count', 'GetEnumerator', 'MoveNext', 'get_Current', 'Dispose', 'Reset'].includes(name);
-    if (name === '.ctor') return n === 0 || n === 1 && (p[0] === 'System.Int32' || sequenceType(p[0]) || p[0].startsWith('System.Collections.Generic.IDictionary`2'));
+    if (name === '.ctor') {
+      const comparer = `System.Collections.Generic.IEqualityComparer\`1<${genericTypes(ref.declaringType)[0]}>`;
+      const types = p.map(type => substituteType(type,genericTypes(ref.declaringType)));
+      if (types.at(-1) === comparer) return ref.isStatic === false && ref.returnType === 'System.Void' && (ref.genericParameterCount ?? 0) === 0 && (n === 1 || n === 2 && types[0] === 'System.Int32');
+      return n === 0 || n === 1 && (p[0] === 'System.Int32' || sequenceType(p[0]) || p[0].startsWith('System.Collections.Generic.IDictionary`2'));
+    }
     if (['get_Count', 'get_Keys', 'get_Values', 'Clear', 'GetEnumerator'].includes(name)) return n === 0;
     if (type === 'System.Collections.Generic.Dictionary`2') {
       if (['Add', 'TryAdd', 'set_Item'].includes(name)) return n === 2;
@@ -113,6 +122,7 @@ function equality(rt, x, y) {
   const a = raw(x), b = raw(y);
   if (a === b || Number.isNaN(a) && Number.isNaN(b)) return true;
   if (a == null || b == null) return false;
+  if (x?.$delegate) return delegateEquals(x,y);
   const eq = userMethod(rt, x, 'Equals', 1);
   if (eq) return bool(rt.invokeManaged(eq, [y], x));
   if (x?.$valueType && y?.$valueType && x.$type === y.$type) {
@@ -123,6 +133,7 @@ function equality(rt, x, y) {
 }
 const identities = new WeakMap(); let nextIdentity = 1;
 function hash(rt, key) {
+  if (key?.$delegate) return `delegate:${delegateHashCode(key)}`;
   if (key?.$box) return `${key.$type}:${hash(rt,key.value)}`;
   const v = raw(key);
   if (v == null) return 'null';
@@ -136,12 +147,23 @@ function hash(rt, key) {
   if (!identities.has(v)) identities.set(v,nextIdentity++); return `object:${identities.get(v)}`;
 }
 function table(type, keyType, valueType, allowNull = false) { return { $type: type, fields: {}, $table: true, $buckets: new Map(), $entries: [], $free: [], $count: 0, $version: 0, $keyType: keyType, $valueTypeName: valueType, $allowNull: allowNull }; }
-function findEntry(rt, self, key) { if (key == null && !self.$allowNull) fail('ArgumentNullException','key'); return self.$buckets.get(hash(rt,key))?.find(e => e.alive && equality(rt,e.key,key)); }
+function tableComparerCall(rt,self,name,args) {
+  const comparer=self.$equalityComparer;
+  const ref={declaringType:`System.Collections.Generic.IEqualityComparer\`1<${self.$keyType}>`,name,isStatic:false,genericParameterCount:0,parameters:args.map(()=>({type:self.$keyType})),returnType:name==='Equals'?'System.Boolean':'System.Int32'};
+  const method=rt.findVirtual(ref,comparer) ?? userMethod(rt,comparer,name,args.length);
+  if(method)return rt.invokeManaged(method,args,comparer);
+  const result=rt.callBuiltin(ref,args,comparer,'callvirt');
+  if(!result.handled)throw new ILExecutionError(`No equality comparer implementation for ${comparer?.$type}::${name}.`,{runtimeLimitation:true});
+  return result.value;
+}
+const tableHash=(rt,self,key)=>self.$equalityComparer?`comparer:${key==null?0:raw(tableComparerCall(rt,self,'GetHashCode',[key]))}`:hash(rt,key);
+const tableEqual=(rt,self,left,right)=>self.$equalityComparer?bool(tableComparerCall(rt,self,'Equals',[left,right])):equality(rt,left,right);
+function findEntry(rt, self, key) { if (key == null && !self.$allowNull) fail('ArgumentNullException','key'); return self.$buckets.get(tableHash(rt,self,key))?.find(e => e.alive && tableEqual(rt,self,e.key,key)); }
 function put(rt, self, key, value, overwrite = false) {
   const found = findEntry(rt,self,key);
   if (found) { if (overwrite) found.value = copyValue(value); return false; }
   allocationCheck(rt,self.$count+1);
-  const code = hash(rt,key), bucket = self.$buckets.get(code) ?? [], index = self.$free.length ? self.$free.pop() : self.$entries.length;
+  const code = tableHash(rt,self,key), bucket = self.$buckets.get(code) ?? [], index = self.$free.length ? self.$free.pop() : self.$entries.length;
   const item = { key: copyValue(key), value: copyValue(value), alive: true, index, hash: code }; bucket.push(item); self.$buckets.set(code,bucket); self.$entries[index]=item; self.$count++; self.$version++; return true;
 }
 function removeEntry(rt,self,key) { const entry = findEntry(rt,self,key); if (!entry) return null; entry.alive = false; self.$count--; self.$free.push(entry.index); const bucket=self.$buckets.get(entry.hash);bucket.splice(bucket.indexOf(entry),1);if(!bucket.length)self.$buckets.delete(entry.hash);return entry; }
@@ -328,9 +350,15 @@ export function invokeExtendedBuiltin(rt,ref,args,self,kind) {
     if(name==='Reverse'||name==='Sort'){if(name==='Reverse')items.reverse();else items.sort((a,b)=>compareKeys(rt,a,b));self.$version++;return done();}
     if(['RemoveAll','Find','FindAll','Exists','TrueForAll','ForEach'].includes(name)){requireValue(args[0],'predicate');const matches=[];let removed=0;const version=self.$version;for(let i=0;i<items.length;i++){const value=items[i],yes=bool(callDelegate(rt,args[0],[value]));if(name==='ForEach'){if(version!==self.$version)fail('InvalidOperationException','Collection was modified.');continue;}if(yes){if(name==='Find')return done(copyValue(value));if(name==='Exists')return done(i4(1));matches.push(copyValue(value));if(name==='RemoveAll'){items.splice(i--,1);removed++;}}else if(name==='TrueForAll')return done(i4(0));}if(name==='RemoveAll'){if(removed)self.$version++;return done(i4(removed));}if(name==='FindAll')return done(listResult(matches,genericTypes(ref.declaringType)[0]));if(name==='Find')return done(rt.defaultValue(genericTypes(ref.declaringType)[0]));if(name==='Exists'||name==='TrueForAll')return done(i4(name==='TrueForAll'));return done();}
   }
+  if(type==='System.Collections.Generic.IReadOnlyList`1'&&name==='get_Item'&&(self?.$array||self?.$items)) {
+    const items=self.$array?self.items:self.$items,index=Number(a[0]);
+    if(index<0||index>=items.length)fail('ArgumentOutOfRangeException','index');
+    return done(copyValue(items[index]));
+  }
+  if(type==='System.Collections.Generic.IReadOnlyCollection`1'&&name==='get_Count'&&(self?.$array||self?.$items))return done(i4((self.$array?self.items:self.$items).length));
   if(type==='System.Collections.Generic.Dictionary`2'||type==='System.Collections.Generic.HashSet`1') {
     const set=type==='System.Collections.Generic.HashSet`1',types=genericTypes(ref.declaringType);
-    if(name==='.ctor'){const t=table(ref.declaringType,types[0],set?types[0]:types[1],set);t.$set=set;if(args.length&&ptypes(ref)[0]==='System.Int32'){if(a[0]<0)fail('ArgumentOutOfRangeException','capacity');}else if(args.length)for(const v of sequenceItems(rt,args[0])){const key=set?v:v.fields.key,value=set?v:v.fields.value;if(!put(rt,t,key,value)&&!set)fail('ArgumentException','An item with the same key has already been added.');}Object.assign(self,t);return done();}
+    if(name==='.ctor'){const t=table(ref.declaringType,types[0],set?types[0]:types[1],set);t.$set=set;const parameters=ptypes(ref);const hasComparer=rootOf(parameters.at(-1))==='System.Collections.Generic.IEqualityComparer`1';if(hasComparer)t.$equalityComparer=args.at(-1);if(args.length&&parameters[0]==='System.Int32'){if(a[0]<0)fail('ArgumentOutOfRangeException','capacity');}else if(args.length&&!hasComparer)for(const v of sequenceItems(rt,args[0])){const key=set?v:v.fields.key,value=set?v:v.fields.value;if(!put(rt,t,key,value)&&!set)fail('ArgumentException','An item with the same key has already been added.');}Object.assign(self,t);return done();}
     if(!self?.$table)return {handled:false};
     if(name==='get_Count')return done(i4(self.$count));
     if(name==='get_Keys'||name==='get_Values'){const view=enumerable(ref.returnType,function*(){for(const kv of sequenceItems(rt,self))yield name==='get_Keys'?kv.fields.key:kv.fields.value;});view.$collection=self;return done(view);}
@@ -342,7 +370,7 @@ export function invokeExtendedBuiltin(rt,ref,args,self,kind) {
     if(name==='Remove'){const e=removeEntry(rt,self,args[0]);if(args.length===2)args[1].set(e?copyValue(e.value):rt.defaultValue(self.$valueTypeName));return done(i4(!!e));}
     if(set&&name==='CopyTo'){const destination=requireValue(args[0],'array'),index=Number(a[1]??0),count=Number(a[2]??self.$count);if(index<0||count<0)fail('ArgumentOutOfRangeException','index/count');if(index+count>destination.items.length||count>self.$count)fail('ArgumentException','Destination array was not long enough.');let i=0;for(const v of sequenceItems(rt,self)){if(i===count)break;destination.items[index+i++]=copyValue(v);}return done();}
     if(set&&name==='RemoveWhere'){requireValue(args[0],'match');let removed=0;for(const e of [...self.$entries])if(e.alive&&bool(callDelegate(rt,args[0],[e.key]))&&removeEntry(rt,self,e.key))removed++;return done(i4(removed));}
-    if(set){const other=table('set',self.$keyType,self.$keyType,true);other.$set=true;for(const v of sequenceItems(rt,args[0]))put(rt,other,v,v);const common=self.$entries.filter(e=>e.alive&&findEntry(rt,other,e.key)).length;
+    if(set){const other=table('set',self.$keyType,self.$keyType,true);other.$set=true;other.$equalityComparer=self.$equalityComparer;for(const v of sequenceItems(rt,args[0]))put(rt,other,v,v);const common=self.$entries.filter(e=>e.alive&&findEntry(rt,other,e.key)).length;
       if(name==='UnionWith'){for(const v of sequenceItems(rt,other))put(rt,self,v,v);return done();}
       if(name==='IntersectWith'||name==='ExceptWith'){for(const e of [...self.$entries])if(e.alive&&(!!findEntry(rt,other,e.key)===(name==='ExceptWith')))removeEntry(rt,self,e.key);return done();}
       if(name==='SymmetricExceptWith'){for(const v of sequenceItems(rt,other))if(!removeEntry(rt,self,v))put(rt,self,v,v);return done();}

@@ -73,7 +73,10 @@ function pixels(png) {
   const counts = new Map();
   for (let offset = 0; offset < decoded.length; offset += channels) { const color = decoded.subarray(offset, offset + 3).toString('hex'); counts.set(color, (counts.get(color) || 0) + 1); }
   const background = [...counts].sort((a, b) => b[1] - a[1])[0];
-  return { width, height, colors: counts.size, nonBackgroundPixels: width * height - background[1] };
+  return { width, height, colors: counts.size, nonBackgroundPixels: width * height - background[1],
+    rgbAt(x, y) { const offset = (Math.max(0, Math.min(height - 1, Math.round(y))) * width + Math.max(0, Math.min(width - 1, Math.round(x)))) * channels; return [...decoded.subarray(offset, offset + 3)]; },
+    colorCount(predicate) { let count = 0; for (let i = 0; i < decoded.length; i += channels) if (predicate(decoded[i], decoded[i + 1], decoded[i + 2])) count++; return count; }
+  };
 }
 
 try {
@@ -100,10 +103,45 @@ try {
     await page.evaluate(async () => { window.dxfLab.renderer.render(); await window.dxfLab.renderer.device.queue.onSubmittedWorkDone(); });
     const stats = await page.evaluate(() => window.dxfLab.renderer.stats);
     assert(stats.frames > 0); assert(stats.drawCalls > 0); assert(stats.lineSegments > 100);
+    assert.equal(stats.textQuads, 4); assert(stats.triangles > 100);
     const screenshot = await page.locator('#drawing').screenshot({ path: resolve(artifactDirectory, 'drawing.png') });
     const observed = pixels(screenshot); assert(observed.colors > 4, JSON.stringify(observed)); assert(observed.nonBackgroundPixels > 500, JSON.stringify(observed));
     report.rendering = { ...stats, screenshot: observed };
     await page.screenshot({ path: resolve(artifactDirectory, 'studio-desktop.png'), fullPage: true });
+  });
+
+  await test('Actual WebGPU pixels show hatch holes, source-ordered wipeout masking and shaped Unicode text', async () => {
+    const inspected = await page.evaluate(async () => {
+      const renderer = window.dxfLab.renderer;
+      const ring = (x0, y0, x1, y1) => [[x0,y0],[x1,y0],[x1,y1],[x0,y1]];
+      renderer.setScene({ version: 1, entities: [
+        { type: 'SOLID', layer: 'Base', color: [1,0,0,1], vertices: ring(-50,-30,50,30) },
+        { type: 'WIPEOUT', layer: 'Mask', loops: [ring(-12,-18,12,18)] },
+        { type: 'LINE', layer: 'Later', color: [0,1,0,1], start: [-40,0], end: [40,0] },
+        { type: 'HATCH', layer: 'Fill', color: [0,0,1,1], loops: [ring(70,-30,110,30),ring(80,-20,100,20)] },
+        { type: 'TEXT', layer: 'Text', color: [1,1,1,1], text: 'Ω ± Ø Unicode', position: [-48,45], height: 8, fontFamily: 'sans-serif' },
+        { type: 'MTEXT', layer: 'Text', color: [1,1,1,1], text: 'First\\PSecond', position: [70,50], height: 5, width: 40, attachmentPoint: 1, fontFamily: 'sans-serif' },
+        { type: 'ATTRIB', layer: 'Text', color: [1,1,1,1], text: 'A-01', position: [-40,-46], height: 6, rotation: 18, fontFamily: 'sans-serif' },
+      ] });
+      renderer.render(); await renderer.device.queue.onSubmittedWorkDone();
+      const points = {};
+      for (const [name,x,y] of [['red',-30,10],['mask',0,10],['later',0,0],['fill',75,0],['hole',90,0]]) points[name] = renderer.worldToScreen(x,y);
+      return { stats: renderer.stats, points, issues: renderer.geometry.issues };
+    });
+    assert.equal(inspected.stats.textQuads, 3); assert.deepEqual(inspected.issues, []);
+    const observed = pixels(await page.locator('#drawing').screenshot({ path: resolve(artifactDirectory, 'text-hatch-wipeout.png') }));
+    const at = name => { const p = inspected.points[name]; return observed.rgbAt(p.x,p.y); };
+    assert.deepEqual(at('red'), [255,0,0]); assert.deepEqual(at('fill'), [0,0,255]);
+    assert.deepEqual(at('mask'), at('hole')); assert(at('mask').every(v => v < 40));
+    const p = inspected.points.later;
+    assert(Array.from({ length: 5 }, (_,i) => observed.rgbAt(p.x,p.y+i-2)).some(([r,g,b]) => g > 180 && r < 30 && b < 30), 'A later line must remain visible over the wipeout.');
+    const whitePixels = observed.colorCount((r,g,b) => r > 200 && g > 200 && b > 200);
+    assert(whitePixels > 150, `Expected visible shaped text, observed ${whitePixels} white pixels.`);
+    await page.evaluate(async () => { const r=window.dxfLab.renderer; r.setLayerVisibility('Text',false); r.render(); await r.device.queue.onSubmittedWorkDone(); });
+    const hidden = pixels(await page.locator('#drawing').screenshot());
+    assert.equal(hidden.colorCount((r,g,b) => r > 200 && g > 200 && b > 200), 0);
+    report.textFillMask = { stats: inspected.stats, whitePixels, red: at('red'), fill: at('fill'), mask: at('mask'), hole: at('hole') };
+    await page.evaluate(async () => { const r=window.dxfLab.renderer; r.setScene(window.dxfLab.document.scene); r.render(); await r.device.queue.onSubmittedWorkDone(); });
   });
 
   await test('Zoom, pan, fit and layer controls change the real renderer state', async () => {
@@ -126,6 +164,7 @@ try {
   let textBytes, binaryBytes;
   await test('Text and binary DXF downloads round-trip through the real managed library', async () => {
     const entityCount = await page.evaluate(() => window.dxfLab.document.stats.entityCount);
+    const renderedCount = await page.evaluate(() => window.dxfLab.document.stats.renderedEntities);
     for (const [id, binary] of [['export-text', false], ['export-binary', true]]) {
       const downloadPromise = page.waitForEvent('download'); await page.locator('#' + id).click(); const download = await downloadPromise;
       const data = await readFile(await download.path()); if (binary) binaryBytes = data; else textBytes = data;
@@ -133,6 +172,9 @@ try {
       await ready(page);
       await page.locator('#file').setInputFiles({ name: binary ? 'roundtrip-binary.dxf' : 'roundtrip-text.dxf', mimeType: 'application/dxf', buffer: data });
       await ready(page); assert.equal(await page.evaluate(() => window.dxfLab.document.stats.entityCount), entityCount);
+      assert.equal(await page.evaluate(() => window.dxfLab.document.stats.renderedEntities), renderedCount);
+      assert.equal(await page.evaluate(() => window.dxfLab.renderer.stats.textQuads), 4);
+      assert.equal(await page.evaluate(() => window.dxfLab.document.issues.some(issue => issue.code === 'DXF_GEOMETRY_ERROR')), false);
     }
   });
 
@@ -162,7 +204,10 @@ try {
     const rows = await page.locator('#kernel-results tbody tr').allTextContents();
     assert.equal(rows.length, 3);
     for (const backend of ['.NET Wasm', 'Native Wasm', 'JavaScript']) assert(rows.some(row => row.includes(backend)));
-    for (const row of await page.locator('#kernel-results tbody tr').all()) assert.deepEqual((await row.locator('td').allTextContents()).slice(2), ['5', '1', '7.5']);
+    for (const row of await page.locator('#kernel-results tbody tr').all()) {
+      const values = (await row.locator('td').allTextContents()).slice(2).map(Number);
+      assert.equal(values[0], 5); assert.equal(values[1], 7); assert(Math.abs(values[2] - Math.PI * 25) < 1e-8, String(values));
+    }
     report.geometryComparison = rows;
   });
 

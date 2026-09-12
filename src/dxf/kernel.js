@@ -2,6 +2,7 @@ import {loadWasm} from '../wasm/index.js';
 
 export const netDxfKernelMethods = Object.freeze([
   'Distance2','Distance3','RotateX','RotateY','CrossZ','NormalizeAngle','CubicBezierCoordinate',
+  'LineLength','CircleArea','ArcSweep','TrueColorArgb',
 ]);
 const type = 'RoslynWeb.Dxf.NetDxfKernel';
 const exports = netDxfKernelMethods.map(method => `${type}.${method}`);
@@ -61,7 +62,7 @@ export async function createNetDxfKernel({compiler,backend='native-wasm',baseUrl
     artifactBytes:backend === 'wasm' ? assembly.pe.length : backend === 'native-wasm' ? artifact.bytes.length : byteLength(artifact.source),
     compiledMethods:artifact?.analysis?.methodCount ?? artifact?.analysis?.methods ?? netDxfKernelMethods.length,
     diagnostics:artifact?.analysis?.diagnostics?.length ?? 0,compileMs:performance.now()-started,
-    scope:'Selected netDxf geometry methods; DXF document I/O runs on .NET WebAssembly.'});
+    scope:'Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly.'});
   return {
     backend,info,
     invoke(method,args=[]) {

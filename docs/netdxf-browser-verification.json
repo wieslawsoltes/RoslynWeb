@@ -1,74 +1,79 @@
 {
-  "testedAt": "2026-09-11T22:28:12.124Z",
+  "testedAt": "2026-09-12T06:32:52.819Z",
   "realBrowser": true,
   "realWebGPU": true,
   "tests": [
     {
       "name": "Sample starts a real compiler worker and loads the complete pinned netDxf library",
       "passed": true,
-      "ms": 1521
+      "ms": 1767
     },
     {
       "name": "WebGPU submits real drawing commands and produces colored geometry pixels",
       "passed": true,
-      "ms": 428
+      "ms": 551
+    },
+    {
+      "name": "Actual WebGPU pixels show hatch holes, source-ordered wipeout masking and shaped Unicode text",
+      "passed": true,
+      "ms": 720
     },
     {
       "name": "Zoom, pan, fit and layer controls change the real renderer state",
       "passed": true,
-      "ms": 288
+      "ms": 435
     },
     {
       "name": "Text and binary DXF downloads round-trip through the real managed library",
       "passed": true,
-      "ms": 367
+      "ms": 400
     },
     {
       "name": "Invalid and over-limit uploads report errors and preserve the current drawing",
       "passed": true,
-      "ms": 2452
+      "ms": 4964
     },
     {
       "name": "Source mode recompiles all upstream source files in browser WebAssembly",
       "passed": true,
-      "ms": 25920
+      "ms": 26104
     },
     {
       "name": "Optional geometry comparison executes managed Wasm, native Wasm and generated JavaScript",
       "passed": true,
-      "ms": 8579
+      "ms": 9863
     },
     {
       "name": "Mobile layout stays within the viewport and keeps document actions available",
       "passed": true,
-      "ms": 123
+      "ms": 133
     },
     {
       "name": "Unavailable WebGPU leaves real netDxf parsing and export usable",
       "passed": true,
-      "ms": 1520
+      "ms": 1584
     },
     {
       "name": "Missing startup assets surface an error and restart recovers cleanly",
       "passed": true,
-      "ms": 2169
+      "ms": 2517
     }
   ],
   "pageErrors": [],
-  "baseUrl": "http://127.0.0.1:42933/RoslynWeb/",
+  "baseUrl": "http://127.0.0.1:39237/RoslynWeb/",
   "browserVersion": "140.0.7339.186",
   "library": {
     "sourceCount": 272,
     "mode": "prebuilt",
     "stats": {
-      "entityCount": 12,
-      "layerCount": 5,
-      "sourceEntities": 12,
-      "renderedEntities": 24,
+      "entityCount": 18,
+      "layerCount": 7,
+      "sourceEntities": 18,
+      "renderedEntities": 30,
       "hiddenEntities": 0,
       "unsupportedEntities": 0,
-      "layers": 5,
-      "blocks": 2,
+      "layers": 7,
+      "blocks": 3,
       "curvePrecision": 192,
       "layout": "Model"
     },
@@ -77,9 +82,10 @@
   },
   "rendering": {
     "lineSegments": 989,
-    "triangles": 2,
-    "vertices": 1984,
-    "drawCalls": 5,
+    "triangles": 637,
+    "textQuads": 4,
+    "vertices": 3913,
+    "drawCalls": 14,
     "frames": 4,
     "width": 1140,
     "height": 762,
@@ -88,14 +94,49 @@
     "screenshot": {
       "width": 1140,
       "height": 762,
-      "colors": 689,
-      "nonBackgroundPixels": 46531
+      "colors": 1222,
+      "nonBackgroundPixels": 100479
     }
   },
+  "textFillMask": {
+    "stats": {
+      "lineSegments": 1,
+      "triangles": 12,
+      "textQuads": 3,
+      "vertices": 56,
+      "drawCalls": 7,
+      "frames": 5,
+      "width": 1140,
+      "height": 762,
+      "disposed": false,
+      "lost": false
+    },
+    "whitePixels": 7957,
+    "red": [
+      255,
+      0,
+      0
+    ],
+    "fill": [
+      0,
+      0,
+      255
+    ],
+    "mask": [
+      9,
+      12,
+      18
+    ],
+    "hole": [
+      9,
+      12,
+      18
+    ]
+  },
   "geometryComparison": [
-    ".NET Wasm0.11 s517.5",
-    "Native Wasm4.70 s517.5",
-    "JavaScript3.66 s517.5"
+    ".NET Wasm0.12 s5778.5398163397",
+    "Native Wasm5.22 s5778.5398163397",
+    "JavaScript3.82 s5778.5398163397"
   ],
   "passed": true
 }

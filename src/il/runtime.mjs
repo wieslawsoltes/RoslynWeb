@@ -8,6 +8,8 @@ import { invokeEmitBuiltin, isEmitField, reflectedOpcode } from './reflection-em
 import { emitTypeBases } from './reflection-types.mjs';
 import { invokeCollectionsBuiltin, isCollectionsInstance } from './collections-extra.mjs';
 import { invokeIoBuiltin, ioTypeBases } from './io.mjs';
+import { invokeEventBuiltin, isEventField, eventStaticField, isEventHandlerType, delegateEquals, delegateHashCode } from './events.mjs';
+import { invokeCadBuiltin, defaultCadValue, formatCadValue } from './cad-bcl.mjs';
 import { invokeJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isPointer, allocateMemory, releaseMemory, pointerBinary, readMemory, writeMemory, copyMemory, initializeMemory } from './memory.mjs';
 import { isStandardValueType, isStandardValueInstance, defaultStandardValue, decimalFromJS, standardValueFromJS, standardValueToJS, boxStandardValue, unboxStandardValue, standardStaticField, formatStandardValue, invokeStandardValueBuiltin } from './standard-values.mjs';
@@ -279,6 +281,7 @@ export class ILRuntime {
   arithmeticException() { return managedError('System.ArithmeticException', 'Overflow or underflow in the arithmetic operation.'); }
 
   objectHashCode(value) {
+    if (value?.$delegate) return i4(delegateHashCode(value));
     if (value?.$box) return value.$type==='System.Char' ? i4(Number(raw(value.value))|(Number(raw(value.value))<<16)) : this.objectHashCode(value.value);
     if (value instanceof Numeric) {
       if (value.kind === 'i4') return i4(value.value);
@@ -304,6 +307,8 @@ export class ILRuntime {
 
   defaultValue(type) {
     const name = trimType(type);
+    const cad = defaultCadValue(name);
+    if (cad !== undefined) return cad;
     const standard = defaultStandardValue(this, name);
     if (standard !== undefined) return standard;
     if (longTypes.has(name)) return i8(0);
@@ -313,7 +318,7 @@ export class ILRuntime {
     if (name === 'System.DateTime' || name === 'System.TimeSpan') return { $type:name, $valueType:true, fields:{}, $ticks:0n, $kind:0 };
     if (name === 'System.Runtime.CompilerServices.DefaultInterpolatedStringHandler') return { $type: name, $valueType: true, fields: {}, $chunks: [] };
     const definition = this.closeType(name);
-    if (definition?.isEnum) return i4(0);
+    if (definition?.isEnum) return this.defaultValue(definition.fields.find(f => f.name === 'value__')?.type ?? 'System.Int32');
     if (definition?.isValueType) return this.allocate(name, false);
     return null;
   }
@@ -541,6 +546,8 @@ export class ILRuntime {
 
   allocate(typeName, initialize = true) {
     const name = trimType(typeName);
+    const cad = defaultCadValue(name);
+    if (cad !== undefined) return cad;
     const standard = defaultStandardValue(this, name);
     if (standard !== undefined) return standard;
     if (initialize) this.ensureType(name);
@@ -571,7 +578,7 @@ export class ILRuntime {
     if (type === 'System.Reflection.Emit.DynamicMethod') return this.inherits('System.Reflection.MethodInfo', target);
     if (type === 'System.Reflection.Emit.LocalBuilder') return this.inherits('System.Reflection.LocalVariableInfo', target);
     if (type === 'System.MulticastDelegate') return target === 'System.Delegate';
-    if (/^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(type)) return target === 'System.MulticastDelegate' || target === 'System.Delegate';
+    if (isEventHandlerType(type) || /^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(type)) return target === 'System.MulticastDelegate' || target === 'System.Delegate';
     const builtInBases = { 'System.RuntimeType':'System.Type', 'System.Type':'System.Reflection.MemberInfo', 'System.Reflection.MethodInfo':'System.Reflection.MethodBase', 'System.Reflection.ConstructorInfo':'System.Reflection.MethodBase', 'System.Reflection.MethodBase':'System.Reflection.MemberInfo', 'System.Reflection.FieldInfo':'System.Reflection.MemberInfo', 'System.Reflection.PropertyInfo':'System.Reflection.MemberInfo', 'System.Reflection.TypeInfo':'System.Type', 'System.Reflection.RuntimeMethodInfo':'System.Reflection.MethodInfo', 'System.Reflection.RuntimeFieldInfo':'System.Reflection.FieldInfo', 'System.Reflection.RuntimeConstructorInfo':'System.Reflection.ConstructorInfo' };
     if (builtInBases[type]) return this.inherits(builtInBases[type],target);
     if (target === 'System.Exception' && type?.startsWith('System.') && type.endsWith('Exception')) return true;
@@ -580,7 +587,7 @@ export class ILRuntime {
     const seen = new Set();
     while (definition && !seen.has(definition.name)) {
       seen.add(definition.name);
-      if (definition.baseType === target || definition.interfaces?.includes(target)) return true;
+      if (definition.baseType === target || definition.interfaces?.includes(target) || definition.baseType === 'System.MulticastDelegate' && target === 'System.Delegate') return true;
       definition = this.closeType(definition.baseType);
     }
     return false;
@@ -594,6 +601,11 @@ export class ILRuntime {
     if (standard !== undefined) return standard;
     const collection = isCollectionsInstance(this, value, target);
     if (collection !== undefined) return collection;
+    if ((value.$array || value.$items) && /^System\.Collections\.Generic\.IReadOnly(?:List|Collection)`1</.test(target)) {
+      const element=value.elementType ?? splitTypeArguments(value.$type)[0], expected=splitTypeArguments(target)[0];
+      if (element === expected) return true;
+      if (element === 'System.String' || element?.endsWith('[]') || this.closeType(element)?.isValueType === false) return this.inherits(element,expected);
+    }
     if (value.$array && (target === 'System.Array' || target === 'System.Collections.IEnumerable')) return true;
     if (value.$array && target.endsWith('[]') && !isNumericType(value.elementType) && !this.types.get(value.elementType)?.isValueType) return this.inherits(value.elementType, target.slice(0, -2));
     if (value.$box && target === 'System.ValueType') return true;
@@ -622,6 +634,7 @@ export class ILRuntime {
       const standard = standardStaticField(ref);
       if (standard !== undefined) { frame.stack.push(operation === 'ldsfld' ? standard : address(() => standard, () => { throw managedError('System.FieldAccessException', 'Decimal constants are read-only.'); }, ref.type)); return; }
     }
+    if (operation === 'ldsfld' && isEventField(ref)) { frame.stack.push(eventStaticField(this)); return; }
     if (operation === 'ldsfld' && key === 'System.String::Empty') { frame.stack.push(''); return; }
     if (operation === 'ldsfld' && key === 'System.Type::EmptyTypes') { frame.stack.push(this.newArray('System.Type', i4(0))); return; }
     if ((operation === 'ldsfld' || operation === 'ldsflda') && isEmitField(ref)) {
@@ -892,6 +905,8 @@ export class ILRuntime {
     if (isRef(value)) value = value.get();
     if (value?.$box) { typeHint ??= value.$type; value = value.value; }
     if (value === null || value === undefined) return '';
+    const cad = formatCadValue(this, value, format, typeHint);
+    if (cad !== undefined) return cad;
     const standard = formatStandardValue(this, value, format);
     if (standard !== undefined) return standard;
     if (typeof value === 'string') return value;
@@ -910,6 +925,10 @@ export class ILRuntime {
   }
 
   callBuiltin(ref, args, self, kind) {
+    const cad = invokeCadBuiltin(this, ref, args, self, kind);
+    if (cad.handled) return cad;
+    const event = invokeEventBuiltin(this, ref, args, self);
+    if (event.handled) return event;
     const intrinsic = invokeJavaScriptIntrinsic(this, ref, args);
     if (intrinsic.handled) return intrinsic;
     const standard = invokeStandardValueBuiltin(this, ref, args, self, kind);
@@ -1078,7 +1097,7 @@ export class ILRuntime {
       if (name === 'get_Count') return done(i4(self.$items.length));
       if (name === 'get_Item' || name === 'set_Item') { const i = Number(a[0]); if (i < 0 || i >= self.$items.length) throw managedError('System.ArgumentOutOfRangeException', 'Index was out of range.'); if (name === 'get_Item') return done(copyValue(self.$items[i])); self.$items[i] = copyValue(args[1]); self.$version++; return done(); }
       if (name === 'Clear') { self.$items.length = 0; self.$version++; return done(); }
-      if (name === 'Contains' || name === 'IndexOf') { const i = self.$items.findIndex(v => raw(v) === a[0]); return done(i4(name === 'Contains' ? i >= 0 : i)); }
+      if (name === 'Contains' || name === 'IndexOf') { const i = self.$items.findIndex(v => v?.$delegate ? delegateEquals(v,args[0]) : raw(v) === a[0]); return done(i4(name === 'Contains' ? i >= 0 : i)); }
       if (name === 'ToArray') return done({ $array: true, $type: ref.returnType, elementType: trimType(ref.returnType).replace(/\[\]$/, ''), items: self.$items.map(copyValue) });
       if (name === 'GetEnumerator') return done({ $type: `${type}+Enumerator`, $valueType: true, fields: {}, $list: self, $index: -1, $version: self.$version });
     }
