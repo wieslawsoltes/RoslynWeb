@@ -1,0 +1,491 @@
+{
+  "success": true,
+  "schemaVersion": 1,
+  "name": "RegexFixture",
+  "entryPoint": null,
+  "assemblyIdentity": "RegexFixture, Version=0.0.0.0, Culture=neutral",
+  "version": "0.0.0.0",
+  "culture": "",
+  "publicKeyToken": "null",
+  "moduleVersionId": "c6a9cc52-9eef-4b5b-acdc-1afca3e3e7dd",
+  "references": [
+    {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Text.RegularExpressions",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Text.RegularExpressions, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    }
+  ],
+  "valueTypes": [],
+  "types": [
+    {
+      "token": 33554433,
+      "name": "<Module>",
+      "attributes": "NotPublic",
+      "baseType": null,
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554434,
+      "name": "RegexFixture",
+      "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "System.Runtime.CompilerServices.NullableContextAttribute",
+          "constructor": {
+            "token": 167772165,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableContextAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 1
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.Runtime.CompilerServices.NullableAttribute",
+          "constructor": {
+            "token": 167772166,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 0
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663297,
+          "name": "Split",
+          "declaringType": "RegexFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RegexFixture",
+          "returnType": "System.String[]",
+          "parameters": [
+            {
+              "name": "input",
+              "type": "System.String"
+            },
+            {
+              "name": "pattern",
+              "type": "System.String"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "Split",
+                "declaringType": "System.Text.RegularExpressions.Regex",
+                "assemblyName": "System.Text.RegularExpressions",
+                "genericParameterCount": 0,
+                "returnType": "System.String[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663298,
+          "name": "Error",
+          "declaringType": "RegexFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "RegexFixture",
+          "returnType": "System.String",
+          "parameters": [
+            {
+              "name": "input",
+              "type": "System.String"
+            },
+            {
+              "name": "pattern",
+              "type": "System.String"
+            }
+          ],
+          "locals": [
+            "System.String",
+            "System.ArgumentNullException"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldstr",
+              "operand": "|",
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 6,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "Split",
+                "declaringType": "System.Text.RegularExpressions.Regex",
+                "assemblyName": "System.Text.RegularExpressions",
+                "genericParameterCount": 0,
+                "returnType": "System.String[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "Join",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 18,
+              "opcode": "leave.s",
+              "operand": 64,
+              "size": 2
+            },
+            {
+              "offset": 20,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 22,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772169,
+                "name": "GetType",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 27,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772170,
+                "name": "get_FullName",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 32,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 37,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 38,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "get_ParamName",
+                "declaringType": "System.ArgumentException",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 43,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 48,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 49,
+              "opcode": "leave.s",
+              "operand": 64,
+              "size": 2
+            },
+            {
+              "offset": 51,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772169,
+                "name": "GetType",
+                "declaringType": "System.Exception",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 56,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772170,
+                "name": "get_FullName",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 61,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 62,
+              "opcode": "leave.s",
+              "operand": 64,
+              "size": 2
+            },
+            {
+              "offset": 64,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 65,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [
+            {
+              "kind": "catch",
+              "tryOffset": 0,
+              "tryLength": 20,
+              "handlerOffset": 20,
+              "handlerLength": 31,
+              "filterOffset": null,
+              "catchType": "System.ArgumentNullException"
+            },
+            {
+              "kind": "catch",
+              "tryOffset": 0,
+              "tryLength": 20,
+              "handlerOffset": 51,
+              "handlerLength": 13,
+              "filterOffset": null,
+              "catchType": "System.ArgumentException"
+            }
+          ],
+          "customAttributes": [],
+          "maxStack": 3,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    }
+  ]
+}

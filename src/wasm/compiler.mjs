@@ -1,3 +1,8 @@
+import {isCadBinaryBuiltin} from '../il/cad-binary.mjs';
+import {isTemporalValueType} from '../il/cad-time.mjs';
+import {isExtendedValueType} from '../il/framework.mjs';
+import {genericDefinitionName} from '../il/generics.mjs';
+import {isSpanType} from '../il/spans.mjs';
 import {parseFloatBits, floatLiteralExecutionBits} from '../il/float-bits.mjs';
 import { Writer, valueTypes, op } from './binary.mjs';
 import { analyzeWasmAssembly, nativeFrameworkEnums } from './analysis.mjs';
@@ -47,7 +52,7 @@ export function compileWasm(model, options={}) {
     const index=imports.length;importKeys.set(key,index);imports.push({module:'clr',name:`s${index}`,...descriptor,typeIndex:typeIndex(descriptor.parameters,descriptor.result)});return index;
   };
   const optimization={enabled:options.optimize!==false,structuredMethods:0,dispatcherMethods:0,nativeLoops:0,directBranches:0,eliminatedDispatches:0,localTeeRewrites:0,intrinsicCalls:0,functionBodyBytes:0};
-  const ctx={hasFilters:filterPlan.nativeFilters.length>0,optimization,options,analysis,model,methods,methodMap,methodId,importService,isValueType:(name,assembly)=>isStandardValueType(name)||analysis.types.some(t=>t.isValueType&&!t.isEnum&&t.name===String(name).split('<')[0]&&(!assembly||t.assemblyName===assembly)),hasEH:methods.some(m=>m.exceptionPlan?.handlers?.length),hasCctor:new Set(methods.filter(m=>m.method.name==='.cctor').map(m=>m.method.declaringType))};
+  const ctx={hasFilters:filterPlan.nativeFilters.length>0,optimization,options,analysis,model,methods,methodMap,methodId,importService,isValueType:(name,assembly)=>isSpanType(name)||isStandardValueType(name)||isTemporalValueType(name)||isExtendedValueType(name)||analysis.types.some(t=>t.isValueType&&!t.isEnum&&t.name===genericDefinitionName(name)&&(!assembly||t.assemblyName===assembly)),hasEH:methods.some(m=>m.exceptionPlan?.handlers?.length),hasCctor:new Set(methods.filter(m=>m.method.name==='.cctor').map(m=>m.method.declaringType))};
   const bodies=methods.map(m=>emitMethod(ctx,m));
   const functionImportCount=imports.length;
   const indices=new Map(methods.map((m,i)=>[methodId(m),functionImportCount+i]));
@@ -184,6 +189,14 @@ function emitMethod(ctx, analyzed) {
         const object=temp('externref'),struct=ctx.isValueType(ref.declaringType,target.assemblyName);service('allocate',ref.declaringType,[],'externref');if(struct)service('cell_new',ref.declaringType,['externref'],'externref');set(object);get(object);const p=target.paramTypes??target.parameters;for(let n=0;n<parameterTypes.length;n++){a(count-parameterTypes.length+n,p[n+1]);copy(p[n+1]);}w.managed(ctx.methodId(target));get(object);if(struct)service('cell_get',ref.declaringType,['externref'],'externref');push();return;
       }
       if(!target&&code!=='newobj'&&(emitIntrinsic(ref,before,start)||nativeMath(ref,before,start,callResult))){if(callResult)push();return;}
+      // A JS numeric import boundary quiets signaling NaNs. BitConverter moves
+      // representations, so carry its floating values as integer bits instead.
+      if(!target&&code==='call'&&isCadBinaryBuiltin(ref)){
+        const input=ref.name==='GetBytes'&&callParams.length===1&&['f32','f64'].includes(callParams[0])?callParams[0]:null;
+        const output=['ToSingle','ToDouble'].includes(ref.name)&&['f32','f64'].includes(callResult)?callResult:null;
+        if(input){a(start,input);const bits=input==='f32'?'i32':'i64';w.byte(op[`${bits}_reinterpret_${input}`]);service('binary_bits',ref,[bits],'externref',{bitParameterKind:input,parameterTypes,returnType:ref.returnType});push();return;}
+        if(output){for(let n=0;n<callParams.length;n++)a(start+n,callParams[n]);const bits=output==='f32'?'i32':'i64';service('binary_bits',ref,callParams,bits,{bitResultKind:output,parameterTypes,returnType:ref.returnType});w.byte(op[`${output}_reinterpret_${bits}`]);coerce(output,after.at(-1));push();return;}
+      }
       for(let n=0;n<callParams.length;n++){a(start+n,callParams[n]);copy(callParams[n]);}
       if(call.constrainedMode&&call.constrainedMode!=='direct-value'){service('constrained_call',{...ref,constrainedType:call.constrainedType,constrainedMode:call.constrainedMode},callParams,callResult,{parameterTypes:[...(!ref.isStatic?[ref.declaringType]:[]),...parameterTypes],returnType:ref.returnType});}
       else if(target&&code!=='newobj'&&!call.virtual){if(code==='callvirt'){

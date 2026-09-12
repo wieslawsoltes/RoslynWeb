@@ -114,12 +114,29 @@ initializers, and DefaultInterpolatedStringHandler. Unsupported overload signatu
 are diagnosed before execution; for example, `new string(char, int)` and
 `Math.Round(double, int)` currently require the .NET tier.
 
+The CAD framework adapters add signature-checked enum names/values/parsing,
+underlying integer conversion, flags/general/decimal/hexadecimal formatting,
+selected `System.Drawing.Color` value APIs, ordinal string operations, and
+comparer-aware dictionary construction. OrdinalIgnoreCase currently validates
+ASCII text; unsupported non-ASCII casing and culture-dependent comparisons raise
+explicit runtime limitations. The metadata inspector preserves `FlagsAttribute`
+so unnamed flags combinations and ordinary enum numeric values remain distinct.
+
+Multicast delegates support invocation lists, Combine, last contiguous sequence
+removal, RemoveAll, equality/hashing, and invocation snapshots during reentrant
+subscription changes. C# event accessors run through supported single-runtime
+Interlocked operations, including reference identity and bit-exact floating
+CompareExchange. Standard and custom delegates work in supported collections.
+`EventArgs.Empty` and current-thread identity are available. This does not provide
+worker-shared atomic ordering, thread creation, waits, or blocking sleeps.
+The real C# differential suites are `npm run test:events` and `npm run test:cad-bcl`.
+
 Shared standard-value services provide exact Decimal arithmetic/conversion and invariant G/F/N/E/P formats, Nullable default/value/boxing behavior, and ValueTuple fields/copies/byrefs/boxing/equality/ordering/string formatting. Tuples also support ITuple indexing/Length, comparable/equatable interfaces, managed structural comparers and seeded hashing. Nullable hashing includes supported primitives, Decimal, tuples and custom GetHashCode overrides. Decimal stores a signed 96-bit coefficient and scale 0–28. Public values use exact Decimal strings, null/underlying Nullable values, and tuple arrays. Currency/custom-provider/custom-format APIs, span/UTF-8 Decimal overloads, arbitrary automatic struct hashing and default culture-sensitive structural string ordering remain outside this service. The [shared value-type contract](../../docs/JAVASCRIPT-COMPILER.md#shared-framework-values) lists the implemented overload families and boundaries.
 
 This bridge does not reproduce the entire behavior of every implemented framework
 type. Its formatting supports the common decimal/hexadecimal/fixed-point forms
 (`D`, `X`, `F`) used by its examples, plus basic composite formatting and alignment.
-Decimal additionally supports its documented invariant G/F/N/E/P formats. Other unsupported numeric/custom formats and culture-provider behavior require the .NET tier.
+Decimal additionally supports its documented invariant G/F/N/E/P formats. Explicit invariant providers now support Double/Single/integer G/F/E, floating R, integer D/X/B, and the bounded decimal/scientific custom formats documented in [CAD numeric formatting](../../docs/CAD-NUMERIC-FORMATTING.md). Other numeric/custom formats and culture-provider behavior require the .NET tier.
 JavaScript string operations use JavaScript Unicode behavior; culture-specific
 collation and globalization are not a compatibility claim. Equality/hashing of
 complex framework objects, array rank/covariance combinations, and interface
@@ -327,3 +344,7 @@ for memory/text/binary streams, UTF-8 data, virtual files, directory enumeration
 and stream/encoding base types. `tests/il-io.test.mjs` additionally verifies
 buffer aliasing, zero-filled growth, disposal, resource budgets, malformed byte
 sequences, EOF, virtual-file isolation, and copied Worker-safe file snapshots.
+
+## Managed spans and compiler-generated inline arrays
+
+The JavaScript backend supports bounded managed `Span<T>` / `ReadOnlySpan<T>` storage, verified inline arrays and selected `Unsafe` / `MemoryMarshal` helpers, including Roslyn-generated params spans for composite formatting. See [contracts, aliasing behavior, limits and differential tests](../../docs/SPANS.md). Span-based IO overloads remain separately unsupported.

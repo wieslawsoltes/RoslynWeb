@@ -1,0 +1,89 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "cdfbd1d16f34d6396f04287b731215c4382130936b39ff8b466ef76d7077a9d2",
+  "cases": [
+    {
+      "method": "Values",
+      "result": [
+        "hello",
+        "System.Int32",
+        "18446744073709551615",
+        "9223372036854775809",
+        "42",
+        "3",
+        "-4",
+        "left",
+        null,
+        "right",
+        "System.String",
+        "System.Int32[]",
+        "field",
+        "property",
+        "9223372036854775809",
+        "1",
+        "9223372036854775809",
+        "System.Int32",
+        "True",
+        "text"
+      ]
+    },
+    {
+      "method": "Queries",
+      "result": [
+        "True",
+        "0",
+        "2",
+        "hello",
+        "3",
+        "1",
+        "1"
+      ]
+    },
+    {
+      "method": "Nulls",
+      "result": [
+        "True",
+        "True",
+        "True",
+        "True",
+        "True",
+        "True"
+      ]
+    },
+    {
+      "method": "Inheritance",
+      "result": [
+        "3",
+        "derived",
+        "base-one",
+        "base-two",
+        "1",
+        "derived",
+        "0",
+        "2",
+        "method-derived",
+        "method-base",
+        "1",
+        "field-base",
+        "1",
+        "property-derived"
+      ]
+    },
+    {
+      "method": "PseudoDefinitions",
+      "result": [
+        "True",
+        "False",
+        "True"
+      ]
+    },
+    {
+      "method": "Errors",
+      "result": [
+        "True",
+        "attribute failure",
+        "null"
+      ]
+    }
+  ]
+}

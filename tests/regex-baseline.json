@@ -1,0 +1,4643 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "8f98dead27586a5aa86b52fcb1639cd851e414f5214b04c542e6747cc47953fa",
+  "cases": [
+    {
+      "input": "",
+      "pattern": "\\^J",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\^J",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\^J",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\^J",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\^J",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\^J",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\^J",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\^J",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\^J",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\^J",
+      "result": [
+        "a",
+        "b",
+        ""
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\^J",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\^J",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\^J",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\^J",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\^J",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\^J",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "%%v",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "%%v",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "%%v",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "%%v",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "%%v",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "%%v",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "%%v",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "%%v",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "%%v",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "%%v",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "%%v",
+      "result": [
+        "a",
+        "b",
+        ""
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "%%v",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "%%v",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "%%v",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "%%v",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "%%v",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "a",
+        "",
+        "b",
+        ""
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "\"b,c\"",
+        "d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"a,b\"",
+        "c",
+        "\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a,b\"c",
+        "d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a,\"b",
+        "c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\n",
+        "\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "🌍",
+        "😀"
+      ]
+    },
+    {
+      "input": "aaaa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aaaa"
+      ]
+    },
+    {
+      "input": ",aaa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "aaa"
+      ]
+    },
+    {
+      "input": "\"aaa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"aaa"
+      ]
+    },
+    {
+      "input": "a,aa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "aa"
+      ]
+    },
+    {
+      "input": ",,aa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "",
+        "aa"
+      ]
+    },
+    {
+      "input": "\",aa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"",
+        "aa"
+      ]
+    },
+    {
+      "input": "a\"aa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"aa"
+      ]
+    },
+    {
+      "input": ",\"aa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",\"aa"
+      ]
+    },
+    {
+      "input": "\"\"aa",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"aa"
+      ]
+    },
+    {
+      "input": "aa,a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aa",
+        "a"
+      ]
+    },
+    {
+      "input": ",a,a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "a",
+        "a"
+      ]
+    },
+    {
+      "input": "\"a,a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"a",
+        "a"
+      ]
+    },
+    {
+      "input": "a,,a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "",
+        "a"
+      ]
+    },
+    {
+      "input": ",,,a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "",
+        "",
+        "a"
+      ]
+    },
+    {
+      "input": "\",,a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"",
+        "",
+        "a"
+      ]
+    },
+    {
+      "input": "a\",a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"",
+        "a"
+      ]
+    },
+    {
+      "input": ",\",a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",\"",
+        "a"
+      ]
+    },
+    {
+      "input": "\"\",a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"",
+        "a"
+      ]
+    },
+    {
+      "input": "aa\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aa\"a"
+      ]
+    },
+    {
+      "input": ",a\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",a\"a"
+      ]
+    },
+    {
+      "input": "\"a\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"a\"a"
+      ]
+    },
+    {
+      "input": "a,\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a,\"a"
+      ]
+    },
+    {
+      "input": ",,\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",,\"a"
+      ]
+    },
+    {
+      "input": "\",\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\",\"a"
+      ]
+    },
+    {
+      "input": "a\"\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"\"a"
+      ]
+    },
+    {
+      "input": ",\"\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "\"\"a"
+      ]
+    },
+    {
+      "input": "\"\"\"a",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"\"a"
+      ]
+    },
+    {
+      "input": "aaa,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aaa",
+        ""
+      ]
+    },
+    {
+      "input": ",aa,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "aa",
+        ""
+      ]
+    },
+    {
+      "input": "\"aa,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"aa",
+        ""
+      ]
+    },
+    {
+      "input": "a,a,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "a",
+        ""
+      ]
+    },
+    {
+      "input": ",,a,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "",
+        "a",
+        ""
+      ]
+    },
+    {
+      "input": "\",a,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"",
+        "a",
+        ""
+      ]
+    },
+    {
+      "input": "a\"a,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"a",
+        ""
+      ]
+    },
+    {
+      "input": ",\"a,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",\"a",
+        ""
+      ]
+    },
+    {
+      "input": "\"\"a,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"a",
+        ""
+      ]
+    },
+    {
+      "input": "aa,,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aa",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": ",a,,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "a",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": "\"a,,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"a",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": "a,,,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": ",,,,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": "\",,,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": "a\",,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": ",\",,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",\"",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": "\"\",,",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"",
+        "",
+        ""
+      ]
+    },
+    {
+      "input": "aa\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aa\"",
+        ""
+      ]
+    },
+    {
+      "input": ",a\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",a\"",
+        ""
+      ]
+    },
+    {
+      "input": "\"a\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"a\"",
+        ""
+      ]
+    },
+    {
+      "input": "a,\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a,\"",
+        ""
+      ]
+    },
+    {
+      "input": ",,\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",,\"",
+        ""
+      ]
+    },
+    {
+      "input": "\",\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\",\"",
+        ""
+      ]
+    },
+    {
+      "input": "a\"\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"\"",
+        ""
+      ]
+    },
+    {
+      "input": ",\"\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "\"\"",
+        ""
+      ]
+    },
+    {
+      "input": "\"\"\",",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"\"",
+        ""
+      ]
+    },
+    {
+      "input": "aaa\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aaa\""
+      ]
+    },
+    {
+      "input": ",aa\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",aa\""
+      ]
+    },
+    {
+      "input": "\"aa\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"aa\""
+      ]
+    },
+    {
+      "input": "a,a\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a,a\""
+      ]
+    },
+    {
+      "input": ",,a\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",,a\""
+      ]
+    },
+    {
+      "input": "\",a\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\",a\""
+      ]
+    },
+    {
+      "input": "a\"a\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"a\""
+      ]
+    },
+    {
+      "input": ",\"a\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "\"a\""
+      ]
+    },
+    {
+      "input": "\"\"a\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"a\""
+      ]
+    },
+    {
+      "input": "aa,\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aa,\""
+      ]
+    },
+    {
+      "input": ",a,\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",a,\""
+      ]
+    },
+    {
+      "input": "\"a,\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"a,\""
+      ]
+    },
+    {
+      "input": "a,,\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a,,\""
+      ]
+    },
+    {
+      "input": ",,,\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",,,\""
+      ]
+    },
+    {
+      "input": "\",,\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\",,\""
+      ]
+    },
+    {
+      "input": "a\",\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\",\""
+      ]
+    },
+    {
+      "input": ",\",\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "\",\""
+      ]
+    },
+    {
+      "input": "\"\",\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\",\""
+      ]
+    },
+    {
+      "input": "aa\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "aa\"\""
+      ]
+    },
+    {
+      "input": ",a\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "a\"\""
+      ]
+    },
+    {
+      "input": "\"a\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"a\"\""
+      ]
+    },
+    {
+      "input": "a,\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a",
+        "\"\""
+      ]
+    },
+    {
+      "input": ",,\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "",
+        "",
+        "\"\""
+      ]
+    },
+    {
+      "input": "\",\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"",
+        "\"\""
+      ]
+    },
+    {
+      "input": "a\"\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "a\"\"\""
+      ]
+    },
+    {
+      "input": ",\"\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        ",\"\"\""
+      ]
+    },
+    {
+      "input": "\"\"\"\"",
+      "pattern": ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)",
+      "result": [
+        "\"\"\"\""
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "",
+      "result": [
+        "",
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        ",",
+        "b",
+        ",",
+        "c",
+        ""
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "",
+      "result": [
+        "",
+        ",",
+        "a",
+        ",",
+        ",",
+        "b",
+        ",",
+        ""
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        ",",
+        "\"",
+        "b",
+        ",",
+        "c",
+        "\"",
+        ",",
+        "d",
+        ""
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "",
+      "result": [
+        "",
+        "\"",
+        "a",
+        ",",
+        "b",
+        "\"",
+        ",",
+        "c",
+        ",",
+        "\"",
+        "d",
+        ",",
+        "e",
+        "\"",
+        ""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        ",",
+        "b",
+        "\"",
+        "c",
+        ",",
+        "d",
+        ""
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        ",",
+        "\"",
+        "b",
+        ",",
+        "c",
+        ""
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        ",",
+        "\"",
+        "b",
+        ",",
+        "c",
+        "\"",
+        "\n",
+        ""
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "",
+      "result": [
+        "",
+        "\n",
+        ",",
+        "\r",
+        "\n",
+        ""
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        "^",
+        "J",
+        "b",
+        "^",
+        "J",
+        ""
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        "%",
+        "%",
+        "v",
+        "b",
+        "%",
+        "%",
+        "v",
+        ""
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "",
+      "result": [
+        "",
+        "a",
+        "b",
+        "a",
+        "b",
+        "c",
+        "a",
+        "b",
+        ""
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "",
+      "result": [
+        "",
+        "\\",
+        ".",
+        "^",
+        "$",
+        "*",
+        "+",
+        "?",
+        "|",
+        "{",
+        "}",
+        "[",
+        "]",
+        "(",
+        ")",
+        "#",
+        " ",
+        "-",
+        ""
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "",
+      "result": [
+        "",
+        "\u0000",
+        "\u0007",
+        "\u001b",
+        "\f",
+        "\n",
+        "\r",
+        "\t",
+        "\u000b",
+        "\u001f",
+        ""
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "",
+      "result": [
+        "",
+        "\ud800",
+        "a",
+        "\udc00",
+        ""
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "",
+      "result": [
+        "",
+        "\ud83c",
+        "\udf0d",
+        ",",
+        "\ud83d",
+        "\ude00",
+        ""
+      ]
+    },
+    {
+      "input": "",
+      "pattern": ",",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": ",",
+      "result": [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": ",",
+      "result": [
+        "",
+        "a",
+        "",
+        "b",
+        ""
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": ",",
+      "result": [
+        "a",
+        "\"b",
+        "c\"",
+        "d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": ",",
+      "result": [
+        "\"a",
+        "b\"",
+        "c",
+        "\"d",
+        "e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": ",",
+      "result": [
+        "a",
+        "b\"c",
+        "d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": ",",
+      "result": [
+        "a",
+        "\"b",
+        "c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": ",",
+      "result": [
+        "a",
+        "\"b",
+        "c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": ",",
+      "result": [
+        "\n",
+        "\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": ",",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": ",",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": ",",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": ",",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": ",",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": ",",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": ",",
+      "result": [
+        "🌍",
+        "😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "ab",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "ab",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "ab",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "ab",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "ab",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "ab",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "ab",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "ab",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "ab",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "ab",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "ab",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "ab",
+      "result": [
+        "",
+        "",
+        "c",
+        ""
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "ab",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "ab",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "ab",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "ab",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\.",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\.",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\.",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\.",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\.",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\.",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\.",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\.",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\.",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\.",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\.",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\.",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\.",
+      "result": [
+        "\\",
+        "^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\.",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\.",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\.",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\$",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\$",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\$",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\$",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\$",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\$",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\$",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\$",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\$",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\$",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\$",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\$",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\$",
+      "result": [
+        "\\.^",
+        "*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\$",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\$",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\$",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\*",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\*",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\*",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\*",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\*",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\*",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\*",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\*",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\*",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\*",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\*",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\*",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\*",
+      "result": [
+        "\\.^$",
+        "+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\*",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\*",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\*",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\+",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\+",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\+",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\+",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\+",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\+",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\+",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\+",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\+",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\+",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\+",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\+",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\+",
+      "result": [
+        "\\.^$*",
+        "?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\+",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\+",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\+",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\?",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\?",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\?",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\?",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\?",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\?",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\?",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\?",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\?",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\?",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\?",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\?",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\?",
+      "result": [
+        "\\.^$*+",
+        "|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\?",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\?",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\?",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\|",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\|",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\|",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\|",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\|",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\|",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\|",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\|",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\|",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\|",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\|",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\|",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\|",
+      "result": [
+        "\\.^$*+?",
+        "{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\|",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\|",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\|",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\{",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\{",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\{",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\{",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\{",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\{",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\{",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\{",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\{",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\{",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\{",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\{",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\{",
+      "result": [
+        "\\.^$*+?|",
+        "}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\{",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\{",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\{",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\}",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\}",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\}",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\}",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\}",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\}",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\}",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\}",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\}",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\}",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\}",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\}",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\}",
+      "result": [
+        "\\.^$*+?|{",
+        "[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\}",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\}",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\}",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\[",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\[",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\[",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\[",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\[",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\[",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\[",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\[",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\[",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\[",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\[",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\[",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\[",
+      "result": [
+        "\\.^$*+?|{}",
+        "]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\[",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\[",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\[",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\]",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\]",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\]",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\]",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\]",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\]",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\]",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\]",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\]",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\]",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\]",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\]",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\]",
+      "result": [
+        "\\.^$*+?|{}[",
+        "()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\]",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\]",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\]",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\(",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\(",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\(",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\(",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\(",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\(",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\(",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\(",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\(",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\(",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\(",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\(",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\(",
+      "result": [
+        "\\.^$*+?|{}[]",
+        ")# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\(",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\(",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\(",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\)",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\)",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\)",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\)",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\)",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\)",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\)",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\)",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\)",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\)",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\)",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\)",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\)",
+      "result": [
+        "\\.^$*+?|{}[](",
+        "# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\)",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\)",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\)",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\^",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\^",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\^",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\^",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\^",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\^",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\^",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\^",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\^",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\^",
+      "result": [
+        "a",
+        "Jb",
+        "J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\^",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\^",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\^",
+      "result": [
+        "\\.",
+        "$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\^",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\^",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\^",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\\\",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\\\",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\\\",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\\\",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\\\",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\\\",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\\\",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\\\",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\\\",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\\\",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\\\",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\\\",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\\\",
+      "result": [
+        "",
+        ".^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\\\",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\\\",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\\\",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\#",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\#",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\#",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\#",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\#",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\#",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\#",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\#",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\#",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\#",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\#",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\#",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\#",
+      "result": [
+        "\\.^$*+?|{}[]()",
+        " -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\#",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\#",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\#",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\ ",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\ ",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\ ",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\ ",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\ ",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\ ",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\ ",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\ ",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\ ",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\ ",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\ ",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\ ",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\ ",
+      "result": [
+        "\\.^$*+?|{}[]()#",
+        "-"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\ ",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\ ",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\ ",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\a",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\a",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\a",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\a",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\a",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\a",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\a",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\a",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\a",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\a",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\a",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\a",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\a",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\a",
+      "result": [
+        "\u0000",
+        "\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\a",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\a",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\e",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\e",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\e",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\e",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\e",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\e",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\e",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\e",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\e",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\e",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\e",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\e",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\e",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\e",
+      "result": [
+        "\u0000\u0007",
+        "\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\e",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\e",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\f",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\f",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\f",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\f",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\f",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\f",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\f",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\f",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\f",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\f",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\f",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\f",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\f",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\f",
+      "result": [
+        "\u0000\u0007\u001b",
+        "\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\f",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\f",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\n",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\n",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\n",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\n",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\n",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\n",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\n",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\n",
+      "result": [
+        "a,\"b,c\"",
+        ""
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\n",
+      "result": [
+        "",
+        ",\r",
+        ""
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\n",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\n",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\n",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\n",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\n",
+      "result": [
+        "\u0000\u0007\u001b\f",
+        "\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\n",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\n",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\r",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\r",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\r",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\r",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\r",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\r",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\r",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\r",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\r",
+      "result": [
+        "\n,",
+        "\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\r",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\r",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\r",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\r",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\r",
+      "result": [
+        "\u0000\u0007\u001b\f\n",
+        "\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\r",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\r",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\t",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\t",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\t",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\t",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\t",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\t",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\t",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\t",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\t",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\t",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\t",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\t",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\t",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\t",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r",
+        "\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\t",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\t",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\v",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\v",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\v",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\v",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\v",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\v",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\v",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\v",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\v",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\v",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\v",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\v",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\v",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\v",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t",
+        "\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\v",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\v",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\x2c",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\x2c",
+      "result": [
+        "a",
+        "b",
+        "c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\x2c",
+      "result": [
+        "",
+        "a",
+        "",
+        "b",
+        ""
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\x2c",
+      "result": [
+        "a",
+        "\"b",
+        "c\"",
+        "d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\x2c",
+      "result": [
+        "\"a",
+        "b\"",
+        "c",
+        "\"d",
+        "e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\x2c",
+      "result": [
+        "a",
+        "b\"c",
+        "d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\x2c",
+      "result": [
+        "a",
+        "\"b",
+        "c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\x2c",
+      "result": [
+        "a",
+        "\"b",
+        "c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\x2c",
+      "result": [
+        "\n",
+        "\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\x2c",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\x2c",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\x2c",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\x2c",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\x2c",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\x2c",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\x2c",
+      "result": [
+        "🌍",
+        "😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\uD800",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\uD800",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\uD800",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\uD800",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\uD800",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\uD800",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\uD800",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\uD800",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\uD800",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\uD800",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\uD800",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\uD800",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\uD800",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\uD800",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\uD800",
+      "result": [
+        "",
+        "a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\uD800",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\cJ",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\cJ",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\cJ",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\cJ",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\cJ",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\cJ",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\cJ",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\cJ",
+      "result": [
+        "a,\"b,c\"",
+        ""
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\cJ",
+      "result": [
+        "",
+        ",\r",
+        ""
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\cJ",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\cJ",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\cJ",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\cJ",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\cJ",
+      "result": [
+        "\u0000\u0007\u001b\f",
+        "\r\t\u000b\u001f"
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\cJ",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\cJ",
+      "result": [
+        "🌍,😀"
+      ]
+    },
+    {
+      "input": "",
+      "pattern": "\\c_",
+      "result": [
+        ""
+      ]
+    },
+    {
+      "input": "a,b,c",
+      "pattern": "\\c_",
+      "result": [
+        "a,b,c"
+      ]
+    },
+    {
+      "input": ",a,,b,",
+      "pattern": "\\c_",
+      "result": [
+        ",a,,b,"
+      ]
+    },
+    {
+      "input": "a,\"b,c\",d",
+      "pattern": "\\c_",
+      "result": [
+        "a,\"b,c\",d"
+      ]
+    },
+    {
+      "input": "\"a,b\",c,\"d,e\"",
+      "pattern": "\\c_",
+      "result": [
+        "\"a,b\",c,\"d,e\""
+      ]
+    },
+    {
+      "input": "a,b\"c,d",
+      "pattern": "\\c_",
+      "result": [
+        "a,b\"c,d"
+      ]
+    },
+    {
+      "input": "a,\"b,c",
+      "pattern": "\\c_",
+      "result": [
+        "a,\"b,c"
+      ]
+    },
+    {
+      "input": "a,\"b,c\"\n",
+      "pattern": "\\c_",
+      "result": [
+        "a,\"b,c\"\n"
+      ]
+    },
+    {
+      "input": "\n,\r\n",
+      "pattern": "\\c_",
+      "result": [
+        "\n,\r\n"
+      ]
+    },
+    {
+      "input": "a^Jb^J",
+      "pattern": "\\c_",
+      "result": [
+        "a^Jb^J"
+      ]
+    },
+    {
+      "input": "a%%vb%%v",
+      "pattern": "\\c_",
+      "result": [
+        "a%%vb%%v"
+      ]
+    },
+    {
+      "input": "ababcab",
+      "pattern": "\\c_",
+      "result": [
+        "ababcab"
+      ]
+    },
+    {
+      "input": "\\.^$*+?|{}[]()# -",
+      "pattern": "\\c_",
+      "result": [
+        "\\.^$*+?|{}[]()# -"
+      ]
+    },
+    {
+      "input": "\u0000\u0007\u001b\f\n\r\t\u000b\u001f",
+      "pattern": "\\c_",
+      "result": [
+        "\u0000\u0007\u001b\f\n\r\t\u000b",
+        ""
+      ]
+    },
+    {
+      "input": "\ud800a\udc00",
+      "pattern": "\\c_",
+      "result": [
+        "\ud800a\udc00"
+      ]
+    },
+    {
+      "input": "🌍,😀",
+      "pattern": "\\c_",
+      "result": [
+        "🌍,😀"
+      ]
+    }
+  ],
+  "errorCases": [
+    {
+      "args": [
+        null,
+        ","
+      ],
+      "result": "System.ArgumentNullException:input"
+    },
+    {
+      "args": [
+        "a",
+        null
+      ],
+      "result": "System.ArgumentNullException:pattern"
+    },
+    {
+      "args": [
+        null,
+        null
+      ],
+      "result": "System.ArgumentNullException:pattern"
+    },
+    {
+      "args": [
+        null,
+        "\\"
+      ],
+      "result": "System.Text.RegularExpressions.RegexParseException"
+    },
+    {
+      "args": [
+        null,
+        "\\xG0"
+      ],
+      "result": "System.Text.RegularExpressions.RegexParseException"
+    },
+    {
+      "args": [
+        "a",
+        "\\"
+      ],
+      "result": "System.Text.RegularExpressions.RegexParseException"
+    },
+    {
+      "args": [
+        "a",
+        "\\xG0"
+      ],
+      "result": "System.Text.RegularExpressions.RegexParseException"
+    },
+    {
+      "args": [
+        "a",
+        "\\u123"
+      ],
+      "result": "System.Text.RegularExpressions.RegexParseException"
+    },
+    {
+      "args": [
+        "a",
+        "\\c!"
+      ],
+      "result": "System.Text.RegularExpressions.RegexParseException"
+    },
+    {
+      "args": [
+        "a",
+        "\\cß"
+      ],
+      "result": "System.Text.RegularExpressions.RegexParseException"
+    }
+  ]
+}

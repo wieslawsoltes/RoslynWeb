@@ -23,11 +23,11 @@ test('collection overload admission rejects serialization, synchronous wrappers 
  assert.equal(isCollectionsBuiltin(ref(G+'LinkedListNode`1<System.Int32>','get_ValueRef',[])),false);
 });
 
-test('collection limits and non-ASCII ordinal case folding fail explicitly before claiming unsupported behavior',()=>{
+test('collection limits remain bounded while ordinal casing supports Unicode',()=>{
  const rt=compileAssembly(model,{strict:true,maxArrayLength:2});
  assert.throws(()=>rt.invoke('CollectionsFixture::QueueOrder'),e=>e.runtimeLimitation&&/maximum length/.test(e.message));
  const comparer=invokeCollectionsBuiltin(rt,ref('System.StringComparer','get_OrdinalIgnoreCase'),[],null).value;
- assert.throws(()=>invokeCollectionsBuiltin(rt,ref('System.StringComparer','Compare',['System.String','System.String']),['é','É'],comparer),e=>e.runtimeLimitation&&/ASCII/.test(e.message));
+ assert.equal(rt.raw(invokeCollectionsBuiltin(rt,ref('System.StringComparer','Compare',['System.String','System.String']),['é','É'],comparer).value),0);
  const ordinal=invokeCollectionsBuiltin(rt,ref('System.StringComparer','get_Ordinal'),[],null).value;
  assert.equal(rt.raw(invokeCollectionsBuiltin(rt,ref('System.StringComparer','Compare',['System.String','System.String']),['a','z'],ordinal).value),-25);
 });

@@ -1,0 +1,3541 @@
+{
+  "testedAt": "2026-09-12T10:29:45.749Z",
+  "upstream": {
+    "repository": "https://github.com/wieslawsoltes/netDxf",
+    "commit": "5b562312f683fc635405c149537ca488e4ec4d39"
+  },
+  "runtime": "Actual Roslyn and .NET WebAssembly in Node worker_threads; emitted JavaScript and direct native WebAssembly execute outside that worker.",
+  "sourceCount": 272,
+  "fullLibrarySupport": {
+    "javascript": {
+      "supported": true,
+      "emitted": true,
+      "executed": false,
+      "diagnosticCount": 0,
+      "compiledMethods": 4476,
+      "selection": "Complete inspected library method set."
+    },
+    "nativeWasm": {
+      "supported": true,
+      "emitted": true,
+      "executed": false,
+      "diagnosticCount": 0,
+      "compiledMethods": 2934,
+      "selection": "Default native exports: public closed static methods plus their reachable method closure."
+    }
+  },
+  "checks": [
+    {
+      "name": "All 272 unchanged pinned netDxf C# sources compile in Roslyn WebAssembly without diagnostics",
+      "passed": true,
+      "milliseconds": 25459.777619,
+      "evidence": {
+        "sources": 272,
+        "diagnostics": 0,
+        "peBytes": 767488,
+        "sha256": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd"
+      }
+    },
+    {
+      "name": "Full-library default JavaScript and native Wasm emission require zero diagnostics",
+      "passed": true,
+      "milliseconds": 33976.823133,
+      "evidence": {
+        "javascript": {
+          "supported": true,
+          "emitted": true,
+          "executed": false,
+          "diagnosticCount": 0,
+          "compiledMethods": 4476,
+          "selection": "Complete inspected library method set."
+        },
+        "nativeWasm": {
+          "supported": true,
+          "emitted": true,
+          "executed": false,
+          "diagnosticCount": 0,
+          "compiledMethods": 2934,
+          "selection": "Default native exports: public closed static methods plus their reachable method closure."
+        }
+      }
+    },
+    {
+      "name": "Public kernel API compiles eleven real netDxf geometry, entity and color exports on all three backends",
+      "passed": true,
+      "milliseconds": 2450.165939999999,
+      "evidence": {
+        "wasm": {
+          "backend": "wasm",
+          "methods": [
+            "Distance2",
+            "Distance3",
+            "RotateX",
+            "RotateY",
+            "CrossZ",
+            "NormalizeAngle",
+            "CubicBezierCoordinate",
+            "LineLength",
+            "CircleArea",
+            "ArcSweep",
+            "TrueColorArgb"
+          ],
+          "assemblyBytes": 4096,
+          "artifactBytes": 4096,
+          "compiledMethods": 11,
+          "diagnostics": 0,
+          "compileMs": 472.6433190000025,
+          "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
+        },
+        "javascript": {
+          "backend": "javascript",
+          "methods": [
+            "Distance2",
+            "Distance3",
+            "RotateX",
+            "RotateY",
+            "CrossZ",
+            "NormalizeAngle",
+            "CubicBezierCoordinate",
+            "LineLength",
+            "CircleArea",
+            "ArcSweep",
+            "TrueColorArgb"
+          ],
+          "assemblyBytes": 4096,
+          "artifactBytes": 3138642,
+          "compiledMethods": 243,
+          "diagnostics": 0,
+          "compileMs": 910.3481509999983,
+          "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
+        },
+        "native-wasm": {
+          "backend": "native-wasm",
+          "methods": [
+            "Distance2",
+            "Distance3",
+            "RotateX",
+            "RotateY",
+            "CrossZ",
+            "NormalizeAngle",
+            "CubicBezierCoordinate",
+            "LineLength",
+            "CircleArea",
+            "ArcSweep",
+            "TrueColorArgb"
+          ],
+          "assemblyBytes": 4096,
+          "artifactBytes": 4437664,
+          "compiledMethods": 164,
+          "diagnostics": 0,
+          "compileMs": 1066.6530270000003,
+          "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
+        }
+      }
+    },
+    {
+      "name": "279 deterministic geometry, entity and color cases match the .NET WebAssembly oracle on both generated backends",
+      "passed": true,
+      "milliseconds": 7143.130431999998,
+      "evidence": {
+        "caseCount": 279,
+        "cases": [
+          {
+            "method": "Distance2",
+            "args": [
+              0,
+              0,
+              3,
+              4
+            ],
+            "expected": 5,
+            "javascript": 5,
+            "native-wasm": 5
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              0,
+              0,
+              0,
+              2,
+              3,
+              6
+            ],
+            "expected": 7,
+            "javascript": 7,
+            "native-wasm": 7
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              1,
+              0,
+              1.5707963267948966
+            ],
+            "expected": 6.123233995736766e-17,
+            "javascript": 6.123233995736766e-17,
+            "native-wasm": 6.123233995736766e-17
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              1,
+              0,
+              1.5707963267948966
+            ],
+            "expected": 1,
+            "javascript": 1,
+            "native-wasm": 1
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              2,
+              0,
+              0,
+              4
+            ],
+            "expected": 8,
+            "javascript": 8,
+            "native-wasm": 8
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -30
+            ],
+            "expected": 330,
+            "javascript": 330,
+            "native-wasm": 330
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              0,
+              10,
+              10,
+              0,
+              0.5
+            ],
+            "expected": 7.5,
+            "javascript": 7.5,
+            "native-wasm": 7.5
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              0,
+              0,
+              0,
+              2,
+              3,
+              6
+            ],
+            "expected": 7,
+            "javascript": 7,
+            "native-wasm": 7
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              5
+            ],
+            "expected": 78.53981633974483,
+            "javascript": 78.53981633974483,
+            "native-wasm": 78.53981633974483
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -30,
+              45
+            ],
+            "expected": 75,
+            "javascript": 75,
+            "native-wasm": 75
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              12,
+              34,
+              56
+            ],
+            "expected": -15982024,
+            "javascript": -15982024,
+            "native-wasm": -15982024
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -770.4458818770945,
+              40.60447495430708,
+              -364.19073631986976,
+              -113.23688551783562
+            ],
+            "expected": 434.4081116687874,
+            "javascript": 434.4081116687874,
+            "native-wasm": 434.4081116687874
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              845.2693703584373,
+              470.83182353526354,
+              -186.7940197698772,
+              -843.6215091496706,
+              -620.3814097680151,
+              106.04184027761221
+            ],
+            "expected": 2031.9575695254118,
+            "javascript": 2031.9575695254118,
+            "native-wasm": 2031.9575695254118
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -233.67596184834838,
+              991.7403236031532,
+              -965.7185156829655
+            ],
+            "expected": -867.2337050486957,
+            "javascript": -867.2337050486957,
+            "native-wasm": -867.2337050486957
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -140.18124248832464,
+              -710.5169328860939,
+              -725.5762796849012
+            ],
+            "expected": 722.7689565550838,
+            "javascript": 722.7689565550838,
+            "native-wasm": 722.7689565550838
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              615.1934354566038,
+              -674.7106509283185,
+              -274.1005136631429,
+              -685.3691972792149
+            ],
+            "expected": -606573.1670237805,
+            "javascript": -606573.1670237805,
+            "native-wasm": -606573.1670237805
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              309.03476057574153
+            ],
+            "expected": 309.03476057574153,
+            "javascript": 309.03476057574153,
+            "native-wasm": 309.03476057574153
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              556.9832818582654,
+              -930.6289250962436,
+              -639.4098792225122,
+              742.9230934940279,
+              0.767167046200484
+            ],
+            "expected": -36.5027078607111,
+            "javascript": -36.5027078607111,
+            "native-wasm": -36.5027078607111
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              927.2896670736372,
+              -694.7783082723618,
+              608.5588927380741,
+              -36.92921157926321,
+              876.2319725938141,
+              496.3176641613245
+            ],
+            "expected": 1846.723975566001,
+            "javascript": 1846.723975566001,
+            "native-wasm": 1846.723975566001
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              31.61370371770114
+            ],
+            "expected": 3139.790204861958,
+            "javascript": 3139.790204861958,
+            "native-wasm": 3139.790204861958
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              570.7500753924251,
+              241.37852201238275
+            ],
+            "expected": 30.628446619957685,
+            "javascript": 30.628446619957685,
+            "native-wasm": 30.628446619957685
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              7,
+              149,
+              70
+            ],
+            "expected": -16280250,
+            "javascript": -16280250,
+            "native-wasm": -16280250
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -168.98926300927997,
+              -380.8745760470629,
+              -781.558791641146,
+              324.4794672355056
+            ],
+            "expected": 934.2193285215918,
+            "javascript": 934.2193285215918,
+            "native-wasm": 934.2193285215918
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              657.3361256159842,
+              886.6268917918205,
+              -900.8042742498219,
+              -762.4597391113639,
+              -825.1083972863853,
+              917.1428252011538
+            ],
+            "expected": 2872.418781058003,
+            "javascript": 2872.418781058003,
+            "native-wasm": 2872.418781058003
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -366.7461038567126,
+              413.61385118216276,
+              -932.2250648401678
+            ],
+            "expected": 552.7081278326095,
+            "javascript": 552.7081278326095,
+            "native-wasm": 552.7081278326095
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              546.082865446806,
+              -946.2562096305192,
+              -645.1992942020297
+            ],
+            "expected": 870.1430298797682,
+            "javascript": 870.1430298797682,
+            "native-wasm": 870.1430298797682
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              116.95431219413877,
+              -151.3591054826975,
+              -542.9176413454115,
+              485.1754745468497
+            ],
+            "expected": -25432.16462572578,
+            "javascript": -25432.16462572578,
+            "native-wasm": -25432.16462572578
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -821.0939592681825
+            ],
+            "expected": 258.9060407318175,
+            "javascript": 258.9060407318175,
+            "native-wasm": 258.9060407318175
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -950.4149258136749,
+              -932.2540615685284,
+              280.3035909309983,
+              806.8303656764328,
+              0.39328175503760576
+            ],
+            "expected": -489.1586559818582,
+            "javascript": -489.1586559818582,
+            "native-wasm": -489.1586559818582
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              98.7438871525228,
+              140.8984987065196,
+              -454.30458476766944,
+              -866.824459284544,
+              -510.95465989783406,
+              -333.1304965540767
+            ],
+            "expected": 1171.2890043358555,
+            "javascript": 1171.2890043358555,
+            "native-wasm": 1171.2890043358555
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              71.62796356085688
+            ],
+            "expected": 16118.145827594799,
+            "javascript": 16118.145827594799,
+            "native-wasm": 16118.145827594799
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -711.9413483887911,
+              299.20909320935607
+            ],
+            "expected": 291.15044159814715,
+            "javascript": 291.15044159814715,
+            "native-wasm": 291.15044159814715
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              62,
+              221,
+              171
+            ],
+            "expected": -12657237,
+            "javascript": -12657237,
+            "native-wasm": -12657237
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              46.46661086007953,
+              -692.4221804365516,
+              442.2447946853936,
+              -10.99034957587719
+            ],
+            "expected": 788.0290038457943,
+            "javascript": 788.0290038457943,
+            "native-wasm": 788.0290038457943
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              760.5081587098539,
+              -684.9875347688794,
+              -404.1752233169973,
+              708.5442207753658,
+              41.22206149622798,
+              -375.95204543322325
+            ],
+            "expected": 728.6131870362001,
+            "javascript": 728.6131870362001,
+            "native-wasm": 728.6131870362001
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              893.7112097628415,
+              -876.4335606247187,
+              899.6370858512819
+            ],
+            "expected": 1168.856440323071,
+            "javascript": 1168.856440323071,
+            "native-wasm": 1168.856440323071
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              892.4625506624579,
+              699.277373496443,
+              -857.744887471199
+            ],
+            "expected": -616.1454219853907,
+            "javascript": -616.1454219853907,
+            "native-wasm": -616.1454219853907
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              663.3179481141269,
+              -220.27938719838858,
+              -74.84045205637813,
+              668.6768028885126
+            ],
+            "expected": 427059.51592689333,
+            "javascript": 427059.51592689333,
+            "native-wasm": 427059.51592689333
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -272.5360528565943
+            ],
+            "expected": 87.46394714340568,
+            "javascript": 87.46394714340568,
+            "native-wasm": 87.46394714340568
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -601.2451769784093,
+              843.9259589649737,
+              328.9821185171604,
+              -567.039277870208,
+              0.20906951883807778
+            ],
+            "expected": 62.57821550138759,
+            "javascript": 62.57821550138759,
+            "native-wasm": 62.57821550138759
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              353.82384853437543,
+              -886.3823730498552,
+              852.6351354084909,
+              970.901763997972,
+              730.8546700514853,
+              341.8033942580223
+            ],
+            "expected": 1804.7686486358532,
+            "javascript": 1804.7686486358532,
+            "native-wasm": 1804.7686486358532
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              88.35816401358694
+            ],
+            "expected": 24526.9326738539,
+            "javascript": 24526.9326738539,
+            "native-wasm": 24526.9326738539
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              26.23026166111231,
+              -601.5725913457572
+            ],
+            "expected": 92.19714699313045,
+            "javascript": 92.19714699313045,
+            "native-wasm": 92.19714699313045
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              109,
+              78,
+              48
+            ],
+            "expected": -9613776,
+            "javascript": -9613776,
+            "native-wasm": -9613776
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -254.1599734686315,
+              842.2980718314648,
+              670.1512145809829,
+              -77.41364371031523
+            ],
+            "expected": 1303.925155850018,
+            "javascript": 1303.925155850018,
+            "native-wasm": 1303.925155850018
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -473.1609667651355,
+              213.93120847642422,
+              316.9251657091081,
+              333.5878988727927,
+              -130.4928190074861,
+              -87.42249011993408
+            ],
+            "expected": 965.9030332754749,
+            "javascript": 965.9030332754749,
+            "native-wasm": 965.9030332754749
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -448.23093758895993,
+              870.7456821575761,
+              428.7292850203812
+            ],
+            "expected": -910.4645439971529,
+            "javascript": -910.4645439971529,
+            "native-wasm": -910.4645439971529
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -914.7155042737722,
+              -352.61535504832864,
+              -601.7258735373616
+            ],
+            "expected": -948.1163543589798,
+            "javascript": -948.1163543589798,
+            "native-wasm": -948.1163543589798
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              712.4861688353121,
+              -487.6834563910961,
+              -833.1134435720742,
+              317.47413892298937
+            ],
+            "expected": -180099.71078158723,
+            "javascript": -180099.71078158723,
+            "native-wasm": -180099.71078158723
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              113.2267345674336
+            ],
+            "expected": 113.2267345674336,
+            "javascript": 113.2267345674336,
+            "native-wasm": 113.2267345674336
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -797.5081969052553,
+              140.68222558125854,
+              -446.32840994745493,
+              -324.4318417273462,
+              0.2803923673927784
+            ],
+            "expected": -318.8076592190807,
+            "javascript": -318.8076592190807,
+            "native-wasm": -318.8076592190807
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -317.1951253898442,
+              -743.9535846933722,
+              -868.4257897548378,
+              34.44427438080311,
+              -172.05034801736474,
+              366.6023416444659
+            ],
+            "expected": 1405.7090968401712,
+            "javascript": 1405.7090968401712,
+            "native-wasm": 1405.7090968401712
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              11.75308501649648
+            ],
+            "expected": 433.963924467101,
+            "javascript": 433.963924467101,
+            "native-wasm": 433.963924467101
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              643.8776217401028,
+              870.4628902487457
+            ],
+            "expected": 226.5852685086429,
+            "javascript": 226.5852685086429,
+            "native-wasm": 226.5852685086429
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              91,
+              118,
+              38
+            ],
+            "expected": -10783194,
+            "javascript": -10783194,
+            "native-wasm": -10783194
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -13.46551114693284,
+              792.1940973028541,
+              -648.0510211549699,
+              -653.8520306348801
+            ],
+            "expected": 1579.1605914649322,
+            "javascript": 1579.1605914649322,
+            "native-wasm": 1579.1605914649322
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -579.156578052789,
+              -130.9473728761077,
+              -703.7006574682891,
+              -864.736458286643,
+              -981.0936287976801,
+              -400.3385128453374
+            ],
+            "expected": 946.7487075470908,
+            "javascript": 946.7487075470908,
+            "native-wasm": 946.7487075470908
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -990.9579395316541,
+              207.83701911568642,
+              386.3794836215675
+            ],
+            "expected": 982.7348122857406,
+            "javascript": 982.7348122857406,
+            "native-wasm": 982.7348122857406
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              782.1111353114247,
+              9.640194941312075,
+              817.6206331700087
+            ],
+            "expected": 571.276569683756,
+            "javascript": 571.276569683756,
+            "native-wasm": 571.276569683756
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              456.563254352659,
+              -576.9126946106553,
+              869.1391446627676,
+              306.90573900938034
+            ],
+            "expected": 641539.2889206279,
+            "javascript": 641539.2889206279,
+            "native-wasm": 641539.2889206279
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              747.3605345003307
+            ],
+            "expected": 27.360534500330687,
+            "javascript": 27.360534500330687,
+            "native-wasm": 27.360534500330687
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              765.8251086249948,
+              -488.93003491684794,
+              205.76597936451435,
+              -911.0623360611498,
+              0.7186018801294267
+            ],
+            "expected": -314.7744298433408,
+            "javascript": -314.7744298433408,
+            "native-wasm": -314.7744298433408
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -938.819186296314,
+              466.06607362627983,
+              -896.6612708754838,
+              -629.7680689021945,
+              -222.75347961112857,
+              -263.51376809179783
+            ],
+            "expected": 985.3226529243882,
+            "javascript": 985.3226529243882,
+            "native-wasm": 985.3226529243882
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              10.87514729540795
+            ],
+            "expected": 371.5524833825959,
+            "javascript": 371.5524833825959,
+            "native-wasm": 371.5524833825959
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -341.82627592235804,
+              90.20628267899156
+            ],
+            "expected": 72.03255860134959,
+            "javascript": 72.03255860134959,
+            "native-wasm": 72.03255860134959
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              10,
+              62,
+              255
+            ],
+            "expected": -16105729,
+            "javascript": -16105729,
+            "native-wasm": -16105729
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              287.8794861026108,
+              -926.2591060250998,
+              -966.3204834796488,
+              -130.6280167773366
+            ],
+            "expected": 1485.2765378466474,
+            "javascript": 1485.2765378466474,
+            "native-wasm": 1485.2765378466474
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              872.509649489075,
+              596.451748162508,
+              -681.753855664283,
+              135.53635496646166,
+              123.38649528101087,
+              378.1935703009367
+            ],
+            "expected": 1374.9214218033133,
+            "javascript": 1374.9214218033133,
+            "native-wasm": 1374.9214218033133
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -875.2588876523077,
+              172.16648813337088,
+              -104.20385515317321
+            ],
+            "expected": 667.3761973027489,
+            "javascript": 667.3761973027489,
+            "native-wasm": 667.3761973027489
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              550.137110054493,
+              -554.7505994327366,
+              230.61516974121332
+            ],
+            "expected": -367.2304657560886,
+            "javascript": -367.2304657560886,
+            "native-wasm": -367.2304657560886
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -812.4505612067878,
+              201.74321718513966,
+              -899.2789597250521,
+              161.6996033117175
+            ],
+            "expected": 50050.497024317796,
+            "javascript": 50050.497024317796,
+            "native-wasm": 50050.497024317796
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -495.6616177223623
+            ],
+            "expected": 224.33838227763772,
+            "javascript": 224.33838227763772,
+            "native-wasm": 224.33838227763772
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -682.103369385004,
+              361.21037183329463,
+              166.3117604330182,
+              555.1707153208554,
+              0.5035276962444186
+            ],
+            "expected": 184.6999691777349,
+            "javascript": 184.6999691777349,
+            "native-wasm": 184.6999691777349
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              349.3184274993837,
+              -272.33064267784357,
+              -690.8673918806016,
+              426.66588723659515,
+              508.0884392373264,
+              381.45745638757944
+            ],
+            "expected": 1328.5018453726339,
+            "javascript": 1328.5018453726339,
+            "native-wasm": 1328.5018453726339
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              47.24647406790405
+            ],
+            "expected": 7012.755207233026,
+            "javascript": 7012.755207233026,
+            "native-wasm": 7012.755207233026
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -687.9064943641424,
+              914.6044715307653
+            ],
+            "expected": 162.5109658949077,
+            "javascript": 162.5109658949077,
+            "native-wasm": 162.5109658949077
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              189,
+              220,
+              65
+            ],
+            "expected": -4334527,
+            "javascript": -4334527,
+            "native-wasm": -4334527
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              720.5431791953743,
+              607.4861260131001,
+              316.03790121152997,
+              -540.3499323874712
+            ],
+            "expected": 1217.0259392804028,
+            "javascript": 1217.0259392804028,
+            "native-wasm": 1217.0259392804028
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              500.9286901913583,
+              800.1767164096236,
+              621.0176744498312,
+              -83.30044895410538,
+              792.3406134359539,
+              -768.2845732197165
+            ],
+            "expected": 1507.1648307056932,
+            "javascript": 1507.1648307056932,
+            "native-wasm": 1507.1648307056932
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -407.1026029996574,
+              11.877940967679024,
+              -398.1748283840716
+            ],
+            "expected": 290.03296599091004,
+            "javascript": 290.03296599091004,
+            "native-wasm": 290.03296599091004
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              515.9199489280581,
+              125.12542167678475,
+              864.6524958312511
+            ],
+            "expected": -432.5785965194005,
+            "javascript": -432.5785965194005,
+            "native-wasm": -432.5785965194005
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              167.75945900008082,
+              285.6280552223325,
+              -489.24510134384036,
+              -230.17841018736362
+            ],
+            "expected": 101127.52125736329,
+            "javascript": 101127.52125736329,
+            "native-wasm": 101127.52125736329
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              753.9188242517412
+            ],
+            "expected": 33.91882425174117,
+            "javascript": 33.91882425174117,
+            "native-wasm": 33.91882425174117
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -796.9264248386025,
+              514.8314707912505,
+              326.05475187301636,
+              757.9973782412708,
+              0.5290764984674752
+            ],
+            "expected": 339.19467845295515,
+            "javascript": 339.19467845295515,
+            "native-wasm": 339.19467845295515
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -410.6409060768783,
+              417.948329821229,
+              -84.16837314143777,
+              110.83269398659468,
+              262.093982193619,
+              457.8467793762684
+            ],
+            "expected": 768.1182973972037,
+            "javascript": 768.1182973972037,
+            "native-wasm": 768.1182973972037
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              44.138861441276966
+            ],
+            "expected": 6120.573610482654,
+            "javascript": 6120.573610482654,
+            "native-wasm": 6120.573610482654
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -666.0532234236598,
+              230.4166783578694
+            ],
+            "expected": 176.4699017815292,
+            "javascript": 176.4699017815292,
+            "native-wasm": 176.4699017815292
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              229,
+              124,
+              91
+            ],
+            "expected": -1737637,
+            "javascript": -1737637,
+            "native-wasm": -1737637
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -808.467750903219,
+              -310.93623489141464,
+              -664.2466862685978,
+              -743.3252921327949
+            ],
+            "expected": 455.80699019040196,
+            "javascript": 455.80699019040196,
+            "native-wasm": 455.80699019040196
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              940.2486053295434,
+              -218.07789616286755,
+              362.02544858679175,
+              881.9448752328753,
+              -234.4170524738729,
+              -572.1331275999546
+            ],
+            "expected": 936.1188698212368,
+            "javascript": 936.1188698212368,
+            "native-wasm": 936.1188698212368
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              577.9176312498748,
+              817.2921435907483,
+              -322.5536639802158
+            ],
+            "expected": 403.4883651540686,
+            "javascript": 403.4883651540686,
+            "native-wasm": 403.4883651540686
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -165.40072299540043,
+              833.6920267902315,
+              -306.97104427963495
+            ],
+            "expected": 384.85714537774675,
+            "javascript": 384.85714537774675,
+            "native-wasm": 384.85714537774675
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -505.3436136804521,
+              -606.4255088567734,
+              52.00612498447299,
+              -32.674274407327175
+            ],
+            "expected": 48049.57671076342,
+            "javascript": 48049.57671076342,
+            "native-wasm": 48049.57671076342
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -674.4719105772674
+            ],
+            "expected": 45.52808942273259,
+            "javascript": 45.52808942273259,
+            "native-wasm": 45.52808942273259
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -884.8176803439856,
+              -677.238626871258,
+              -153.25693506747484,
+              472.292757127434,
+              0.2868467438966036
+            ],
+            "expected": -633.1562638213779,
+            "javascript": -633.1562638213779,
+            "native-wasm": -633.1562638213779
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              624.9049338512123,
+              357.1546347811818,
+              -709.4049076549709,
+              268.2215552777052,
+              -43.56543207541108,
+              721.3106220588088
+            ],
+            "expected": 1527.9877393147974,
+            "javascript": 1527.9877393147974,
+            "native-wasm": 1527.9877393147974
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              51.7759192206338
+            ],
+            "expected": 8421.811346424052,
+            "javascript": 8421.811346424052,
+            "native-wasm": 8421.811346424052
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              805.9504553675652,
+              -846.1433579213917
+            ],
+            "expected": 147.90618671104312,
+            "javascript": 147.90618671104312,
+            "native-wasm": 147.90618671104312
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              89,
+              156,
+              104
+            ],
+            "expected": -10904472,
+            "javascript": -10904472,
+            "native-wasm": -10904472
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -817.6527381874621,
+              -951.8955396488309,
+              549.0019754506648,
+              -14.677036553621292
+            ],
+            "expected": 1657.1432131392073,
+            "javascript": 1657.1432131392073,
+            "native-wasm": 1657.1432131392073
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              177.86652920767665,
+              -243.3346463367343,
+              -130.0577069632709,
+              167.45290718972683,
+              22.475925739854574,
+              212.4280771240592
+            ],
+            "expected": 433.6591011994669,
+            "javascript": 433.6591011994669,
+            "native-wasm": 433.6591011994669
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              317.21087032929063,
+              -103.92919182777405,
+              -265.891179908067
+            ],
+            "expected": -225.86985431456824,
+            "javascript": -225.86985431456824,
+            "native-wasm": -225.86985431456824
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -44.10052951425314,
+              38.246233481913805,
+              283.92242826521397
+            ],
+            "expected": -26.159167878201877,
+            "javascript": -26.159167878201877,
+            "native-wasm": -26.159167878201877
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              452.04410096630454,
+              -820.7031162455678,
+              -382.43270805105567,
+              -331.232737749815
+            ],
+            "expected": -463595.5203984557,
+            "javascript": -463595.5203984557,
+            "native-wasm": -463595.5203984557
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -700.667065102607
+            ],
+            "expected": 19.332934897392988,
+            "javascript": 19.332934897392988,
+            "native-wasm": 19.332934897392988
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              625.596028752625,
+              701.8954087980092,
+              927.4654518812895,
+              -96.57135093584657,
+              0.02210972784087062
+            ],
+            "expected": 630.8606935391713,
+            "javascript": 630.8606935391713,
+            "native-wasm": 630.8606935391713
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -138.3954039774835,
+              -137.66967505216599,
+              -143.7302608974278,
+              -140.38434531539679,
+              -780.2501651458442,
+              565.9965593367815
+            ],
+            "expected": 957.4057663793544,
+            "javascript": 957.4057663793544,
+            "native-wasm": 957.4057663793544
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              44.76330009590834
+            ],
+            "expected": 6294.975815860742,
+            "javascript": 6294.975815860742,
+            "native-wasm": 6294.975815860742
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -791.0212175920606,
+              -120.07647892460227
+            ],
+            "expected": 310.9447386674583,
+            "javascript": 310.9447386674583,
+            "native-wasm": 310.9447386674583
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              149,
+              138,
+              128
+            ],
+            "expected": -6976896,
+            "javascript": -6976896,
+            "native-wasm": -6976896
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              684.1900353319943,
+              -109.30306650698185,
+              785.3584117256105,
+              -817.5864825025201
+            ],
+            "expected": 715.4721781847489,
+            "javascript": 715.4721781847489,
+            "native-wasm": 715.4721781847489
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -667.6515615545213,
+              -243.36059391498566,
+              679.5496041886508,
+              -222.95194026082754,
+              -606.2267082743347,
+              960.5456087738276
+            ],
+            "expected": 639.0526775797434,
+            "javascript": 639.0526775797434,
+            "native-wasm": 639.0526775797434
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              651.5802009962499,
+              6.199228577315807,
+              -756.91639771685
+            ],
+            "expected": -636.3355973832955,
+            "javascript": -636.3355973832955,
+            "native-wasm": -636.3355973832955
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              205.22630587220192,
+              788.9178725890815,
+              -5.992713384330273
+            ],
+            "expected": 814.6468922430929,
+            "javascript": 814.6468922430929,
+            "native-wasm": 814.6468922430929
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -549.1101066581905,
+              971.8507211655378,
+              293.78401255235076,
+              -694.3703526630998
+            ],
+            "expected": 95771.57394521253,
+            "javascript": 95771.57394521253,
+            "native-wasm": 95771.57394521253
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -339.1306004486978
+            ],
+            "expected": 20.869399551302195,
+            "javascript": 20.869399551302195,
+            "native-wasm": 20.869399551302195
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -890.5759230256081,
+              583.861745428294,
+              943.9449766650796,
+              484.41938729956746,
+              0.8263903791084886
+            ],
+            "expected": 648.1015095134917,
+            "javascript": 648.1015095134917,
+            "native-wasm": 648.1015095134917
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              363.70705952867866,
+              -34.60208047181368,
+              444.138600025326,
+              275.3431014716625,
+              -51.886935252696276,
+              -628.7655485793948
+            ],
+            "expected": 1076.675562730723,
+            "javascript": 1076.675562730723,
+            "native-wasm": 1076.675562730723
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              74.879341426529
+            ],
+            "expected": 17614.645400090696,
+            "javascript": 17614.645400090696,
+            "native-wasm": 17614.645400090696
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -717.1041909605265,
+              618.6773753724992
+            ],
+            "expected": 255.7815663330257,
+            "javascript": 255.7815663330257,
+            "native-wasm": 255.7815663330257
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              183,
+              21,
+              198
+            ],
+            "expected": -4778554,
+            "javascript": -4778554,
+            "native-wasm": -4778554
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -705.1773821003735,
+              -909.8046785220504,
+              -160.38097022101283,
+              337.6788143068552
+            ],
+            "expected": 1361.2561093626841,
+            "javascript": 1361.2561093626841,
+            "native-wasm": 1361.2561093626841
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -699.4799361564219,
+              631.405177526176,
+              175.2577037550509,
+              -698.5211782157421,
+              507.9663875512779,
+              -776.625263504684
+            ],
+            "expected": 959.8537583644986,
+            "javascript": 959.8537583644986,
+            "native-wasm": 959.8537583644986
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              305.4008116014302,
+              -241.93318374454975,
+              639.4635490141809
+            ],
+            "expected": -193.76597287702253,
+            "javascript": -193.76597287702253,
+            "native-wasm": -193.76597287702253
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -463.9412248507142,
+              704.8413106240332,
+              454.7024145722389
+            ],
+            "expected": -818.3425548766567,
+            "javascript": -818.3425548766567,
+            "native-wasm": -818.3425548766567
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              8.751801680773497,
+              64.82863519340754,
+              -643.8687476329505,
+              844.9822086840868
+            ],
+            "expected": 49136.24886691782,
+            "javascript": 49136.24886691782,
+            "native-wasm": 49136.24886691782
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              483.04582526907325
+            ],
+            "expected": 123.04582526907325,
+            "javascript": 123.04582526907325,
+            "native-wasm": 123.04582526907325
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              324.44194983690977,
+              208.6882279254496,
+              -755.276445299387,
+              -52.97601642087102,
+              0.7842014976777136
+            ],
+            "expected": -300.12256702897935,
+            "javascript": -300.12256702897935,
+            "native-wasm": -300.12256702897935
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -532.0200617425144,
+              -221.13601304590702,
+              50.02070730552077,
+              -810.036332346499,
+              746.0368894971907,
+              -474.3737429380417
+            ],
+            "expected": 1134.7713468273846,
+            "javascript": 1134.7713468273846,
+            "native-wasm": 1134.7713468273846
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              25.893600092493
+            ],
+            "expected": 2106.3704108857687,
+            "javascript": 2106.3704108857687,
+            "native-wasm": 2106.3704108857687
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -538.9849161729217,
+              604.5432132668793
+            ],
+            "expected": 63.52812943980098,
+            "javascript": 63.52812943980098,
+            "native-wasm": 63.52812943980098
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              97,
+              103,
+              97
+            ],
+            "expected": -10393759,
+            "javascript": -10393759,
+            "native-wasm": -10393759
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              521.7556119896472,
+              -267.8169868886471,
+              402.03512040898204,
+              -19.065293483436108
+            ],
+            "expected": 276.06231375592756,
+            "javascript": 276.06231375592756,
+            "native-wasm": 276.06231375592756
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -185.49957079812884,
+              -200.94680972397327,
+              -516.3198509253561,
+              -827.7255827561021,
+              546.4988448657095,
+              -538.113959133625
+            ],
+            "expected": 985.6998732641879,
+            "javascript": 985.6998732641879,
+            "native-wasm": 985.6998732641879
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              334.30904848501086,
+              241.06545839458704,
+              -45.72980431839824
+            ],
+            "expected": 178.54234617123356,
+            "javascript": 178.54234617123356,
+            "native-wasm": 178.54234617123356
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              69.60286386311054,
+              179.10768976435065,
+              -300.5590485408902
+            ],
+            "expected": 151.42459690751588,
+            "javascript": 151.42459690751588,
+            "native-wasm": 151.42459690751588
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              421.8634204007685,
+              681.9785349071026,
+              792.952190618962,
+              -782.7740265056491
+            ],
+            "expected": -871000.1014322522,
+            "javascript": -871000.1014322522,
+            "native-wasm": -871000.1014322522
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -464.33336986228824
+            ],
+            "expected": 255.66663013771176,
+            "javascript": 255.66663013771176,
+            "native-wasm": 255.66663013771176
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -30.334079638123512,
+              638.2262981496751,
+              101.06353368610144,
+              -749.4551963172853,
+              0.28074295818805695
+            ],
+            "expected": 267.3993420696182,
+            "javascript": 267.3993420696182,
+            "native-wasm": 267.3993420696182
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              817.0918966643512,
+              361.4311749115586,
+              -301.4443921856582,
+              745.2331129461527,
+              -380.5373595096171,
+              523.798200301826
+            ],
+            "expected": 1112.0729865094422,
+            "javascript": 1112.0729865094422,
+            "native-wasm": 1112.0729865094422
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              33.584667130596934
+            ],
+            "expected": 3543.496181647769,
+            "javascript": 3543.496181647769,
+            "native-wasm": 3543.496181647769
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              928.247082978487,
+              947.930711787194
+            ],
+            "expected": 19.683628808707,
+            "javascript": 19.683628808707,
+            "native-wasm": 19.683628808707
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              235,
+              167,
+              225
+            ],
+            "expected": -1333279,
+            "javascript": -1333279,
+            "native-wasm": -1333279
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              400.8967033587396,
+              -942.7058482542634,
+              -979.9294820986688,
+              -649.0543410181999
+            ],
+            "expected": 1411.7054091229052,
+            "javascript": 1411.7054091229052,
+            "native-wasm": 1411.7054091229052
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -704.847373533994,
+              397.7042743936181,
+              -820.5290171317756,
+              -590.1053231209517,
+              -590.8319563604891,
+              -90.02499748021364
+            ],
+            "expected": 1234.5062739304392,
+            "javascript": 1234.5062739304392,
+            "native-wasm": 1234.5062739304392
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -386.79480692371726,
+              846.1412452161312,
+              -271.67067350819707
+            ],
+            "expected": 813.8392877360856,
+            "javascript": 813.8392877360856,
+            "native-wasm": 813.8392877360856
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -155.68528603762388,
+              421.3941697962582,
+              -397.38393761217594
+            ],
+            "expected": 167.2270876593286,
+            "javascript": 167.2270876593286,
+            "native-wasm": 167.2270876593286
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              973.3820385299623,
+              -790.1799688115716,
+              159.549864474684,
+              -789.6993309259415
+            ],
+            "expected": -642606.0376279439,
+            "javascript": -642606.0376279439,
+            "native-wasm": -642606.0376279439
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              193.3264429681003
+            ],
+            "expected": 193.3264429681003,
+            "javascript": 193.3264429681003,
+            "native-wasm": 193.3264429681003
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -830.3825771436095,
+              -87.08402095362544,
+              942.1581123024225,
+              204.01613553985953,
+              0.7150727151893079
+            ],
+            "expected": 452.0152799452894,
+            "javascript": 452.0152799452894,
+            "native-wasm": 452.0152799452894
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              294.6369112469256,
+              976.8292345106602,
+              -846.2901976890862,
+              -719.1724805161357,
+              -100.99517507478595,
+              -521.6554123908281
+            ],
+            "expected": 1514.8936215295284,
+            "javascript": 1514.8936215295284,
+            "native-wasm": 1514.8936215295284
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              49.85130512457341
+            ],
+            "expected": 7807.337222282827,
+            "javascript": 7807.337222282827,
+            "native-wasm": 7807.337222282827
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -559.6144432201982,
+              241.03484535589814
+            ],
+            "expected": 80.6492885760963,
+            "javascript": 80.6492885760963,
+            "native-wasm": 80.6492885760963
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              255,
+              148,
+              46
+            ],
+            "expected": -27602,
+            "javascript": -27602,
+            "native-wasm": -27602
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              713.6183795519173,
+              105.35960085690022,
+              161.7522775195539,
+              -818.1258188560605
+            ],
+            "expected": 1075.8166735066054,
+            "javascript": 1075.8166735066054,
+            "native-wasm": 1075.8166735066054
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -406.4954384230077,
+              652.4948887526989,
+              526.8370318226516,
+              -117.46945511549711,
+              -372.64017714187503,
+              -418.7211338430643
+            ],
+            "expected": 1424.260568509379,
+            "javascript": 1424.260568509379,
+            "native-wasm": 1424.260568509379
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              676.8258190713823,
+              -31.37426171451807,
+              -770.8444125019014
+            ],
+            "expected": -245.1790466190398,
+            "javascript": -245.1790466190398,
+            "native-wasm": -245.1790466190398
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              676.4162182807922,
+              177.8697813861072,
+              -830.0023442134261
+            ],
+            "expected": -249.4884526256289,
+            "javascript": -249.4884526256289,
+            "native-wasm": -249.4884526256289
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              820.1340925879776,
+              172.60094918310642,
+              -932.925044093281,
+              -586.8834229186177
+            ],
+            "expected": -320299.3553830952,
+            "javascript": -320299.3553830952,
+            "native-wasm": -320299.3553830952
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              342.6023335196078
+            ],
+            "expected": 342.6023335196078,
+            "javascript": 342.6023335196078,
+            "native-wasm": 342.6023335196078
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              621.3376708328724,
+              558.6790326051414,
+              -311.11698132008314,
+              478.80413429811597,
+              0.46188925858587027
+            ],
+            "expected": 261.00988588637443,
+            "javascript": 261.00988588637443,
+            "native-wasm": 261.00988588637443
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -91.56876290217042,
+              -22.933789528906345,
+              606.1203428544104,
+              935.8256831765175,
+              -282.57466154173017,
+              -116.36680271476507
+            ],
+            "expected": 1282.5523013762863,
+            "javascript": 1282.5523013762863,
+            "native-wasm": 1282.5523013762863
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              1.002357567884028
+            ],
+            "expected": 3.156423150848235,
+            "javascript": 3.156423150848235,
+            "native-wasm": 3.156423150848235
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -448.25041107833385,
+              456.63578202947974
+            ],
+            "expected": 184.8861931078136,
+            "javascript": 184.8861931078136,
+            "native-wasm": 184.8861931078136
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              146,
+              58,
+              86
+            ],
+            "expected": -7194026,
+            "javascript": -7194026,
+            "native-wasm": -7194026
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -506.59305276349187,
+              -329.0152056142688,
+              437.01085494831204,
+              -34.53121520578861
+            ],
+            "expected": 988.4883182192334,
+            "javascript": 988.4883182192334,
+            "native-wasm": 988.4883182192334
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              401.1455303989351,
+              -763.876766897738,
+              496.71548837795854,
+              -179.571732878685,
+              833.4660525433719,
+              -446.75429817289114
+            ],
+            "expected": 1943.9320617817457,
+            "javascript": 1943.9320617817457,
+            "native-wasm": 1943.9320617817457
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              773.969714064151,
+              410.4385767132044,
+              -255.96050778403878
+            ],
+            "expected": -470.4554092762729,
+            "javascript": -470.4554092762729,
+            "native-wasm": -470.4554092762729
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -192.08328146487474,
+              -951.9443749450147,
+              -738.5694049298763
+            ],
+            "expected": 854.9156580514277,
+            "javascript": 854.9156580514277,
+            "native-wasm": 854.9156580514277
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -766.6049567051232,
+              -643.423649482429,
+              -278.0187944881618,
+              -761.7594618350267
+            ],
+            "expected": 405084.7118854801,
+            "javascript": 405084.7118854801,
+            "native-wasm": 405084.7118854801
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              803.9249978028238
+            ],
+            "expected": 83.92499780282378,
+            "javascript": 83.92499780282378,
+            "native-wasm": 83.92499780282378
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -270.896309055388,
+              793.305526021868,
+              -647.1625044941902,
+              304.34275371953845,
+              0.7971354802139103
+            ],
+            "expected": -20.299867518925936,
+            "javascript": -20.299867518925936,
+            "native-wasm": -20.299867518925936
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -657.4579360894859,
+              -698.9334058016539,
+              344.8439477942884,
+              -155.66176641732454,
+              -429.6098514460027,
+              134.15778800845146
+            ],
+            "expected": 607.225848225944,
+            "javascript": 607.225848225944,
+            "native-wasm": 607.225848225944
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              23.221035667918624
+            ],
+            "expected": 1693.998587211356,
+            "javascript": 1693.998587211356,
+            "native-wasm": 1693.998587211356
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              455.0387905910611,
+              -84.95546830818057
+            ],
+            "expected": 180.0057411007583,
+            "javascript": 180.0057411007583,
+            "native-wasm": 180.0057411007583
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              124,
+              106,
+              35
+            ],
+            "expected": -8623581,
+            "javascript": -8623581,
+            "native-wasm": -8623581
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              280.8330827392638,
+              159.18251872062683,
+              -245.89060293510556,
+              -583.7146108970046
+            ],
+            "expected": 910.6777620237071,
+            "javascript": 910.6777620237071,
+            "native-wasm": 910.6777620237071
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              909.4326090998948,
+              -214.2020519822836,
+              -198.43986490741372,
+              356.0009328648448,
+              924.9128014780581,
+              953.016210347414
+            ],
+            "expected": 1711.642592037124,
+            "javascript": 1711.642592037124,
+            "native-wasm": 1711.642592037124
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -220.33552499487996,
+              482.39384312182665,
+              -916.1416958086193
+            ],
+            "expected": -529.3445564071604,
+            "javascript": -529.3445564071604,
+            "native-wasm": -529.3445564071604
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -284.07989628612995,
+              382.7702752314508,
+              -835.484423674643
+            ],
+            "expected": 325.9980146820702,
+            "javascript": 325.9980146820702,
+            "native-wasm": 325.9980146820702
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -238.18108951672912,
+              94.10811215639114,
+              -222.47693734243512,
+              48.006028868258
+            ],
+            "expected": 9502.75631241905,
+            "javascript": 9502.75631241905,
+            "native-wasm": 9502.75631241905
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -292.662117164582
+            ],
+            "expected": 67.33788283541799,
+            "javascript": 67.33788283541799,
+            "native-wasm": 67.33788283541799
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -938.4374301880598,
+              -91.34783456102014,
+              -282.1867363527417,
+              -405.19160171970725,
+              0.9606417249888182
+            ],
+            "expected": -390.4200010706981,
+            "javascript": -390.4200010706981,
+            "native-wasm": -390.4200010706981
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -193.29002918675542,
+              386.3038616254926,
+              907.4081187136471,
+              -29.062220826745033,
+              -320.9856920875609,
+              -236.9861016049981
+            ],
+            "expected": 1355.3108194539961,
+            "javascript": 1355.3108194539961,
+            "native-wasm": 1355.3108194539961
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              9.078094310350716
+            ],
+            "expected": 258.9042938491638,
+            "javascript": 258.9042938491638,
+            "native-wasm": 258.9042938491638
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              865.7746762037277,
+              65.04395557567477
+            ],
+            "expected": 279.26927937194705,
+            "javascript": 279.26927937194705,
+            "native-wasm": 279.26927937194705
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              97,
+              18,
+              202
+            ],
+            "expected": -10415414,
+            "javascript": -10415414,
+            "native-wasm": -10415414
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              837.5372751615942,
+              205.0742981955409,
+              -231.66012158617377,
+              408.2527197897434
+            ],
+            "expected": 1088.3310820764586,
+            "javascript": 1088.3310820764586,
+            "native-wasm": 1088.3310820764586
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -669.4560316391289,
+              171.0718246176839,
+              -198.9923040382564,
+              807.2566669434309,
+              -624.3200399912894,
+              157.56944473832846
+            ],
+            "expected": 1714.7783801797077,
+            "javascript": 1714.7783801797077,
+            "native-wasm": 1714.7783801797077
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              752.1390118636191,
+              660.8582362532616,
+              -472.1645941026509
+            ],
+            "expected": 980.2968833413598,
+            "javascript": 980.2968833413598,
+            "native-wasm": 980.2968833413598
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              701.1372307315469,
+              921.1193737573922,
+              697.7394688874483
+            ],
+            "expected": 1089.5060643539289,
+            "javascript": 1089.5060643539289,
+            "native-wasm": 1089.5060643539289
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -738.4141744114459,
+              -381.52626622468233,
+              463.84830633178353,
+              -425.7671423256397
+            ],
+            "expected": 491362.80530131585,
+            "javascript": 491362.80530131585,
+            "native-wasm": 491362.80530131585
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              419.5563602261245
+            ],
+            "expected": 59.556360226124525,
+            "javascript": 59.556360226124525,
+            "native-wasm": 59.556360226124525
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              522.6413356140256,
+              41.29888163879514,
+              -506.90423883497715,
+              -306.01084465160966,
+              0.38547111256048083
+            ],
+            "expected": -17.058503795814858,
+            "javascript": -17.058503795814858,
+            "native-wasm": -17.058503795814858
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              79.40541440621018,
+              769.5504426956177,
+              422.7638687007129,
+              -499.31500013917685,
+              171.52928235009313,
+              -749.1602655500174
+            ],
+            "expected": 1437.342270606384,
+            "javascript": 1437.342270606384,
+            "native-wasm": 1437.342270606384
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              74.06606515239925
+            ],
+            "expected": 17234.0924528872,
+            "javascript": 17234.0924528872,
+            "native-wasm": 17234.0924528872
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              909.0918926522136,
+              654.7528714872897
+            ],
+            "expected": 105.6609788350761,
+            "javascript": 105.6609788350761,
+            "native-wasm": 105.6609788350761
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              255,
+              70,
+              183
+            ],
+            "expected": -47433,
+            "javascript": -47433,
+            "native-wasm": -47433
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              891.2516464479268,
+              -881.0603190213442,
+              -455.38305724039674,
+              -11.217125691473484
+            ],
+            "expected": 1603.1382367594024,
+            "javascript": 1603.1382367594024,
+            "native-wasm": 1603.1382367594024
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -714.0056542120874,
+              210.55857092142105,
+              477.3989240638912,
+              916.2133941426873,
+              572.0213023014367,
+              230.3492445498705
+            ],
+            "expected": 1687.9878542049491,
+            "javascript": 1687.9878542049491,
+            "native-wasm": 1687.9878542049491
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              548.4203188680112,
+              -196.60027790814638,
+              394.55088833346963
+            ],
+            "expected": -36.79730746364558,
+            "javascript": -36.79730746364558,
+            "native-wasm": -36.79730746364558
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              289.5392142236233,
+              -267.3084777779877,
+              828.1625406816602
+            ],
+            "expected": -364.0799271455474,
+            "javascript": -364.0799271455474,
+            "native-wasm": -364.0799271455474
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -274.83591390773654,
+              -777.4613294750452,
+              652.6914960704744,
+              -215.367347933352
+            ],
+            "expected": 566633.0801671555,
+            "javascript": 566633.0801671555,
+            "native-wasm": 566633.0801671555
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              137.31718296185136
+            ],
+            "expected": 137.31718296185136,
+            "javascript": 137.31718296185136,
+            "native-wasm": 137.31718296185136
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              356.1055213212967,
+              -984.9867229349911,
+              -552.8574204072356,
+              -525.5674081854522,
+              0.6910130279138684
+            ],
+            "expected": -602.5652143397834,
+            "javascript": -602.5652143397834,
+            "native-wasm": -602.5652143397834
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              392.71260937675834,
+              428.2587943598628,
+              -58.18220367655158,
+              739.5612336695194,
+              634.6097025088966,
+              187.20456678420305
+            ],
+            "expected": 472.3339206375835,
+            "javascript": 472.3339206375835,
+            "native-wasm": 472.3339206375835
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              7.693121063746512
+            ],
+            "expected": 185.93237053054528,
+            "javascript": 185.93237053054528,
+            "native-wasm": 185.93237053054528
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              413.9085989445448,
+              -317.2058858908713
+            ],
+            "expected": 348.8855151645839,
+            "javascript": 348.8855151645839,
+            "native-wasm": 348.8855151645839
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              44,
+              21,
+              71
+            ],
+            "expected": -13888185,
+            "javascript": -13888185,
+            "native-wasm": -13888185
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -920.417242217809,
+              962.0333472266793,
+              -970.5715659074485,
+              -163.60615007579327
+            ],
+            "expected": 1126.756288676539,
+            "javascript": 1126.756288676539,
+            "native-wasm": 1126.756288676539
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -54.81896409764886,
+              935.9213067218661,
+              885.207159910351,
+              -80.01427724957466,
+              707.2970974259079,
+              173.22880495339632
+            ],
+            "expected": 748.209202568531,
+            "javascript": 748.209202568531,
+            "native-wasm": 748.209202568531
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              148.7009976990521,
+              -999.6690396219492,
+              363.95922070369124
+            ],
+            "expected": -315.8683260113319,
+            "javascript": -315.8683260113319,
+            "native-wasm": -315.8683260113319
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -306.0222426429391,
+              798.7007074989378,
+              -232.71438479423523
+            ],
+            "expected": 848.1726669995642,
+            "javascript": 848.1726669995642,
+            "native-wasm": 848.1726669995642
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -439.21367870643735,
+              323.58711306005716,
+              -688.4977626614273,
+              733.7419334799051
+            ],
+            "expected": -99480.49045696351,
+            "javascript": -99480.49045696351,
+            "native-wasm": -99480.49045696351
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              263.96158477291465
+            ],
+            "expected": 263.96158477291465,
+            "javascript": 263.96158477291465,
+            "native-wasm": 263.96158477291465
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -870.9699185565114,
+              -731.5493314526975,
+              321.199644356966,
+              -689.8407754488289,
+              0.1276909918524325
+            ],
+            "expected": -779.0845903370938,
+            "javascript": -779.0845903370938,
+            "native-wasm": -779.0845903370938
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -831.437713932246,
+              -388.64712603390217,
+              -385.325635317713,
+              319.0087294206023,
+              477.4747737683356,
+              -830.0573155283928
+            ],
+            "expected": 1507.143135778175,
+            "javascript": 1507.143135778175,
+            "native-wasm": 1507.143135778175
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              15.960302383862436
+            ],
+            "expected": 800.2618305020042,
+            "javascript": 800.2618305020042,
+            "native-wasm": 800.2618305020042
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -986.3540818914771,
+              -556.0244652442634
+            ],
+            "expected": 70.3296166472137,
+            "javascript": 70.3296166472137,
+            "native-wasm": 70.3296166472137
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              108,
+              84,
+              138
+            ],
+            "expected": -9677686,
+            "javascript": -9677686,
+            "native-wasm": -9677686
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              715.3581366874278,
+              -25.394413620233536,
+              835.8047264628112,
+              334.451456554234
+            ],
+            "expected": 379.46861697660756,
+            "javascript": 379.46861697660756,
+            "native-wasm": 379.46861697660756
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -717.143117915839,
+              -176.21291615068913,
+              -332.1197801269591,
+              795.1201191172004,
+              -211.59049635753036,
+              801.1864274740219
+            ],
+            "expected": 1890.1255597049249,
+            "javascript": 1890.1255597049249,
+            "native-wasm": 1890.1255597049249
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -689.6728579886258,
+              758.1924283877015,
+              723.997984547168
+            ],
+            "expected": -846.5063885478091,
+            "javascript": -846.5063885478091,
+            "native-wasm": -846.5063885478091
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -782.6356794685125,
+              -182.23138013854623,
+              -215.88916797190905
+            ],
+            "expected": 719.5762326641798,
+            "javascript": 719.5762326641798,
+            "native-wasm": 719.5762326641798
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -445.18249621614814,
+              -922.3782382905483,
+              835.0453707389534,
+              367.86520201712847
+            ],
+            "expected": 606460.5290498307,
+            "javascript": 606460.5290498307,
+            "native-wasm": 606460.5290498307
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -702.4764935486019
+            ],
+            "expected": 17.523506451398134,
+            "javascript": 17.523506451398134,
+            "native-wasm": 17.523506451398134
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              786.7119591683149,
+              195.97058510407805,
+              410.30631121248007,
+              -415.19310092553496,
+              0.08790893480181694
+            ],
+            "expected": 648.3291285925962,
+            "javascript": 648.3291285925962,
+            "native-wasm": 648.3291285925962
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              711.5379343740642,
+              -847.650065086782,
+              -252.45263008400798,
+              758.0453623086214,
+              -71.16729626432061,
+              728.3215774223208
+            ],
+            "expected": 1251.8012930337431,
+            "javascript": 1251.8012930337431,
+            "native-wasm": 1251.8012930337431
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              47.29974171448499
+            ],
+            "expected": 7028.577067082372,
+            "javascript": 7028.577067082372,
+            "native-wasm": 7028.577067082372
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              618.6820082366467,
+              141.89604995772243
+            ],
+            "expected": 243.21404172107577,
+            "javascript": 243.21404172107577,
+            "native-wasm": 243.21404172107577
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              127,
+              240,
+              108
+            ],
+            "expected": -8392596,
+            "javascript": -8392596,
+            "native-wasm": -8392596
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              435.7923842035234,
+              -209.5476845279336,
+              -887.4529129825532,
+              912.1536612510681
+            ],
+            "expected": 1734.7022873241078,
+            "javascript": 1734.7022873241078,
+            "native-wasm": 1734.7022873241078
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -954.8701201565564,
+              -714.6176462993026,
+              -465.5704009346664,
+              900.5201701074839,
+              808.2841052673757,
+              -427.5438757613301
+            ],
+            "expected": 2400.6559292717675,
+            "javascript": 2400.6559292717675,
+            "native-wasm": 2400.6559292717675
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -997.6656823419034,
+              -997.7642111480236,
+              998.5747816972435
+            ],
+            "expected": -1333.117659058225,
+            "javascript": -1333.117659058225,
+            "native-wasm": -1333.117659058225
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -839.3594501540065,
+              -316.63165194913745,
+              -828.3246923238039
+            ],
+            "expected": -886.4366693762875,
+            "javascript": -886.4366693762875,
+            "native-wasm": -886.4366693762875
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -686.354334000498,
+              524.3337666615844,
+              -864.9116805754602,
+              -642.9739221930504
+            ],
+            "expected": 894810.3374522313,
+            "javascript": 894810.3374522313,
+            "native-wasm": 894810.3374522313
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              304.2975584976375
+            ],
+            "expected": 304.2975584976375,
+            "javascript": 304.2975584976375,
+            "native-wasm": 304.2975584976375
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -634.3057742342353,
+              653.2787051983178,
+              -791.0938244313002,
+              -975.9755642153323,
+              0.8730552098713815
+            ],
+            "expected": -852.8415931005079,
+            "javascript": -852.8415931005079,
+            "native-wasm": -852.8415931005079
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -81.44173165783286,
+              673.7481914460659,
+              -819.4972914643586,
+              743.0612342432141,
+              473.0646316893399,
+              378.1986441463232
+            ],
+            "expected": 1467.840109178994,
+            "javascript": 1467.840109178994,
+            "native-wasm": 1467.840109178994
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              28.524180216006936
+            ],
+            "expected": 2556.090439884911,
+            "javascript": 2556.090439884911,
+            "native-wasm": 2556.090439884911
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              788.616924546659,
+              -941.5330267511308
+            ],
+            "expected": 69.85004870221019,
+            "javascript": 69.85004870221019,
+            "native-wasm": 69.85004870221019
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              26,
+              9,
+              172
+            ],
+            "expected": -15070804,
+            "javascript": -15070804,
+            "native-wasm": -15070804
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              346.5568465180695,
+              -992.9135646671057,
+              -979.0915683843195,
+              79.27103620022535
+            ],
+            "expected": 1704.9702455674276,
+            "javascript": 1704.9702455674276,
+            "native-wasm": 1704.9702455674276
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -906.3328742049634,
+              744.6999289095402,
+              121.30409805104136,
+              175.94435531646013,
+              250.16907649114728,
+              -845.8176273852587
+            ],
+            "expected": 1533.3653176412713,
+            "javascript": 1533.3653176412713,
+            "native-wasm": 1533.3653176412713
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -114.08750200644135,
+              972.8586738929152,
+              56.297550443559885
+            ],
+            "expected": 131.23294898828266,
+            "javascript": 131.23294898828266,
+            "native-wasm": 131.23294898828266
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -847.7119877934456,
+              675.6540606729686,
+              -452.52238120883703
+            ],
+            "expected": 782.1299800289754,
+            "javascript": 782.1299800289754,
+            "native-wasm": 782.1299800289754
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -344.4456937722862,
+              3.7096310406923294,
+              -754.2560459114611,
+              427.3151708766818
+            ],
+            "expected": -144388.8588514987,
+            "javascript": -144388.8588514987,
+            "native-wasm": -144388.8588514987
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -743.0605455301702
+            ],
+            "expected": 336.9394544698298,
+            "javascript": 336.9394544698298,
+            "native-wasm": 336.9394544698298
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              -382.4126608669758,
+              -962.1936571784317,
+              -925.0789834186435,
+              -622.7389718405902,
+              0.44251649361103773
+            ],
+            "expected": -820.1711484473464,
+            "javascript": -820.1711484473464,
+            "native-wasm": -820.1711484473464
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              -994.8082291521132,
+              -695.4934755340219,
+              194.77267796173692,
+              463.9202058315277,
+              -747.2523306496441,
+              286.46134678274393
+            ],
+            "expected": 1462.5233119861273,
+            "javascript": 1462.5233119861273,
+            "native-wasm": 1462.5233119861273
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              77.27947462651879
+            ],
+            "expected": 18761.959517344327,
+            "javascript": 18761.959517344327,
+            "native-wasm": 18761.959517344327
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              917.1900693327188,
+              272.291989531368
+            ],
+            "expected": 75.10192019864917,
+            "javascript": 75.10192019864917,
+            "native-wasm": 75.10192019864917
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              37,
+              203,
+              78
+            ],
+            "expected": -14300338,
+            "javascript": -14300338,
+            "native-wasm": -14300338
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -944.9600395746529,
+              862.2629465535283,
+              703.2479573972523,
+              278.4226071089506
+            ],
+            "expected": 1748.559162065985,
+            "javascript": 1748.559162065985,
+            "native-wasm": 1748.559162065985
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -137.76602828875184,
+              -526.1013889685273,
+              -442.3368922434747,
+              -343.4256240725517,
+              -64.77341847494245,
+              -502.2510578855872
+            ],
+            "expected": 508.6345180404849,
+            "javascript": 508.6345180404849,
+            "native-wasm": 508.6345180404849
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              -969.9910613708198,
+              100.70768184959888,
+              926.2666492722929
+            ],
+            "expected": 801.1995141755928,
+            "javascript": 801.1995141755928,
+            "native-wasm": 801.1995141755928
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              466.51590894907713,
+              -134.52059170231223,
+              -415.7673455774784
+            ],
+            "expected": -474.55669438260554,
+            "javascript": -474.55669438260554,
+            "native-wasm": -474.55669438260554
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -668.7614065594971,
+              391.8824987486005,
+              688.3654599078,
+              -10.711023584008217
+            ],
+            "expected": -262595.25728316494,
+            "javascript": -262595.25728316494,
+            "native-wasm": -262595.25728316494
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -294.3952255882323
+            ],
+            "expected": 65.60477441176772,
+            "javascript": 65.60477441176772,
+            "native-wasm": 65.60477441176772
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              259.26369335502386,
+              -628.68228321895,
+              -905.3390771150589,
+              944.8010022751987,
+              0.18022403540089726
+            ],
+            "expected": -152.38713693639525,
+            "javascript": -152.38713693639525,
+            "native-wasm": -152.38713693639525
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              297.18730272725224,
+              167.20802523195744,
+              410.3351696394384,
+              -379.619968123734,
+              -455.3052126429975,
+              -436.9386397302151
+            ],
+            "expected": 1250.385429077804,
+            "javascript": 1250.385429077804,
+            "native-wasm": 1250.385429077804
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              9.151950472258031
+            ],
+            "expected": 263.134137776363,
+            "javascript": 263.134137776363,
+            "native-wasm": 263.134137776363
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -425.66734831780195,
+              529.1772563941777
+            ],
+            "expected": 234.84460471197963,
+            "javascript": 234.84460471197963,
+            "native-wasm": 234.84460471197963
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              31,
+              156,
+              19
+            ],
+            "expected": -14705645,
+            "javascript": -14705645,
+            "native-wasm": -14705645
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -870.336493011564,
+              -378.8941279053688,
+              -276.1157383210957,
+              922.8070238605142
+            ],
+            "expected": 1430.917256103069,
+            "javascript": 1430.917256103069,
+            "native-wasm": 1430.917256103069
+          },
+          {
+            "method": "Distance3",
+            "args": [
+              -166.47263197228312,
+              614.4022811204195,
+              429.11791196092963,
+              -35.45728791505098,
+              929.969145450741,
+              -636.032659560442
+            ],
+            "expected": 1118.6121786633698,
+            "javascript": 1118.6121786633698,
+            "native-wasm": 1118.6121786633698
+          },
+          {
+            "method": "RotateX",
+            "args": [
+              209.48110101744533,
+              -998.192991130054,
+              -716.4248074404895
+            ],
+            "expected": 66.4283517533973,
+            "javascript": 66.4283517533973,
+            "native-wasm": 66.4283517533973
+          },
+          {
+            "method": "RotateY",
+            "args": [
+              -530.4689351469278,
+              -332.13949436321855,
+              -19.71899066120386
+            ],
+            "expected": 190.94351107542317,
+            "javascript": 190.94351107542317,
+            "native-wasm": 190.94351107542317
+          },
+          {
+            "method": "CrossZ",
+            "args": [
+              -280.79439466819167,
+              -817.6491260528564,
+              -939.4071851857007,
+              -272.7852826938033
+            ],
+            "expected": -691508.885646464,
+            "javascript": -691508.885646464,
+            "native-wasm": -691508.885646464
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              549.4600427336991
+            ],
+            "expected": 189.46004273369908,
+            "javascript": 189.46004273369908,
+            "native-wasm": 189.46004273369908
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              449.7672561556101,
+              -685.8116374351084,
+              -143.66572815924883,
+              -724.0283279679716,
+              0.10976252891123295
+            ],
+            "expected": 132.77094152826777,
+            "javascript": 132.77094152826777,
+            "native-wasm": 132.77094152826777
+          },
+          {
+            "method": "LineLength",
+            "args": [
+              419.007885735482,
+              -426.86020117253065,
+              995.7792391069233,
+              -89.88960273563862,
+              981.1424068175256,
+              536.8438875302672
+            ],
+            "expected": 1565.9085716624081,
+            "javascript": 1565.9085716624081,
+            "native-wasm": 1565.9085716624081
+          },
+          {
+            "method": "CircleArea",
+            "args": [
+              77.2113631882146
+            ],
+            "expected": 18728.90181594983,
+            "javascript": 18728.90181594983,
+            "native-wasm": 18728.90181594983
+          },
+          {
+            "method": "ArcSweep",
+            "args": [
+              -546.6467961668968,
+              -786.2537582404912
+            ],
+            "expected": 120.39303792640567,
+            "javascript": 120.39303792640567,
+            "native-wasm": 120.39303792640567
+          },
+          {
+            "method": "TrueColorArgb",
+            "args": [
+              55,
+              115,
+              232
+            ],
+            "expected": -13143064,
+            "javascript": -13143064,
+            "native-wasm": -13143064
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              2,
+              3,
+              9,
+              20,
+              0
+            ],
+            "expected": 2,
+            "javascript": 2,
+            "native-wasm": 2
+          },
+          {
+            "method": "CubicBezierCoordinate",
+            "args": [
+              2,
+              3,
+              9,
+              20,
+              1
+            ],
+            "expected": 20,
+            "javascript": 20,
+            "native-wasm": 20
+          },
+          {
+            "method": "Distance2",
+            "args": [
+              -1e+100,
+              1e+100,
+              1e+100,
+              -1e+100
+            ],
+            "expected": 2.82842712474619e+100,
+            "javascript": 2.82842712474619e+100,
+            "native-wasm": 2.82842712474619e+100
+          },
+          {
+            "method": "NormalizeAngle",
+            "args": [
+              -720
+            ],
+            "expected": 0,
+            "javascript": 0,
+            "native-wasm": 0
+          }
+        ]
+      }
+    },
+    {
+      "name": "Real Bezier parameter validation throws ArgumentOutOfRangeException across all backends",
+      "passed": true,
+      "milliseconds": 14.573119000007864,
+      "evidence": {
+        "parameters": [
+          -0.01,
+          1.01
+        ],
+        "exception": "System.ArgumentOutOfRangeException"
+      }
+    },
+    {
+      "name": "Entity construction and RGB validation preserve ArgumentOutOfRangeException on all backends",
+      "passed": true,
+      "milliseconds": 783.4857639999973,
+      "evidence": {
+        "caseCount": 5,
+        "backends": 3,
+        "exception": "System.ArgumentOutOfRangeException"
+      }
+    },
+    {
+      "name": "Managed, generated JavaScript and native Wasm execute ASCII and binary DXF round-trips",
+      "passed": true,
+      "milliseconds": 80798.84869299999,
+      "evidence": {
+        "managed": {
+          "formats": [
+            "ASCII",
+            "binary"
+          ],
+          "entities": [
+            "LINE",
+            "CIRCLE"
+          ],
+          "expectedResult": 101,
+          "supported": true,
+          "executed": true,
+          "roundTrips": [
+            {
+              "format": "ASCII",
+              "result": 101
+            },
+            {
+              "format": "binary",
+              "result": 101
+            }
+          ]
+        },
+        "javascript": {
+          "formats": [
+            "ASCII",
+            "binary"
+          ],
+          "entities": [
+            "LINE",
+            "CIRCLE"
+          ],
+          "expectedResult": 101,
+          "supported": true,
+          "emitted": true,
+          "executed": true,
+          "diagnosticCount": 0,
+          "compiledMethods": 4477,
+          "roundTrips": [
+            {
+              "format": "ASCII",
+              "result": 101,
+              "milliseconds": 7504.593792
+            },
+            {
+              "format": "binary",
+              "result": 101,
+              "milliseconds": 10080.901945999998
+            }
+          ]
+        },
+        "nativeWasm": {
+          "formats": [
+            "ASCII",
+            "binary"
+          ],
+          "entities": [
+            "LINE",
+            "CIRCLE"
+          ],
+          "expectedResult": 101,
+          "supported": true,
+          "emitted": true,
+          "executed": true,
+          "diagnosticCount": 0,
+          "compiledMethods": 2881,
+          "roundTrips": [
+            {
+              "format": "ASCII",
+              "result": 101,
+              "milliseconds": 7652.94680200002
+            },
+            {
+              "format": "binary",
+              "result": 101,
+              "milliseconds": 11226.768547000014
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "compiler": {
+    "bridgeVersion": "0.9.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 167,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "documentIo": {
+    "managed": {
+      "formats": [
+        "ASCII",
+        "binary"
+      ],
+      "entities": [
+        "LINE",
+        "CIRCLE"
+      ],
+      "expectedResult": 101,
+      "supported": true,
+      "executed": true,
+      "roundTrips": [
+        {
+          "format": "ASCII",
+          "result": 101
+        },
+        {
+          "format": "binary",
+          "result": 101
+        }
+      ]
+    },
+    "javascript": {
+      "formats": [
+        "ASCII",
+        "binary"
+      ],
+      "entities": [
+        "LINE",
+        "CIRCLE"
+      ],
+      "expectedResult": 101,
+      "supported": true,
+      "emitted": true,
+      "executed": true,
+      "diagnosticCount": 0,
+      "compiledMethods": 4477,
+      "roundTrips": [
+        {
+          "format": "ASCII",
+          "result": 101,
+          "milliseconds": 7504.593792
+        },
+        {
+          "format": "binary",
+          "result": 101,
+          "milliseconds": 10080.901945999998
+        }
+      ]
+    },
+    "nativeWasm": {
+      "formats": [
+        "ASCII",
+        "binary"
+      ],
+      "entities": [
+        "LINE",
+        "CIRCLE"
+      ],
+      "expectedResult": 101,
+      "supported": true,
+      "emitted": true,
+      "executed": true,
+      "diagnosticCount": 0,
+      "compiledMethods": 2881,
+      "roundTrips": [
+        {
+          "format": "ASCII",
+          "result": 101,
+          "milliseconds": 7652.94680200002
+        },
+        {
+          "format": "binary",
+          "result": 101,
+          "milliseconds": 11226.768547000014
+        }
+      ]
+    }
+  },
+  "passed": true,
+  "note": "Full-library support entries require strict zero-diagnostic emission for each stated method selection; they do not assert execution of every method. Document I/O entries require actual LINE/CIRCLE Save/Load execution in both ASCII and binary formats on each backend, with RoundTrip=101. Broader document fidelity is verified separately by netdxf-document-verification.json."
+}

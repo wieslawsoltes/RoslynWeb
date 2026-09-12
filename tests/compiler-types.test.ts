@@ -2,6 +2,7 @@
 import {createRoslyn,compileAssembly,type AssemblyModel,type JavaScriptArtifact,type JavaScriptOptimizationStats} from '@roslynweb/core';
 import {compileJavaScriptModule,generateModule,ILAssemblyBuilder,DynamicMethodBuilder,type ILAnalysis} from '@roslynweb/core/il';
 import {compileWasm,loadWasm,type WasmOptimizationStats} from '@roslynweb/core/wasm';
+import {createNetDxf,createNetDxfKernel,createDxfRenderer,tessellateDxfScene,type DxfGeometry,type NetDxfSession} from '@roslynweb/core/dxf';
 import {createRoslyn as createNodeRoslyn,type NodeRoslynCompiler} from '@roslynweb/core/node';
 
 const nodeCompiler:NodeRoslynCompiler=await createNodeRoslyn({baseUrl:'./dist',worker:true,onWorkerOutput(text,stream){void[text,stream];}});
@@ -50,4 +51,18 @@ compileWasm(model,{optimize:'blocks'});
 // @ts-expect-error Worker emission cannot carry non-serializable external callbacks.
 await compiler.compileToJavaScript('class C {}',{javascript:{externals:{'C::M':()=>0}}});
 void[analysis,result,emitted,stats];
+const dxf:NetDxfSession=await createNetDxf({compiler,compile:true,onProgress(event){void[event.stage,event.sourceCount];}});
+const drawing=await dxf.createSample();
+const geometry:DxfGeometry=tessellateDxfScene(drawing.scene,{tolerance:0.01});
+const kernel=await createNetDxfKernel({compiler,backend:'native-wasm'});
+const distance:number=await kernel.invoke('Distance2',[0,0,3,4]);kernel.dispose();void distance;
+const binaryDxf:Uint8Array=await drawing.export({binary:true});
+const renderer=await createDxfRenderer(document.createElement('canvas'),{onError(error){void error.message;}});
+renderer.setGeometry(geometry);renderer.setLayerVisibility('Plate',false);renderer.fit();renderer.zoomAt(2,100,100);
+renderer.dispose();await drawing.dispose();await dxf.dispose();
+// @ts-expect-error Full DXF sessions require an initialized compiler.
+createNetDxf({compile:true});
+// @ts-expect-error DXF export is text or binary, not an arbitrary serializer name.
+drawing.export({format:'json'});
+void binaryDxf;
 compiler.dispose();

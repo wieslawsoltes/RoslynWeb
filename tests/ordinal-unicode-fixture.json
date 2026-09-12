@@ -1,0 +1,1886 @@
+{
+  "success": true,
+  "schemaVersion": 1,
+  "name": "OrdinalUnicodeFixture",
+  "entryPoint": null,
+  "assemblyIdentity": "OrdinalUnicodeFixture, Version=0.0.0.0, Culture=neutral",
+  "version": "0.0.0.0",
+  "culture": "",
+  "publicKeyToken": "null",
+  "moduleVersionId": "7608671d-ab8c-491c-89a0-2ceca0c228df",
+  "references": [
+    {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Collections",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Collections, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    }
+  ],
+  "valueTypes": [
+    "System.StringComparison"
+  ],
+  "types": [
+    {
+      "token": 33554433,
+      "name": "<Module>",
+      "attributes": "NotPublic",
+      "baseType": null,
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554434,
+      "name": "OrdinalUnicodeFixture",
+      "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "System.Runtime.CompilerServices.NullableContextAttribute",
+          "constructor": {
+            "token": 167772165,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableContextAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 1
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.Runtime.CompilerServices.NullableAttribute",
+          "constructor": {
+            "token": 167772166,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 0
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663297,
+          "name": "Compare",
+          "declaringType": "OrdinalUnicodeFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "OrdinalUnicodeFixture",
+          "returnType": "System.Int32[]",
+          "parameters": [
+            {
+              "name": "a",
+              "type": "System.String"
+            },
+            {
+              "name": "b",
+              "type": "System.String"
+            }
+          ],
+          "locals": [
+            "System.Boolean"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 3,
+              "opcode": "call",
+              "operand": {
+                "token": 167772167,
+                "name": "Equals",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.StringComparison"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 8,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 9,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 10,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777231,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 16,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 17,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 22,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 23,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 24,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772169,
+                "name": "Compare",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 29,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 30,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 31,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 32,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "call",
+              "operand": {
+                "token": 167772170,
+                "name": "Compare",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.StringComparison"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 40,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 41,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 42,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 43,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 44,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 45,
+              "opcode": "cgt.un",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 47,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 48,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 49,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 50,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 55,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 56,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 57,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772171,
+                "name": "Equals",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 62,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 63,
+              "opcode": "cgt.un",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 65,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 66,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 67,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 68,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 69,
+              "opcode": "brfalse.s",
+              "operand": 101,
+              "size": 2
+            },
+            {
+              "offset": 71,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 72,
+              "opcode": "brfalse.s",
+              "operand": 101,
+              "size": 2
+            },
+            {
+              "offset": 74,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 79,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 80,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772172,
+                "name": "GetHashCode",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 85,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 90,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 91,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772172,
+                "name": "GetHashCode",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 96,
+              "opcode": "beq.s",
+              "operand": 101,
+              "size": 2
+            },
+            {
+              "offset": 98,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 99,
+              "opcode": "br.s",
+              "operand": 102,
+              "size": 2
+            },
+            {
+              "offset": 101,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 102,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 103,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 6,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663298,
+          "name": "Search",
+          "declaringType": "OrdinalUnicodeFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "OrdinalUnicodeFixture",
+          "returnType": "System.Int32[]",
+          "parameters": [
+            {
+              "name": "text",
+              "type": "System.String"
+            },
+            {
+              "name": "needle",
+              "type": "System.String"
+            },
+            {
+              "name": "start",
+              "type": "System.Int32"
+            },
+            {
+              "name": "count",
+              "type": "System.Int32"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777231,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 9,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 10,
+              "opcode": "ldarg.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "ldarg.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 12,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 13,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772173,
+                "name": "IndexOf",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Int32"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.Int32"
+                  },
+                  {
+                    "name": "arg3",
+                    "type": "System.StringComparison"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 18,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 19,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 22,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 23,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 24,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772174,
+                "name": "Contains",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.StringComparison"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 29,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 30,
+              "opcode": "cgt.un",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 32,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 33,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 36,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 37,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 38,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "StartsWith",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.StringComparison"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 43,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 44,
+              "opcode": "cgt.un",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 46,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 47,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 48,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 49,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 50,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 51,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772176,
+                "name": "EndsWith",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.StringComparison"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 57,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 58,
+              "opcode": "cgt.un",
+              "operand": null,
+              "size": 2
+            },
+            {
+              "offset": 60,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663299,
+          "name": "Collections",
+          "declaringType": "OrdinalUnicodeFixture",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "OrdinalUnicodeFixture",
+          "returnType": "System.Int32[]",
+          "parameters": [
+            {
+              "name": "a",
+              "type": "System.String"
+            },
+            {
+              "name": "b",
+              "type": "System.String"
+            }
+          ],
+          "locals": [
+            "System.Collections.Generic.Dictionary`2<System.String,System.Int32>",
+            "System.Collections.Generic.HashSet`1<System.String>",
+            "System.Collections.Generic.SortedSet`1<System.String>",
+            "System.Collections.Generic.SortedDictionary`2<System.String,System.Int32>"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772177,
+                "name": ".ctor",
+                "declaringType": "System.Collections.Generic.Dictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Collections.Generic.IEqualityComparer`1<!0>"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 11,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 12,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 13,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 14,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772178,
+                "name": "set_Item",
+                "declaringType": "System.Collections.Generic.Dictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "!1"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 19,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 20,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "ldc.i4.s",
+              "operand": 9,
+              "size": 2
+            },
+            {
+              "offset": 23,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772178,
+                "name": "set_Item",
+                "declaringType": "System.Collections.Generic.Dictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "!1"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 28,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 33,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772179,
+                "name": ".ctor",
+                "declaringType": "System.Collections.Generic.HashSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Collections.Generic.IEqualityComparer`1<!0>"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 38,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 39,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 40,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 41,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772180,
+                "name": "Add",
+                "declaringType": "System.Collections.Generic.HashSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 46,
+              "opcode": "pop",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 47,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 48,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 49,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772180,
+                "name": "Add",
+                "declaringType": "System.Collections.Generic.HashSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 54,
+              "opcode": "pop",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 60,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772181,
+                "name": ".ctor",
+                "declaringType": "System.Collections.Generic.SortedSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Collections.Generic.IComparer`1<!0>"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 65,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 66,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 67,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 68,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772182,
+                "name": "Add",
+                "declaringType": "System.Collections.Generic.SortedSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 73,
+              "opcode": "pop",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 74,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 75,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 76,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772182,
+                "name": "Add",
+                "declaringType": "System.Collections.Generic.SortedSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 81,
+              "opcode": "pop",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 82,
+              "opcode": "call",
+              "operand": {
+                "token": 167772168,
+                "name": "get_OrdinalIgnoreCase",
+                "declaringType": "System.StringComparer",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.StringComparer",
+                "parameters": [],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 87,
+              "opcode": "newobj",
+              "operand": {
+                "token": 167772183,
+                "name": ".ctor",
+                "declaringType": "System.Collections.Generic.SortedDictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Collections.Generic.IComparer`1<!0>"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 92,
+              "opcode": "stloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 93,
+              "opcode": "ldloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 94,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 95,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 96,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772184,
+                "name": "set_Item",
+                "declaringType": "System.Collections.Generic.SortedDictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "!1"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 101,
+              "opcode": "ldloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 102,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 103,
+              "opcode": "ldc.i4.s",
+              "operand": 9,
+              "size": 2
+            },
+            {
+              "offset": 105,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772184,
+                "name": "set_Item",
+                "declaringType": "System.Collections.Generic.SortedDictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "!1"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 110,
+              "opcode": "ldc.i4.8",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 111,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777231,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 116,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 117,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 118,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 119,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772185,
+                "name": "get_Count",
+                "declaringType": "System.Collections.Generic.Dictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 124,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 125,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 126,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 127,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 128,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 129,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772186,
+                "name": "get_Item",
+                "declaringType": "System.Collections.Generic.Dictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "!1",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 134,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 135,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 136,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 137,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 138,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 139,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772186,
+                "name": "get_Item",
+                "declaringType": "System.Collections.Generic.Dictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "!1",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 144,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 145,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 146,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 147,
+              "opcode": "ldloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 148,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772187,
+                "name": "get_Count",
+                "declaringType": "System.Collections.Generic.HashSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 153,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 154,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 155,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 156,
+              "opcode": "ldloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 157,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772188,
+                "name": "get_Count",
+                "declaringType": "System.Collections.Generic.SortedSet`1<System.String>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 162,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 163,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 164,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 165,
+              "opcode": "ldloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 166,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772189,
+                "name": "get_Count",
+                "declaringType": "System.Collections.Generic.SortedDictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 171,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 172,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 173,
+              "opcode": "ldc.i4.6",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 174,
+              "opcode": "ldloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 175,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 176,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772190,
+                "name": "get_Item",
+                "declaringType": "System.Collections.Generic.SortedDictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "!1",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 181,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 182,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 183,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 184,
+              "opcode": "ldloc.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 185,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 186,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772190,
+                "name": "get_Item",
+                "declaringType": "System.Collections.Generic.SortedDictionary`2<System.String,System.Int32>",
+                "assemblyName": "System.Collections",
+                "genericParameterCount": 0,
+                "returnType": "!1",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "!0"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 191,
+              "opcode": "stelem.i4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 192,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 5,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    }
+  ]
+}

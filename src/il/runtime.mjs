@@ -1,13 +1,21 @@
+import {isTemporalValueType,defaultTemporalValue,temporalField,formatTemporalValue} from './cad-time.mjs';
+import {platformField} from './platform-fields.mjs';
 import {floatNumberFromBits} from './float-bits.mjs';
 import {integerToSingle} from './integer-float.mjs';
 import { ILExecutionError, capabilities } from './capabilities.mjs';
 import { splitTypeArguments, genericDefinitionName, substituteType, substituteMetadata, matchesMethodReference } from './generics.mjs';
-import { invokeExtendedBuiltin } from './framework.mjs';
+import { invokeExtendedBuiltin, defaultExtendedValue, isExtendedInstance, isExtendedValueType } from './framework.mjs';
 import { invokeReflectionBuiltin } from './reflection.mjs';
+import { invokeRegexBuiltin } from './regex.mjs';
 import { invokeEmitBuiltin, isEmitField, reflectedOpcode } from './reflection-emit.mjs';
 import { emitTypeBases } from './reflection-types.mjs';
 import { invokeCollectionsBuiltin, isCollectionsInstance } from './collections-extra.mjs';
 import { invokeIoBuiltin, ioTypeBases } from './io.mjs';
+import { invokeEventBuiltin, isEventField, eventStaticField, isEventHandlerType, delegateEquals, delegateHashCode } from './events.mjs';
+import { invokeCadBuiltin, defaultCadValue, formatCadValue } from './cad-bcl.mjs';
+import {compositeCadFormat} from './cad-culture.mjs';
+import {invokeCadStringsBuiltin,isCadStringsInstance} from './cad-strings.mjs';
+import {defaultSpanValue, invokeSpanBuiltin, initializeInlineArray, managedArrayAddress} from './spans.mjs';
 import { invokeJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isPointer, allocateMemory, releaseMemory, pointerBinary, readMemory, writeMemory, copyMemory, initializeMemory } from './memory.mjs';
 import { isStandardValueType, isStandardValueInstance, defaultStandardValue, decimalFromJS, standardValueFromJS, standardValueToJS, boxStandardValue, unboxStandardValue, standardStaticField, formatStandardValue, invokeStandardValueBuiltin } from './standard-values.mjs';
@@ -20,10 +28,11 @@ const longTypes = new Set(['System.Int64', 'System.UInt64', 'long', 'ulong']);
 const floatTypes = new Set(['System.Single', 'System.Double', 'float', 'double']);
 const isNumericType = type => intTypes.has(trimType(type)) || longTypes.has(trimType(type)) || floatTypes.has(trimType(type));
 const exceptionBases = Object.freeze({
+  'System.Text.RegularExpressions.RegexParseException': 'System.ArgumentException',
   'System.ArithmeticException': 'System.SystemException', 'System.DivideByZeroException': 'System.ArithmeticException', 'System.OverflowException': 'System.ArithmeticException',
   'System.ArgumentNullException': 'System.ArgumentException', 'System.ArgumentOutOfRangeException': 'System.ArgumentException',
   'System.ObjectDisposedException': 'System.InvalidOperationException',
-  'System.IO.EndOfStreamException': 'System.IO.IOException', 'System.IO.FileNotFoundException': 'System.IO.IOException',
+  'System.IO.EndOfStreamException': 'System.IO.IOException', 'System.IO.FileNotFoundException': 'System.IO.IOException', 'System.IO.FileLoadException': 'System.IO.IOException',
   'System.IO.DirectoryNotFoundException': 'System.IO.IOException', 'System.IO.PathTooLongException': 'System.IO.IOException',
   'System.IO.IOException': 'System.SystemException', 'System.InvalidOperationException': 'System.SystemException',
 });
@@ -77,7 +86,7 @@ export function toJS(value) {
 }
 
 export function fromJS(value, type) {
-  if (value && typeof value === 'object' && typeof value.$int64 === 'string') value = BigInt(value.$int64);
+  if (value && typeof value === 'object' && (typeof value.$int64 === 'string' || typeof value.$uint64 === 'string')) value = BigInt(value.$int64 ?? value.$uint64);
   if (value instanceof Numeric || value?.$type || isRef(value)) return value;
   const name = trimType(type);
   if (name === 'System.Decimal') return decimalFromJS(value);
@@ -279,6 +288,7 @@ export class ILRuntime {
   arithmeticException() { return managedError('System.ArithmeticException', 'Overflow or underflow in the arithmetic operation.'); }
 
   objectHashCode(value) {
+    if (value?.$delegate) return i4(delegateHashCode(value));
     if (value?.$box) return value.$type==='System.Char' ? i4(Number(raw(value.value))|(Number(raw(value.value))<<16)) : this.objectHashCode(value.value);
     if (value instanceof Numeric) {
       if (value.kind === 'i4') return i4(value.value);
@@ -304,16 +314,22 @@ export class ILRuntime {
 
   defaultValue(type) {
     const name = trimType(type);
+    const extended = defaultExtendedValue(this,name);
+    if (extended !== undefined) return extended;
+    const span = defaultSpanValue(name);
+    if (span !== undefined) return span;
+    const cad = defaultCadValue(name);
+    if (cad !== undefined) return cad;
     const standard = defaultStandardValue(this, name);
     if (standard !== undefined) return standard;
     if (longTypes.has(name)) return i8(0);
     if (name === 'System.Single' || name === 'float') return r4(0);
     if (floatTypes.has(name)) return r8(0);
     if (intTypes.has(name)) return i4(0);
-    if (name === 'System.DateTime' || name === 'System.TimeSpan') return { $type:name, $valueType:true, fields:{}, $ticks:0n, $kind:0 };
+    if (isTemporalValueType(name)) return defaultTemporalValue(name);
     if (name === 'System.Runtime.CompilerServices.DefaultInterpolatedStringHandler') return { $type: name, $valueType: true, fields: {}, $chunks: [] };
     const definition = this.closeType(name);
-    if (definition?.isEnum) return i4(0);
+    if (definition?.isEnum) return this.defaultValue(definition.fields.find(f => f.name === 'value__')?.type ?? 'System.Int32');
     if (definition?.isValueType) return this.allocate(name, false);
     return null;
   }
@@ -353,10 +369,21 @@ export class ILRuntime {
 
   typeContext(name, method) { return substituteType(name, method?.$typeArguments, method?.$methodArguments); }
   context(value, method) {
-    if (!method?.$typeArguments?.length && !method?.$methodArguments?.length) return value;
-    const result = substituteMetadata(value, method.$typeArguments, method.$methodArguments);
+    if (!method?.$typeArguments?.length && !method?.$methodArguments?.length && !value?.declaringType) return value;
+    const result = substituteMetadata(value, method?.$typeArguments, method?.$methodArguments);
     // A MethodDef/FieldDef owner inside its own generic type is encoded as the open definition.
-    if (result && typeof result === 'object' && result.declaringType === method.$definitionType && method.$typeArguments?.length) result.declaringType = method.declaringType;
+    if (result && typeof result === 'object' && result.declaringType === method?.$definitionType && method?.$typeArguments?.length) result.declaringType = method.declaringType;
+    if (value && typeof value === 'object' && value.declaringType) {
+      // MemberRef !n parameters belong to the referenced owner, which can reorder
+      // or add arguments relative to its caller (Dictionary<string,T>, for example).
+      // MethodSpec !!n parameters similarly belong to its resolved callee arguments.
+      const ownerArguments=splitTypeArguments(result.declaringType);
+      const typeArguments=ownerArguments.length?ownerArguments:method?.$typeArguments;
+      const methodArguments=result.genericArguments??method?.$methodArguments;
+      if (Array.isArray(value.parameters)) result.parameters=substituteMetadata(value.parameters,typeArguments,methodArguments);
+      if (value.returnType) result.returnType=substituteType(value.returnType,typeArguments,methodArguments);
+      if (value.type) result.type=substituteType(value.type,typeArguments,methodArguments);
+    }
     return result;
   }
 
@@ -541,17 +568,24 @@ export class ILRuntime {
 
   allocate(typeName, initialize = true) {
     const name = trimType(typeName);
+    const extended = defaultExtendedValue(this,name);
+    if (extended !== undefined) return extended;
+    const span = defaultSpanValue(name);
+    if (span !== undefined) return span;
+    const cad = defaultCadValue(name);
+    if (cad !== undefined) return cad;
     const standard = defaultStandardValue(this, name);
     if (standard !== undefined) return standard;
     if (initialize) this.ensureType(name);
     const definition = this.closeType(name);
-    if (name.endsWith('Exception') && (name.startsWith('System.') || this.inherits(name, 'System.Exception'))) return new ManagedException(name);
-    const object = { $type: name, $valueType: !!definition?.isValueType, fields: Object.create(null) };
+    const isException = this.inherits(name, 'System.Exception') || !definition && name.startsWith('System.') && name.endsWith('Exception');
+    const object = isException ? new ManagedException(name) : { $type: name, $valueType: !!definition?.isValueType, fields: Object.create(null) };
     let current = definition;
     while (current) {
       for (const field of current.fields ?? []) if (!field.isStatic) object.fields[fieldKey({ ...field, declaringType: field.declaringType ?? current.name })] = this.defaultValue(field.type);
       current = this.closeType(current.baseType);
     }
+    initializeInlineArray(this,object,definition);
     return object;
   }
 
@@ -571,7 +605,7 @@ export class ILRuntime {
     if (type === 'System.Reflection.Emit.DynamicMethod') return this.inherits('System.Reflection.MethodInfo', target);
     if (type === 'System.Reflection.Emit.LocalBuilder') return this.inherits('System.Reflection.LocalVariableInfo', target);
     if (type === 'System.MulticastDelegate') return target === 'System.Delegate';
-    if (/^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(type)) return target === 'System.MulticastDelegate' || target === 'System.Delegate';
+    if (isEventHandlerType(type) || /^System\.(?:Action|Func|Predicate|Comparison)(?:`\d+)?(?:<|$)/.test(type)) return target === 'System.MulticastDelegate' || target === 'System.Delegate';
     const builtInBases = { 'System.RuntimeType':'System.Type', 'System.Type':'System.Reflection.MemberInfo', 'System.Reflection.MethodInfo':'System.Reflection.MethodBase', 'System.Reflection.ConstructorInfo':'System.Reflection.MethodBase', 'System.Reflection.MethodBase':'System.Reflection.MemberInfo', 'System.Reflection.FieldInfo':'System.Reflection.MemberInfo', 'System.Reflection.PropertyInfo':'System.Reflection.MemberInfo', 'System.Reflection.TypeInfo':'System.Type', 'System.Reflection.RuntimeMethodInfo':'System.Reflection.MethodInfo', 'System.Reflection.RuntimeFieldInfo':'System.Reflection.FieldInfo', 'System.Reflection.RuntimeConstructorInfo':'System.Reflection.ConstructorInfo' };
     if (builtInBases[type]) return this.inherits(builtInBases[type],target);
     if (target === 'System.Exception' && type?.startsWith('System.') && type.endsWith('Exception')) return true;
@@ -580,8 +614,12 @@ export class ILRuntime {
     const seen = new Set();
     while (definition && !seen.has(definition.name)) {
       seen.add(definition.name);
-      if (definition.baseType === target || definition.interfaces?.includes(target)) return true;
-      definition = this.closeType(definition.baseType);
+      if (definition.baseType === target || definition.interfaces?.includes(target) || definition.baseType === 'System.MulticastDelegate' && target === 'System.Delegate') return true;
+      const baseType = definition.baseType;
+      // A linked exception may end its metadata chain at an external framework
+      // exception; continue through that framework hierarchy for allocation/catches.
+      if (baseType?.startsWith('System.') && baseType.endsWith('Exception') && !this.closeType(baseType) && this.inherits(baseType, target)) return true;
+      definition = this.closeType(baseType);
     }
     return false;
   }
@@ -590,10 +628,19 @@ export class ILRuntime {
     if (value == null) return false;
     const target = trimType(type), actual = this.typeName(value);
     if (actual === target || this.inherits(actual, target)) return true;
+    const stringInstance=isCadStringsInstance(value,target);
+    if(stringInstance!==undefined)return stringInstance;
     const standard = isStandardValueInstance(value, target);
     if (standard !== undefined) return standard;
     const collection = isCollectionsInstance(this, value, target);
     if (collection !== undefined) return collection;
+    const extended = isExtendedInstance(this,value,target);
+    if (extended !== undefined) return extended;
+    if ((value.$array || value.$items) && /^System\.Collections\.Generic\.IReadOnly(?:List|Collection)`1</.test(target)) {
+      const element=value.elementType ?? splitTypeArguments(value.$type)[0], expected=splitTypeArguments(target)[0];
+      if (element === expected) return true;
+      if (element === 'System.String' || element?.endsWith('[]') || this.closeType(element)?.isValueType === false) return this.inherits(element,expected);
+    }
     if (value.$array && (target === 'System.Array' || target === 'System.Collections.IEnumerable')) return true;
     if (value.$array && target.endsWith('[]') && !isNumericType(value.elementType) && !this.types.get(value.elementType)?.isValueType) return this.inherits(value.elementType, target.slice(0, -2));
     if (value.$box && target === 'System.ValueType') return true;
@@ -609,7 +656,7 @@ export class ILRuntime {
   box(value, type) { const standard = boxStandardValue(this, value, trimType(type)); return standard !== undefined ? standard : { $type: trimType(type), $box: true, value: copyValue(value) }; }
   unbox(value, type, any = false) {
     if (any) { const standard = unboxStandardValue(this, value, trimType(type)); if (standard !== undefined) return standard; }
-    if (!isNumericType(type) && !isStandardValueType(type) && !this.types.get(trimType(type))?.isValueType && any) return this.cast(value, type, true);
+    if (!isNumericType(type) && !isStandardValueType(type) && !isExtendedValueType(type) && !isTemporalValueType(type) && !this.types.get(trimType(type))?.isValueType && any) return this.cast(value, type, true);
     nullCheck(value);
     if (!value.$box || value.$type !== trimType(type)) throw managedError('System.InvalidCastException', 'Specified cast is not valid.');
     return any ? copyValue(value.value) : address(() => value.value, item => { value.value = copyValue(item); }, type);
@@ -622,6 +669,15 @@ export class ILRuntime {
       const standard = standardStaticField(ref);
       if (standard !== undefined) { frame.stack.push(operation === 'ldsfld' ? standard : address(() => standard, () => { throw managedError('System.FieldAccessException', 'Decimal constants are read-only.'); }, ref.type)); return; }
     }
+    if (operation === 'ldsfld' || operation === 'ldsflda') {
+      const platform = operation === 'ldsfld' ? platformField(ref) : undefined, temporal = temporalField(ref);
+      if (platform !== undefined || temporal !== undefined) {
+        const value = platform ?? temporal;
+        frame.stack.push(operation === 'ldsfld' ? value : address(() => copyValue(value), () => { throw managedError('System.FieldAccessException', 'Framework constants are read-only.'); }, ref.type));
+        return;
+      }
+    }
+    if (operation === 'ldsfld' && isEventField(ref)) { frame.stack.push(eventStaticField(this)); return; }
     if (operation === 'ldsfld' && key === 'System.String::Empty') { frame.stack.push(''); return; }
     if (operation === 'ldsfld' && key === 'System.Type::EmptyTypes') { frame.stack.push(this.newArray('System.Type', i4(0))); return; }
     if ((operation === 'ldsfld' || operation === 'ldsflda') && isEmitField(ref)) {
@@ -644,7 +700,7 @@ export class ILRuntime {
       else { object.fields ??= Object.create(null); object.fields[key] = this.coerce(item, ref.type); }
     };
     if (operation.startsWith('st')) set(value);
-    else frame.stack.push(operation.endsWith('a') ? address(get, set, ref.type) : copyValue(get()));
+    else frame.stack.push(operation.endsWith('a') ? {...address(get, set, ref.type),$location:{owner:isStatic?this.staticFields:object,key}} : copyValue(get()));
   }
 
   newArray(type, length) {
@@ -696,7 +752,7 @@ export class ILRuntime {
 
   arrayAddress(array, index, type) {
     const n = this.arrayIndex(array, index);
-    return address(() => array.items[n], value => { array.items[n] = this.coerce(value, array.elementType); }, type ?? array.elementType);
+    return managedArrayAddress(this,array,n,type??array.elementType);
   }
 
   indirectLoad(ref, opcode = 'ldobj', type) {
@@ -718,7 +774,7 @@ export class ILRuntime {
     const list = argument ? frame.args : frame.locals;
     const local = frame.method.locals?.[index];
     const type = argument ? frame.method.parameters?.[index - (frame.method.isStatic ? 0 : 1)]?.type : local?.type ?? local;
-    return address(() => list[index], value => { list[index] = this.coerce(value, type); }, type);
+    return {...address(() => list[index], value => { list[index] = this.coerce(value, type); }, type),$location:{owner:list,key:index}};
   }
 
   functionPointer(frame, ref, virtual, self) {
@@ -892,6 +948,10 @@ export class ILRuntime {
     if (isRef(value)) value = value.get();
     if (value?.$box) { typeHint ??= value.$type; value = value.value; }
     if (value === null || value === undefined) return '';
+    const temporal = formatTemporalValue(value, format);
+    if (temporal !== undefined) return temporal;
+    const cad = formatCadValue(this, value, format, typeHint);
+    if (cad !== undefined) return cad;
     const standard = formatStandardValue(this, value, format);
     if (standard !== undefined) return standard;
     if (typeof value === 'string') return value;
@@ -905,11 +965,30 @@ export class ILRuntime {
       if (/^[fF]\d*$/.test(format)) return Number(v).toFixed(format.length > 1 ? Number(format.slice(1)) : 2);
       throw limitation(`Numeric format '${format}' is not implemented in the JavaScript tier.`);
     }
-    if (value instanceof ManagedException) return `${value.$type}: ${value.message}`;
+    if (value instanceof ManagedException) {
+      if (value.$fileExceptionType || ['System.IO.FileNotFoundException','System.IO.FileLoadException'].includes(value.$type)) {
+        let text = `${value.$type}: ${value.message ?? ''}`;
+        if (value.fileName) text += `\nFile name: '${value.fileName}'`;
+        if (value.innerException != null) {
+          const method = this.findVirtual({ declaringType:'System.Exception', name:'ToString', isStatic:false, parameters:[], returnType:'System.String' },value.innerException);
+          text += '\n ---> ' + (method ? this.invokeManaged(method, [], value.innerException) : this.format(value.innerException));
+        }
+        return text;
+      }
+      return `${value.$type}: ${value.message}`;
+    }
     return value.$type ?? String(value);
   }
 
   callBuiltin(ref, args, self, kind) {
+    const span=invokeSpanBuiltin(this,ref,args,self,kind);
+    if(span.handled)return span;
+    const strings = invokeCadStringsBuiltin(this,ref,args,self);
+    if(strings.handled)return strings;
+    const cad = invokeCadBuiltin(this, ref, args, self, kind);
+    if (cad.handled) return cad;
+    const event = invokeEventBuiltin(this, ref, args, self);
+    if (event.handled) return event;
     const intrinsic = invokeJavaScriptIntrinsic(this, ref, args);
     if (intrinsic.handled) return intrinsic;
     const standard = invokeStandardValueBuiltin(this, ref, args, self, kind);
@@ -922,6 +1001,8 @@ export class ILRuntime {
     if (collections.handled) return collections;
     const extended = invokeExtendedBuiltin(this, ref, args, self, kind);
     if (extended.handled) return extended;
+    const regex = invokeRegexBuiltin(this, ref, args);
+    if (regex.handled) return regex;
     const reflection = invokeReflectionBuiltin(this, ref, args, self, kind);
     if (reflection.handled) return reflection;
     const type = trimType(ref.declaringType), root = genericRoot(type), name = ref.name;
@@ -940,7 +1021,7 @@ export class ILRuntime {
     }
     if (name === '.ctor' && type === 'System.Object') return done();
     if (type === 'System.Console' && ['Write', 'WriteLine'].includes(name)) {
-      const text = args.length > 1 && typeof args[0] === 'string' ? this.compositeFormat(args[0], args.slice(1)) : args.map((value, i) => {
+      const text = args.length > 1 && typeof args[0] === 'string' ? this.compositeFormat(args[0], (ref.parameters?.at(-1)?.type ?? ref.parameters?.at(-1)) === 'System.Object[]' ? args[1]?.items ?? null : args.slice(1)) : args.map((value, i) => {
         const t = ref.parameters?.[i]?.type;
         return t === 'System.Char[]' && value?.$array ? value.items.map(c => String.fromCharCode(Number(raw(c)))).join('') : this.format(value, undefined, t);
       }).join('');
@@ -974,7 +1055,12 @@ export class ILRuntime {
       if (name === 'ReferenceEquals') return done(i4(args[0] === args[1]));
       if (name === 'Equals') return done(i4(ref.isStatic ? args[0] === args[1] : self === args[0]));
       if (name === 'ToString') return done(this.format(self));
-      if (name === 'GetType') return done({ $type: 'System.RuntimeType', typeName: this.typeName(self) });
+      if (name === 'GetType') {
+        nullCheck(self);
+        const declared=selfReference&&trimType(selfReference.type);
+        const actual=declared&&(isNumericType(declared)||this.closeType(declared)?.isEnum)?declared:this.typeName(self);
+        return done({ $type: 'System.RuntimeType', typeName: actual });
+      }
     }
     if (isNumericType(type)) {
       if (name === 'ToString') return done(this.format(self, a[0], type));
@@ -1007,6 +1093,71 @@ export class ILRuntime {
       if (name === 'Clear' && args[0]?.$array && args.length === 3) { const arr = args[0], start = Number(a[1]), count = Number(a[2]); if (start < 0 || count < 0 || start + count > arr.items.length) throw managedError('System.IndexOutOfRangeException', 'Index was outside the bounds of the array.'); for (let i = start; i < start + count; i++) arr.items[i] = this.defaultValue(arr.elementType); return done(); }
     }
     if (type.startsWith('System.') && type.endsWith('Exception')) {
+      if (name === 'GetType' && ref.isStatic === false && !args.length && ref.returnType === 'System.Type' && !(ref.genericParameterCount ?? 0) && !ref.genericArguments?.length) return done({ $type: 'System.RuntimeType', typeName: this.typeName(nullCheck(self)) });
+      if (['System.IO.FileNotFoundException','System.IO.FileLoadException'].includes(type)) {
+        const signature = (ref.parameters ?? []).map(parameter => parameter.type ?? parameter).join(',');
+        if (ref.isStatic !== false || (ref.genericParameterCount ?? 0) !== 0 || ref.genericArguments?.length) return {handled:false};
+        if (name === '.ctor') {
+          if (ref.returnType !== 'System.Void' || !['','System.String','System.String,System.Exception','System.String,System.String','System.String,System.String,System.Exception'].includes(signature)) return {handled:false};
+          nullCheck(self);const missing = type === 'System.IO.FileNotFoundException';
+          const hasFile = signature === 'System.String,System.String' || signature === 'System.String,System.String,System.Exception';
+          self.$fileExceptionType = type;self.fileName = hasFile ? args[1] ?? null : null;
+          self.innerException = signature === 'System.String,System.Exception' ? args[1] ?? null : args[2] ?? null;
+          let message = signature === '' ? (missing ? 'Unable to find the specified file.' : 'Could not load the specified file.') : args[0];
+          if (message == null && (self.fileName != null || !missing)) message = `Could not load file or assembly '${self.fileName ?? ''}'. ` + (missing ? 'The system cannot find the file specified.\n' : 'Could not find or load a specific file. (0x80131621)');
+          self.message = message == null ? null : String(message);return done();
+        }
+        if (signature !== '') return {handled:false};
+        if (name === 'get_FileName' && ref.returnType === 'System.String') return done(nullCheck(self).fileName ?? null);
+        if (name === 'get_FusionLog' && ref.returnType === 'System.String') { nullCheck(self);return done(null); }
+        if (!(['get_Message','ToString'].includes(name) && ref.returnType === 'System.String' || name === 'get_InnerException' && ref.returnType === 'System.Exception')) return {handled:false};
+      }
+      const argumentException = ['System.ArgumentException', 'System.ArgumentNullException', 'System.ArgumentOutOfRangeException'].includes(type);
+      if (argumentException) {
+        const signature = (ref.parameters ?? []).map(parameter => parameter.type ?? parameter).join(',');
+        if (ref.isStatic !== false || (ref.genericParameterCount ?? 0) !== 0 || ref.genericArguments?.length) return { handled: false };
+        if (name === '.ctor') {
+          if (ref.returnType !== 'System.Void') return { handled: false };
+          let message, paramName = null, actualValue = null, innerException = null;
+          const defaultMessage = type === 'System.ArgumentNullException' ? 'Value cannot be null.'
+            : type === 'System.ArgumentOutOfRangeException' ? 'Specified argument was out of the range of valid values.'
+            : 'Value does not fall within the expected range.';
+          if (signature === '') message = defaultMessage;
+          else if (signature === 'System.String') {
+            message = type === 'System.ArgumentException' ? args[0] : defaultMessage;
+            if (type !== 'System.ArgumentException') paramName = args[0];
+          } else if (signature === 'System.String,System.Exception') { message = args[0]; innerException = args[1]; }
+          else if (signature === 'System.String,System.String') {
+            message = args[type === 'System.ArgumentException' ? 0 : 1];
+            paramName = args[type === 'System.ArgumentException' ? 1 : 0];
+          } else if (type === 'System.ArgumentException' && signature === 'System.String,System.String,System.Exception') {
+            [message, paramName, innerException] = args;
+          } else if (type === 'System.ArgumentOutOfRangeException' && signature === 'System.String,System.Object,System.String') {
+            [paramName, actualValue, message] = args;
+          } else return { handled: false };
+          self.paramName = paramName ?? null;
+          self.actualValue = actualValue ?? null;
+          self.innerException = innerException ?? null;
+          // ActualValue is retained by reference, and .NET formats it each time Message is read.
+          Object.defineProperty(self, 'message', { configurable: true, get: () => {
+            let result = message == null ? defaultMessage : String(message);
+            if (self.paramName) result += ` (Parameter '${self.paramName}')`;
+            if (self.actualValue != null) {
+              const toString = this.findVirtual({ declaringType: 'System.Object', name: 'ToString', parameters: [], returnType: 'System.String', isStatic: false }, self.actualValue);
+              const receiver = toString && self.actualValue.$box ? this.unbox(self.actualValue, self.actualValue.$type) : self.actualValue;
+              const value = toString ? this.invokeManaged(toString, [], receiver) : this.format(self.actualValue);
+              result += `\nActual value was ${value ?? ''}.`;
+            }
+            return result;
+          } });
+          return done();
+        }
+        if (signature !== '') return { handled: false };
+        if (name === 'get_ParamName' && ref.returnType === 'System.String') return done(nullCheck(self).paramName ?? null);
+        if (name === 'get_ActualValue' && type === 'System.ArgumentOutOfRangeException' && ref.returnType === 'System.Object') return done(nullCheck(self).actualValue ?? null);
+        if (!(['get_Message', 'ToString'].includes(name) && ref.returnType === 'System.String'
+          || name === 'get_InnerException' && ref.returnType === 'System.Exception')) return { handled: false };
+      }
       if (name === '.ctor') { self.message = String(a[0] ?? ''); self.innerException = args[1] ?? null; return done(); }
       if (name === 'get_Message') return done(nullCheck(self).message);
       if (name === 'get_InnerException') return done(nullCheck(self).innerException);
@@ -1032,7 +1183,7 @@ export class ILRuntime {
       if (name === 'get_Count') return done(i4(self.$items.length));
       if (name === 'get_Item' || name === 'set_Item') { const i = Number(a[0]); if (i < 0 || i >= self.$items.length) throw managedError('System.ArgumentOutOfRangeException', 'Index was out of range.'); if (name === 'get_Item') return done(copyValue(self.$items[i])); self.$items[i] = copyValue(args[1]); self.$version++; return done(); }
       if (name === 'Clear') { self.$items.length = 0; self.$version++; return done(); }
-      if (name === 'Contains' || name === 'IndexOf') { const i = self.$items.findIndex(v => raw(v) === a[0]); return done(i4(name === 'Contains' ? i >= 0 : i)); }
+      if (name === 'Contains' || name === 'IndexOf') { const i = self.$items.findIndex(v => v?.$delegate ? delegateEquals(v,args[0]) : raw(v) === a[0]); return done(i4(name === 'Contains' ? i >= 0 : i)); }
       if (name === 'ToArray') return done({ $array: true, $type: ref.returnType, elementType: trimType(ref.returnType).replace(/\[\]$/, ''), items: self.$items.map(copyValue) });
       if (name === 'GetEnumerator') return done({ $type: `${type}+Enumerator`, $valueType: true, fields: {}, $list: self, $index: -1, $version: self.$version });
     }
@@ -1076,20 +1227,23 @@ export class ILRuntime {
 
   initializeArray(array, data) {
     const bytes = Uint8Array.from(data), view = new DataView(bytes.buffer);
-    const reader = { 'System.Byte': ['getUint8', 1], 'System.SByte': ['getInt8', 1], 'System.Boolean': ['getUint8', 1], 'System.Int16': ['getInt16', 2], 'System.UInt16': ['getUint16', 2], 'System.Char': ['getUint16', 2], 'System.Int32': ['getInt32', 4], 'System.UInt32': ['getUint32', 4], 'System.Int64': ['getBigInt64', 8], 'System.UInt64': ['getBigUint64', 8], 'System.Single': ['getFloat32', 4], 'System.Double': ['getFloat64', 8] }[array.elementType];
+    const definition = this.closeType(array.elementType);
+    const elementType = definition?.isEnum ? definition.fields?.find(field => field.name === 'value__')?.type : array.elementType;
+    const reader = { 'System.Byte': ['getUint8', 1], 'System.SByte': ['getInt8', 1], 'System.Boolean': ['getUint8', 1], 'System.Int16': ['getInt16', 2], 'System.UInt16': ['getUint16', 2], 'System.Char': ['getUint16', 2], 'System.Int32': ['getInt32', 4], 'System.UInt32': ['getUint32', 4], 'System.Int64': ['getBigInt64', 8], 'System.UInt64': ['getBigUint64', 8], 'System.Single': ['getFloat32', 4], 'System.Double': ['getFloat64', 8] }[elementType];
     if (!reader) throw limitation(`RVA array initialization of ${array.elementType} is unsupported.`);
     if (bytes.length < array.items.length * reader[1]) throw managedError('System.ArgumentException', 'Field data is too small for the destination array.');
-    for (let i = 0; i < array.items.length; i++) array.items[i] = fromJS(view[reader[0]](i * reader[1], true), array.elementType);
+    for (let i = 0; i < array.items.length; i++) {
+      const offset = i * reader[1];
+      // RVA initialization copies bits. Preserve signaling NaNs and payloads
+      // through subsequent BitConverter calls, as with ld.r4/ld.r8 literals.
+      array.items[i] = elementType === 'System.Single' ? floatLiteral('r4', BigInt(view.getUint32(offset, true)))
+        : elementType === 'System.Double' ? floatLiteral('r8', view.getBigUint64(offset, true))
+        : fromJS(view[reader[0]](offset, true), elementType);
+    }
   }
 
   compositeFormat(format, values) {
-    if (values.length === 1 && values[0]?.$array) values = values[0].items;
-    return String(format).replace(/\{\{|\}\}|\{(\d+)(?:,(-?\d+))?(?::([^{}]+))?\}/g, (all, index, alignment, specifier) => {
-      if (all === '{{') return '{'; if (all === '}}') return '}';
-      if (Number(index) >= values.length) throw managedError('System.FormatException', 'Index must be within the size of the argument list.');
-      const text = this.format(values[Number(index)], specifier), width = Number(alignment ?? 0);
-      return width < 0 ? text.padEnd(-width) : text.padStart(width);
-    });
+    return compositeCadFormat(this, format, values, null);
   }
 }
 

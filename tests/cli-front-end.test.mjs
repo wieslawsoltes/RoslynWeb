@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rename, rm, symlink, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -323,7 +323,10 @@ test('Watch learns default artifact paths while retaining unrelated dependency D
     await eventually(() => calls.length === 1, 'Initial compilation did not run');
     await delay(70);
     assert.equal(calls.length, 1, 'Default generated output must not retrigger compilation');
-    await writeFile(join(cwd, 'dependency.dll'), 'dependency 2 changed');
+    // Publish one complete replacement; in-place writes can expose truncation
+    // and completed content as two separate polling changes under load.
+    await writeFile(join(cwd, 'dependency.dll.next'), 'dependency 2 changed');
+    await rename(join(cwd, 'dependency.dll.next'), join(cwd, 'dependency.dll'));
     await eventually(() => calls.length === 2, 'Dependency update did not retrigger compilation');
     assert.deepEqual(calls[1].changed, [join(cwd, 'dependency.dll')]);
     await delay(70);

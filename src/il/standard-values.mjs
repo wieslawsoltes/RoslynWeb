@@ -1,3 +1,4 @@
+import { delegateEquals } from './events.mjs';
 /** Exact CLR standard value types shared by emitted JavaScript and native Wasm services.
  * Decimal arithmetic never passes its coefficient through a JavaScript Number.
  */
@@ -284,7 +285,7 @@ function validateProvider(provider) {
 }
 function valueEqual(rt,a,b,type) {
   if(a?.$box&&b?.$box&&a.$type!==b.$type)return false;
-  a=unwrap(a);b=unwrap(b);if(a?.$decimal&&b?.$decimal)return decimalCompare(a,b)===0;
+  a=unwrap(a);b=unwrap(b);if(a?.$delegate)return delegateEquals(a,b);if(a?.$decimal&&b?.$decimal)return decimalCompare(a,b)===0;
   if(a?.$tuple&&b?.$tuple){if(a.$type!==b.$type)return false;const types=splitTypeArguments(a.$type);return types.every((t,i)=>valueEqual(rt,a.fields[a.$type+'::'+(i===7?'Rest':'Item'+(i+1))],b.fields[b.$type+'::'+(i===7?'Rest':'Item'+(i+1))],t));}
   if(a!=null&&b!=null){const method=rt.findVirtual({declaringType:'System.IEquatable`1<'+(type??a.$type)+'>',name:'Equals',parameters:[{type:type??a.$type}],returnType:'System.Boolean',isStatic:false},a)??rt.findVirtual({declaringType:'System.Object',name:'Equals',parameters:[{type:'System.Object'}],returnType:'System.Boolean',isStatic:false},a);if(method)return !!raw(rt.invokeManaged(method,[b],a));}
   if(a?.$valueType&&b?.$valueType){const ak=Object.keys(a.fields??{}),bk=Object.keys(b.fields??{});return a.$type===b.$type&&ak.length===bk.length&&ak.every(k=>valueEqual(rt,a.fields[k],b.fields[k]));}

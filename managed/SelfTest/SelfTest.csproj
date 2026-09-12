@@ -21,6 +21,7 @@
     <Compile Include="../CompilerBridge.cs" Link="CompilerBridge.cs" />
     <Compile Include="../IlInspector.cs" Link="IlInspector.cs" />
     <Compile Include="../IntegerJsonConverters.cs" Link="IntegerJsonConverters.cs" />
+    <Compile Include="../Utf16JsonConverter.cs" Link="Utf16JsonConverter.cs" />
     <Reference Include="Microsoft.CodeAnalysis"><HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.dll</HintPath></Reference>
     <Reference Include="Microsoft.CodeAnalysis.CSharp"><HintPath>$(MSBuildSDKsPath)/../Roslyn/bincore/Microsoft.CodeAnalysis.CSharp.dll</HintPath></Reference>
     <Reference Include="Microsoft.Build.Framework"><HintPath>$(MSBuildSDKsPath)/../Microsoft.Build.Framework.dll</HintPath></Reference>

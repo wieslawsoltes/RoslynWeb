@@ -1,0 +1,65 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "88b749c3d859ddaf40cbde2be4aa2fdb8cdf31493faf74ab944655d303a87f64",
+  "cases": [
+    {
+      "method": "GenericEnumeration",
+      "result": [
+        123,
+        321,
+        123,
+        123,
+        123,
+        456
+      ]
+    },
+    {
+      "method": "NonGenericEnumeration",
+      "result": [
+        123,
+        321,
+        123,
+        123,
+        123,
+        456
+      ]
+    },
+    {
+      "method": "InterfaceAliases",
+      "result": [
+        1,
+        2,
+        3,
+        1,
+        0
+      ]
+    },
+    {
+      "method": "BoxAndUnboxCopies",
+      "result": [
+        1,
+        2,
+        2,
+        3
+      ]
+    },
+    {
+      "method": "Covariance",
+      "result": [
+        "a",
+        "b",
+        "concrete",
+        "covariant"
+      ]
+    },
+    {
+      "method": "DictionaryEntries",
+      "result": [
+        14,
+        25,
+        0,
+        1
+      ]
+    }
+  ]
+}

@@ -1,10 +1,12 @@
 {
   "name": "@roslynweb/core",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "type": "module",
   "description": "Roslyn C# compilation in WebAssembly, direct MSIL-to-WebAssembly compilation and managed assembly execution",
   "license": "MIT",
-  "bin": { "roslynweb": "./bin/roslynweb.mjs" },
+  "bin": {
+    "roslynweb": "./bin/roslynweb.mjs"
+  },
   "exports": {
     "./node": {
       "types": "./src/node/index.d.ts",
@@ -37,12 +39,17 @@
     "./wasm": {
       "types": "./src/wasm/index.d.ts",
       "import": "./src/wasm/index.js"
+    },
+    "./dxf": {
+      "types": "./src/dxf/index.d.ts",
+      "import": "./src/dxf/index.js"
     }
   },
   "files": [
     "bin",
     "examples",
     "src",
+    "vendor",
     "dist",
     "demo",
     "docs",
@@ -58,7 +65,7 @@
     "cli": "node bin/roslynweb.mjs",
     "test:node": "node tests/node-host-integration.mjs",
     "test:cli": "node tests/cli-session-integration.mjs && node tests/cli-watch-integration.mjs && node tests/cli-integration.mjs",
-    "build": "node scripts/build.mjs",
+    "build": "node scripts/build.mjs && node scripts/build-netdxf.mjs",
     "serve": "node scripts/serve.mjs",
     "test": "node --test tests/*.test.mjs",
     "test:browser": "node scripts/test-browser.mjs",
@@ -78,7 +85,18 @@
     "benchmark:compilers": "node scripts/benchmark-compilers.mjs",
     "test:compilers-v7": "node tests/compiler-v7-integration.mjs",
     "benchmark:compilers-v7": "node scripts/benchmark-compilers-v7.mjs",
-    "benchmark:host-cache": "node scripts/benchmark-host-cache.mjs"
+    "benchmark:host-cache": "node scripts/benchmark-host-cache.mjs",
+    "build:netdxf": "node scripts/build-netdxf.mjs",
+    "test:netdxf": "node tests/netdxf-integration.mjs && node tests/netdxf-hatch-edges.mjs && node tests/netdxf-patterns.mjs",
+    "test:netdxf-compilers": "node tests/netdxf-compilers.mjs",
+    "test:netdxf-browser": "node scripts/test-dxf-browser.mjs",
+    "test:events": "node tests/events-integration.mjs",
+    "test:cad-bcl": "node tests/cad-bcl-integration.mjs",
+    "test:cad-format": "node tests/cad-format-integration.mjs",
+    "test:netdxf-entities": "node tests/netdxf-entities.mjs",
+    "test:compiler-services": "node tests/utf16-integration.mjs && node tests/rva-enums-integration.mjs && node tests/delegate-generics-integration.mjs && node tests/member-owner-generics-integration.mjs && node tests/collection-copy-integration.mjs && node tests/enumerable-inheritance-integration.mjs && node tests/spans-integration.mjs && node tests/cad-culture-integration.mjs && node tests/cad-parse-integration.mjs && node tests/cad-float-binary-integration.mjs && node tests/cad-time-integration.mjs && node tests/cad-strings-integration.mjs && node tests/cad-collections-integration.mjs && node tests/io-cad-integration.mjs && node tests/regex-integration.mjs && node tests/custom-attributes-integration.mjs && node tests/file-exceptions-integration.mjs && node tests/custom-attributes-materialization-integration.mjs && node tests/unsigned-collections-integration.mjs && node tests/runtime-type-integration.mjs && node tests/linked-attributes-integration.mjs && node tests/extra-enumerator-interfaces-integration.mjs && node tests/sequence-dispatch-integration.mjs",
+    "test:compiler-services-native": "node tests/cad-float-binary-verify-native.mjs && node tests/cad-time-verify-native.mjs && node tests/cad-strings-verify-native.mjs && node tests/custom-attributes-verify-native.mjs && node tests/file-exceptions-verify-native.mjs && node tests/verify-ordinal-native.mjs",
+    "test:netdxf-document": "node tests/netdxf-document-integration.mjs"
   },
   "engines": {
     "node": ">=22"

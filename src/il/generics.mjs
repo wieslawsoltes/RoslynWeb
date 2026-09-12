@@ -1,7 +1,16 @@
 /** Generic substitution follows ECMA-335 !n (type) / !!n (method) signatures. */
+function typeArgumentStart(name) {
+  if (!name.endsWith('>')) return -1;
+  let depth=0;
+  for(let index=name.length-1;index>=0;index--) {
+    if(name[index]==='>')depth++;
+    else if(name[index]==='<'&&--depth===0)return index===0?-1:index;
+  }
+  return -1;
+}
 export function splitTypeArguments(name) {
   name = String(name ?? '');
-  const start = name.indexOf('<');
+  const start = typeArgumentStart(name);
   if (start < 0 || !name.endsWith('>')) return [];
   const text = name.slice(start + 1, -1), result = []; let level = 0, at = 0;
   for (let i = 0; i < text.length; i++) {
@@ -11,7 +20,7 @@ export function splitTypeArguments(name) {
   }
   result.push(text.slice(at)); return result;
 }
-export const genericDefinitionName = name => String(name ?? '').replace(/<.*>$/, '');
+export const genericDefinitionName = name => { name=String(name??'');const start=typeArgumentStart(name);return start<0?name:name.slice(0,start); };
 export function substituteType(name, typeArguments = [], methodArguments = []) {
   if (typeof name !== 'string') return name;
   return name.replace(/!!(\d+)|!(\d+)/g, (whole, method, type) => method === undefined ? typeArguments[Number(type)] ?? whole : methodArguments[Number(method)] ?? whole);

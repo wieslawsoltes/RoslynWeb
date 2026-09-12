@@ -1,0 +1,508 @@
+{
+  "testedAt": "2026-09-12T10:31:43.276Z",
+  "node": "v24.19.0",
+  "passed": true,
+  "checks": [
+    {
+      "name": "All 272 vendored C# files and both upstream DXF fixtures match the pinned source hashes",
+      "passed": true,
+      "milliseconds": 51.59488300000001,
+      "evidence": {
+        "commit": "5b562312f683fc635405c149537ca488e4ec4d39",
+        "sourceFiles": 272,
+        "sourceBytes": 3549957,
+        "fixtureCount": 2
+      }
+    },
+    {
+      "name": "The public Node host loads the complete netDxf assembly into managed WebAssembly",
+      "passed": true,
+      "milliseconds": 730.9918270000001,
+      "evidence": {
+        "library": {
+          "file": "netDxf.netstandard.dll",
+          "bytes": 767488,
+          "sha256": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd"
+        },
+        "runtime": {
+          "bridgeVersion": "0.9.0",
+          "roslynVersion": "5.0.0.0",
+          "runtimeVersion": "10.0.0",
+          "referenceCount": 167,
+          "execution": "dotnet-wasm-interpreter"
+        },
+        "progress": [
+          "manifest",
+          "assemblies",
+          "ready"
+        ]
+      }
+    },
+    {
+      "name": "The sample exercises layers, blocks, bulges, circles, arcs, ellipses and solids",
+      "passed": true,
+      "milliseconds": 576.5604030000001,
+      "evidence": {
+        "stats": {
+          "entityCount": 18,
+          "layerCount": 7,
+          "sourceEntities": 18,
+          "renderedEntities": 30,
+          "hiddenEntities": 0,
+          "unsupportedEntities": 0,
+          "layers": 7,
+          "blocks": 3,
+          "curvePrecision": 192,
+          "layout": "Model"
+        },
+        "types": [
+          "HATCH",
+          "LWPOLYLINE",
+          "CIRCLE",
+          "ELLIPSE",
+          "ARC",
+          "LINE",
+          "SOLID",
+          "SEGMENTS",
+          "TEXT",
+          "MTEXT",
+          "WIPEOUT",
+          "ATTRIB"
+        ]
+      }
+    },
+    {
+      "name": "Real text and binary DXF exports reload with the same modelspace geometry",
+      "passed": true,
+      "milliseconds": 236.28110500000003,
+      "evidence": [
+        {
+          "binary": false,
+          "bytes": 14666,
+          "stats": {
+            "entityCount": 18,
+            "layerCount": 7,
+            "sourceEntities": 18,
+            "renderedEntities": 30,
+            "hiddenEntities": 0,
+            "unsupportedEntities": 0,
+            "layers": 7,
+            "blocks": 4,
+            "curvePrecision": 192,
+            "layout": "Model"
+          }
+        },
+        {
+          "binary": true,
+          "bytes": 14545,
+          "stats": {
+            "entityCount": 18,
+            "layerCount": 7,
+            "sourceEntities": 18,
+            "renderedEntities": 30,
+            "hiddenEntities": 0,
+            "unsupportedEntities": 0,
+            "layers": 7,
+            "blocks": 4,
+            "curvePrecision": 192,
+            "layout": "Model"
+          }
+        }
+      ]
+    },
+    {
+      "name": "The original complex upstream text and binary drawings preserve all 58 modelspace entities across both export formats",
+      "passed": true,
+      "milliseconds": 1540.1466569999998,
+      "evidence": [
+        {
+          "fixture": "sample.dxf",
+          "stats": {
+            "entityCount": 58,
+            "layerCount": 7,
+            "sourceEntities": 58,
+            "renderedEntities": 245,
+            "hiddenEntities": 1,
+            "unsupportedEntities": 4,
+            "layers": 7,
+            "blocks": 19,
+            "curvePrecision": 192,
+            "layout": "Model"
+          },
+          "issues": [
+            {
+              "code": "DXF_POLYLINE_WIDTH",
+              "entityType": "LWPOLYLINE",
+              "handle": "23C",
+              "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "IMAGE",
+              "handle": "249",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "RAY",
+              "handle": "44F",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "XLINE",
+              "handle": "450",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_MESH_SUBDIVISION",
+              "entityType": "MESH",
+              "handle": "504",
+              "message": "The mesh control cage is rendered; subdivision surface evaluation is not implemented."
+            },
+            {
+              "code": "DXF_WIPEOUT_SOURCE_ORDER",
+              "entityType": "WIPEOUT",
+              "handle": "5DB",
+              "message": "Wipeout masks follow source entity order. Custom SORTENTSTABLE draw-order overrides are not exposed by the pinned netDxf library."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "PDFUNDERLAY",
+              "handle": "622",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_LEADER_PATH_ONLY",
+              "entityType": "LEADER",
+              "handle": "980",
+              "message": "Leader vertices are rendered as a polyline; arrowhead styling and spline interpolation remain in the DXF document."
+            },
+            {
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
+              "entityType": "HATCH",
+              "handle": "BD9",
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
+            },
+            {
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
+              "entityType": "HATCH",
+              "handle": "BDA",
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
+            },
+            {
+              "code": "DXF_POLYLINE_WIDTH",
+              "entityType": "LWPOLYLINE",
+              "handle": "11FD",
+              "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
+            },
+            {
+              "code": "DXF_POLYLINE_WIDTH",
+              "entityType": "LWPOLYLINE",
+              "handle": "11FD",
+              "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
+            }
+          ],
+          "roundtrips": [
+            {
+              "binary": false,
+              "bytes": 128976,
+              "stats": {
+                "entityCount": 58,
+                "layerCount": 7,
+                "sourceEntities": 58,
+                "renderedEntities": 245,
+                "hiddenEntities": 1,
+                "unsupportedEntities": 4,
+                "layers": 7,
+                "blocks": 19,
+                "curvePrecision": 192,
+                "layout": "Model"
+              }
+            },
+            {
+              "binary": true,
+              "bytes": 115662,
+              "stats": {
+                "entityCount": 58,
+                "layerCount": 7,
+                "sourceEntities": 58,
+                "renderedEntities": 245,
+                "hiddenEntities": 1,
+                "unsupportedEntities": 4,
+                "layers": 7,
+                "blocks": 19,
+                "curvePrecision": 192,
+                "layout": "Model"
+              }
+            }
+          ]
+        },
+        {
+          "fixture": "sample-binary.dxf",
+          "stats": {
+            "entityCount": 58,
+            "layerCount": 7,
+            "sourceEntities": 58,
+            "renderedEntities": 245,
+            "hiddenEntities": 1,
+            "unsupportedEntities": 4,
+            "layers": 7,
+            "blocks": 19,
+            "curvePrecision": 192,
+            "layout": "Model"
+          },
+          "issues": [
+            {
+              "code": "DXF_POLYLINE_WIDTH",
+              "entityType": "LWPOLYLINE",
+              "handle": "23C",
+              "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "IMAGE",
+              "handle": "249",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "RAY",
+              "handle": "44F",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "XLINE",
+              "handle": "450",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_MESH_SUBDIVISION",
+              "entityType": "MESH",
+              "handle": "504",
+              "message": "The mesh control cage is rendered; subdivision surface evaluation is not implemented."
+            },
+            {
+              "code": "DXF_WIPEOUT_SOURCE_ORDER",
+              "entityType": "WIPEOUT",
+              "handle": "5DB",
+              "message": "Wipeout masks follow source entity order. Custom SORTENTSTABLE draw-order overrides are not exposed by the pinned netDxf library."
+            },
+            {
+              "code": "DXF_ENTITY_NOT_RENDERED",
+              "entityType": "PDFUNDERLAY",
+              "handle": "622",
+              "message": "This entity is preserved by netDxf for full document round-trip but is not rendered by the geometry adapter."
+            },
+            {
+              "code": "DXF_LEADER_PATH_ONLY",
+              "entityType": "LEADER",
+              "handle": "980",
+              "message": "Leader vertices are rendered as a polyline; arrowhead styling and spline interpolation remain in the DXF document."
+            },
+            {
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
+              "entityType": "HATCH",
+              "handle": "BD9",
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
+            },
+            {
+              "code": "DXF_HATCH_GRADIENT_NOT_RENDERED",
+              "entityType": "HATCH",
+              "handle": "BDA",
+              "message": "Gradient hatch boundaries are rendered; gradient color interpolation is not supported by this adapter."
+            },
+            {
+              "code": "DXF_POLYLINE_WIDTH",
+              "entityType": "LWPOLYLINE",
+              "handle": "11FD",
+              "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
+            },
+            {
+              "code": "DXF_POLYLINE_WIDTH",
+              "entityType": "LWPOLYLINE",
+              "handle": "11FD",
+              "message": "Variable-width polyline is rendered as its centerline; widths remain in the DXF document."
+            }
+          ],
+          "roundtrips": [
+            {
+              "binary": false,
+              "bytes": 128983,
+              "stats": {
+                "entityCount": 58,
+                "layerCount": 7,
+                "sourceEntities": 58,
+                "renderedEntities": 245,
+                "hiddenEntities": 1,
+                "unsupportedEntities": 4,
+                "layers": 7,
+                "blocks": 19,
+                "curvePrecision": 192,
+                "layout": "Model"
+              }
+            },
+            {
+              "binary": true,
+              "bytes": 115662,
+              "stats": {
+                "entityCount": 58,
+                "layerCount": 7,
+                "sourceEntities": 58,
+                "renderedEntities": 245,
+                "hiddenEntities": 1,
+                "unsupportedEntities": 4,
+                "layers": 7,
+                "blocks": 19,
+                "curvePrecision": 192,
+                "layout": "Model"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Nested nonuniform block transforms preserve origins, layer zero and ByBlock color inheritance",
+      "passed": true,
+      "milliseconds": 1277.876792,
+      "evidence": {
+        "type": "LINE",
+        "layer": "visible",
+        "color": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "handle": "2A",
+        "sourceType": "LINE",
+        "visibilityLayers": [
+          "visible"
+        ],
+        "start": {
+          "x": 3.636038969321074,
+          "y": 30.606601717798213,
+          "z": 0
+        },
+        "end": {
+          "x": -5.625699540225057,
+          "y": 45.09548911213424,
+          "z": 0
+        }
+      }
+    },
+    {
+      "name": "Managed text, attributes and hatch islands preserve transforms and document round-trip values",
+      "passed": true,
+      "milliseconds": 234.49420999999984,
+      "evidence": {
+        "text": "Ω ± Ø",
+        "attribute": "部品",
+        "hatchArea": 68,
+        "textQuads": 3
+      }
+    },
+    {
+      "name": "Queued loads snapshot caller bytes; corruption, size limits and disposal produce explicit errors",
+      "passed": true,
+      "milliseconds": 88.04610799999955,
+      "evidence": {
+        "snapshottedInput": true,
+        "invalidDxfRejected": true,
+        "inputLimit": 8,
+        "compilerRemainsUsable": true
+      }
+    },
+    {
+      "name": "Initially hidden layers retain geometry and nested inserts preserve ancestor layer visibility",
+      "passed": true,
+      "milliseconds": 123.8913509999993,
+      "evidence": {
+        "retainedGeometry": 3,
+        "ancestorVisibilityLayers": [
+          "Hidden",
+          "Child"
+        ]
+      }
+    },
+    {
+      "name": "Asset integrity validation rejects mismatched generated assemblies before registration",
+      "passed": true,
+      "milliseconds": 2.3024810000006255,
+      "evidence": {
+        "corruptedAssemblyRejected": true
+      }
+    },
+    {
+      "name": "Failed scene serialization does not retain an unreachable managed document",
+      "passed": true,
+      "milliseconds": 392.2112280000001,
+      "evidence": {
+        "countBefore": 1,
+        "countAfter": 1,
+        "existingDocumentUsable": true
+      }
+    },
+    {
+      "name": "Source mode compiles every pinned netDxf C# file using real Roslyn WebAssembly and runs its output",
+      "passed": true,
+      "milliseconds": 24796.100431,
+      "evidence": {
+        "sourceCount": 272,
+        "deterministicLibraryHash": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd",
+        "performance": {
+          "parseMs": 2395.8034,
+          "compilationMs": 4.0782,
+          "extensionsMs": 1.07,
+          "emitMs": 21018.7042,
+          "cache": {
+            "enabled": true,
+            "syntaxHits": 0,
+            "incrementalParses": 0,
+            "syntaxMisses": 272,
+            "compilationReused": false,
+            "retainedTrees": 64,
+            "retainedSourceBytes": 1079564,
+            "maxRetainedTrees": 64,
+            "maxRetainedSourceBytes": 16777216
+          }
+        },
+        "events": [
+          {
+            "stage": "manifest",
+            "message": "Loading the netDxf build manifest"
+          },
+          {
+            "stage": "sources",
+            "message": "Loading all 272 netDxf C# source files"
+          },
+          {
+            "stage": "compile-library",
+            "message": "Compiling all 272 netDxf source files with Roslyn in WebAssembly",
+            "sourceCount": 272
+          },
+          {
+            "stage": "compile-bridge",
+            "message": "Compiling the managed DXF scene bridge"
+          },
+          {
+            "stage": "ready",
+            "message": "netDxf is ready (272 source files, managed WebAssembly execution)",
+            "sourceCount": 272
+          }
+        ]
+      }
+    },
+    {
+      "name": "Session disposal releases all owned documents and leaves the shared compiler usable",
+      "passed": true,
+      "milliseconds": 72.21458999999959,
+      "evidence": {
+        "documentsReleased": true,
+        "compilerStillUsable": true
+      }
+    }
+  ]
+}

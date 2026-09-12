@@ -1,0 +1,86 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "316ffa274536d6fd56628178a6afe3e1f14225b5049b0986d4ef03389b8b29c2",
+  "cases": [
+    {
+      "method": "SignedByte",
+      "result": [
+        "80",
+        "FF",
+        "00",
+        "01",
+        "7F"
+      ]
+    },
+    {
+      "method": "UnsignedByte",
+      "result": [
+        "00",
+        "01",
+        "7F",
+        "80",
+        "FF"
+      ]
+    },
+    {
+      "method": "SignedShort",
+      "result": [
+        "8000",
+        "FFFF",
+        "0000",
+        "0001",
+        "7FFF"
+      ]
+    },
+    {
+      "method": "UnsignedShort",
+      "result": [
+        "0000",
+        "0001",
+        "7FFF",
+        "8000",
+        "FFFF"
+      ]
+    },
+    {
+      "method": "SignedInt",
+      "result": [
+        "80000000",
+        "FFFFFFFF",
+        "00000000",
+        "00000001",
+        "7FFFFFFF"
+      ]
+    },
+    {
+      "method": "UnsignedInt",
+      "result": [
+        "00000000",
+        "00000001",
+        "7FFFFFFF",
+        "80000000",
+        "FFFFFFFF"
+      ]
+    },
+    {
+      "method": "SignedLong",
+      "result": [
+        "8000000000000000",
+        "FFFFFFFFFFFFFFFF",
+        "0000000000000000",
+        "0020000000000001",
+        "7FFFFFFFFFFFFFFF"
+      ]
+    },
+    {
+      "method": "UnsignedLong",
+      "result": [
+        "0000000000000000",
+        "0020000000000001",
+        "7FFFFFFFFFFFFFFF",
+        "8000000000000000",
+        "FFFFFFFFFFFFFFFF"
+      ]
+    }
+  ]
+}

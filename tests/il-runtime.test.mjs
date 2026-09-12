@@ -206,9 +206,9 @@ test('real Roslyn comprehensive fixture covers object, struct, collection, deleg
 
 test('builtin preflight rejects unsupported overloads before any program output', () => {
   const unsupportedRefs = [
-    ref('.ctor', ['System.Char', int], voidType, { declaringType: 'System.String', isStatic: false }),
-    ref('Round', ['System.Double', int], 'System.Double', { declaringType: 'System.Math' }),
-    ref('Equals', [str, str, 'System.StringComparison'], 'System.Boolean', { declaringType: 'System.String' }),
+    ref('.ctor', ['System.Char*', int, int], voidType, { declaringType: 'System.String', isStatic: false }),
+    ref('Round', ['System.Double', int, 'System.Boolean'], 'System.Double', { declaringType: 'System.Math' }),
+    ref('Compare', [str, str, 'System.Boolean', 'System.Globalization.CultureInfo'], int, { declaringType: 'System.String' }),
     ref('WriteLine', ['System.Char[]', int, int], voidType, { declaringType: 'System.Console' }),
   ];
   for (const call of unsupportedRefs) {
@@ -220,6 +220,9 @@ test('builtin preflight rejects unsupported overloads before any program output'
   const analysis = analyzeAssembly(supported);
   assert.equal(analysis.supported, true);
   assert.equal(analysis.dependencies[0].overloadValidatedAtRuntime, false);
+  const ordinal = model([method('Main', [ins('ldstr','Layer'),ins('ldstr','LAYER'),ins('ldc.i4.5'),ins('call',ref('Equals',[str,str,'System.StringComparison'],'System.Boolean',{declaringType:'System.String'})),ins('ret')],{returnType:'System.Boolean'})]);
+  assert.equal(analyzeAssembly(ordinal).supported,true);
+  assert.equal(compileAssembly(ordinal,{strict:true}).invoke('Main'),true);
 });
 
 test('portable generated modules embed linked managed assemblies', async () => {
@@ -257,8 +260,8 @@ test('64-bit metadata constants support both revived BigInt and bridge JSON tags
 });
 
 test('external fields fail explicitly and supported framework static fields retain their values', () => {
-  const missing = { name: 'MinValue', declaringType: 'System.DateTime', type: 'System.DateTime', isStatic: true };
-  const fixture = model([method('Main', [ins('ldsfld', missing), ins('ret')], { returnType: 'System.DateTime' })]);
+  const missing = { name: 'MinValue', declaringType: 'System.DateTimeOffset', type: 'System.DateTimeOffset', isStatic: true };
+  const fixture = model([method('Main', [ins('ldsfld', missing), ins('ret')], { returnType: 'System.DateTimeOffset' })]);
   assert.equal(analyzeAssembly(fixture).supported, false);
   assert.throws(() => compileAssembly(fixture).run(), /No linked storage/);
   assert.equal(exec([ins('ldsfld', { name: 'Empty', declaringType: 'System.String', type: str, isStatic: true }), ins('ret')], [], { returnType: str }), '');

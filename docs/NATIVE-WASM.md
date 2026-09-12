@@ -102,7 +102,7 @@ Additional numeric APIs compile without runtime imports when their surrounding m
 
 Exception handlers for these operations use the existing managed exception services. Import-free modules expose native fault status to `loadWasm`, which maps the trap to its managed exception type and resets the status before the next invocation.
 
-Async state machines, arbitrary framework structs, explicit-layout or byref-like structs, unsafe pointers/native interop, open generic execution, Reflection.Emit, full CLR/BCL behavior and unrestricted runtime code generation remain outside this backend. Signatures and reachable code determine compatibility; restoring a package or recognizing a namespace does not make every API native-compatible. The .NET execution backend remains available for assemblies supported by its browser runtime.
+Async state machines, arbitrary framework structs, explicit-layout or other byref-like structs, unsafe pointers/native interop, open generic execution, Reflection.Emit, full CLR/BCL behavior and unrestricted runtime code generation remain outside this backend. Signatures and reachable code determine compatibility; restoring a package or recognizing a namespace does not make every API native-compatible. The .NET execution backend remains available for assemblies supported by its browser runtime.
 
 ## Compilation and execution speed
 
@@ -131,3 +131,7 @@ Native execution accepts `virtualFiles`, `captureVirtualFiles`, `maxVirtualFileB
 The portable-PDB scheduling adaptation remains in the Roslyn build, together with its reproducible patch and hashes. Direct Wasm generation itself uses a JavaScript binary emitter and requires no per-program LLVM toolchain, .NET publish or server build.
 
 Floating `ldc.r4`/`ldc.r8` operands include raw `operandBits` from the original PE. The emitter writes the constant bits into Wasm, preserving NaN signs/payloads and signed zero while reproducing CLR quieting of signaling Single loads. Re-inspect older cached models when exact bit reinterpretation matters.
+
+## Managed spans
+
+Bounded `Span<T>` / `ReadOnlySpan<T>` and metadata-verified inline arrays are represented through managed reference services. Application and compiler-generated helper IL still compiles directly to WebAssembly. See [supported span operations, exact Unsafe/MemoryMarshal contracts and verification](SPANS.md). Arbitrary native storage and other ref structs remain unsupported.

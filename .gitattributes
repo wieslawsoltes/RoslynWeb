@@ -1,0 +1,2 @@
+# Preserve the exact pinned upstream byte hashes on every platform.
+vendor/netDxf/** -text -whitespace linguist-vendored

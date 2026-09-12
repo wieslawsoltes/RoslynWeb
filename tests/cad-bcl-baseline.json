@@ -1,0 +1,135 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "4d5963d12650226c071258211a632d51ae9e299626b8f9649f960add4d93ce63",
+  "cases": [
+    {
+      "method": "EnumNames",
+      "result": [
+        "Zero|One|Two|High|Low",
+        "Low",
+        "missing",
+        "System.UInt64",
+        "-32768",
+        "5",
+        "18446744073709551615",
+        "-1",
+        "18446744073709551615",
+        "A, B",
+        "8000",
+        "-32768",
+        "Low",
+        "High",
+        "A, B",
+        "17",
+        "missing",
+        "Low",
+        "One",
+        "A, B",
+        "enum=One",
+        "1",
+        "97"
+      ]
+    },
+    {
+      "method": "EnumValues",
+      "result": [
+        0,
+        1,
+        2,
+        32767,
+        -32768,
+        1,
+        1,
+        0,
+        0,
+        1,
+        0,
+        -32768,
+        0,
+        1,
+        0,
+        -65535
+      ]
+    },
+    {
+      "method": "Colors",
+      "result": [
+        17,
+        34,
+        51,
+        68,
+        287454020,
+        -1,
+        16777215,
+        -2130706433,
+        -14535868,
+        0,
+        1,
+        0,
+        0,
+        1,
+        1,
+        3,
+        1,
+        1,
+        0,
+        0
+      ]
+    },
+    {
+      "method": "Strings",
+      "result": [
+        "a,b,c",
+        "x.xy",
+        "abc  ",
+        "  abc",
+        "White",
+        "ff010203",
+        "Color [White]",
+        "Color [A=17, R=34, G=51, B=68]",
+        "Color [Empty]"
+      ]
+    },
+    {
+      "method": "OrdinalStrings",
+      "result": [
+        -1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        4,
+        2,
+        0,
+        1,
+        0,
+        1,
+        -1,
+        1,
+        1,
+        -1,
+        3,
+        4,
+        -1,
+        -1,
+        -1
+      ]
+    },
+    {
+      "method": "Errors",
+      "result": [
+        "ArgumentException",
+        "OverflowException",
+        "ArgumentException",
+        "ArgumentException",
+        "ArgumentOutOfRangeException",
+        "ArgumentNullException",
+        "ArgumentNullException",
+        "ArgumentOutOfRangeException",
+        "InvalidOperationException"
+      ]
+    }
+  ]
+}

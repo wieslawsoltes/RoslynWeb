@@ -1,0 +1,41 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "fdcfe6a3d211e7afb6b19b1b8acead8d57d4cc37edb7c52a53b23ecc877ac2e8",
+  "cases": [
+    {
+      "method": "Splits",
+      "results": 962,
+      "sha256": "60c360e5947988ae3fa721dfb3cd7e649e408b7f17469fc8002e16fdcf4af16b"
+    },
+    {
+      "method": "Whitespace",
+      "results": 40,
+      "sha256": "1b3ca26b5d0007cbf2c11a868635b4deda300c15501773ef566902ec1abcf8d7"
+    },
+    {
+      "method": "Builders",
+      "results": 17,
+      "sha256": "ce94b82b4c8f1b291021b9bfc02638e42b4a48cd551ff791ecfd90d3c681c775"
+    },
+    {
+      "method": "StringValues",
+      "results": 10,
+      "sha256": "600bf8a51bdebaf44babb19a1fcb70eab25fbef250d4781ff4e7af0c27aba252"
+    },
+    {
+      "method": "Collation",
+      "results": 9729,
+      "sha256": "96a64808d5c28d1e8255a7f1f3dbeb57d6398289c210b103ddea0b212134fa91"
+    },
+    {
+      "method": "Enumerators",
+      "results": 14,
+      "sha256": "a40aa19ac1e6ca8bf525641651688a107a1e0c181f116b4d9354912d041365e7"
+    },
+    {
+      "method": "Errors",
+      "results": 24,
+      "sha256": "2f12aba8de79339001ee95213bc85b36ad1dc9efa7585b6732b0319f7f5a5383"
+    }
+  ]
+}

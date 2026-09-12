@@ -1,13 +1,13 @@
 {
-  "testedAt": "2026-09-11T20:10:49.082Z",
+  "testedAt": "2026-09-12T10:32:22.995Z",
   "runtime": "v24.19.0",
   "passed": true,
-  "elapsedMilliseconds": 5562.803946,
+  "elapsedMilliseconds": 6536.760881,
   "checks": [
     {
       "name": "Watch run executes edits in one persistent Roslyn Worker",
       "passed": true,
-      "milliseconds": 2046.50765,
+      "milliseconds": 2442.451286,
       "evidence": {
         "iterations": [
           1,
@@ -23,7 +23,7 @@
     {
       "name": "Watch reports C# errors, recovers on the next edit and exits cleanly on SIGINT",
       "passed": true,
-      "milliseconds": 553.6673040000001,
+      "milliseconds": 564.177878,
       "evidence": {
         "iterations": [
           1,
@@ -41,7 +41,7 @@
     {
       "name": "Watch compile ignores its default DLL output and rebuilds only when source changes",
       "passed": true,
-      "milliseconds": 2955.2909649999997,
+      "milliseconds": 3522.3340169999997,
       "evidence": {
         "iterations": [
           1,

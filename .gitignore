@@ -16,3 +16,4 @@ docs/distribution-manifest.json
 dist/compiler-references/
 
 dist/task-references/
+dist/netdxf/

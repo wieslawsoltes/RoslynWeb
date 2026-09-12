@@ -1,0 +1,1594 @@
+{
+  "testedAt": "2026-09-12T10:31:11.690Z",
+  "scope": "Selected constructors, properties, entity mutations, event accessors and independent Circle/layer cloning in the actual pinned netDxf assembly. Complete DXF document reading and writing are not claimed for generated backends.",
+  "checks": [
+    {
+      "method": "LineLength",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 16,
+      "diagnosticCount": 0,
+      "selectedMethods": 202,
+      "compileMilliseconds": 6238.763806999999,
+      "results": [
+        {
+          "args": [
+            0,
+            0,
+            0,
+            3,
+            4,
+            0
+          ],
+          "result": 5,
+          "actual": 5
+        },
+        {
+          "args": [
+            1,
+            2,
+            3,
+            4,
+            6,
+            3
+          ],
+          "result": 5,
+          "actual": 5
+        },
+        {
+          "args": [
+            -12,
+            7,
+            4,
+            2,
+            -4,
+            9
+          ],
+          "result": 18.49324200890693,
+          "actual": 18.49324200890693
+        },
+        {
+          "args": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "result": 0,
+          "actual": 0
+        },
+        {
+          "args": [
+            -405.7572251185775,
+            190.9274726640433,
+            -212.4959104694426,
+            480.69382389076054,
+            123.2797410339117,
+            447.01244472526014
+          ],
+          "result": 1106.9430646858402,
+          "actual": 1106.9430646858402
+        },
+        {
+          "args": [
+            388.07567837648094,
+            -95.3824152238667,
+            -178.63253387622535,
+            -82.38235116004944,
+            -246.99670844711363,
+            39.94004102423787
+          ],
+          "result": 540.4550138203903,
+          "actual": 540.4550138203903
+        },
+        {
+          "args": [
+            385.20765444263816,
+            7.0791051257401705,
+            -416.4726044982672,
+            174.0654946770519,
+            -396.40470733866096,
+            -309.414911782369
+          ],
+          "result": 467.8050321671797,
+          "actual": 467.8050321671797
+        },
+        {
+          "args": [
+            270.4508875031024,
+            499.58907440304756,
+            -259.86129441298544,
+            -385.01480175182223,
+            473.1820209417492,
+            -460.52396204322577
+          ],
+          "result": 686.0015367646239,
+          "actual": 686.0015367646239
+        },
+        {
+          "args": [
+            -216.05423279106617,
+            -435.76857657171786,
+            -453.8500658236444,
+            455.2528711501509,
+            21.419177763164043,
+            -7.065796526148915
+          ],
+          "result": 926.9789931856133,
+          "actual": 926.9789931856133
+        },
+        {
+          "args": [
+            -499.3758799973875,
+            -400.5846786312759,
+            23.869248339906335,
+            196.66095543652773,
+            312.9159591626376,
+            -327.0068378187716
+          ],
+          "result": 1056.723456847255,
+          "actual": 1056.723456847255
+        },
+        {
+          "args": [
+            76.53345027938485,
+            77.39426591433585,
+            -73.46096727997065,
+            -380.4937202949077,
+            -73.70590837672353,
+            -91.07279288582504
+          ],
+          "result": 481.67963805324285,
+          "actual": 481.67963805324285
+        },
+        {
+          "args": [
+            386.81066618300974,
+            260.196247138083,
+            394.33549041859806,
+            -481.7430102266371,
+            -48.02952031604946,
+            -101.23609937727451
+          ],
+          "result": 1046.4128311236493,
+          "actual": 1046.4128311236493
+        },
+        {
+          "args": [
+            444.3462369963527,
+            -343.79567322321236,
+            -256.90389471128583,
+            280.7236697990447,
+            -197.45977222919464,
+            -491.3018273655325
+          ],
+          "result": 321.1369353539908,
+          "actual": 321.1369353539908
+        },
+        {
+          "args": [
+            150.53705940954387,
+            -65.11835614219308,
+            104.31038890965283,
+            486.16781271994114,
+            -285.4643671307713,
+            -339.63037421926856
+          ],
+          "result": 598.5680982927277,
+          "actual": 598.5680982927277
+        },
+        {
+          "args": [
+            -257.0696067996323,
+            448.80981487222016,
+            393.1681551039219,
+            459.4423284288496,
+            477.7960036881268,
+            -370.89304788969457
+          ],
+          "result": 1047.864053390032,
+          "actual": 1047.864053390032
+        },
+        {
+          "args": [
+            299.83481694944203,
+            -215.24925716221333,
+            466.29003970883787,
+            -335.5856738053262,
+            492.37716221250594,
+            331.99974428862333
+          ],
+          "result": 960.4833329694821,
+          "actual": 960.4833329694821
+        }
+      ]
+    },
+    {
+      "method": "LineLength",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 16,
+      "diagnosticCount": 0,
+      "selectedMethods": 100,
+      "compileMilliseconds": 5095.058068999999,
+      "results": [
+        {
+          "args": [
+            0,
+            0,
+            0,
+            3,
+            4,
+            0
+          ],
+          "result": 5,
+          "actual": 5
+        },
+        {
+          "args": [
+            1,
+            2,
+            3,
+            4,
+            6,
+            3
+          ],
+          "result": 5,
+          "actual": 5
+        },
+        {
+          "args": [
+            -12,
+            7,
+            4,
+            2,
+            -4,
+            9
+          ],
+          "result": 18.49324200890693,
+          "actual": 18.49324200890693
+        },
+        {
+          "args": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          "result": 0,
+          "actual": 0
+        },
+        {
+          "args": [
+            -405.7572251185775,
+            190.9274726640433,
+            -212.4959104694426,
+            480.69382389076054,
+            123.2797410339117,
+            447.01244472526014
+          ],
+          "result": 1106.9430646858402,
+          "actual": 1106.9430646858402
+        },
+        {
+          "args": [
+            388.07567837648094,
+            -95.3824152238667,
+            -178.63253387622535,
+            -82.38235116004944,
+            -246.99670844711363,
+            39.94004102423787
+          ],
+          "result": 540.4550138203903,
+          "actual": 540.4550138203903
+        },
+        {
+          "args": [
+            385.20765444263816,
+            7.0791051257401705,
+            -416.4726044982672,
+            174.0654946770519,
+            -396.40470733866096,
+            -309.414911782369
+          ],
+          "result": 467.8050321671797,
+          "actual": 467.8050321671797
+        },
+        {
+          "args": [
+            270.4508875031024,
+            499.58907440304756,
+            -259.86129441298544,
+            -385.01480175182223,
+            473.1820209417492,
+            -460.52396204322577
+          ],
+          "result": 686.0015367646239,
+          "actual": 686.0015367646239
+        },
+        {
+          "args": [
+            -216.05423279106617,
+            -435.76857657171786,
+            -453.8500658236444,
+            455.2528711501509,
+            21.419177763164043,
+            -7.065796526148915
+          ],
+          "result": 926.9789931856133,
+          "actual": 926.9789931856133
+        },
+        {
+          "args": [
+            -499.3758799973875,
+            -400.5846786312759,
+            23.869248339906335,
+            196.66095543652773,
+            312.9159591626376,
+            -327.0068378187716
+          ],
+          "result": 1056.723456847255,
+          "actual": 1056.723456847255
+        },
+        {
+          "args": [
+            76.53345027938485,
+            77.39426591433585,
+            -73.46096727997065,
+            -380.4937202949077,
+            -73.70590837672353,
+            -91.07279288582504
+          ],
+          "result": 481.67963805324285,
+          "actual": 481.67963805324285
+        },
+        {
+          "args": [
+            386.81066618300974,
+            260.196247138083,
+            394.33549041859806,
+            -481.7430102266371,
+            -48.02952031604946,
+            -101.23609937727451
+          ],
+          "result": 1046.4128311236493,
+          "actual": 1046.4128311236493
+        },
+        {
+          "args": [
+            444.3462369963527,
+            -343.79567322321236,
+            -256.90389471128583,
+            280.7236697990447,
+            -197.45977222919464,
+            -491.3018273655325
+          ],
+          "result": 321.1369353539908,
+          "actual": 321.1369353539908
+        },
+        {
+          "args": [
+            150.53705940954387,
+            -65.11835614219308,
+            104.31038890965283,
+            486.16781271994114,
+            -285.4643671307713,
+            -339.63037421926856
+          ],
+          "result": 598.5680982927277,
+          "actual": 598.5680982927277
+        },
+        {
+          "args": [
+            -257.0696067996323,
+            448.80981487222016,
+            393.1681551039219,
+            459.4423284288496,
+            477.7960036881268,
+            -370.89304788969457
+          ],
+          "result": 1047.864053390032,
+          "actual": 1047.864053390032
+        },
+        {
+          "args": [
+            299.83481694944203,
+            -215.24925716221333,
+            466.29003970883787,
+            -335.5856738053262,
+            492.37716221250594,
+            331.99974428862333
+          ],
+          "result": 960.4833329694821,
+          "actual": 960.4833329694821
+        }
+      ]
+    },
+    {
+      "method": "CircleArea",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 16,
+      "diagnosticCount": 0,
+      "selectedMethods": 196,
+      "compileMilliseconds": 653.4466790000006,
+      "results": [
+        {
+          "args": [
+            1
+          ],
+          "result": 3.141592653589793,
+          "actual": 3.141592653589793
+        },
+        {
+          "args": [
+            7
+          ],
+          "result": 153.93804002589985,
+          "actual": 153.93804002589985
+        },
+        {
+          "args": [
+            0.125
+          ],
+          "result": 0.04908738521234052,
+          "actual": 0.04908738521234052
+        },
+        {
+          "args": [
+            10000
+          ],
+          "result": 314159265.35897934,
+          "actual": 314159265.35897934
+        },
+        {
+          "args": [
+            12.572428647652268
+          ],
+          "result": 496.5788653169285,
+          "actual": 496.5788653169285
+        },
+        {
+          "args": [
+            93.2953842386976
+          ],
+          "result": 27344.512684160105,
+          "actual": 27344.512684160105
+        },
+        {
+          "args": [
+            88.01334250554443
+          ],
+          "result": 24335.87141093559,
+          "actual": 24335.87141093559
+        },
+        {
+          "args": [
+            8.824797247759998
+          ],
+          "result": 244.6579570548009,
+          "actual": 244.6579570548009
+        },
+        {
+          "args": [
+            54.12052848212421
+          ],
+          "result": 9201.8241666965,
+          "actual": 9201.8241666965
+        },
+        {
+          "args": [
+            67.94476820457727
+          ],
+          "result": 14503.135864615257,
+          "actual": 14503.135864615257
+        },
+        {
+          "args": [
+            79.55896949231625
+          ],
+          "result": 19885.11793512002,
+          "actual": 19885.11793512002
+        },
+        {
+          "args": [
+            71.78520149853081
+          ],
+          "result": 16188.988711488793,
+          "actual": 16188.988711488793
+        },
+        {
+          "args": [
+            56.19723598308861
+          ],
+          "result": 9921.555908934162,
+          "actual": 9921.555908934162
+        },
+        {
+          "args": [
+            48.752064484395085
+          ],
+          "result": 7466.823666665144,
+          "actual": 7466.823666665144
+        },
+        {
+          "args": [
+            98.56293789878488
+          ],
+          "result": 30519.48164007237,
+          "actual": 30519.48164007237
+        },
+        {
+          "args": [
+            61.05299935977906
+          ],
+          "result": 11710.188381246062,
+          "actual": 11710.188381246062
+        }
+      ]
+    },
+    {
+      "method": "CircleArea",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 16,
+      "diagnosticCount": 0,
+      "selectedMethods": 94,
+      "compileMilliseconds": 1099.4097860000002,
+      "results": [
+        {
+          "args": [
+            1
+          ],
+          "result": 3.141592653589793,
+          "actual": 3.141592653589793
+        },
+        {
+          "args": [
+            7
+          ],
+          "result": 153.93804002589985,
+          "actual": 153.93804002589985
+        },
+        {
+          "args": [
+            0.125
+          ],
+          "result": 0.04908738521234052,
+          "actual": 0.04908738521234052
+        },
+        {
+          "args": [
+            10000
+          ],
+          "result": 314159265.35897934,
+          "actual": 314159265.35897934
+        },
+        {
+          "args": [
+            12.572428647652268
+          ],
+          "result": 496.5788653169285,
+          "actual": 496.5788653169285
+        },
+        {
+          "args": [
+            93.2953842386976
+          ],
+          "result": 27344.512684160105,
+          "actual": 27344.512684160105
+        },
+        {
+          "args": [
+            88.01334250554443
+          ],
+          "result": 24335.87141093559,
+          "actual": 24335.87141093559
+        },
+        {
+          "args": [
+            8.824797247759998
+          ],
+          "result": 244.6579570548009,
+          "actual": 244.6579570548009
+        },
+        {
+          "args": [
+            54.12052848212421
+          ],
+          "result": 9201.8241666965,
+          "actual": 9201.8241666965
+        },
+        {
+          "args": [
+            67.94476820457727
+          ],
+          "result": 14503.135864615257,
+          "actual": 14503.135864615257
+        },
+        {
+          "args": [
+            79.55896949231625
+          ],
+          "result": 19885.11793512002,
+          "actual": 19885.11793512002
+        },
+        {
+          "args": [
+            71.78520149853081
+          ],
+          "result": 16188.988711488793,
+          "actual": 16188.988711488793
+        },
+        {
+          "args": [
+            56.19723598308861
+          ],
+          "result": 9921.555908934162,
+          "actual": 9921.555908934162
+        },
+        {
+          "args": [
+            48.752064484395085
+          ],
+          "result": 7466.823666665144,
+          "actual": 7466.823666665144
+        },
+        {
+          "args": [
+            98.56293789878488
+          ],
+          "result": 30519.48164007237,
+          "actual": 30519.48164007237
+        },
+        {
+          "args": [
+            61.05299935977906
+          ],
+          "result": 11710.188381246062,
+          "actual": 11710.188381246062
+        }
+      ]
+    },
+    {
+      "method": "ArcSweep",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 16,
+      "diagnosticCount": 0,
+      "selectedMethods": 198,
+      "compileMilliseconds": 792.8414019999982,
+      "results": [
+        {
+          "args": [
+            0,
+            90
+          ],
+          "result": 90,
+          "actual": 90
+        },
+        {
+          "args": [
+            350,
+            10
+          ],
+          "result": 20,
+          "actual": 20
+        },
+        {
+          "args": [
+            -30,
+            450
+          ],
+          "result": 120,
+          "actual": 120
+        },
+        {
+          "args": [
+            20,
+            20
+          ],
+          "result": 0,
+          "actual": 0
+        },
+        {
+          "args": [
+            -717.8179582580924,
+            2.9683296382427216
+          ],
+          "result": 0.786287896335125,
+          "actual": 0.786287896335125
+        },
+        {
+          "args": [
+            400.4167015850544,
+            -49.85625643283129
+          ],
+          "result": 269.7270419821143,
+          "actual": 269.7270419821143
+        },
+        {
+          "args": [
+            536.9880760833621,
+            -622.7194608002901
+          ],
+          "result": 280.2924631163478,
+          "actual": 280.2924631163478
+        },
+        {
+          "args": [
+            345.53699992597103,
+            594.7396578267217
+          ],
+          "result": 249.20265790075064,
+          "actual": 249.20265790075064
+        },
+        {
+          "args": [
+            14.810473211109638,
+            -57.1403968334198
+          ],
+          "result": 288.04912995547056,
+          "actual": 288.04912995547056
+        },
+        {
+          "args": [
+            -91.40369385480881,
+            -193.57579473406076
+          ],
+          "result": 257.82789912074804,
+          "actual": 257.82789912074804
+        },
+        {
+          "args": [
+            317.53432776778936,
+            -633.1344395130873
+          ],
+          "result": 129.33123271912336,
+          "actual": 129.33123271912336
+        },
+        {
+          "args": [
+            -131.3115944713354,
+            -691.8495186790824
+          ],
+          "result": 159.46207579225302,
+          "actual": 159.46207579225302
+        },
+        {
+          "args": [
+            469.1742891445756,
+            353.5762555897236
+          ],
+          "result": 244.401966445148,
+          "actual": 244.401966445148
+        },
+        {
+          "args": [
+            -597.705335766077,
+            -574.0781484916806
+          ],
+          "result": 23.62718727439642,
+          "actual": 23.62718727439642
+        },
+        {
+          "args": [
+            36.90391939133406,
+            316.3627412170172
+          ],
+          "result": 279.4588218256831,
+          "actual": 279.4588218256831
+        },
+        {
+          "args": [
+            -401.5276772528887,
+            442.9585163667798
+          ],
+          "result": 124.48619361966848,
+          "actual": 124.48619361966848
+        }
+      ]
+    },
+    {
+      "method": "ArcSweep",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 16,
+      "diagnosticCount": 0,
+      "selectedMethods": 97,
+      "compileMilliseconds": 1104.1478279999974,
+      "results": [
+        {
+          "args": [
+            0,
+            90
+          ],
+          "result": 90,
+          "actual": 90
+        },
+        {
+          "args": [
+            350,
+            10
+          ],
+          "result": 20,
+          "actual": 20
+        },
+        {
+          "args": [
+            -30,
+            450
+          ],
+          "result": 120,
+          "actual": 120
+        },
+        {
+          "args": [
+            20,
+            20
+          ],
+          "result": 0,
+          "actual": 0
+        },
+        {
+          "args": [
+            -717.8179582580924,
+            2.9683296382427216
+          ],
+          "result": 0.786287896335125,
+          "actual": 0.786287896335125
+        },
+        {
+          "args": [
+            400.4167015850544,
+            -49.85625643283129
+          ],
+          "result": 269.7270419821143,
+          "actual": 269.7270419821143
+        },
+        {
+          "args": [
+            536.9880760833621,
+            -622.7194608002901
+          ],
+          "result": 280.2924631163478,
+          "actual": 280.2924631163478
+        },
+        {
+          "args": [
+            345.53699992597103,
+            594.7396578267217
+          ],
+          "result": 249.20265790075064,
+          "actual": 249.20265790075064
+        },
+        {
+          "args": [
+            14.810473211109638,
+            -57.1403968334198
+          ],
+          "result": 288.04912995547056,
+          "actual": 288.04912995547056
+        },
+        {
+          "args": [
+            -91.40369385480881,
+            -193.57579473406076
+          ],
+          "result": 257.82789912074804,
+          "actual": 257.82789912074804
+        },
+        {
+          "args": [
+            317.53432776778936,
+            -633.1344395130873
+          ],
+          "result": 129.33123271912336,
+          "actual": 129.33123271912336
+        },
+        {
+          "args": [
+            -131.3115944713354,
+            -691.8495186790824
+          ],
+          "result": 159.46207579225302,
+          "actual": 159.46207579225302
+        },
+        {
+          "args": [
+            469.1742891445756,
+            353.5762555897236
+          ],
+          "result": 244.401966445148,
+          "actual": 244.401966445148
+        },
+        {
+          "args": [
+            -597.705335766077,
+            -574.0781484916806
+          ],
+          "result": 23.62718727439642,
+          "actual": 23.62718727439642
+        },
+        {
+          "args": [
+            36.90391939133406,
+            316.3627412170172
+          ],
+          "result": 279.4588218256831,
+          "actual": 279.4588218256831
+        },
+        {
+          "args": [
+            -401.5276772528887,
+            442.9585163667798
+          ],
+          "result": 124.48619361966848,
+          "actual": 124.48619361966848
+        }
+      ]
+    },
+    {
+      "method": "TrueColorArgb",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 4,
+      "diagnosticCount": 0,
+      "selectedMethods": 8,
+      "compileMilliseconds": 467.5157760000002,
+      "results": [
+        {
+          "args": [
+            12,
+            34,
+            56
+          ],
+          "result": -15982024,
+          "actual": -15982024
+        },
+        {
+          "args": [
+            0,
+            0,
+            0
+          ],
+          "result": -16777216,
+          "actual": -16777216
+        },
+        {
+          "args": [
+            255,
+            255,
+            255
+          ],
+          "result": -1,
+          "actual": -1
+        },
+        {
+          "args": [
+            255,
+            0,
+            127
+          ],
+          "result": -65409,
+          "actual": -65409
+        }
+      ]
+    },
+    {
+      "method": "TrueColorArgb",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 4,
+      "diagnosticCount": 0,
+      "selectedMethods": 6,
+      "compileMilliseconds": 1128.461288999999,
+      "results": [
+        {
+          "args": [
+            12,
+            34,
+            56
+          ],
+          "result": -15982024,
+          "actual": -15982024
+        },
+        {
+          "args": [
+            0,
+            0,
+            0
+          ],
+          "result": -16777216,
+          "actual": -16777216
+        },
+        {
+          "args": [
+            255,
+            255,
+            255
+          ],
+          "result": -1,
+          "actual": -1
+        },
+        {
+          "args": [
+            255,
+            0,
+            127
+          ],
+          "result": -65409,
+          "actual": -65409
+        }
+      ]
+    },
+    {
+      "method": "IndexColorArgb",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 4,
+      "diagnosticCount": 0,
+      "selectedMethods": 7,
+      "compileMilliseconds": 507.74331099999836,
+      "results": [
+        {
+          "args": [
+            1
+          ],
+          "result": -65536,
+          "actual": -65536
+        },
+        {
+          "args": [
+            7
+          ],
+          "result": -1,
+          "actual": -1
+        },
+        {
+          "args": [
+            23
+          ],
+          "result": -5937326,
+          "actual": -5937326
+        },
+        {
+          "args": [
+            255
+          ],
+          "result": -1,
+          "actual": -1
+        }
+      ]
+    },
+    {
+      "method": "IndexColorArgb",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 4,
+      "diagnosticCount": 0,
+      "selectedMethods": 5,
+      "compileMilliseconds": 924.7059899999986,
+      "results": [
+        {
+          "args": [
+            1
+          ],
+          "result": -65536,
+          "actual": -65536
+        },
+        {
+          "args": [
+            7
+          ],
+          "result": -1,
+          "actual": -1
+        },
+        {
+          "args": [
+            23
+          ],
+          "result": -5937326,
+          "actual": -5937326
+        },
+        {
+          "args": [
+            255
+          ],
+          "result": -1,
+          "actual": -1
+        }
+      ]
+    },
+    {
+      "method": "PolylineMutation",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 209,
+      "compileMilliseconds": 614.1056649999991,
+      "results": [
+        {
+          "args": [],
+          "result": 316.5,
+          "actual": 316.5
+        }
+      ]
+    },
+    {
+      "method": "PolylineMutation",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 117,
+      "compileMilliseconds": 877.5560939999996,
+      "results": [
+        {
+          "args": [],
+          "result": 316.5,
+          "actual": 316.5
+        }
+      ]
+    },
+    {
+      "method": "LayerEvents",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 205,
+      "compileMilliseconds": 503.61871800000154,
+      "results": [
+        {
+          "args": [],
+          "result": 1505,
+          "actual": 1505
+        }
+      ]
+    },
+    {
+      "method": "LayerEvents",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 104,
+      "compileMilliseconds": 729.259618,
+      "results": [
+        {
+          "args": [],
+          "result": 1505,
+          "actual": 1505
+        }
+      ]
+    },
+    {
+      "method": "LayerAssignment",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 211,
+      "compileMilliseconds": 724.0053919999991,
+      "results": [
+        {
+          "args": [],
+          "result": 7,
+          "actual": 7
+        }
+      ]
+    },
+    {
+      "method": "LayerAssignment",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 104,
+      "compileMilliseconds": 956.3321649999998,
+      "results": [
+        {
+          "args": [],
+          "result": 7,
+          "actual": 7
+        }
+      ]
+    },
+    {
+      "method": "CircleClone",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 1567,
+      "compileMilliseconds": 3790.8108009999996,
+      "results": [
+        {
+          "args": [],
+          "result": 474,
+          "actual": 474
+        }
+      ]
+    },
+    {
+      "method": "CircleClone",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 1476,
+      "compileMilliseconds": 6716.146869999997,
+      "results": [
+        {
+          "args": [],
+          "result": 474,
+          "actual": 474
+        }
+      ]
+    },
+    {
+      "method": "InvalidCircleConstructor",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 2,
+      "diagnosticCount": 0,
+      "selectedMethods": 195,
+      "compileMilliseconds": 612.4505009999993,
+      "results": [
+        {
+          "args": [
+            0
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        },
+        {
+          "args": [
+            -1
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidCircleConstructor",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 2,
+      "diagnosticCount": 0,
+      "selectedMethods": 93,
+      "compileMilliseconds": 1215.5787469999996,
+      "results": [
+        {
+          "args": [
+            0
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        },
+        {
+          "args": [
+            -1
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidCircleSetter",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 2,
+      "diagnosticCount": 0,
+      "selectedMethods": 198,
+      "compileMilliseconds": 519.5802620000031,
+      "results": [
+        {
+          "args": [
+            0
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        },
+        {
+          "args": [
+            -0.25
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidCircleSetter",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 2,
+      "diagnosticCount": 0,
+      "selectedMethods": 96,
+      "compileMilliseconds": 795.0519350000031,
+      "results": [
+        {
+          "args": [
+            0
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        },
+        {
+          "args": [
+            -0.25
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidLayerName",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 4,
+      "diagnosticCount": 0,
+      "selectedMethods": 183,
+      "compileMilliseconds": 489.26475100000243,
+      "results": [
+        {
+          "args": [
+            null
+          ],
+          "error": "System.NullReferenceException",
+          "actualError": "System.NullReferenceException"
+        },
+        {
+          "args": [
+            ""
+          ],
+          "error": "System.ArgumentException",
+          "actualError": "System.ArgumentException"
+        },
+        {
+          "args": [
+            "a/b"
+          ],
+          "error": "System.ArgumentException",
+          "actualError": "System.ArgumentException"
+        },
+        {
+          "args": [
+            "a|b"
+          ],
+          "error": "System.ArgumentException",
+          "actualError": "System.ArgumentException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidLayerName",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 4,
+      "diagnosticCount": 0,
+      "selectedMethods": 70,
+      "compileMilliseconds": 1023.9436910000004,
+      "results": [
+        {
+          "args": [
+            null
+          ],
+          "error": "System.NullReferenceException",
+          "actualError": "System.NullReferenceException"
+        },
+        {
+          "args": [
+            ""
+          ],
+          "error": "System.ArgumentException",
+          "actualError": "System.ArgumentException"
+        },
+        {
+          "args": [
+            "a/b"
+          ],
+          "error": "System.ArgumentException",
+          "actualError": "System.ArgumentException"
+        },
+        {
+          "args": [
+            "a|b"
+          ],
+          "error": "System.ArgumentException",
+          "actualError": "System.ArgumentException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidLayerAssignment",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 199,
+      "compileMilliseconds": 627.6546229999949,
+      "results": [
+        {
+          "args": [],
+          "error": "System.ArgumentNullException",
+          "actualError": "System.ArgumentNullException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidLayerAssignment",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 98,
+      "compileMilliseconds": 740.4596380000003,
+      "results": [
+        {
+          "args": [],
+          "error": "System.ArgumentNullException",
+          "actualError": "System.ArgumentNullException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidLinetypeScale",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 197,
+      "compileMilliseconds": 537.7749909999984,
+      "results": [
+        {
+          "args": [],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidLinetypeScale",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 95,
+      "compileMilliseconds": 839.8212740000017,
+      "results": [
+        {
+          "args": [],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidVertexWidth",
+      "backend": "javascript",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 8,
+      "compileMilliseconds": 309.43814700000075,
+      "results": [
+        {
+          "args": [
+            -1
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    },
+    {
+      "method": "InvalidVertexWidth",
+      "backend": "native-wasm",
+      "strict": true,
+      "optimize": true,
+      "passed": true,
+      "cases": 1,
+      "diagnosticCount": 0,
+      "selectedMethods": 8,
+      "compileMilliseconds": 683.5561039999957,
+      "results": [
+        {
+          "args": [
+            -1
+          ],
+          "error": "System.ArgumentOutOfRangeException",
+          "actualError": "System.ArgumentOutOfRangeException"
+        }
+      ]
+    }
+  ],
+  "compiler": {
+    "bridgeVersion": "0.9.0",
+    "roslynVersion": "5.0.0.0",
+    "runtimeVersion": "10.0.0",
+    "referenceCount": 167,
+    "execution": "dotnet-wasm-interpreter"
+  },
+  "netDxf": {
+    "repository": "https://github.com/wieslawsoltes/netDxf",
+    "commit": "5b562312f683fc635405c149537ca488e4ec4d39",
+    "sourceCount": 272,
+    "assemblyBytes": 767488,
+    "sha256": "b66d1eeaf431498326e77fa0a22895b7bd9e5458fd5aff989470be8eba2e84dd"
+  },
+  "wrapper": {
+    "assemblyBytes": 6144,
+    "diagnostics": []
+  },
+  "passed": true,
+  "comparisons": 142
+}

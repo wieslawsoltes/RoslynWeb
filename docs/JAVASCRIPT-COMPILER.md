@@ -69,6 +69,21 @@ console.log(module.optimization);
 
 Deploy the complete `src/il/` directory at the selected `runtimeImport` path. Generated modules need no Roslyn or .NET runtime. Runtime compilation uses `Function` and therefore requires dynamic JavaScript permission in the host CSP. Importing previously generated source uses static function declarations; explicit runtime-emission APIs still require dynamic-code permission. Editing an artifact's source and passing it back to `compiler.run` is rejected when it no longer matches its stored IL/model/options; import edited JavaScript as an ordinary ES module.
 
+## Compile selected library exports
+
+Use `exports` to compile an explicit, unambiguous method surface from a library while keeping strict checks enabled:
+
+```js
+const artifact = await compiler.emitJavaScript(library, {
+  exports: ['Geometry::Distance(System.Double,System.Double,System.Double,System.Double)'],
+  strict: true,
+});
+```
+
+Use `Type::Method(parameter-types)` for a full signature, `Type.Method` or `Type::Method` for an unambiguous name, or the typed method selector described by the API declarations. For example, netDxf's scalar adapter is selected with `exports: ['RoslynWeb.Dxf.NetDxfKernel.Distance2']`. Ambiguous or missing selectors fail explicitly. Omitting `exports` preserves whole-assembly compilation.
+
+Selection retains directly called methods, linked implementation methods, delegate targets, virtual/interface implementations, type initializers and known framework callbacks. Reflective invocation conservatively retains the full input. Diagnostics apply to the retained closure; an accepted selected API does not imply that every method of the original DLL is supported. See the [netDxf integration](NETDXF.md) for an executable full-library case study.
+
 ## Shared framework values
 
 The JavaScript and direct Wasm runtimes use the same implementations of these value types:

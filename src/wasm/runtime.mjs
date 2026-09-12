@@ -389,6 +389,15 @@ function createService(descriptor, context) {
       return voidType(operand.returnType)?undefined:result(f.stack.pop());
     };
   }
+  if(kind==='binary_bits'){
+    functions[kind]=(...nativeArgs)=>{
+      const args=nativeArgs.map((value,index)=>descriptor.bitParameterKind&&index===0?h.floatLiteral(descriptor.bitParameterKind==='f32'?'r4':'r8',BigInt(value)):convert(value,index,operand.parameters?.[index]));
+      const f=frame(args);rt.call(f,operand,'call');const value=f.stack.pop();
+      if(!descriptor.bitResultKind)return value;
+      if(typeof value?.floatBits!=='bigint')throw new NativeWasmError('A BitConverter service did not return an exact floating representation.','WASM_IMPORT_UNSUPPORTED');
+      return descriptor.bitResultKind==='f32'?Number(BigInt.asIntN(32,value.floatBits)):BigInt.asIntN(64,value.floatBits);
+    };
+  }
   if(['call','callvirt','newobj'].includes(kind)){
     functions[kind]=(...nativeArgs)=>{
       const isInstance=kind!=='newobj'&&!operand.isStatic;

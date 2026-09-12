@@ -135,6 +135,8 @@ export interface NativeWasmCompilationFailure {
 export interface CompileToWasmOptions extends CompileOptions { wasm?:WasmCompileOptions }
 /** Worker emission options must be serializable; supply JavaScript externals to run(). */
 export interface JavaScriptEmitOptions {
+  /** Restrict generated methods and strict diagnostics to a conservative export closure. */
+  exports?:JavaScriptCompileOptions['exports'];
   optimize?:JavaScriptOptimization;strict?:boolean;runtimeImport?:string;assemblies?:AssemblyModel[];
 }
 export interface CompileToJavaScriptOptions extends CompileOptions {javascript?:JavaScriptEmitOptions}

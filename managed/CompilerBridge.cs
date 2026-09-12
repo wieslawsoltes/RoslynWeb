@@ -21,7 +21,7 @@ public static partial class CompilerBridge
     {
         WriteIndented = false,
         NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals,
-        Converters = { new Int64JsonConverter(), new UInt64JsonConverter() }
+        Converters = { new Int64JsonConverter(), new UInt64JsonConverter(), new Utf16JsonConverter(), new Utf16CharJsonConverter() }
     };
     private static readonly Dictionary<string, PortableExecutableReference> References = new(StringComparer.OrdinalIgnoreCase);
     private static readonly Dictionary<string, RegisteredDependency> DependencyImages = new(StringComparer.OrdinalIgnoreCase);
@@ -79,7 +79,7 @@ public static partial class CompilerBridge
     public static string Version()
     {
         Initialize();
-        return Serialize(new { bridgeVersion = "0.8.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
+        return Serialize(new { bridgeVersion = "0.9.0", roslynVersion = typeof(CSharpCompilation).Assembly.GetName().Version?.ToString(), runtimeVersion = Environment.Version.ToString(), referenceCount = References.Count, execution = "dotnet-wasm-interpreter" });
     }
 
     [JSExport]
@@ -309,11 +309,18 @@ public static partial class CompilerBridge
         return result;
     }
 
+    // Console's numeric formatting follows the culture at the time of Write,
+    // including changes made by the running assembly after capture starts.
+    private sealed class ConsoleCaptureWriter : StringWriter
+    {
+        public override IFormatProvider FormatProvider => CultureInfo.CurrentCulture;
+    }
+
     private static async Task<string> Execute(Func<Task<object?>> action, bool entryPoint, string? fileRequestJson = null)
     {
         await ExecutionGate.WaitAsync();
-        using var stdout = new StringWriter(CultureInfo.InvariantCulture);
-        using var stderr = new StringWriter(CultureInfo.InvariantCulture);
+        using var stdout = new ConsoleCaptureWriter();
+        using var stderr = new ConsoleCaptureWriter();
         var originalOut = Console.Out;
         var originalError = Console.Error;
         var watch = Stopwatch.StartNew();

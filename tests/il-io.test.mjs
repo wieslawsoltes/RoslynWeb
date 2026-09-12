@@ -17,8 +17,8 @@ test('IO overload admission rejects unsupported OS operations, async APIs and ar
  assert.equal(isIoBuiltin(ref('System.IO.File','ReadAllBytes',[S])),true);
  assert.equal(isIoBuiltin(ref('System.IO.File','ReadAllBytesAsync',[S])),false);
  assert.equal(isIoBuiltin(ref('System.IO.MemoryStream','Write',['System.ReadOnlySpan`1<System.Byte>'])),false);
- assert.equal(isIoBuiltin(ref('System.Text.Encoding','GetEncoding',[S])),false);
- assert.equal(isIoBuiltin(ref('System.IO.FileStream','.ctor',[S,'System.IO.FileMode','System.IO.FileAccess','System.IO.FileShare'])),false);
+ assert.equal(isIoBuiltin(ref('System.Text.Encoding','GetEncoding',[S])),true);
+ assert.equal(isIoBuiltin(ref('System.IO.FileStream','.ctor',[S,'System.IO.FileMode','System.IO.FileAccess','System.IO.FileShare'])),true);
 });
 test('MemoryStream seeks, grows with zero fill, reads and truncates with CLR numeric values',()=>{
  const r=rt(),s=create(r,'System.IO.MemoryStream');m(r,s,'Write',[BA,I,I],[arr([1,2,3]),i4(0),i4(3)]);m(r,s,'set_Position',[L],[i8(5)]);m(r,s,'WriteByte',['System.Byte'],[i4(9)]);

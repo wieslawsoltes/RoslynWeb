@@ -14,6 +14,20 @@ void Check(bool condition, string message) { if (!condition) throw new Exception
 JsonNode Parse(string text) => JsonNode.Parse(text)!;
 JsonNode Compile(string source, string kind = "console", string? name = null) => Parse(CompilerBridge.Compile(System.Text.Json.JsonSerializer.Serialize(new { source, outputKind = kind, assemblyName = name, includeInspection = true })));
 string Image(JsonNode result) { Check(result["success"]!.GetValue<bool>(), "compilation: " + (result["assemblyName"]?.GetValue<string>() ?? result.ToJsonString())); return result["peBase64"]!.GetValue<string>(); }
+var utf16Options = new System.Text.Json.JsonSerializerOptions { Converters = { new Utf16JsonConverter(), new Utf16CharJsonConverter() } };
+foreach (var value in new[]{ "plain", "\ud800", "\udc00", "\ud800\udc00", "\udc00x\ud800", "<>&\"\\\0\ud800" })
+{
+    var encoded = System.Text.Json.JsonSerializer.Serialize(value, utf16Options);
+    Check(System.Text.Json.JsonSerializer.Deserialize<string>(encoded, utf16Options) == value, "lossless UTF-16 string JSON round trip " + string.Join(",", value.Select(c => (int)c)));
+}
+var dictionaryJson = System.Text.Json.JsonSerializer.Serialize(new Dictionary<string,string>{{"source", "\ud800"}}, utf16Options);
+Check(System.Text.Json.JsonSerializer.Deserialize<Dictionary<string,string>>(dictionaryJson, utf16Options)!["source"] == "\ud800", "dictionary keys remain supported with lossless string values");
+Check(System.Text.Json.JsonSerializer.Deserialize<char>("\"\\ud800\"", utf16Options) == '\ud800' && System.Text.Json.JsonSerializer.Serialize('\udc00', utf16Options) == "\"\\uDC00\"", "char JSON preserves isolated UTF-16 units");
+var keyOptions = new System.Text.Json.JsonSerializerOptions(utf16Options) { DictionaryKeyPolicy = System.Text.Json.JsonNamingPolicy.CamelCase };
+Check(System.Text.Json.JsonSerializer.Serialize(new Dictionary<string,string>{{"SomeKey", "value"}}, keyOptions) == "{\"someKey\":\"value\"}", "UTF-16 converter retains dictionary key naming policy");
+var inlineMetadata = Compile("[System.Runtime.CompilerServices.InlineArray(4)] public struct Buffer { private int element; } public struct Ordinary { public int Value; }", "library", "InlineMetadata");
+Image(inlineMetadata);
+Check(inlineMetadata["inspection"]!["types"]!.AsArray().Single(t => t!["name"]!.GetValue<string>() == "Buffer")!["inlineArrayLength"]!.GetValue<int>() == 4 && inlineMetadata["inspection"]!["types"]!.AsArray().Single(t => t!["name"]!.GetValue<string>() == "Ordinary")!["inlineArrayLength"] is null, "InlineArrayAttribute length preserved without inferring type names");
 var version = Parse(CompilerBridge.Version());
 Check(version["referenceCount"]!.GetValue<int>() > 150, "embedded .NET reference pack available");
 var diagnostic = Compile("class Broken { static void Main() { int value = ; } }");
@@ -38,6 +52,11 @@ Check(run["success"]!.GetValue<bool>() && run["exitCode"]!.GetValue<int>() == 7 
 var inspect = program["inspection"]!;
 Check(inspect["types"]!.AsArray().Count > 2 && inspect["entryPoint"]!.GetValue<int>() != 0, "PE metadata and generated state-machine inspection");
 Check(!inspect["types"]!.AsArray().SelectMany(t => t!["methods"]!.AsArray()).Any(m => m!["decodeError"] is not null), "all emitted IL instructions decode");
+var enumMetadata = Compile("[System.Flags] public enum FlagsValue:ulong { None=0, First=1, High=0x8000000000000000UL } public enum PlainValue:short { First=-1 } public struct NotAnEnum {}", "library", "EnumMetadata");
+Image(enumMetadata);
+var enumTypes = enumMetadata["inspection"]!["types"]!.AsArray();
+Check(enumTypes.Single(t => t!["name"]!.GetValue<string>() == "FlagsValue")!["isFlagsEnum"]!.GetValue<bool>(), "FlagsAttribute preserved in PE inspection");
+Check(!enumTypes.Single(t => t!["name"]!.GetValue<string>() == "PlainValue")!["isFlagsEnum"]!.GetValue<bool>() && !enumTypes.Single(t => t!["name"]!.GetValue<string>() == "NotAnEnum")!["isFlagsEnum"]!.GetValue<bool>(), "plain enum and non-enum flags metadata stays false");
 var library = Compile("namespace MathPackage; public static class Calculator { public static int Twice(int value) => value * 2; }", "library", "MathPackage");
 var libraryImage = Image(library);
 Check(Parse(CompilerBridge.AddReference("MathPackage.dll", libraryImage))["success"]!.GetValue<bool>(), "DLL registered as metadata reference");
@@ -138,6 +157,7 @@ var resourceRun = Parse(await CompilerBridge.Run(Image(resourceResult),"[]"));
 Check(resourceRun["success"]!.GetValue<bool>() && resourceRun["stdout"]!.GetValue<string>().Replace("\r","").Trim() == "raw-resource\nHello resource\n42", "real raw manifest and typed RESX resource blobs are emitted and loaded by ResourceManager");
 Check(!Parse(CompilerBridge.ConvertResx("<root><data name=\"bad\" type=\"System.Drawing.Bitmap\"><value>anything</value></data></root>"))["success"]!.GetValue<bool>(), "unsupported serialized resource types are rejected explicitly");
 Check(!Parse(CompilerBridge.ConvertResx("<!DOCTYPE root [<!ENTITY value SYSTEM 'file:///etc/passwd'>]><root><data name=\"bad\"><value>&value;</value></data></root>"))["success"]!.GetValue<bool>(), "RESX DTD and external entity loading are disabled");
+assertions += await CustomAttributeMetadataTests.Run();
 assertions += await ExecutionFilesTests.Run();
 assertions += await CompilationCacheTests.Run();
 Console.WriteLine($"ALL {assertions} MANAGED ASSERTIONS PASSED");

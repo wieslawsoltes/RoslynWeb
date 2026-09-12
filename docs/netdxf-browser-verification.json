@@ -1,0 +1,167 @@
+{
+  "testedAt": "2026-09-12T10:35:12.225Z",
+  "realBrowser": true,
+  "realWebGPU": true,
+  "tests": [
+    {
+      "name": "Sample starts a real compiler worker and loads the complete pinned netDxf library",
+      "passed": true,
+      "ms": 1475
+    },
+    {
+      "name": "WebGPU submits real drawing commands and produces colored geometry pixels",
+      "passed": true,
+      "ms": 467
+    },
+    {
+      "name": "Actual WebGPU pixels show hatch holes, source-ordered wipeout masking and shaped Unicode text",
+      "passed": true,
+      "ms": 654
+    },
+    {
+      "name": "Actual WebGPU pattern pixels preserve dash gaps, hatch holes and clipped dot markers",
+      "passed": true,
+      "ms": 337
+    },
+    {
+      "name": "Zoom, pan, fit and layer controls change the real renderer state",
+      "passed": true,
+      "ms": 362
+    },
+    {
+      "name": "Text and binary DXF downloads round-trip through the real managed library",
+      "passed": true,
+      "ms": 421
+    },
+    {
+      "name": "Invalid and over-limit uploads report errors and preserve the current drawing",
+      "passed": true,
+      "ms": 2464
+    },
+    {
+      "name": "Source mode recompiles all upstream source files in browser WebAssembly",
+      "passed": true,
+      "ms": 25737
+    },
+    {
+      "name": "Optional geometry comparison executes managed Wasm, native Wasm and generated JavaScript",
+      "passed": true,
+      "ms": 9950
+    },
+    {
+      "name": "Mobile layout stays within the viewport and keeps document actions available",
+      "passed": true,
+      "ms": 123
+    },
+    {
+      "name": "Unavailable WebGPU leaves real netDxf parsing and export usable",
+      "passed": true,
+      "ms": 1741
+    },
+    {
+      "name": "Missing startup assets surface an error and restart recovers cleanly",
+      "passed": true,
+      "ms": 2532
+    }
+  ],
+  "pageErrors": [],
+  "baseUrl": "http://127.0.0.1:34005/RoslynWeb/",
+  "browserVersion": "140.0.7339.186",
+  "library": {
+    "sourceCount": 272,
+    "mode": "prebuilt",
+    "stats": {
+      "entityCount": 18,
+      "layerCount": 7,
+      "sourceEntities": 18,
+      "renderedEntities": 30,
+      "hiddenEntities": 0,
+      "unsupportedEntities": 0,
+      "layers": 7,
+      "blocks": 3,
+      "curvePrecision": 192,
+      "layout": "Model"
+    },
+    "renderer": true,
+    "gpu": true
+  },
+  "rendering": {
+    "lineSegments": 989,
+    "triangles": 637,
+    "textQuads": 4,
+    "vertices": 3913,
+    "drawCalls": 14,
+    "frames": 4,
+    "width": 1140,
+    "height": 762,
+    "disposed": false,
+    "lost": false,
+    "screenshot": {
+      "width": 1140,
+      "height": 762,
+      "colors": 1222,
+      "nonBackgroundPixels": 100479
+    }
+  },
+  "textFillMask": {
+    "stats": {
+      "lineSegments": 1,
+      "triangles": 12,
+      "textQuads": 3,
+      "vertices": 56,
+      "drawCalls": 7,
+      "frames": 5,
+      "width": 1140,
+      "height": 762,
+      "disposed": false,
+      "lost": false
+    },
+    "whitePixels": 7957,
+    "red": [
+      255,
+      0,
+      0
+    ],
+    "fill": [
+      0,
+      0,
+      255
+    ],
+    "mask": [
+      9,
+      12,
+      18
+    ],
+    "hole": [
+      9,
+      12,
+      18
+    ]
+  },
+  "hatchPatterns": {
+    "stats": {
+      "lineSegments": 100,
+      "triangles": 248,
+      "textQuads": 0,
+      "vertices": 944,
+      "drawCalls": 2,
+      "frames": 8,
+      "width": 1140,
+      "height": 762,
+      "disposed": false,
+      "lost": false
+    },
+    "screenshot": {
+      "width": 1140,
+      "height": 762,
+      "colors": 687,
+      "nonBackgroundPixels": 48240
+    }
+  },
+  "geometryComparison": [
+    ".NET Wasm0.13 s5778.5398163397",
+    "Native Wasm4.98 s5778.5398163397",
+    "JavaScript4.45 s5778.5398163397"
+  ],
+  "passed": true
+}

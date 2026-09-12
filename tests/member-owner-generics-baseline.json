@@ -1,0 +1,38 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "e556f7e1ed1641fc996a10792245f43bcc4d0030832a438cc7d8a34668811fcd",
+  "cases": [
+    {
+      "method": "DictionaryOwners",
+      "result": [
+        "41",
+        "dictionary value"
+      ]
+    },
+    {
+      "method": "ReorderedOwners",
+      "result": [
+        "17",
+        "second",
+        "first",
+        "second"
+      ]
+    },
+    {
+      "method": "NestedOwners",
+      "result": [
+        "nested",
+        "31"
+      ]
+    },
+    {
+      "method": "MethodSpecifications",
+      "result": [
+        "3.5",
+        "method",
+        "String:Int32:Int64:Double",
+        "Int32:String:Byte:Boolean"
+      ]
+    }
+  ]
+}
