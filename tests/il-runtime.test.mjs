@@ -260,8 +260,8 @@ test('64-bit metadata constants support both revived BigInt and bridge JSON tags
 });
 
 test('external fields fail explicitly and supported framework static fields retain their values', () => {
-  const missing = { name: 'MinValue', declaringType: 'System.DateTime', type: 'System.DateTime', isStatic: true };
-  const fixture = model([method('Main', [ins('ldsfld', missing), ins('ret')], { returnType: 'System.DateTime' })]);
+  const missing = { name: 'MinValue', declaringType: 'System.DateTimeOffset', type: 'System.DateTimeOffset', isStatic: true };
+  const fixture = model([method('Main', [ins('ldsfld', missing), ins('ret')], { returnType: 'System.DateTimeOffset' })]);
   assert.equal(analyzeAssembly(fixture).supported, false);
   assert.throws(() => compileAssembly(fixture).run(), /No linked storage/);
   assert.equal(exec([ins('ldsfld', { name: 'Empty', declaringType: 'System.String', type: str, isStatic: true }), ins('ret')], [], { returnType: str }), '');

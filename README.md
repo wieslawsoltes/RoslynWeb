@@ -51,7 +51,10 @@ node bin/roslynweb.mjs script examples/cli/netdxf.mjs -- - out/sample.dxf text
 node bin/roslynweb.mjs script examples/cli/netdxf.mjs -- drawing.dxf out/binary.dxf binary
 ```
 
-The full-library path uses .NET's Wasm runtime. Direct MSIL→native Wasm and JavaScript support strictly checked netDxf geometry and entity operations; they do not yet support the whole reader/writer. The renderer is a top/XY viewer with an explicit entity surface; entities it cannot draw remain in the managed document for export. See the [netDxf API, build, performance and compatibility guide](docs/NETDXF.md) for exact behavior and reproducible tests.
+The document API uses .NET's Wasm runtime. The direct MSIL→native Wasm and JavaScript backends also compile and execute netDxf reader/writer methods, with actual ASCII and binary save/reload checks against managed execution. A separate matrix passes 72 writes and 216 reads across all three backends, six DXF versions, ASCII/binary formats, and legacy/Unicode layer names and text. Their supported framework services and tested document cases define the generated-backend boundary. The renderer is a top/XY viewer with an explicit entity surface; entities it cannot draw remain in the managed document for export. See the [netDxf API, build, performance and compatibility guide](docs/NETDXF.md) for the execution matrix and reproducible tests.
+
+The generated compiler services now include exact floating-point parsing and binary conversion, DateTime/TimeSpan ticks and arithmetic, virtual files and single-byte code pages, additional collection/string operations, pinned Unicode ordinal comparison, and linked custom attribute construction. Native Wasm retains the managed callbacks required by comparers and attributes. See the [CAD compiler service guide](docs/CAD-COMPILER-SERVICES.md) for executable browser/Node examples, exact compatibility boundaries, and differential test commands.
+
 
 ## Use from a terminal
 
@@ -444,7 +447,7 @@ See `docs/VERIFICATION.md`, `docs/wasm-verification.json`, `docs/worker-verifica
 | Managed execution | Actual .NET 10 browser WASM interpreter, dynamic assembly loading, async, LINQ, reflection and JSON exercised |
 | MSIL → native Wasm | Typed native code, structured reducible control flow, numeric intrinsics, linked methods, two-pass filters and documented managed services |
 | MSIL → JS | Basic-block generation and proven unboxed Int32/Int64/UInt64/Single/Double methods; linked assemblies, reusable compiled modules and explicit incompatibility diagnostics |
-| netDxf and WebGPU | Complete pinned source compiled by Roslyn WASM, managed DXF reader/writer sessions, text/binary import/export and a reusable WebGPU CAD viewport |
+| netDxf and WebGPU | Complete pinned source compiled by Roslyn WASM, managed document sessions, verified generated JavaScript/native-Wasm reader/writer execution, text/binary import/export and a reusable WebGPU CAD viewport |
 | Command-line and Node API | Local C#/DLL/JS/Wasm workflows, all public compiler methods through JSON sessions or JavaScript scripts, package/project tooling, watch mode and static browser hosting |
 | Shared managed values | Exact Decimal arithmetic and invariant formats, Nullable and ValueTuple value/boxing/byref behavior within the documented surface |
 | Existing DLLs | Managed assemblies and dependencies compatible with .NET browser; original WinForms/WPF DLLs using the explicit desktop compatibility surface also execute unchanged |

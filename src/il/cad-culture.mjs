@@ -28,7 +28,7 @@ admit('System.Environment','get_NewLine',true,S);
 for(const prefix of [[],[P]])for(const tail of [[O],[O,O],[O,O,O],['System.Object[]'],['System.ReadOnlySpan`1<System.Object>']])admit(S,'Format',true,S,...prefix,S,...tail);
 admit(S,'.ctor',false,V,'System.Char',I);admit(S,'Remove',false,S,I);admit(S,'Remove',false,S,I,I);
 admit('System.Math','Round',true,D,D,I);admit('System.Math','Round',true,D,D,R);admit('System.Math','Round',true,D,D,I,R);
-admit('System.Convert','ToInt32',true,I,D);
+admit('System.Convert','ToInt32',true,I,D);admit('System.Convert','ToInt32',true,I,'System.Char');
 export function isCadCultureBuiltin(ref){return !!ref&&!(ref.genericParameterCount??0)&&!ref.genericArguments?.length&&(signatures.get(`${ref.declaringType}|${ref.name}|${ref.isStatic}|${ref.returnType}`)?.has((ref.parameters??[]).map(p=>p.type??p).join('|'))??false);}
 function textInfo(readOnly){return {$type:T,fields:{},$cadTextInfo:true,listSeparator:',',readOnly};}
 function invariant(rt){return rt.$cadInvariantCulture??={$type:C,fields:{},$cadCulture:true,name:'',readOnly:true,numberFormat:invariantCadNumberFormat(rt),textInfo:textInfo(true)};}
@@ -106,7 +106,7 @@ export function invokeCadCultureBuiltin(rt,ref,args,self){
   if(type===T){if(self==null)fail('NullReferenceException','Object reference not set to an instance of an object.');if(!self.$cadTextInfo)limit('Unknown TextInfo object.');if(name==='Clone')return done({...self,fields:{},readOnly:false});if(name==='get_IsReadOnly')return done(i4(self.readOnly));if(name==='get_ListSeparator')return done(self.listSeparator);nonnull(a[0],'value');if(self.readOnly)fail('InvalidOperationException','Instance is read-only.');self.listSeparator=a[0];return done();}
   if(type==='System.Environment')return done('\n');
   if(type==='System.Math'){const digits=p[1]===I?a[1]:0,mode=p[1]===R?a[1]:a[2]??0;return done(r8(roundCadDouble(a[0],digits,mode)));}
-  if(type==='System.Convert'){const rounded=roundCadDouble(a[0]);if(!Number.isFinite(rounded)||rounded<-2147483648||rounded>2147483647)fail('OverflowException','Value was either too large or too small for an Int32.');return done(i4(rounded));}
+  if(type==='System.Convert'){if(p[0]==='System.Char')return done(i4(a[0]&0xffff));const rounded=roundCadDouble(a[0]);if(!Number.isFinite(rounded)||rounded<-2147483648||rounded>2147483647)fail('OverflowException','Value was either too large or too small for an Int32.');return done(i4(rounded));}
   if(type===S){
     if(name==='Format'){const withProvider=p[0]===P,offset=withProvider?1:0,provider=withProvider?args[0]:null;nonnull(a[offset],'format');let values=args.slice(offset+1);if(p.at(-1)==='System.Object[]'){nonnull(values[0],'args');values=values[0].items;}else if(p.at(-1)==='System.ReadOnlySpan`1<System.Object>')values=spanValues(values[0]);return done(compositeCadFormat(rt,a[offset],values,provider));}
     if(name==='.ctor'){const count=a[1];if(count<0)fail('ArgumentOutOfRangeException','count');if(count>(rt.options?.maxStringLength??10_000_000))limit('String allocation exceeds the configured maximum length.');return {handled:true,constructed:String.fromCharCode(a[0]).repeat(count)};}

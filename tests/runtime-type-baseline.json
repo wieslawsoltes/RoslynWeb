@@ -1,0 +1,33 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "6ce16f789f37ffda0c5889fbea19b341d4f920454c596eef0c2bb78e012f5605",
+  "cases": [
+    {
+      "method": "Names",
+      "result": [
+        "RuntimeTypeSByte",
+        "RuntimeTypeByte",
+        "RuntimeTypeInt16",
+        "RuntimeTypeUInt16",
+        "RuntimeTypeInt32",
+        "RuntimeTypeUInt32",
+        "RuntimeTypeInt64",
+        "RuntimeTypeUInt64",
+        "System.Boolean",
+        "System.Char",
+        "System.UInt32",
+        "System.UInt64",
+        "System.Single",
+        "System.Double",
+        "RuntimeTypeDerived",
+        "System.String",
+        "RuntimeTypeUInt64",
+        "System.UInt32"
+      ]
+    },
+    {
+      "method": "Null",
+      "result": "null"
+    }
+  ]
+}

@@ -28,7 +28,7 @@ test('CAD adapters reject unimplemented overload shapes and preserve culture lim
   for(const wrong of [{isStatic:false},{returnType:'System.Int32'},{genericArguments:['System.String']},{genericParameterCount:1},{parameters:['System.String','System.String','System.Boolean']}])assert.equal(isCadBuiltin({...ref,...wrong}),false);
   const rt=createRuntime({name:'CadBoundaries',types:[]});
   for(const mode of [0,1,2,3])assert.throws(()=>invokeCadBuiltin(rt,ref,['a','A',i4(mode)],null),e=>e.runtimeLimitation===true);
-  assert.throws(()=>invokeCadBuiltin(rt,ref,['é','É',i4(5)],null),e=>e.runtimeLimitation===true);
+  assert.equal(invokeCadBuiltin(rt,ref,['é','É',i4(5)],null).value.value,1);
   assert.throws(()=>invokeCadBuiltin(rt,ref,['a','A',i4(99)],null),e=>e.$type==='System.ArgumentException');
   assert.equal(invokeCadBuiltin(rt,ref,['é','É',i4(4)],null).value.value,0);
 });

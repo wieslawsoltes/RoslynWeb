@@ -1,0 +1,328 @@
+[
+  {
+    "method": "Reverse",
+    "args": [],
+    "result": "1,2,4,3,5,"
+  },
+  {
+    "method": "Sort",
+    "args": [],
+    "result": "9,7,5,3,2,1,|9,2,3,5,7,1,|1,2,3,5,7,9,|True"
+  },
+  {
+    "method": "LargeSort",
+    "args": [],
+    "result": "100,99,98,97,96,95,94,93,92,91,90,89,88,87,86,85,84,83,82,81,80,79,78,77,76,75,74,73,72,71,70,69,68,67,66,65,63,62,61,60,59,58,57,56,55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0,"
+  },
+  {
+    "method": "Unsigned",
+    "args": [],
+    "result": "0|1|2147483648|4294967295|3|9223372036854775808|3"
+  },
+  {
+    "method": "Searches",
+    "args": [],
+    "result": "True|0|2|2|0"
+  },
+  {
+    "method": "FindRanges",
+    "args": [],
+    "result": "3|3|2|3,8,5,"
+  },
+  {
+    "method": "SearchBinary",
+    "args": [],
+    "result": "2|-3|-2|3"
+  },
+  {
+    "method": "CollectionInterfaces",
+    "args": [],
+    "result": "True|True|0|True|1|True"
+  },
+  {
+    "method": "PairInterfaces",
+    "args": [],
+    "result": "True|False|False|True|0"
+  },
+  {
+    "method": "DictionaryViews",
+    "args": [],
+    "result": "True|True|True|True"
+  },
+  {
+    "method": "HashtableKeys",
+    "args": [],
+    "result": "x|y|int|long|True|True|4"
+  },
+  {
+    "method": "HashtableComparer",
+    "args": [],
+    "result": "True|y|0"
+  },
+  {
+    "method": "HashtableEnumerator",
+    "args": [],
+    "result": "6|True|3|b"
+  },
+  {
+    "method": "ExtraEnumDefaults",
+    "args": [],
+    "result": "0|0|0|0|0|0|0|0|0|invalid|invalid"
+  },
+  {
+    "method": "ExtraEnumCopies",
+    "args": [],
+    "result": "1|2|1|2|1|2"
+  },
+  {
+    "method": "ExtraEnumDisposal",
+    "args": [],
+    "result": "0|0|0|0|0|qsltd"
+  },
+  {
+    "method": "ExtraInterfaces",
+    "args": [],
+    "result": "True|0|13|True|True|True|0|0"
+  },
+  {
+    "method": "QueueStackCurrent",
+    "args": [],
+    "result": "0|0|0|3|0|0"
+  },
+  {
+    "method": "InterfaceEnumerators",
+    "args": [],
+    "result": "2|3|9|4|5|2,3,"
+  },
+  {
+    "method": "Error",
+    "args": [
+      0
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      1
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      2
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      3
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      4
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      5
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      6
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      7
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      8
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      9
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      10
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      11
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      12
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      13
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      14
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      15
+    ],
+    "result": "NotSupportedException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      16
+    ],
+    "result": "NotSupportedException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      17
+    ],
+    "result": "NotSupportedException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      18
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      19
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      20
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      21
+    ],
+    "result": "InvalidOperationException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      22
+    ],
+    "result": "InvalidOperationException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      23
+    ],
+    "result": "InvalidCastException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      24
+    ],
+    "result": "InvalidCastException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      25
+    ],
+    "result": "ArgumentNullException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      26
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      27
+    ],
+    "result": "ArgumentException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      28
+    ],
+    "result": "ArgumentOutOfRangeException"
+  },
+  {
+    "method": "Error",
+    "args": [
+      29
+    ],
+    "result": "none"
+  },
+  {
+    "method": "Error",
+    "args": [
+      30
+    ],
+    "result": "none"
+  },
+  {
+    "method": "Error",
+    "args": [
+      31
+    ],
+    "result": "none"
+  },
+  {
+    "method": "Error",
+    "args": [
+      32
+    ],
+    "result": "none"
+  }
+]

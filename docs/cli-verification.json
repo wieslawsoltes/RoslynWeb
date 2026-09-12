@@ -1,24 +1,24 @@
 {
-  "testedAt": "2026-09-12T08:52:13.965Z",
+  "testedAt": "2026-09-12T10:33:56.343Z",
   "environment": {
     "node": "v24.19.0",
     "platform": "linux",
     "compiler": "Bundled Roslyn/.NET WebAssembly in the production Node Worker host",
     "subprocess": true
   },
-  "milliseconds": 96431,
+  "milliseconds": 93284,
   "passed": 30,
   "failed": 0,
   "checks": [
     {
       "name": "Help, version and malformed options work without loading runtime assets",
       "passed": true,
-      "milliseconds": 243
+      "milliseconds": 212
     },
     {
       "name": "Compiler information loads actual Roslyn and the complete bundled reference set",
       "passed": true,
-      "milliseconds": 687,
+      "milliseconds": 499,
       "evidence": {
         "bridgeVersion": "0.9.0",
         "roslynVersion": "5.0.0.0",
@@ -30,12 +30,12 @@
     {
       "name": "C# compiles to genuine PE, portable PDB and XML documentation",
       "passed": true,
-      "milliseconds": 2228
+      "milliseconds": 2326
     },
     {
       "name": "An existing PE executes through the wasm backend",
       "passed": true,
-      "milliseconds": 775,
+      "milliseconds": 650,
       "evidence": {
         "backend": "wasm",
         "stdout": "cli:42\n"
@@ -44,7 +44,7 @@
     {
       "name": "An existing PE executes through the javascript backend",
       "passed": true,
-      "milliseconds": 1042,
+      "milliseconds": 643,
       "evidence": {
         "backend": "javascript",
         "stdout": "cli:42\n"
@@ -53,7 +53,7 @@
     {
       "name": "An existing PE executes through the native-wasm backend",
       "passed": true,
-      "milliseconds": 1185,
+      "milliseconds": 644,
       "evidence": {
         "backend": "native-wasm",
         "stdout": "cli:42\n"
@@ -62,7 +62,7 @@
     {
       "name": "An existing PE executes through the auto backend",
       "passed": true,
-      "milliseconds": 1216,
+      "milliseconds": 1043,
       "evidence": {
         "backend": "javascript",
         "stdout": "cli:42\n"
@@ -71,17 +71,17 @@
     {
       "name": "C# source and a saved tagged artifact are accepted as execution inputs",
       "passed": true,
-      "milliseconds": 3498
+      "milliseconds": 2600
     },
     {
       "name": "Reference listing, PE inspection and both compatibility analyzers expose their public results",
       "passed": true,
-      "milliseconds": 3602
+      "milliseconds": 2824
     },
     {
       "name": "C# emits reusable JavaScript and native Wasm artifacts",
       "passed": true,
-      "milliseconds": 5626,
+      "milliseconds": 4916,
       "evidence": {
         "standaloneArtifactsExecuteWithoutDotnet": true
       }
@@ -89,42 +89,42 @@
     {
       "name": "Existing PE images emit executable JavaScript and Wasm",
       "passed": true,
-      "milliseconds": 2214
+      "milliseconds": 1762
     },
     {
       "name": "Standard input compiles and program arguments remain separate from CLI arguments",
       "passed": true,
-      "milliseconds": 3343
+      "milliseconds": 2822
     },
     {
       "name": "Roslyn diagnostics retain file coordinates and compilation failures exit one",
       "passed": true,
-      "milliseconds": 1716
+      "milliseconds": 1857
     },
     {
       "name": "Typed managed invocation preserves integers above JavaScript safe precision",
       "passed": true,
-      "milliseconds": 3396
+      "milliseconds": 2922
     },
     {
       "name": "Expression and dynamic function commands compile and invoke real C#",
       "passed": true,
-      "milliseconds": 3823
+      "milliseconds": 3510
     },
     {
       "name": "Single requests, batch files and scripts expose the same managed compiler API",
       "passed": true,
-      "milliseconds": 5581
+      "milliseconds": 5980
     },
     {
       "name": "DLL references are available to source compilation and runtime linking",
       "passed": true,
-      "milliseconds": 5673
+      "milliseconds": 5996
     },
     {
       "name": "One session retains results, compilation caches, dynamic functions and CLR object handles",
       "passed": true,
-      "milliseconds": 2511,
+      "milliseconds": 2493,
       "evidence": {
         "requests": 14,
         "compilationReused": true,
@@ -134,42 +134,42 @@
     {
       "name": "Sessions support persistent managed files and explicit workspace disposal",
       "passed": true,
-      "milliseconds": 1991
+      "milliseconds": 1870
     },
     {
       "name": "Real MSBuild project evaluation and build honor references, generated sources and resources",
       "passed": true,
-      "milliseconds": 5268
+      "milliseconds": 5543
     },
     {
       "name": "Resource creation and actual native WASI commands are accessible through the public protocol",
       "passed": true,
-      "milliseconds": 575
+      "milliseconds": 601
     },
     {
       "name": "Resource and native command conveniences write genuine binaries and captured files",
       "passed": true,
-      "milliseconds": 1341
+      "milliseconds": 1500
     },
     {
       "name": "Compiler extension DLLs run real Roslyn source generators and analyzers from CLI flags",
       "passed": true,
-      "milliseconds": 5327
+      "milliseconds": 5454
     },
     {
       "name": "Managed MSBuild tasks compile and execute with typed inputs and outputs",
       "passed": true,
-      "milliseconds": 2384
+      "milliseconds": 2573
     },
     {
       "name": "An official local NuGet package compiles and executes using the managed backend",
       "passed": true,
-      "milliseconds": 3517
+      "milliseconds": 4135
     },
     {
       "name": "NuGet restore resolves a genuine package from a local v3 HTTP feed",
       "passed": true,
-      "milliseconds": 3799,
+      "milliseconds": 3906,
       "evidence": {
         "requests": 3,
         "externalNetwork": false,
@@ -180,7 +180,7 @@
     {
       "name": "Execution errors and bounded execution are machine-readable and terminate workers",
       "passed": true,
-      "milliseconds": 4065,
+      "milliseconds": 4187,
       "evidence": {
         "timeoutExitCode": 124,
         "workerTerminated": true
@@ -189,20 +189,20 @@
     {
       "name": "Standalone generated JavaScript and Wasm honor execution timeouts without Roslyn",
       "passed": true,
-      "milliseconds": 3921
+      "milliseconds": 3870
     },
     {
       "name": "SIGINT stops a session and disposes its compiler worker",
       "passed": true,
-      "milliseconds": 485
+      "milliseconds": 561
     },
     {
       "name": "npm tarball installs offline and its executable loads all bundled compiler assets",
       "passed": true,
-      "milliseconds": 15392,
+      "milliseconds": 15361,
       "evidence": {
-        "files": 818,
-        "packedBytes": 52802510,
+        "files": 828,
+        "packedBytes": 48470962,
         "version": "0.9.0",
         "installedOffline": true
       }

@@ -173,7 +173,7 @@ export function selectJavaScriptExports(model, options = {}) {
       if (type.startsWith('System.Linq.') || type.startsWith('System.Collections.')) {
         for (const parameter of ref.parameters ?? []) {
           const parameterType = substituteType(parameter.type ?? parameter,splitTypeArguments(type),ref.genericArguments ?? []);
-          if (/^System\.Collections\.(?:Generic\.)?IEnumerable/.test(parameterType)) retainEnumerable(parameterType);
+          if (/^System\.Collections\.(?:Generic\.)?(?:IEnumerable|IDictionary)/.test(parameterType)) retainEnumerable(parameterType);
         }
       }
       if (type.startsWith('System.Collections.') || type.startsWith('System.Linq.') || type === 'System.Array' || /^System\.(?:Object|ValueType|ValueTuple(?:`\d+)?(?:<.*>)?|Tuple(?:`\d+)?(?:<.*>)?|Nullable`1<.*>|IComparable(?:`1<.*>)?|IEquatable`1<.*>)$/.test(type) && /^(?:Equals|GetHashCode|Compare|CompareTo)$/.test(ref.name)) retainCallbacks(['Equals','GetHashCode','CompareTo','Compare']);

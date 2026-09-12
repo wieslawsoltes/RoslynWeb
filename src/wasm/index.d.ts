@@ -81,6 +81,8 @@ export interface WasmCompilation {
   [key: string]: unknown;
 }
 export interface WasmLoadOptions {
+  /** Virtual managed environment identity. UserName defaults to "Browser"; no host OS identity is read. */
+  environment?: {userName?: string};
   /** Reuse a bounded cache of native compiled WebAssembly modules (default true). */
   cache?: boolean;
   /** Maximum executed IL instructions, counted at native basic-block boundaries. Default 10,000,000. */

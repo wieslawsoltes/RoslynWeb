@@ -1,0 +1,89 @@
+{
+  "runtime": "10.0.0",
+  "results": {
+    "Errors": [
+      "True",
+      "attribute failure",
+      "null"
+    ],
+    "Inheritance": [
+      "3",
+      "derived",
+      "base-one",
+      "base-two",
+      "1",
+      "derived",
+      "0",
+      "2",
+      "method-derived",
+      "method-base",
+      "1",
+      "field-base",
+      "1",
+      "property-derived"
+    ],
+    "Nulls": [
+      "True",
+      "True",
+      "True",
+      "True",
+      "True",
+      "True"
+    ],
+    "PseudoDefinitions": [
+      "True",
+      "False",
+      "True"
+    ],
+    "Queries": [
+      "True",
+      "0",
+      "2",
+      "hello",
+      "3",
+      "1",
+      "1"
+    ],
+    "Values": [
+      "hello",
+      "System.Int32",
+      "18446744073709551615",
+      "9223372036854775809",
+      "42",
+      "3",
+      "-4",
+      "left",
+      null,
+      "right",
+      "System.String",
+      "System.Int32[]",
+      "field",
+      "property",
+      "9223372036854775809",
+      "1",
+      "9223372036854775809",
+      "System.Int32",
+      "True",
+      "text"
+    ]
+  },
+  "filters": {
+    "IProbeTag": {
+      "arrayType": "IProbeTag[]",
+      "count": 1
+    },
+    "System.Int32": {
+      "arrayType": "System.Object[]",
+      "count": 0
+    },
+    "System.Object": {
+      "arrayType": "System.Object[]",
+      "count": 1
+    },
+    "System.String": {
+      "arrayType": "System.String[]",
+      "count": 0
+    }
+  },
+  "sourceSha256": "cdfbd1d16f34d6396f04287b731215c4382130936b39ff8b466ef76d7077a9d2"
+}

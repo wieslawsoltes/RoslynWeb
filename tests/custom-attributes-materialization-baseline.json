@@ -1,0 +1,36 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": "7c3631c0739c2a361d38daf8ef1569c93b431796838c42727d6cf40c2e21e32b",
+  "cases": [
+    {
+      "type": "Probe",
+      "method": "Generic",
+      "result": "same"
+    },
+    {
+      "type": "Probe",
+      "method": "Boxed",
+      "result": "System.Int32:42:43:44"
+    },
+    {
+      "type": "Probe",
+      "method": "Array",
+      "result": "System.Int32:System.Int64:42:44"
+    },
+    {
+      "type": "Probe",
+      "method": "TypeArg",
+      "result": "same"
+    },
+    {
+      "type": "Probe",
+      "method": "LongArg",
+      "result": "18446744073709551615"
+    },
+    {
+      "type": "GenericNamedProbe",
+      "method": "Named",
+      "result": "7:9"
+    }
+  ]
+}

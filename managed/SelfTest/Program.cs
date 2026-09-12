@@ -157,6 +157,7 @@ var resourceRun = Parse(await CompilerBridge.Run(Image(resourceResult),"[]"));
 Check(resourceRun["success"]!.GetValue<bool>() && resourceRun["stdout"]!.GetValue<string>().Replace("\r","").Trim() == "raw-resource\nHello resource\n42", "real raw manifest and typed RESX resource blobs are emitted and loaded by ResourceManager");
 Check(!Parse(CompilerBridge.ConvertResx("<root><data name=\"bad\" type=\"System.Drawing.Bitmap\"><value>anything</value></data></root>"))["success"]!.GetValue<bool>(), "unsupported serialized resource types are rejected explicitly");
 Check(!Parse(CompilerBridge.ConvertResx("<!DOCTYPE root [<!ENTITY value SYSTEM 'file:///etc/passwd'>]><root><data name=\"bad\"><value>&value;</value></data></root>"))["success"]!.GetValue<bool>(), "RESX DTD and external entity loading are disabled");
+assertions += await CustomAttributeMetadataTests.Run();
 assertions += await ExecutionFilesTests.Run();
 assertions += await CompilationCacheTests.Run();
 Console.WriteLine($"ALL {assertions} MANAGED ASSERTIONS PASSED");

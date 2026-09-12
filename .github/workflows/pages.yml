@@ -12,7 +12,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
@@ -47,11 +47,14 @@ jobs:
           DOTNET=dotnet node tests/float-literals-verify-native.mjs
           DOTNET=dotnet node tests/value-interfaces-verify-native.mjs
           DOTNET=dotnet node tests/events-verify-native.mjs
+          DOTNET=dotnet npm run test:compiler-services-native
       - name: Reproduce unchanged desktop DLL fixtures against Microsoft references
         run: bash scripts/prepare-desktop-fixtures.sh --check
       - name: JavaScript and project tests
         run: npm test
       - name: CAD framework and event compiler differential tests
+        env:
+          DOTNET: dotnet
         run: |
           npm run test:events
           npm run test:cad-bcl
@@ -92,6 +95,7 @@ jobs:
           npm run test:netdxf
           npm run test:netdxf-compilers
           npm run test:netdxf-entities
+          npm run test:netdxf-document
           node tests/argument-exceptions-integration.mjs
       - name: TypeScript public API contract
         run: npx --yes --package typescript@5.9.3 tsc --strict --noEmit --module NodeNext --moduleResolution NodeNext --target ES2022 tests/compiler-types.test.ts
@@ -161,6 +165,8 @@ jobs:
             THIRD-PARTY-NOTICES.md
             !managed/**/bin/**
             !managed/**/obj/**
+            !tests/**/bin/**
+            !tests/**/obj/**
             !managed/publish/**
             !managed/RoslynPatched/**
       - name: Upload Pages artifact

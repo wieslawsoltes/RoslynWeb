@@ -1,3 +1,5 @@
+import {isTemporalField} from './cad-time.mjs';
+import {isPlatformField} from './platform-fields.mjs';
 import {parseFloatBits, floatNumberFromBits, floatLiteralExecutionBits} from './float-bits.mjs';
 import { ILCompilationError, capabilities } from './capabilities.mjs';
 import { createRuntime, methodKey } from './runtime.mjs';
@@ -5,11 +7,13 @@ import { buildBasicBlocks, analyzeInt32Method, generateInt32Method, analyzeNumer
 import { genericDefinitionName, matchesMethodReference } from './generics.mjs';
 import { isExtendedBuiltin } from './framework.mjs';
 import { isReflectionBuiltin } from './reflection.mjs';
+import { isRegexBuiltin } from './regex.mjs';
 import { isEmitBuiltin, isEmitField } from './reflection-emit.mjs';
 import { isCollectionsBuiltin } from './collections-extra.mjs';
 import { isIoBuiltin } from './io.mjs';
 import { isEventBuiltin, isEventField } from './events.mjs';
 import { isCadBuiltin } from './cad-bcl.mjs';
+import {isCadStringsBuiltin} from './cad-strings.mjs';
 import { isSpanBuiltin } from './spans.mjs';
 import { isJavaScriptIntrinsic } from './intrinsics.mjs';
 import { isStandardValueBuiltin, isStandardValueField } from './standard-values.mjs';
@@ -45,7 +49,7 @@ export function isOpcodeSupported(opcode) {
 /** This is a deliberately finite bridge, not a replacement implementation of the .NET BCL. */
 export function isBuiltinCandidate(ref, context) {
   if (!ref || typeof ref !== 'object') return false;
-  if (isSpanBuiltin(ref, context) || isCadBuiltin(ref) || isEventBuiltin(ref) || isJavaScriptIntrinsic(ref) || isStandardValueBuiltin(ref) || isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
+  if (isRegexBuiltin(ref) || isSpanBuiltin(ref, context) || isCadStringsBuiltin(ref) || isCadBuiltin(ref) || isEventBuiltin(ref) || isJavaScriptIntrinsic(ref) || isStandardValueBuiltin(ref) || isCollectionsBuiltin(ref) || isExtendedBuiltin(ref) || isReflectionBuiltin(ref) || isEmitBuiltin(ref) || isIoBuiltin(ref)) return true;
   if (/\[[,]+\]$/.test(ref.declaringType ?? '')) { const rank = ref.declaringType.slice(ref.declaringType.lastIndexOf('[')).split(',').length, n = ref.parameters?.length ?? 0; return ref.name === '.ctor' && n === rank || ['Get','Address'].includes(ref.name) && n === rank || ref.name === 'Set' && n === rank + 1; }
   const type = String(ref.declaringType ?? '').split(/[<\[]/)[0], name = ref.name, p = (ref.parameters ?? []).map(p => p.type ?? p), n = p.length;
   const numeric = t => /^System\.(Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|Int64|UInt64|IntPtr|UIntPtr|Single|Double)$/.test(t);
@@ -109,6 +113,7 @@ export function isBuiltinCandidate(ref, context) {
   if (type === 'System.MathF') return exact['System.Math'].includes(name);
   if (exact[type]?.includes(name)) return true;
   if (numeric(type)) return name === 'ToString' && (n === 0 || n === 1 && p[0] === 'System.String') || ['Equals', 'CompareTo', 'IsNaN', 'IsInfinity'].includes(name) && n === 1;
+  if (/^System\..*Exception$/.test(type) && name === 'GetType') return ref.isStatic === false && n === 0 && ref.returnType === 'System.Type' && !(ref.genericParameterCount ?? 0) && !ref.genericArguments?.length;
   if (['System.ArgumentException', 'System.ArgumentNullException', 'System.ArgumentOutOfRangeException'].includes(type)) {
     if (ref.isStatic !== false || (ref.genericParameterCount ?? 0) !== 0 || ref.genericArguments?.length) return false;
     if (name === '.ctor' && ref.returnType === 'System.Void') {
@@ -120,6 +125,12 @@ export function isBuiltinCandidate(ref, context) {
     return n === 0 && (['get_Message', 'get_ParamName', 'ToString'].includes(name) && ref.returnType === 'System.String'
       || name === 'get_InnerException' && ref.returnType === 'System.Exception'
       || type === 'System.ArgumentOutOfRangeException' && name === 'get_ActualValue' && ref.returnType === 'System.Object');
+  }
+  if (['System.IO.FileNotFoundException', 'System.IO.FileLoadException'].includes(type)) {
+    if (ref.isStatic !== false || (ref.genericParameterCount ?? 0) !== 0 || ref.genericArguments?.length) return false;
+    if (name === '.ctor' && ref.returnType === 'System.Void') return ['', 'System.String', 'System.String,System.Exception', 'System.String,System.String', 'System.String,System.String,System.Exception'].includes(p.join(','));
+    return n === 0 && (['get_Message', 'get_FileName', 'get_FusionLog', 'ToString'].includes(name) && ref.returnType === 'System.String'
+      || name === 'get_InnerException' && ref.returnType === 'System.Exception');
   }
   if (/^System\..*Exception$/.test(type)) return name === '.ctor' && (n === 0 || n === 1 && p[0] === 'System.String' || n === 2 && p[0] === 'System.String' && p[1] === 'System.Exception') || ['get_Message', 'get_InnerException', 'ToString'].includes(name) && n === 0;
   if (/^System\.(Action|Func|Predicate|Comparison)(`\d+)?$/.test(type)) return name === '.ctor' && n === 2 || name === 'Invoke';
@@ -172,7 +183,7 @@ export function analyzeAssembly(model, options = {}) {
       if (op === 'switch' && (!Array.isArray(instruction.operand) || instruction.operand.some(target => !offsets.has(Number(target))))) add('IL_INVALID_SWITCH', 'Switch has an invalid branch target.', instruction);
       if (fields.test(op)) {
         const f = instruction.operand, key = `${f?.declaringType}::${f?.name}`;
-        const builtin = op === 'ldsfld' && isEventField(f) || isStandardValueField(f) || op === 'ldsfld' && (key === 'System.String::Empty' || key === 'System.Type::EmptyTypes' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) || (op === 'ldsfld' || op === 'ldsflda') && isEmitField(f);
+        const builtin = op === 'ldsfld' && isPlatformField(f) || (op === 'ldsfld' || op === 'ldsflda') && isTemporalField(f) || op === 'ldsfld' && isEventField(f) || isStandardValueField(f) || op === 'ldsfld' && (key === 'System.String::Empty' || key === 'System.Type::EmptyTypes' || ['System.IntPtr::Zero', 'System.UIntPtr::Zero'].includes(key)) || (op === 'ldsfld' || op === 'ldsflda') && isEmitField(f);
         const external = options.externals instanceof Map ? options.externals.get(key) : options.externals?.[key];
         if (!fieldKeys.has(key) && !fieldKeys.has(`${genericDefinitionName(f?.declaringType)}::${f?.name}`) && !builtin && !(external && typeof external.get === 'function')) add('IL_UNRESOLVED_FIELD', `No linked storage or JavaScript external for field '${key}'.`, instruction);
       }

@@ -2,7 +2,7 @@
 
 RoslynWeb builds the **complete 272-file netDxf library** from the [`netstandard` branch](https://github.com/wieslawsoltes/netDxf/tree/5b562312f683fc635405c149537ca488e4ec4d39), pinned at commit `5b562312f683fc635405c149537ca488e4ec4d39`. The source snapshot is under `vendor/netDxf/`; its provenance manifest records every source file's SHA-256. The build invokes the same Roslyn compiler running inside .NET WebAssembly that powers the editor and CLI.
 
-The full reader/writer executes in the **managed .NET WebAssembly runtime**. This is real browser-local execution of the complete compiled library. It is not a claim that the entire library has been translated into standalone native Wasm or JavaScript. The generated compiler backends have their own explicit compatibility checks and a separately tested CAD kernel, described below.
+The document API executes the full reader/writer in the **managed .NET WebAssembly runtime**. The generated JavaScript and native Wasm backends also compile and execute reader/writer method bodies from this complete library. Separate strict-compilation and document-execution tests check those paths against managed results. Generated programs use the supported framework services described below; successful compilation does not establish every possible API, input value, or drawing as compatible.
 
 ## Run the sample
 
@@ -160,12 +160,16 @@ The viewer has a defined entity surface. Unsupported entities are reported in st
 
 The upstream library supports text and binary DXF versions AutoCAD 2000, 2004, 2007, 2010, 2013, and 2018. It does not read DWG; its upstream documentation excludes proprietary REGION, SURFACE and 3DSOLID data and dynamic blocks. A complete source build cannot restore information the upstream parser does not support. See the [pinned upstream README](https://github.com/wieslawsoltes/netDxf/blob/5b562312f683fc635405c149537ca488e4ec4d39/README.md).
 
-Whole-library direct native-Wasm and JavaScript compilation are checked separately from managed execution. Unsupported calls and types cause strict compilation diagnostics. Do not infer whole-library compatibility from a successful selected geometry kernel. The executable backend report in `docs/netdxf-backends-verification.json` records the exact tested exports, oracle comparisons, remaining diagnostic counts and representative failures.
+Whole-library direct native-Wasm and JavaScript compilation are checked separately from managed execution. The executable backend report in `docs/netdxf-backends-verification.json` records the tested export selection, compatibility diagnostics and execution comparisons. The native whole-library probe selects closed public static exports and their reachable methods; it does not export every instance method independently. Unsupported calls and types still produce strict diagnostics. Values outside an admitted framework service's documented domain fail explicitly during execution.
 
-At this pinned source revision, whole-library strict emission reports **110 JavaScript diagnostics** (down from 335 before this update) and **169 native-Wasm diagnostics** (down from 616), under the native compiler's default selection of closed public static exports and their reachable methods. The native probe does not enumerate every instance method as an independent export. These count unsupported call sites, fields and type uses, not unique missing features. Remaining dependencies include file/encoding/stream overloads, floating-point parsing, DateTime/TimeSpan uses, regular expressions, reflection, and additional collection/string operations. Reader/writer execution continues through the managed Wasm library. The explicit reader/writer wrapper reports 112 JS and 130 native-Wasm diagnostics. The complete details are preserved in the executable report.
+The whole-library probes and explicit reader/writer wrapper now emit with **zero compatibility diagnostics** on both generated backends under their stated export selections. The default whole-library probes retain 4,476 JavaScript methods and 2,934 native Wasm methods; the document wrapper retains 4,477 and 2,881 respectively. The report marks whole-library emission separately from actual invocation, so an emitted method is not counted as an executed test. Actual generated execution creates a drawing containing a LINE and a CIRCLE, writes it as ASCII or binary DXF, and reloads those bytes through netDxf. Each backend returns the same semantic result as managed .NET Wasm. The framework additions that make this possible include floating parsing and binary conversion, exact temporal values, virtual streams/files and code pages, collection and string operations, regular-expression splitting, and metadata-driven attribute construction.
 
 
-Eleven selected geometry, entity and color methods emit with zero compatibility diagnostics and match 279 managed-oracle input cases on both generated backends. The separate entity suite exercises constructor validation, property mutations, layer events, polyline operations, indexed colors, exceptions and circle cloning. `CircleClone` is now a required execution check on both generated backends: real netDxf cloning runs compiled method bodies and matches managed Wasm. Its conservative closure also retains related `ICloneable` implementations. This does not establish complete reader/writer or arbitrary-clone compatibility. No source methods are removed from the complete managed netDxf DLL.
+The separate [document execution report](netdxf-document-verification.json) records **72 successful writes and 216 successful reads** across managed .NET Wasm, generated JavaScript and native Wasm. Each backend writes 24 cases: AutoCAD 2000, 2004, 2007, 2010, 2013 and 2018; ASCII and binary formats; and legacy/Unicode layer-name and text profiles. Every writer's output is read by every backend, so all nine writer/reader combinations pass 24 cases each. The fresh adapter emits 4,482 JavaScript methods and 2,893 native Wasm methods with zero diagnostics; no failed execution is replaced by another backend.
+
+Each document contains LINE, CIRCLE, ARC, LWPOLYLINE, TEXT and MTEXT entities. The 83-field signature checks version and entity counts, layer names and colors, coordinates, radii and angles, line thickness/scale, polyline closure/elevation/bulges/widths, and text content/position/size/rotation. Strings match exactly; numeric values use a tolerance of `1e-11 × max(1, |expected|)` to allow equivalent floating-point formatting. Handles, comments and timestamps are excluded. This verifies those document semantics and does not establish every entity or arbitrary input file as compatible.
+
+Eleven selected geometry, entity and color methods also emit with zero compatibility diagnostics and match 279 managed-oracle input cases on both generated backends. The separate entity suite exercises constructor validation, property mutations, layer events, polyline operations, indexed colors, exceptions and circle cloning. `CircleClone` is a required execution check on both generated backends: real netDxf cloning runs compiled method bodies and matches managed Wasm. Its conservative closure retains related `ICloneable` implementations. These checks establish the executed cases, while arbitrary clone implementations and other document inputs remain subject to the framework boundaries. No source methods are removed from the complete managed netDxf DLL.
 
 To compile your own cloning operation after registering netDxf:
 
@@ -198,9 +202,9 @@ Use `emitJavaScript` with the same export selection and `strict: true` for the J
 
 - The pinned netDxf reader skips HATCH polyline boundary group 73, and its boundary clone omits `IsClosed`. After export/reload, this loses the closing edge or closing bulge. The scene bridge closes only the temporary converted perimeter before tessellation. All 272 vendor sources remain byte-for-byte pinned. The managed curved-boundary tests cover ASCII, binary, opposite-format reload, clockwise and counterclockwise arcs/ellipses, both bulge signs, and tilted block transforms.
 - The bundled .NET 10.0.0 WebAssembly interpreter differs from native .NET for two repeated multicast delegate sequence-removal cases. `Delegate.RemoveAll(sequence + sequence, sequence)` throws `System.IndexOutOfRangeException`; nested `Delegate.Remove` returns an incorrect non-null result. The generated JavaScript/native-Wasm delegate implementation passes the native CLR oracle for these cases. `tests/events-verify-native.mjs` reproduces the native baseline, and `tests/events-integration.mjs` records the managed-Wasm discrepancy without treating it as correct expected behavior.
-- JSON string and char values now preserve every CLR UTF-16 code unit, including isolated surrogates, in source input, invocation arguments/results, IL string literals and string constants. The bridge writes isolated units as JSON escapes and decodes them losslessly. `tests/utf16-integration.mjs` verifies real Roslyn compilation and all five generated compiler modes. Dictionary keys containing isolated surrogates are explicitly rejected; ordinary Unicode keys work.
+- JSON string and char values now preserve every CLR UTF-16 code unit, including isolated surrogates, in source input, invocation arguments/results, IL string literals and string constants. The bridge writes isolated units as JSON escapes and decodes them losslessly. `tests/utf16-integration.mjs` verifies real Roslyn compilation and all five generated compiler modes. The managed JSON bridge explicitly rejects dictionary keys containing isolated surrogates; ordinary Unicode keys work. Generated-runtime ordinal comparison itself preserves isolated surrogates.
 
-See [CAD framework services](cad-bcl.md) and [numeric formatting](CAD-NUMERIC-FORMATTING.md) for exact admitted signatures, providers, and runtime value restrictions. A supported signature can still contain an unsupported culture or format value; such execution fails explicitly and is never rerun automatically on another backend.
+See the [compiled CAD service guide](CAD-COMPILER-SERVICES.md), [enum and core CAD framework services](cad-bcl.md), and [numeric formatting](CAD-NUMERIC-FORMATTING.md) for exact admitted signatures, providers, and runtime value restrictions. A supported signature can still contain an unsupported culture or format value; such execution fails explicitly and is never rerun automatically on another backend.
 
 ## Observed performance
 
@@ -209,11 +213,15 @@ These are local verification observations, not a cross-device benchmark. Reports
 | Operation | Observed result |
 | --- | --- |
 | Full 272-file source build in Node-hosted .NET Wasm, including startup and bridge | About 24.2 seconds |
-| Full source compilation in Chromium sample | About 26.6 seconds for the tested source-mode restart |
-| Prebuilt library/sample startup over localhost | About 1.8 seconds |
+| Full source compilation in Chromium sample | About 25.7 seconds for the tested source-mode restart |
+| Prebuilt library/sample startup over localhost | About 1.5 seconds |
 | Compiled library | 767,488 bytes; all source files retained |
 | Managed scene bridge | 43,520 bytes |
 | Generated sample display | 989 line segments, 637 triangles, and four text labels |
+| Complete three-backend document execution matrix | About 11 minutes 34 seconds for fresh compilation, 72 writes and 216 semantic reads |
+| Native analysis of the full reader/writer wrapper | 209.3 seconds before per-analysis caches; 18.4 seconds after, with identical ordered methods, diagnostics, dependencies and instruction count |
+
+The native-analysis comparison used the same inspected reader/writer wrapper and pinned library: 2,881 retained methods, 95,886 instructions and zero diagnostics before and after. The caches reuse unchanged framework-callback and closed-generic analysis within one emission. The roughly 11.4-fold improvement describes this local analysis workload, not end-to-end compilation or execution on other machines.
 
 Use the prebuilt path for normal startup and keep one compiler/session alive for repeated operations. The sample creates GPU buffers and label textures once per drawing; view/layer changes submit new frames without reloading the library, reshaping text, or recompiling C#. Text texture and buffer budgets bound GPU allocations. Unsupported crossing, touching, self-intersecting, or nonplanar hatch boundaries produce issues instead of an invented fill.
 
@@ -223,6 +231,7 @@ Use the prebuilt path for normal startup and keep one compiler/session alive for
 npm run build:netdxf
 npm run test:netdxf
 npm run test:netdxf-compilers
+npm run test:netdxf-document
 npm run test:netdxf-entities
 npm run test:compiler-services
 npm test
@@ -230,6 +239,6 @@ npm run pages:build
 npm run test:netdxf-browser
 ```
 
-The integration suite loads the complete library in actual .NET WebAssembly, exercises text/binary save and reload, source compilation, document lifetime and error behavior, and parses the pinned upstream DXF fixtures. The compiler suite compares generated backends with managed execution. The browser suite exercises the actual sample at a repository subpath and tests WebGPU rendering and unavailable-adapter behavior. Browser testing uses Playwright installed separately; CI installs its pinned Chromium runtime.
+The integration suite loads the complete library in actual .NET WebAssembly, exercises text/binary save and reload, source compilation, document lifetime and error behavior, and parses the pinned upstream DXF fixtures. The compiler suite compares generated backends with managed execution and requires generated reader/writer execution. The document suite compiles a separate six-entity adapter and checks save/load semantics across managed Wasm, generated JavaScript and native Wasm, six DXF versions, both file formats and legacy/Unicode text profiles. The browser suite exercises the actual sample at a repository subpath and tests WebGPU rendering and unavailable-adapter behavior. Browser testing uses Playwright installed separately; CI installs its pinned Chromium runtime.
 
 The source is MIT licensed; embedded Geometric Tools translations retain the Boost Software License and their original notices. See `THIRD-PARTY-NOTICES.md` and the license files in the vendored snapshot.

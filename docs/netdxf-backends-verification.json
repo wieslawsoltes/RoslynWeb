@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-12T08:51:59.433Z",
+  "testedAt": "2026-09-12T10:29:45.749Z",
   "upstream": {
     "repository": "https://github.com/wieslawsoltes/netDxf",
     "commit": "5b562312f683fc635405c149537ca488e4ec4d39"
@@ -8,448 +8,19 @@
   "sourceCount": 272,
   "fullLibrarySupport": {
     "javascript": {
-      "supported": false,
-      "diagnosticCount": 110,
-      "codes": {
-        "IL_UNRESOLVED_CALL": 107,
-        "IL_UNRESOLVED_FIELD": 3
-      },
-      "dependencies": {
-        "System.Double": 15,
-        "System.IO.File": 10,
-        "System.String": 9,
-        "System.IO.FileLoadException": 8,
-        "System.Text.Encoding": 8,
-        "System.BitConverter": 7,
-        "System.DateTime": 6,
-        "System.Environment": 6,
-        "System.Array": 5,
-        "System.Collections.Hashtable": 5,
-        "System.IO.FileInfo": 4,
-        "System.Reflection.MemberInfo": 4,
-        "System.Text.RegularExpressions.Regex": 3,
-        "System.IO.FileNotFoundException": 3,
-        "System.Collections.Generic.List`1<!0>": 3,
-        "System.IO.BinaryWriter": 2,
-        "System.TimeSpan": 2,
-        "System.StringComparer": 1,
-        "System.IO.FileSystemInfo": 1,
-        "System.Attribute": 1,
-        "System.Convert": 1,
-        "System.Text.StringBuilder": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 1,
-        "System.IO.Path": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 1
-      },
-      "examples": [
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::FromTrueColor(System.Int32)",
-          "token": 100663334,
-          "offset": 1,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.BitConverter::GetBytes(System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToTrueColor(netDxf.AciColor)",
-          "token": 100663335,
-          "offset": 56,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.BezierCurveCubic::Reverse()",
-          "token": 100663358,
-          "offset": 6,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Array::Reverse(!!0[])'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.BezierCurveQuadratic::Reverse()",
-          "token": 100663373,
-          "offset": 6,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Array::Reverse(!!0[])'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::.ctor(netDxf.Header.HeaderVariables,System.Boolean,netDxf.Collections.SupportFolders)",
-          "token": 100663403,
-          "offset": 102,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.StringComparer::get_InvariantCultureIgnoreCase()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "offset": 4,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "offset": 11,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::.ctor(System.String)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "offset": 25,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::get_DirectoryName()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Save(System.String,System.Boolean)",
-          "token": 100663456,
-          "offset": 1,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::.ctor(System.String)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Save(System.String,System.Boolean)",
-          "token": 100663456,
-          "offset": 9,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileSystemInfo::get_FullName()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Save(System.String,System.Boolean)",
-          "token": 100663456,
-          "offset": 38,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::get_DirectoryName()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
-          "token": 100663460,
-          "offset": 4,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValues()",
-          "token": 100663718,
-          "offset": 36,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetValues()",
-          "token": 100663719,
-          "offset": 38,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 16,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::.ctor()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 29,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::ContainsKey(System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 43,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 57,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 116,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 148,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::Add(System.Object,System.Object)'."
-        }
-      ],
-      "message": "Assembly 'netDxf.netstandard' is not fully supported by the JavaScript tier."
+      "supported": true,
+      "emitted": true,
+      "executed": false,
+      "diagnosticCount": 0,
+      "compiledMethods": 4476,
+      "selection": "Complete inspected library method set."
     },
     "nativeWasm": {
-      "supported": false,
-      "diagnosticCount": 169,
-      "codes": {
-        "WASM_UNSUPPORTED_TYPE": 85,
-        "WASM_UNRESOLVED_CALL": 70,
-        "WASM_STACK_TYPE": 11,
-        "WASM_UNRESOLVED_FIELD": 3
-      },
-      "dependencies": {
-        "System.DateTime": 41,
-        "System.Double": 15,
-        "System.TimeSpan": 14,
-        "System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>": 9,
-        "System.IO.FileMode": 9,
-        "System.IO.FileAccess": 9,
-        "System.IO.FileShare": 9,
-        "System.IO.File": 9,
-        "call": 9,
-        "System.IO.FileLoadException": 8,
-        "System.Text.Encoding": 8,
-        "System.String": 6,
-        "System.BitConverter": 5,
-        "System.Environment": 5,
-        "System.Text.RegularExpressions.Regex": 3,
-        "System.IO.FileInfo": 2,
-        "System.StringSplitOptions": 2,
-        "callvirt": 2,
-        "System.Reflection.MemberInfo": 2,
-        "System.StringComparer": 1,
-        "System.IO.Path": 1
-      },
-      "examples": [
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Units.DrawingTime::ToJulianCalendar(System.DateTime)",
-          "token": 100663936,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Units.DrawingTime::FromJulianCalendar(System.Double)",
-          "token": 100663937,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Units.DrawingTime::EditingTime(System.Double)",
-          "token": 100663938,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuadratic(System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
-          "token": 100665464,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveCubic(System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
-          "token": 100665465,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.GTE.RootsPolynomial::SolveQuartic(System.Double,System.Double,System.Double,System.Double,System.Double,System.Collections.Generic.SortedDictionary`2<System.Double,System.Int32>&)",
-          "token": 100665466,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.BitConverter::GetBytes(System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.AciColor::FromTrueColor(System.Int32)",
-          "token": 100663334,
-          "assembly": "netDxf.netstandard",
-          "offset": 1,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'.",
-          "method": "netDxf.netstandard|netDxf.AciColor::ToTrueColor(netDxf.AciColor)",
-          "token": 100663335,
-          "assembly": "netDxf.netstandard",
-          "offset": 56,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.IO.FileMode' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.IO.FileAccess' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.IO.FileShare' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_STACK_TYPE",
-          "message": "'call' expected externref, received i32.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.FileInfo::.ctor(System.String)'.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "assembly": "netDxf.netstandard",
-          "offset": 11,
-          "opcode": "newobj"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.FileInfo::get_DirectoryName()'.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "assembly": "netDxf.netstandard",
-          "offset": 25,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.IO.FileMode' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
-          "token": 100663460,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.IO.FileAccess' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
-          "token": 100663460,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.IO.FileShare' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
-          "token": 100663460,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
-          "token": 100663460,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_STACK_TYPE",
-          "message": "'call' expected externref, received i32.",
-          "method": "netDxf.netstandard|netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
-          "token": 100663460,
-          "assembly": "netDxf.netstandard",
-          "offset": 4,
-          "opcode": "call"
-        }
-      ],
-      "message": "Direct WebAssembly compilation is unsupported: Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; Value type 'System.Collections.Generic.SortedDictionary`2+Enumerator<System.Double,System.Int32>' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.BitConverter::GetBytes(System.Int32)'.; No native WebAssembly implementation or supported runtime service for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'.",
+      "supported": true,
+      "emitted": true,
+      "executed": false,
+      "diagnosticCount": 0,
+      "compiledMethods": 2934,
       "selection": "Default native exports: public closed static methods plus their reachable method closure."
     }
   },
@@ -457,7 +28,7 @@
     {
       "name": "All 272 unchanged pinned netDxf C# sources compile in Roslyn WebAssembly without diagnostics",
       "passed": true,
-      "milliseconds": 25175.953487,
+      "milliseconds": 25459.777619,
       "evidence": {
         "sources": 272,
         "diagnostics": 0,
@@ -466,34 +37,32 @@
       }
     },
     {
-      "name": "Full-library compiler probes preserve explicit unsupported diagnostics",
+      "name": "Full-library default JavaScript and native Wasm emission require zero diagnostics",
       "passed": true,
-      "milliseconds": 88492.339495,
+      "milliseconds": 33976.823133,
       "evidence": {
         "javascript": {
-          "supported": false,
-          "diagnostics": 110,
-          "codes": {
-            "IL_UNRESOLVED_CALL": 107,
-            "IL_UNRESOLVED_FIELD": 3
-          }
+          "supported": true,
+          "emitted": true,
+          "executed": false,
+          "diagnosticCount": 0,
+          "compiledMethods": 4476,
+          "selection": "Complete inspected library method set."
         },
         "nativeWasm": {
-          "supported": false,
-          "diagnostics": 169,
-          "codes": {
-            "WASM_UNSUPPORTED_TYPE": 85,
-            "WASM_UNRESOLVED_CALL": 70,
-            "WASM_STACK_TYPE": 11,
-            "WASM_UNRESOLVED_FIELD": 3
-          }
+          "supported": true,
+          "emitted": true,
+          "executed": false,
+          "diagnosticCount": 0,
+          "compiledMethods": 2934,
+          "selection": "Default native exports: public closed static methods plus their reachable method closure."
         }
       }
     },
     {
       "name": "Public kernel API compiles eleven real netDxf geometry, entity and color exports on all three backends",
       "passed": true,
-      "milliseconds": 2177.3155220000044,
+      "milliseconds": 2450.165939999999,
       "evidence": {
         "wasm": {
           "backend": "wasm",
@@ -514,7 +83,7 @@
           "artifactBytes": 4096,
           "compiledMethods": 11,
           "diagnostics": 0,
-          "compileMs": 394.5643199999904,
+          "compileMs": 472.6433190000025,
           "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
         },
         "javascript": {
@@ -533,10 +102,10 @@
             "TrueColorArgb"
           ],
           "assemblyBytes": 4096,
-          "artifactBytes": 2964703,
+          "artifactBytes": 3138642,
           "compiledMethods": 243,
           "diagnostics": 0,
-          "compileMs": 813.379237000001,
+          "compileMs": 910.3481509999983,
           "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
         },
         "native-wasm": {
@@ -555,10 +124,10 @@
             "TrueColorArgb"
           ],
           "assemblyBytes": 4096,
-          "artifactBytes": 4131227,
-          "compiledMethods": 162,
+          "artifactBytes": 4437664,
+          "compiledMethods": 164,
           "diagnostics": 0,
-          "compileMs": 968.9195150000014,
+          "compileMs": 1066.6530270000003,
           "scope": "Selected netDxf geometry, entity and color methods; DXF document I/O runs on .NET WebAssembly."
         }
       }
@@ -566,7 +135,7 @@
     {
       "name": "279 deterministic geometry, entity and color cases match the .NET WebAssembly oracle on both generated backends",
       "passed": true,
-      "milliseconds": 7125.575121000002,
+      "milliseconds": 7143.130431999998,
       "evidence": {
         "caseCount": 279,
         "cases": [
@@ -3773,7 +3342,7 @@
     {
       "name": "Real Bezier parameter validation throws ArgumentOutOfRangeException across all backends",
       "passed": true,
-      "milliseconds": 13.372755999997025,
+      "milliseconds": 14.573119000007864,
       "evidence": {
         "parameters": [
           -0.01,
@@ -3785,7 +3354,7 @@
     {
       "name": "Entity construction and RGB validation preserve ArgumentOutOfRangeException on all backends",
       "passed": true,
-      "milliseconds": 625.4535640000104,
+      "milliseconds": 783.4857639999973,
       "evidence": {
         "caseCount": 5,
         "backends": 3,
@@ -3793,30 +3362,88 @@
       }
     },
     {
-      "name": "The full managed library round-trips ASCII and binary DXF documents",
+      "name": "Managed, generated JavaScript and native Wasm execute ASCII and binary DXF round-trips",
       "passed": true,
-      "milliseconds": 111426.72146700001,
+      "milliseconds": 80798.84869299999,
       "evidence": {
         "managed": {
-          "supported": true
+          "formats": [
+            "ASCII",
+            "binary"
+          ],
+          "entities": [
+            "LINE",
+            "CIRCLE"
+          ],
+          "expectedResult": 101,
+          "supported": true,
+          "executed": true,
+          "roundTrips": [
+            {
+              "format": "ASCII",
+              "result": 101
+            },
+            {
+              "format": "binary",
+              "result": 101
+            }
+          ]
         },
         "javascript": {
-          "supported": false,
-          "diagnostics": 112,
-          "codes": {
-            "IL_UNRESOLVED_CALL": 109,
-            "IL_UNRESOLVED_FIELD": 3
-          }
+          "formats": [
+            "ASCII",
+            "binary"
+          ],
+          "entities": [
+            "LINE",
+            "CIRCLE"
+          ],
+          "expectedResult": 101,
+          "supported": true,
+          "emitted": true,
+          "executed": true,
+          "diagnosticCount": 0,
+          "compiledMethods": 4477,
+          "roundTrips": [
+            {
+              "format": "ASCII",
+              "result": 101,
+              "milliseconds": 7504.593792
+            },
+            {
+              "format": "binary",
+              "result": 101,
+              "milliseconds": 10080.901945999998
+            }
+          ]
         },
         "nativeWasm": {
-          "supported": false,
-          "diagnostics": 130,
-          "codes": {
-            "WASM_UNRESOLVED_CALL": 56,
-            "WASM_UNSUPPORTED_TYPE": 67,
-            "WASM_STACK_TYPE": 4,
-            "WASM_UNRESOLVED_FIELD": 3
-          }
+          "formats": [
+            "ASCII",
+            "binary"
+          ],
+          "entities": [
+            "LINE",
+            "CIRCLE"
+          ],
+          "expectedResult": 101,
+          "supported": true,
+          "emitted": true,
+          "executed": true,
+          "diagnosticCount": 0,
+          "compiledMethods": 2881,
+          "roundTrips": [
+            {
+              "format": "ASCII",
+              "result": 101,
+              "milliseconds": 7652.94680200002
+            },
+            {
+              "format": "binary",
+              "result": 101,
+              "milliseconds": 11226.768547000014
+            }
+          ]
         }
       }
     }
@@ -3830,7 +3457,6 @@
   },
   "documentIo": {
     "managed": {
-      "supported": true,
       "formats": [
         "ASCII",
         "binary"
@@ -3838,463 +3464,78 @@
       "entities": [
         "LINE",
         "CIRCLE"
+      ],
+      "expectedResult": 101,
+      "supported": true,
+      "executed": true,
+      "roundTrips": [
+        {
+          "format": "ASCII",
+          "result": 101
+        },
+        {
+          "format": "binary",
+          "result": 101
+        }
       ]
     },
     "javascript": {
-      "supported": false,
-      "diagnosticCount": 112,
-      "codes": {
-        "IL_UNRESOLVED_CALL": 109,
-        "IL_UNRESOLVED_FIELD": 3
-      },
-      "dependencies": {
-        "System.Double": 15,
-        "System.IO.File": 10,
-        "System.Text.Encoding": 9,
-        "System.String": 9,
-        "System.IO.FileLoadException": 8,
-        "System.BitConverter": 7,
-        "System.DateTime": 6,
-        "System.Environment": 6,
-        "System.Array": 5,
-        "System.Collections.Hashtable": 5,
-        "System.IO.FileInfo": 4,
-        "System.Reflection.MemberInfo": 4,
-        "System.Text.RegularExpressions.Regex": 3,
-        "System.IO.FileNotFoundException": 3,
-        "System.Collections.Generic.List`1<!0>": 3,
-        "System.IO.BinaryWriter": 2,
-        "System.TimeSpan": 2,
-        "System.Text.CodePagesEncodingProvider": 1,
-        "System.StringComparer": 1,
-        "System.IO.FileSystemInfo": 1,
-        "System.Attribute": 1,
-        "System.Convert": 1,
-        "System.Text.StringBuilder": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.Entities.AttributeDefinition>>": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<netDxf.Tables.DimensionStyleOverrideType,netDxf.Tables.DimensionStyleOverride>>": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<!0,!1>>": 1,
-        "System.IO.Path": 1,
-        "System.Collections.Generic.ICollection`1<System.Collections.Generic.KeyValuePair`2<System.String,netDxf.XData>>": 1
-      },
-      "examples": [
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "NetDxfIoProbe::RoundTrip(System.Boolean)",
-          "token": 100663297,
-          "offset": 0,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Text.CodePagesEncodingProvider::get_Instance()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "NetDxfIoProbe::RoundTrip(System.Boolean)",
-          "token": 100663297,
-          "offset": 5,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::FromTrueColor(System.Int32)",
-          "token": 100663334,
-          "offset": 1,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.BitConverter::GetBytes(System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.AciColor::ToTrueColor(netDxf.AciColor)",
-          "token": 100663335,
-          "offset": 56,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.BitConverter::ToInt32(System.Byte[],System.Int32)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.BezierCurveCubic::Reverse()",
-          "token": 100663358,
-          "offset": 6,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Array::Reverse(!!0[])'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.BezierCurveQuadratic::Reverse()",
-          "token": 100663373,
-          "offset": 6,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.Array::Reverse(!!0[])'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::.ctor(netDxf.Header.HeaderVariables,System.Boolean,netDxf.Collections.SupportFolders)",
-          "token": 100663403,
-          "offset": 102,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.StringComparer::get_InvariantCultureIgnoreCase()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "offset": 4,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "offset": 11,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::.ctor(System.String)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Load(System.String,System.Collections.Generic.IEnumerable`1<System.String>)",
-          "token": 100663452,
-          "offset": 25,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::get_DirectoryName()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Save(System.String,System.Boolean)",
-          "token": 100663456,
-          "offset": 1,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::.ctor(System.String)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Save(System.String,System.Boolean)",
-          "token": 100663456,
-          "offset": 9,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileSystemInfo::get_FullName()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::Save(System.String,System.Boolean)",
-          "token": 100663456,
-          "offset": 38,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.IO.FileInfo::get_DirectoryName()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.DxfDocument::CheckDxfFileVersion(System.String,System.Boolean&)",
-          "token": 100663460,
-          "offset": 4,
-          "opcode": "call",
-          "message": "No linked implementation or JavaScript external for 'System.IO.File::Open(System.String,System.IO.FileMode,System.IO.FileAccess,System.IO.FileShare)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValues()",
-          "token": 100663718,
-          "offset": 36,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetValues()",
-          "token": 100663719,
-          "offset": 38,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Reflection.MemberInfo::GetCustomAttributes(System.Type,System.Boolean)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 16,
-          "opcode": "newobj",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::.ctor()'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 29,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::ContainsKey(System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 43,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
-        },
-        {
-          "severity": "error",
-          "code": "IL_UNRESOLVED_CALL",
-          "method": "netDxf.StringEnum`1::GetStringValue(!0)",
-          "token": 100663722,
-          "offset": 57,
-          "opcode": "callvirt",
-          "message": "No linked implementation or JavaScript external for 'System.Collections.Hashtable::get_Item(System.Object)'."
-        }
+      "formats": [
+        "ASCII",
+        "binary"
       ],
-      "message": "Assembly 'NetDxfIoProbe' is not fully supported by the JavaScript tier."
+      "entities": [
+        "LINE",
+        "CIRCLE"
+      ],
+      "expectedResult": 101,
+      "supported": true,
+      "emitted": true,
+      "executed": true,
+      "diagnosticCount": 0,
+      "compiledMethods": 4477,
+      "roundTrips": [
+        {
+          "format": "ASCII",
+          "result": 101,
+          "milliseconds": 7504.593792
+        },
+        {
+          "format": "binary",
+          "result": 101,
+          "milliseconds": 10080.901945999998
+        }
+      ]
     },
     "nativeWasm": {
-      "supported": false,
-      "diagnosticCount": 130,
-      "codes": {
-        "WASM_UNRESOLVED_CALL": 56,
-        "WASM_UNSUPPORTED_TYPE": 67,
-        "WASM_STACK_TYPE": 4,
-        "WASM_UNRESOLVED_FIELD": 3
-      },
-      "dependencies": {
-        "System.DateTime": 49,
-        "System.TimeSpan": 16,
-        "System.Collections.Hashtable": 10,
-        "System.Text.Encoding": 9,
-        "System.BitConverter": 6,
-        "System.Environment": 5,
-        "System.String": 5,
-        "System.Reflection.MemberInfo": 4,
-        "System.IO.FileMode": 3,
-        "System.IO.FileAccess": 3,
-        "System.IO.FileShare": 3,
-        "System.IO.File": 3,
-        "call": 3,
-        "System.IO.BinaryWriter": 2,
-        "System.Text.RegularExpressions.Regex": 2,
-        "System.Text.CodePagesEncodingProvider": 1,
-        "System.StringSplitOptions": 1,
-        "callvirt": 1,
-        "System.StringComparer": 1,
-        "System.Convert": 1,
-        "System.IO.Path": 1,
-        "System.Double": 1
-      },
-      "examples": [
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Text.CodePagesEncodingProvider::get_Instance()'.",
-          "method": "NetDxfIoProbe|NetDxfIoProbe::RoundTrip(System.Boolean)",
-          "token": 100663297,
-          "assembly": "NetDxfIoProbe",
-          "offset": 0,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'.",
-          "method": "NetDxfIoProbe|NetDxfIoProbe::RoundTrip(System.Boolean)",
-          "token": 100663297,
-          "assembly": "NetDxfIoProbe",
-          "offset": 5,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::get_WindowsCodePage()'.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 68,
-          "opcode": "callvirt"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.Environment::get_UserName()'.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 108,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1112,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.DateTime::get_Now()'.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1112,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1117,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1145,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1150,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1178,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNRESOLVED_CALL",
-          "message": "No native WebAssembly implementation or supported runtime service for 'System.DateTime::get_Now()'.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1178,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1183,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1211,
-          "opcode": "call"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1216,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1246,
-          "opcode": "initobj"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.Header.HeaderVariables::.ctor()",
-          "token": 100665097,
-          "assembly": "netDxf.netstandard",
-          "offset": 1253,
-          "opcode": "box"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::WriteSystemVariable(netDxf.Header.HeaderVariable)",
-          "token": 100664935,
-          "assembly": "netDxf.netstandard"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::WriteSystemVariable(netDxf.Header.HeaderVariable)",
-          "token": 100664935,
-          "assembly": "netDxf.netstandard",
-          "offset": 2417,
-          "opcode": "unbox.any"
-        },
-        {
-          "severity": "error",
-          "code": "WASM_UNSUPPORTED_TYPE",
-          "message": "Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.",
-          "method": "netDxf.netstandard|netDxf.IO.DxfWriter::WriteSystemVariable(netDxf.Header.HeaderVariable)",
-          "token": 100664935,
-          "assembly": "netDxf.netstandard",
-          "offset": 2422,
-          "opcode": "call"
-        }
+      "formats": [
+        "ASCII",
+        "binary"
       ],
-      "message": "Direct WebAssembly compilation is unsupported: No native WebAssembly implementation or supported runtime service for 'System.Text.CodePagesEncodingProvider::get_Instance()'.; No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::RegisterProvider(System.Text.EncodingProvider)'.; Value type 'System.TimeSpan' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.Text.Encoding::get_WindowsCodePage()'.; No native WebAssembly implementation or supported runtime service for 'System.Environment::get_UserName()'.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend.; No native WebAssembly implementation or supported runtime service for 'System.DateTime::get_Now()'.; Value type 'System.DateTime' requires framework-specific value semantics not implemented by this native backend."
+      "entities": [
+        "LINE",
+        "CIRCLE"
+      ],
+      "expectedResult": 101,
+      "supported": true,
+      "emitted": true,
+      "executed": true,
+      "diagnosticCount": 0,
+      "compiledMethods": 2881,
+      "roundTrips": [
+        {
+          "format": "ASCII",
+          "result": 101,
+          "milliseconds": 7652.94680200002
+        },
+        {
+          "format": "binary",
+          "result": 101,
+          "milliseconds": 11226.768547000014
+        }
+      ]
     }
   },
   "passed": true,
-  "note": "Passing verification confirms the explicitly tested geometry exports and managed DXF I/O. It does not claim complete netDxf support in the JavaScript or native-Wasm backends."
+  "note": "Full-library support entries require strict zero-diagnostic emission for each stated method selection; they do not assert execution of every method. Document I/O entries require actual LINE/CIRCLE Save/Load execution in both ASCII and binary formats on each backend, with RoundTrip=101. Broader document fidelity is verified separately by netdxf-document-verification.json."
 }

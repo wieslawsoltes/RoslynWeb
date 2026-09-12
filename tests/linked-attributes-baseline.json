@@ -1,0 +1,17 @@
+{
+  "runtime": "10.0.0",
+  "sourceSha256": [
+    "cf933d2f020336adeed7a8ffb449910556f9a8404b782d50c40f54f720422c8e",
+    "e7ec09e511afa251c10f162069619bdebf27be5e493bab21cb358985acd175fc"
+  ],
+  "result": [
+    "integer:Int32",
+    "7",
+    "21",
+    "0",
+    "string:String",
+    "11",
+    "27",
+    "True"
+  ]
+}

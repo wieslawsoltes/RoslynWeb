@@ -1,71 +1,71 @@
 {
-  "testedAt": "2026-09-12T08:57:18.856Z",
+  "testedAt": "2026-09-12T10:35:12.225Z",
   "realBrowser": true,
   "realWebGPU": true,
   "tests": [
     {
       "name": "Sample starts a real compiler worker and loads the complete pinned netDxf library",
       "passed": true,
-      "ms": 1428
+      "ms": 1475
     },
     {
       "name": "WebGPU submits real drawing commands and produces colored geometry pixels",
       "passed": true,
-      "ms": 462
+      "ms": 467
     },
     {
       "name": "Actual WebGPU pixels show hatch holes, source-ordered wipeout masking and shaped Unicode text",
       "passed": true,
-      "ms": 593
+      "ms": 654
     },
     {
       "name": "Actual WebGPU pattern pixels preserve dash gaps, hatch holes and clipped dot markers",
       "passed": true,
-      "ms": 304
+      "ms": 337
     },
     {
       "name": "Zoom, pan, fit and layer controls change the real renderer state",
       "passed": true,
-      "ms": 379
+      "ms": 362
     },
     {
       "name": "Text and binary DXF downloads round-trip through the real managed library",
       "passed": true,
-      "ms": 385
+      "ms": 421
     },
     {
       "name": "Invalid and over-limit uploads report errors and preserve the current drawing",
       "passed": true,
-      "ms": 2362
+      "ms": 2464
     },
     {
       "name": "Source mode recompiles all upstream source files in browser WebAssembly",
       "passed": true,
-      "ms": 24941
+      "ms": 25737
     },
     {
       "name": "Optional geometry comparison executes managed Wasm, native Wasm and generated JavaScript",
       "passed": true,
-      "ms": 9790
+      "ms": 9950
     },
     {
       "name": "Mobile layout stays within the viewport and keeps document actions available",
       "passed": true,
-      "ms": 228
+      "ms": 123
     },
     {
       "name": "Unavailable WebGPU leaves real netDxf parsing and export usable",
       "passed": true,
-      "ms": 2836
+      "ms": 1741
     },
     {
       "name": "Missing startup assets surface an error and restart recovers cleanly",
       "passed": true,
-      "ms": 2888
+      "ms": 2532
     }
   ],
   "pageErrors": [],
-  "baseUrl": "http://127.0.0.1:39613/RoslynWeb/",
+  "baseUrl": "http://127.0.0.1:34005/RoslynWeb/",
   "browserVersion": "140.0.7339.186",
   "library": {
     "sourceCount": 272,
@@ -160,8 +160,8 @@
   },
   "geometryComparison": [
     ".NET Wasm0.13 s5778.5398163397",
-    "Native Wasm4.76 s5778.5398163397",
-    "JavaScript4.41 s5778.5398163397"
+    "Native Wasm4.98 s5778.5398163397",
+    "JavaScript4.45 s5778.5398163397"
   ],
   "passed": true
 }

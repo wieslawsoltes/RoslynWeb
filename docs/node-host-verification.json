@@ -1,12 +1,12 @@
 {
-  "testedAt": "2026-09-12T08:50:28.017Z",
+  "testedAt": "2026-09-12T10:32:13.328Z",
   "runtime": "v24.19.0",
   "passed": true,
   "checks": [
     {
       "name": "Default Node host boots bundled Roslyn WASM and preserves caller globals",
       "passed": true,
-      "milliseconds": 922.357517,
+      "milliseconds": 473.114572,
       "evidence": {
         "bridgeVersion": "0.9.0",
         "roslynVersion": "5.0.0.0",
@@ -18,7 +18,7 @@
     {
       "name": "C# emits real PE and portable PDB, then runs on all execution backends",
       "passed": true,
-      "milliseconds": 2585.1340330000003,
+      "milliseconds": 1984.603231,
       "evidence": {
         "peBytes": 2560,
         "pdbBytes": 10024,
@@ -53,28 +53,28 @@
     {
       "name": "Node host emits reusable JS and native Wasm artifacts with warm compilation caches",
       "passed": true,
-      "milliseconds": 11.605779999999868,
+      "milliseconds": 8.626573999999891,
       "evidence": {
         "emitJavaScript": {
           "format": "javascript",
           "cache": {
             "emitHit": true
           },
-          "characters": 6633
+          "characters": 7074
         },
         "emitWasm": {
           "format": "wasm",
           "cache": {
             "emitHit": true
           },
-          "bytes": 5291
+          "bytes": 5732
         }
       }
     },
     {
       "name": "File URL compiler references and NuGet archives work through the public Node host",
       "passed": true,
-      "milliseconds": 3354.01708,
+      "milliseconds": 1301.9404089999998,
       "evidence": {
         "package": "Newtonsoft.Json",
         "version": "13.0.3",
@@ -84,7 +84,7 @@
     {
       "name": "Managed objects, Int64 values, dynamic compilation and workspace files remain available",
       "passed": true,
-      "milliseconds": 522.3176430000003,
+      "milliseconds": 555.9568609999997,
       "evidence": {
         "bigInt": true,
         "objects": true,
@@ -95,7 +95,7 @@
     {
       "name": "A second compiler owns an independent runtime and reference collection",
       "passed": true,
-      "milliseconds": 2130.180513000001,
+      "milliseconds": 1773.6985530000002,
       "evidence": {
         "independentReferences": true
       }
@@ -103,9 +103,9 @@
     {
       "name": "A runaway C# execution is terminated by timeout and close awaits worker exit",
       "passed": true,
-      "milliseconds": 183.0717390000009,
+      "milliseconds": 172.9659699999993,
       "evidence": {
-        "milliseconds": 119.81280499999957,
+        "milliseconds": 123.79719899999964,
         "disposed": true
       }
     }

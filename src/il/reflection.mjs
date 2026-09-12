@@ -20,9 +20,16 @@ const typeTypes = new Set(['System.Type', 'System.RuntimeType', 'System.Reflecti
 const typeProperties = new Set(['get_Name', 'get_FullName', 'get_Namespace', 'get_BaseType', 'get_IsValueType', 'get_IsEnum', 'get_IsInterface', 'get_IsAbstract', 'get_IsSealed', 'get_IsArray', 'get_IsByRef', 'get_IsPointer', 'get_IsGenericType', 'get_IsGenericTypeDefinition', 'get_ContainsGenericParameters', 'get_Assembly', 'get_AssemblyQualifiedName', 'get_UnderlyingSystemType', 'get_TypeHandle']);
 const memberProperties = new Set(['get_Name', 'get_DeclaringType', 'get_ReflectedType', 'get_MetadataToken', 'get_Module', 'get_IsPublic', 'get_IsPrivate', 'get_IsStatic', 'get_IsAbstract', 'get_IsVirtual', 'get_IsConstructor', 'get_IsGenericMethod', 'get_IsGenericMethodDefinition', 'get_ContainsGenericParameters', 'get_ReturnType', 'get_FieldType', 'get_IsInitOnly', 'get_IsLiteral']);
 
+const attributeProviders = new Set([...typeTypes, ...methodsTypes, 'System.Reflection.MemberInfo', 'System.Reflection.FieldInfo', 'System.Reflection.RuntimeFieldInfo', 'System.Reflection.PropertyInfo', 'System.Reflection.RuntimePropertyInfo']);
+const attributeQuery = (owner, name, p) => attributeProviders.has(owner) &&
+  (name === 'GetCustomAttributes' && (p.length === 1 && p[0] === 'System.Boolean' || p.length === 2 && p[0] === 'System.Type' && p[1] === 'System.Boolean') ||
+   name === 'IsDefined' && p.length === 2 && p[0] === 'System.Type' && p[1] === 'System.Boolean');
+
 export function isReflectionBuiltin(ref) {
   if (!ref || typeof ref !== 'object') return false;
   const t = simpleRoot(ref.declaringType ?? ''), n = ref.name, p = signature(ref), len = p.length;
+  if (attributeQuery(t, n, p)) return ref.isStatic !== true && !(ref.genericArguments?.length || ref.genericParameterCount) && (!ref.returnType || ref.returnType === (n === 'IsDefined' ? 'System.Boolean' : 'System.Object[]'));
+  if (t === 'System.Attribute' && n === '.ctor') return len === 0 && ref.isStatic !== true && (!ref.returnType || ref.returnType === 'System.Void');
   if ((methodsTypes.has(t) || ['System.Reflection.MemberInfo', 'System.Reflection.FieldInfo', 'System.Reflection.PropertyInfo'].includes(t)) && ['op_Equality', 'op_Inequality'].includes(n)) return len === 2 && p[0] === t && p[1] === t;
   if (typeTypes.has(t)) {
     if (typeProperties.has(n) || ['ToString', 'GetGenericArguments', 'GetGenericTypeDefinition', 'GetElementType', 'GetInterfaces'].includes(n)) return len === 0;
@@ -173,11 +180,158 @@ function createInstance(runtime, type, values, nonPublic = false) {
   return invokeMember(runtime, candidates[0].$member, null, values, true);
 }
 
+function attributeLimitation(message) {
+  const error = new ManagedException('System.NotSupportedException', message);
+  error.runtimeLimitation = true;
+  throw error;
+}
+function unqualifiedType(name) {
+  let depth = 0;
+  for (let i = 0; i < name.length; i++) {
+    if ('[<'.includes(name[i])) depth++;
+    else if (']>'.includes(name[i])) depth--;
+    else if (name[i] === ',' && depth === 0) return name.slice(0, i).trim();
+  }
+  return name;
+}
+function serializedAttributeType(name) {
+  name = unqualifiedType(name);
+  const start = name.indexOf('[');
+  if (start < 0 || !name.slice(0, start).includes('`') || /^[,*]*\]/.test(name.slice(start + 1))) return name;
+  const args = []; let depth = 0, at = start + 1, end = at;
+  for (; end < name.length; end++) {
+    const char = name[end];
+    if (char === '[') depth++;
+    else if (char === ']') { if (depth === 0) break; depth--; }
+    if (char === ',' && depth === 0) { args.push(name.slice(at, end)); at = end + 1; }
+  }
+  args.push(name.slice(at, end));
+  return name.slice(0, start) + '<' + args.map(arg => {
+    arg = arg.trim();
+    if (arg.startsWith('[') && arg.endsWith(']')) arg = arg.slice(1, -1);
+    return serializedAttributeType(arg);
+  }).join(',') + '>' + name.slice(end + 1);
+}
+function attributeValue(runtime, argument, expected = argument?.type) {
+  if (argument == null || argument.value == null) return null;
+  const type = serializedAttributeType(argument.type), value = argument.value;
+  if (type === 'System.Type') return reflectionType(runtime, serializedAttributeType(value));
+  if (type.endsWith('[]')) return array(value.map(x => attributeValue(runtime, x, type.slice(0, -2))), type.slice(0, -2));
+  if (type === 'System.Object' && value && typeof value === 'object' && value.type) {
+    const item = attributeValue(runtime, value);
+    return item instanceof Numeric || item?.$valueType ? runtime.box(item, value.type) : item;
+  }
+  const item = runtime.coerce(fromJS(value, type), type);
+  return expected === 'System.Object' && (item instanceof Numeric || item?.$valueType) ? runtime.box(item, type) : item;
+}
+function attributeUsage(runtime, type) {
+  const seen = new Set();
+  for (let current = type; current && !seen.has(current);) {
+    seen.add(current); const data = definition(runtime, current);
+    const usage = data?.customAttributes?.find(x => x.type === 'System.AttributeUsageAttribute');
+    if (usage) {
+      if (usage.decodeError) attributeLimitation(`Cannot decode AttributeUsage on '${current}': ${usage.decodeError}`);
+      const named = usage.namedArguments ?? [];
+      return {inherited:named.find(x => x.name === 'Inherited')?.value !== false,
+        multiple:named.find(x => x.name === 'AllowMultiple')?.value === true};
+    }
+    current = data?.baseType;
+  }
+  return {inherited:true, multiple:false};
+}
+function pseudoAttributes(data, provider) {
+  const types = [];
+  if (provider.typeName) {
+    if (flag(data, 'Serializable', 8192)) types.push('System.SerializableAttribute');
+    if (flag(data, 'Import', 4096)) types.push('System.Runtime.InteropServices.ComImportAttribute');
+  } else if (provider.$type.endsWith('FieldInfo')) {
+    if (flag(data, 'NotSerialized', 128)) types.push('System.NonSerializedAttribute');
+    if (flag(data, 'HasFieldMarshal', 4096)) types.push('System.Runtime.InteropServices.MarshalAsAttribute');
+  } else if (provider.$type.endsWith('MethodInfo')) {
+    if (data.isPInvoke || flag(data, 'PinvokeImpl', 8192)) types.push('System.Runtime.InteropServices.DllImportAttribute');
+    const implementation = data.implementationAttributes;
+    if (typeof implementation === 'number' ? implementation & 128 : String(implementation ?? '').split(/,\s*/).includes('PreserveSig')) types.push('System.Runtime.InteropServices.PreserveSigAttribute');
+  }
+  return types.map(type => ({type, pseudo:true, decodeError:'This pseudo-attribute is encoded in CLI flags/tables; construction requires the managed Wasm backend.'}));
+}
+function attributeDefinitions(runtime, self, inherit) {
+  let data = self?.typeName ? definition(runtime, self.typeName) : self?.$member;
+  if (!data) fail('NullReferenceException', 'A reflected member is required.');
+  const result = [], seenTypes = new Set(), seenMembers = new Set();
+  for (let level = 0; data; level++) {
+    const key = `${data.declaringType ?? data.name}:${data.token}`;
+    if (seenMembers.has(key)) break; seenMembers.add(key);
+    const levelTypes = new Set();
+    for (const attribute of [...(data.customAttributes ?? []), ...pseudoAttributes(data, self)]) {
+      const usage = level ? attribute.pseudo ? {inherited:false,multiple:false} : attributeUsage(runtime, attribute.type) : null;
+      if (level && (!usage.inherited || !usage.multiple && seenTypes.has(attribute.type))) continue;
+      result.push(attribute); levelTypes.add(attribute.type);
+    }
+    for (const type of levelTypes) seenTypes.add(type);
+    if (!inherit) break;
+    if (self.typeName) { data = definition(runtime, data.baseType); continue; }
+    // MemberInfo ignores inherit for fields, properties and constructors.
+    if (!self.$type.endsWith('MethodInfo') || !(data.isVirtual || flag(data, 'Virtual', 64)) || flag(data, 'NewSlot', 256)) break;
+    const declaring = definition(runtime, data.declaringType);
+    if (declaring?.methodOverrides?.some(x => x.body?.token === data.token))
+      attributeLimitation('Attribute inheritance through explicit MethodImpl overrides requires the managed Wasm backend.');
+    let parent = definition(runtime, declaring?.baseType), found = null;
+    while (parent && !found) {
+      found = (parent.methods ?? []).find(m => m.name === data.name && signature(m).join(',') === signature(data).join(',') && (m.isVirtual || flag(m, 'Virtual', 64)));
+      if (found) found = {...found, declaringType:parent.name};
+      parent = definition(runtime, parent.baseType);
+    }
+    data = found;
+  }
+  return result;
+}
+function instantiateAttribute(runtime, attribute) {
+  if (attribute.decodeError) attributeLimitation(`Cannot decode '${attribute.type}' custom attribute: ${attribute.decodeError}`);
+  const ctor = runtime.resolveMethod(attribute.constructor);
+  if (!ctor) attributeLimitation(`Custom attribute constructor '${attribute.type}' is not linked.`);
+  if ((attribute.fixedArguments ?? []).length !== signature(ctor).length) fail('Reflection.CustomAttributeFormatException', 'Attribute constructor argument count does not match its signature.');
+  const instance = runtime.allocate(attribute.type);
+  // The CLR propagates the constructor's own exception from GetCustomAttributes;
+  // MethodInfo.Invoke's TargetInvocationException wrapper is not appropriate.
+  runtime.invokeManaged(ctor, (attribute.fixedArguments ?? []).map((x, i) => attributeValue(runtime, x, signature(ctor)[i])), instance);
+  for (const argument of attribute.namedArguments ?? []) {
+    if (!['Field','Property'].includes(argument.kind)) fail('Reflection.CustomAttributeFormatException', 'Invalid named attribute member kind.');
+    const kind = argument.kind === 'Field' ? 'FieldInfo' : 'PropertyInfo';
+    const member = choose(members(runtime, attribute.type, kind, BindingFlags.Instance | BindingFlags.Public), argument.name, null, 0)?.$member;
+    if (!member) fail('Reflection.CustomAttributeFormatException', `Named attribute member '${argument.name}' is not available.`);
+    const value = attributeValue(runtime, argument, member.type);
+    if (kind === 'FieldInfo') {
+      if (flag(member, 'InitOnly', 32) || flag(member, 'Literal', 64) || member.type !== serializedAttributeType(argument.type) && member.type !== 'System.Object')
+        fail('Reflection.CustomAttributeFormatException', `Invalid named attribute field '${argument.name}'.`);
+      runtime.field({stack:[instance, value]}, member, 'stfld');
+    } else {
+      const setter = member.setter && (runtime.resolveMethod(member.setter) ?? member.setter);
+      if (!setter || !isPublic(setter) || member.type !== serializedAttributeType(argument.type) && member.type !== 'System.Object')
+        fail('Reflection.CustomAttributeFormatException', `Invalid named attribute property '${argument.name}'.`);
+      runtime.invokeManaged(setter, [value], instance);
+    }
+  }
+  return instance;
+}
+function queryAttributes(runtime, self, name, p, args) {
+  if (self == null) fail('NullReferenceException', 'A reflected member is required.');
+  const filtered = p[0] === 'System.Type';
+  if (filtered && args[0] == null) fail('ArgumentNullException', "Value cannot be null. (Parameter 'attributeType')");
+  const wanted = filtered ? typeName(args[0]) : null;
+  const candidates = attributeDefinitions(runtime, self, !!raw(args[filtered ? 1 : 0])).filter(attribute =>
+    !wanted || wanted === 'System.Attribute' || runtime.inherits(attribute.type, wanted));
+  if (name === 'IsDefined') return i4(candidates.length !== 0);
+  const primitiveValue = wanted && (/^System\.(Boolean|Byte|SByte|Char|Int16|UInt16|Int32|UInt32|Int64|UInt64|Single|Double|IntPtr|UIntPtr)$/.test(wanted) || definition(runtime, wanted)?.isValueType);
+  return array(candidates.map(attribute => instantiateAttribute(runtime, attribute)), filtered && !primitiveValue ? wanted : 'System.Object');
+}
+
 export function invokeReflectionBuiltin(runtime, ref, args, self, kind = 'call') {
   if (!isReflectionBuiltin(ref)) return { handled: false };
   if (self?.$byref) self = self.get();
   if (self?.typeName && ref.declaringType === 'System.Reflection.MemberInfo' && ref.name === 'get_Name') ref = { ...ref, declaringType: 'System.Type' };
   const done = value => ({ handled: true, value }), name = ref.name, owner = simpleRoot(ref.declaringType), p = signature(ref);
+  if (attributeQuery(owner, name, p)) return done(queryAttributes(runtime, self, name, p, args));
+  if (owner === 'System.Attribute' && name === '.ctor') return done(undefined);
   if (['op_Equality', 'op_Inequality'].includes(name) && !typeTypes.has(owner)) {
     const [left, right] = args;
     const key = value => { const m = value?.$member; return m && `${m.$assembly ?? m.assemblyName}:${m.token}:${m.declaringType}:${(m.genericArguments ?? m.$methodArguments ?? []).join(',')}`; };

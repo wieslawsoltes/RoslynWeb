@@ -1,10 +1,13 @@
+import {compareOrdinalIgnoreCase} from './ordinal.mjs';
+import {compareInvariantCadStrings} from './cad-strings.mjs';
 /** Additional finite BCL collection adapters. Sorted collections use ordered arrays,
  * preserve comparer semantics, and deliberately reject culture-sensitive collation.
  */
 import { ManagedException, Numeric, i4, copyValue } from './runtime.mjs';
 import { delegateEquals } from './events.mjs';
 import { ILExecutionError } from './capabilities.mjs';
-import { sequenceItems } from './framework.mjs';
+import { sequenceItems, copyFrameworkArray } from './framework.mjs';
+import { substituteType } from './generics.mjs';
 const G = 'System.Collections.Generic.';
 const root = type => String(type ?? '').replace(/&$/, '').split('<')[0];
 const params = ref => (ref.parameters ?? []).map(p => p.type ?? p);
@@ -25,6 +28,14 @@ function typeArguments(type) {
   return result;
 }
 
+const extraEnumeratorType=type=>/^System\.Collections\.Generic\.(?:(?:Queue|Stack|LinkedList|SortedSet)`1\+Enumerator|SortedDictionary`2\+(?:Enumerator|(?:KeyCollection|ValueCollection)\+Enumerator))$/.test(root(type));
+export function isExtraCollectionValueType(type){return extraEnumeratorType(type);}
+export function defaultExtraCollectionValue(rt,type){
+  if(!extraEnumeratorType(type))return undefined;const args=typeArguments(type),name=root(type);
+  const element=name.includes('SortedDictionary`2')?(name.includes('+KeyCollection')?args[0]:name.includes('+ValueCollection')?args[1]:G+`KeyValuePair\`2<${args[0]},${args[1]}>`):args[0];
+  return {$type:type,$valueType:true,fields:{},$extraEnumerator:true,$uninitialized:true,$elementType:element,$owner:null,$source:null,$index:0,$valid:false,$disposed:false,$current:rt.defaultValue(element)};
+}
+
 /** Returns undefined for objects owned by other adapters. Generic covariance is
  * limited to known reference types; invariant collection interfaces stay exact. */
 export function isCollectionsInstance(rt,value,target) {
@@ -34,7 +45,7 @@ export function isCollectionsInstance(rt,value,target) {
   const element=value.$elementType??typeArguments(value.$type)[0];
   const covariance=expected=>same(element,expected)||((element==='System.String'||rt.closeType(element)?.isValueType===false)&&rt.inherits(element,expected));
   if(value.$extraEnumerator){if(['System.Collections.IEnumerator','System.IDisposable'].includes(t))return true;if(t===G+'IEnumerator`1')return covariance(args[0]);return undefined;}
-  if(typeof value.$comparer==='string'){if(['System.Collections.IComparer','System.Collections.IEqualityComparer'].includes(t))return value.$comparer.startsWith('ordinal');if(t===G+'IComparer`1')return same(typeArguments(value.$type)[0]??'System.String',args[0]);if(t===G+'IEqualityComparer`1')return value.$comparer.startsWith('ordinal')&&args[0]==='System.String';return undefined;}
+  if(typeof value.$comparer==='string'){if(['System.Collections.IComparer','System.Collections.IEqualityComparer'].includes(t))return (value.$comparer.startsWith('ordinal')||value.$comparer==='invariantIgnoreCase');if(t===G+'IComparer`1')return same(typeArguments(value.$type)[0]??'System.String',args[0]);if(t===G+'IEqualityComparer`1')return (value.$comparer.startsWith('ordinal')||value.$comparer==='invariantIgnoreCase')&&args[0]==='System.String';return undefined;}
   if(['System.Collections.IEnumerable','System.Collections.ICollection'].includes(t))return true;
   if(t===G+'IEnumerable`1'||t===G+'IReadOnlyCollection`1')return covariance(args[0]);
   if(t===G+'ICollection`1')return !['queue','stack'].includes(value.$extraKind)&&same(element,args[0]);
@@ -50,6 +61,12 @@ export function isCollectionsBuiltin(ref) {
   if(type===G+'Comparer`1')return name==='.ctor'&&n===0 || name==='get_Default'&&n===0&&typeArguments(ref.declaringType)[0]!=='System.String' || name==='Create'&&n===1&&root(p[0])==='System.Comparison`1' || name==='Compare'&&n===2;
   if(type===G+'IComparer`1')return name==='Compare'&&n===2;
   if(type==='System.StringComparer')return ['get_Ordinal','get_OrdinalIgnoreCase'].includes(name)&&n===0 || ['Compare','Equals'].includes(name)&&n===2&&p.every(t=>t==='System.String');
+  if(type===G+'ICollection`1'){
+    const element=typeArguments(ref.declaringType)[0],resolved=p.map(t=>substituteType(t,[element]));
+    if(['Add','Contains','Remove'].includes(name))return ref.isStatic===false&&n===1&&resolved[0]===element&&ref.returnType===(name==='Add'?'System.Void':'System.Boolean');
+    if(name==='CopyTo')return ref.isStatic===false&&resolved.join(',')===element+'[],System.Int32'&&ref.returnType==='System.Void';
+    if(name==='Clear')return ref.isStatic===false&&n===0&&ref.returnType==='System.Void';
+  }
   if(interfaces.has(type)){if(n!==0)return false;if(type.endsWith('IEnumerable`1')||type==='System.Collections.IEnumerable')return name==='GetEnumerator';if(type.endsWith('IEnumerator`1'))return name==='get_Current';if(type==='System.Collections.IEnumerator')return ['MoveNext','get_Current','Reset'].includes(name);if(type==='System.IDisposable')return name==='Dispose';return name==='get_Count'||type===G+'ICollection`1'&&name==='get_IsReadOnly';}
   if(type.startsWith(G)&&short.includes('+'))return /^(Queue`1|Stack`1|LinkedList`1|SortedSet`1|SortedDictionary`2)\+/.test(short)&&n===0&&['GetEnumerator','MoveNext','get_Current','Dispose','Reset','get_Count'].includes(name);
   if(!names.has(short))return false;
@@ -94,7 +111,13 @@ export function isCollectionsBuiltin(ref) {
 }
 function checkAllocation(rt,length) { if(length>(rt.options.maxArrayLength??10_000_000))limit('Collection allocation exceeds the configured maximum length.'); }
 function tick(rt) { if(++rt.instructionCount>rt.maxInstructions)limit('Collection operation exceeds the configured instruction budget.');if(rt.options.signal?.aborted)limit('IL execution was aborted.'); }
-function managedMethod(rt,self,name,count) { if(!self?.$type)return null;return [...rt.methods.values()].find(m=>!m.isStatic&&(m.name===name||m.name.endsWith('.'+name))&&m.parameters?.length===count&&(m.declaringType===self.$type||rt.inherits(self.$type,m.declaringType))); }
+function managedMethod(rt,self,name,count) {
+  if(!self?.$type)return null;let actual=self.$type;const seen=new Set();
+  while(actual&&!seen.has(actual)){seen.add(actual);const definition=rt.closeType(actual);if(!definition)break;
+    const candidates=(definition.methods??[]).filter(method=>!method.isStatic&&(method.name===name||method.name.endsWith('.'+name))&&method.parameters?.length===count);
+    const method=candidates.find(method=>method.name===name)??candidates[0];if(method)return rt.resolveMethod({...method,declaringType:actual,assemblyName:definition.$assembly});actual=definition.baseType;
+  }return null;
+}
 function equals(rt,a,b) {
   if(a?.$box&&b?.$box&&a.$type!==b.$type)return false;
   if(a?.$box)a=a.value;if(b?.$box)b=b.value;
@@ -103,10 +126,11 @@ function equals(rt,a,b) {
   const fn=managedMethod(rt,a,'Equals',1);if(fn)return !!raw(rt.invokeManaged(fn,[b],a));
   if(a?.$valueType&&b?.$valueType&&a.$type===b.$type){if('$ticks'in a)return a.$ticks===b.$ticks;const k=Object.keys(a.fields??{});return k.length===Object.keys(b.fields??{}).length&&k.every(key=>equals(rt,a.fields[key],b.fields[key]));}return false;
 }
-function defaultCompare(rt,a,b) {
+function defaultCompare(rt,a,b,type) {
   if(a==null)return b==null?0:-1;if(b==null)return 1;
   const fn=managedMethod(rt,a,'CompareTo',1);if(fn)return Number(raw(rt.invokeManaged(fn,[b],a)));
   a=raw(a);b=raw(b);
+  if(type==='System.UInt32'||type==='System.UIntPtr'){a=Number(a)>>>0;b=Number(b)>>>0;}else if(type==='System.UInt64'){a=BigInt.asUintN(64,BigInt(a));b=BigInt.asUintN(64,BigInt(b));}
   if(typeof a==='string'||typeof b==='string')limit('Culture-sensitive default string ordering is not implemented; pass StringComparer.Ordinal or an explicit managed comparer.');
   if(typeof a!==typeof b)fail('ArgumentException','Objects must have the same comparable type.');
   if(Number.isNaN(a))return Number.isNaN(b)?0:-1;if(Number.isNaN(b))return 1;
@@ -114,14 +138,15 @@ function defaultCompare(rt,a,b) {
   if(a?.$ticks!==undefined&&b?.$ticks!==undefined)return a.$ticks<b.$ticks?-1:a.$ticks>b.$ticks?1:0;
   fail('ArgumentException','At least one object must implement IComparable.');
 }
-function compare(rt,comparer,a,b) {
+function compare(rt,comparer,a,b,type) {
   tick(rt);
-  if(!comparer||comparer.$comparer==='default')return defaultCompare(rt,a,b);
+  if(!comparer||comparer.$comparer==='default')return defaultCompare(rt,a,b,typeArguments(comparer?.$type)[0]??type);
   if(comparer.$comparer==='delegate')return Number(raw(rt.invokeDelegate(comparer.$comparison,[a,b])));
+  if(comparer.$comparer==='invariantIgnoreCase')return compareInvariantCadStrings(raw(a),raw(b));
   if(comparer.$comparer==='ordinal'||comparer.$comparer==='ordinalIgnoreCase') {
     a=raw(a);b=raw(b);if(a==null)return b==null?0:-1;if(b==null)return 1;
     if(typeof a!=='string'||typeof b!=='string')fail('ArgumentException','String comparison requires strings.');
-    if(comparer.$comparer==='ordinalIgnoreCase'){if(/[^\x00-\x7f]/.test(a+b))limit('OrdinalIgnoreCase currently supports ASCII strings; use an explicit managed comparer for non-ASCII case mapping.');a=a.toUpperCase();b=b.toUpperCase();}
+    if(comparer.$comparer==='ordinalIgnoreCase')return compareOrdinalIgnoreCase(a,b);
     for(let i=0;i<Math.min(a.length,b.length);i++){const difference=a.charCodeAt(i)-b.charCodeAt(i);if(difference)return difference;}return a.length-b.length;
   }
   const fn=managedMethod(rt,comparer,'Compare',2);if(!fn)fail('ArgumentException','Comparer must implement Compare.');return Number(raw(rt.invokeManaged(fn,[a,b],comparer)));
@@ -144,7 +169,13 @@ function* values(rt,self,reverse=false) {
 function attach(rt,self) { self.$enumerable=()=>values(rt,self);return self; }
 function count(rt,self) { if(self.$root){let n=0;for(const _ of sequenceItems(rt,self))n++;return n;}return self.$extraKind==='linked'?self.$count:self.$extraKind==='queue'?self.$data.length-self.$head:self.$data.length; }
 function enumeration(rt,self,type,reverse=false) {
-  return {$type:type??G+'IEnumerator`1<System.Object>',$valueType:true,fields:{},$extraEnumerator:true,$source:self,$owner:state(self),$version:state(self).$version,$index:-1,$node:null,$valid:false,$current:null,$elementType:self.$elementType??(self.$extraKind==='sortedSet'?self.$keyType:G+`KeyValuePair\`2<${self.$keyType},${self.$valueTypeName}>`),$disposed:false};
+  const value={$type:type??G+'IEnumerator`1<System.Object>',$valueType:true,fields:{},$extraEnumerator:true,$source:self,$owner:state(self),$version:state(self).$version,$index:-1,$node:null,$valid:false,$current:null,$elementType:self.$elementType??(self.$extraKind==='sortedSet'?self.$keyType:G+`KeyValuePair\`2<${self.$keyType},${self.$valueTypeName}>`),$disposed:false};
+  if(/^System\.Collections\.(?:Generic\.)?IEnumerator/.test(type??'')){
+    const owner=self.$extraView??self,args=typeArguments(owner.$type),name=root(owner.$type)+(self.$extraView?(self.$viewField==='key'?'+KeyCollection':'+ValueCollection'):'')+'+Enumerator';
+    // IEnumerable exposes SortedDictionary's underlying sorted-set iterator.
+    value.$type=self.$extraKind==='sortedDictionary'?G+`SortedSet\`1+Enumerator<${self.$elementType}>`:name+(args.length?'<' +args.join(',')+'>':'');return rt.box(value,value.$type);
+  }
+  return value;
 }
 function nextValue(rt,e) {
   const source=e.$source,owner=e.$owner;
@@ -156,7 +187,9 @@ function copyTo(rt,self,args) {
   const dest=required(args[0],'array'),index=Number(raw(args[1]??0)),total=count(rt,self),n=Number(raw(args[2]??total));
   if(!dest.$array)fail('ArgumentException','Destination must be an array.');
   if(index<0||n<0)fail('ArgumentOutOfRangeException','index/count');if(index>dest.items.length||n>total||index+n>dest.items.length)fail('ArgumentException','Destination array was not long enough.');
-  let i=0;for(const value of sequenceItems(rt,self)){if(i===n)break;dest.items[index+i++]=copyValue(value);}return done();
+  const element=self.$elementType??(self.$extraKind==='sortedSet'?self.$keyType:G+`KeyValuePair\`2<${self.$keyType},${self.$valueTypeName}>`),values=[];
+  for(const value of sequenceItems(rt,self)){if(values.length===n)break;values.push(copyValue(value));}
+  return copyFrameworkArray(rt,{$array:true,elementType:element,items:values},0,dest,index,n,{singleDimension:true});
 }
 function makeNode(self,value) { return {$type:G+`LinkedListNode\`1<${self.$elementType}>`,fields:{},$list:null,$previous:null,$next:null,$value:copyValue(value)}; }
 function requireNode(list,node) { required(node,'node');if(node.$list!==list)fail('InvalidOperationException','The LinkedList node does not belong to the current LinkedList.'); }
@@ -193,10 +226,19 @@ export function invokeCollectionsBuiltin(rt,ref,args,self,kind) {
     if(name==='get_Ordinal'||name==='get_OrdinalIgnoreCase')return done({$type:'System.StringComparer',fields:{},$comparer:name==='get_Ordinal'?'ordinal':'ordinalIgnoreCase'});
     if(name==='Compare'||name==='Equals')return done(i4(name==='Compare'?compare(rt,self,args[0],args[1]):compare(rt,self,args[0],args[1])===0));
   }
+  if(self?.$extraEnumerator&&self.$uninitialized){
+    const queueOrStack=/^System\.Collections\.Generic\.(Queue|Stack)`1/.test(self.$type);
+    if(name==='Dispose'){if(queueOrStack)self.$disposed=true;return done();}
+    if(name==='MoveNext'||name==='Reset')fail('NullReferenceException','Object reference not set to an instance of an object.');
+    if(name==='get_Current'){
+      if(!queueOrStack&&type==='System.Collections.IEnumerator')fail('InvalidOperationException','Enumeration has not started or has already finished.');
+      const value=copyValue(self.$current);return done(type==='System.Collections.IEnumerator'&&(value instanceof Numeric||value?.$valueType)?rt.box(value,self.$elementType):value);
+    }
+  }
   if(self?.$extraEnumerator) {
-    if(name==='Dispose'){if(['queue','stack'].includes(self.$owner.$extraKind)){self.$disposed=true;self.$valid=false;}return done();}
-    if(name==='MoveNext'||name==='Reset'){if(self.$owner.$version!==self.$version)fail('InvalidOperationException','Collection was modified; enumeration operation may not execute.');if(name==='Reset'){self.$index=-1;self.$node=null;self.$valid=false;self.$disposed=false;return done();}if(self.$disposed)return done(i4(0));self.$valid=nextValue(rt,self);return done(i4(self.$valid));}
-    if(name==='get_Current'){if(!self.$valid){if(type==='System.Collections.IEnumerator'||self.$owner.$extraKind==='queue'||self.$owner.$extraKind==='stack')fail('InvalidOperationException','Enumeration has not started or has already finished.');return done(rt.defaultValue(self.$elementType));}if(type==='System.Collections.IEnumerator'&&(self.$current instanceof Numeric||self.$current?.$valueType))return done(rt.box(self.$current,self.$elementType));return done(copyValue(self.$current));}
+    if(name==='Dispose'){if(['queue','stack'].includes(self.$owner.$extraKind)){self.$disposed=true;self.$valid=false;if(self.$owner.$extraKind==='queue')self.$current=rt.defaultValue(self.$elementType);}return done();}
+    if(name==='MoveNext'||name==='Reset'){if(self.$owner.$version!==self.$version)fail('InvalidOperationException','Collection was modified; enumeration operation may not execute.');if(name==='Reset'){self.$index=-1;self.$node=null;self.$valid=false;self.$disposed=false;self.$current=rt.defaultValue(self.$elementType);return done();}if(self.$disposed){self.$current=rt.defaultValue(self.$elementType);return done(i4(0));}self.$valid=nextValue(rt,self);if(!self.$valid)self.$current=rt.defaultValue(self.$elementType);return done(i4(self.$valid));}
+    if(name==='get_Current'){if(!self.$valid){if(type==='System.Collections.IEnumerator'&&!['queue','stack'].includes(self.$owner.$extraKind))fail('InvalidOperationException','Enumeration has not started or has already finished.');const value=copyValue(self.$current??rt.defaultValue(self.$elementType));return done(type==='System.Collections.IEnumerator'&&(value instanceof Numeric||value?.$valueType)?rt.box(value,self.$elementType):value);}if(type==='System.Collections.IEnumerator'&&(self.$current instanceof Numeric||self.$current?.$valueType))return done(rt.box(self.$current,self.$elementType));return done(copyValue(self.$current));}
   }
   if(short==='LinkedListNode`1') {
     if(name==='.ctor'){Object.assign(self,makeNode({$elementType:types[0]},args[0]));return done();}
@@ -209,19 +251,27 @@ export function invokeCollectionsBuiltin(rt,ref,args,self,kind) {
     attach(rt,self);
     if(extraKind==='queue'||extraKind==='stack') {
       if(args.length&&p[0]==='System.Int32'){if(a[0]<0)fail('ArgumentOutOfRangeException','capacity');checkAllocation(rt,a[0]);self.$capacity=a[0];}
-      else if(args.length){for(const value of sequenceItems(rt,args[0])){checkAllocation(rt,self.$data.length+1);self.$data.push(copyValue(value));}self.$capacity=self.$data.length;}return done();
+      else if(args.length){for(const value of sequenceItems(rt,args[0],self.$elementType)){checkAllocation(rt,self.$data.length+1);self.$data.push(copyValue(value));}self.$capacity=self.$data.length;}return done();
     }
-    if(extraKind==='linked'){Object.assign(self,{$first:null,$last:null,$count:0});if(args.length)for(const value of sequenceItems(rt,args[0]))insertNode(rt,self,makeNode(self,value),null);return done();}
+    if(extraKind==='linked'){Object.assign(self,{$first:null,$last:null,$count:0});if(args.length)for(const value of sequenceItems(rt,args[0],self.$elementType))insertNode(rt,self,makeNode(self,value),null);return done();}
     Object.assign(self,{$elementType:extraKind==='sortedDictionary'?G+`KeyValuePair\`2<${types[0]},${types[1]}>`:types[0],$keyType:types[0],$valueTypeName:types[1],$comparer:cmpType(p.at(-1)??'')?args.at(-1):null});self.$comparer??=makeComparer(types[0]);
     if(types[0]==='System.String'&&self.$comparer.$comparer==='default')limit('Culture-sensitive default string ordering is not implemented; pass an explicit comparer.');
-    if(args.length&&!cmpType(p[0]))for(const value of sequenceItems(rt,args[0])) { const key=extraKind==='sortedSet'?value:value.fields.key,item=extraKind==='sortedSet'?value:value.fields.value;if(!sortedAdd(rt,self,key,item)&&extraKind==='sortedDictionary')fail('ArgumentException','An item with the same key has already been added.'); }return done();
+    if(args.length&&!cmpType(p[0]))for(const value of sequenceItems(rt,args[0],self.$elementType)) { const key=extraKind==='sortedSet'?value:value.fields.key,item=extraKind==='sortedSet'?value:value.fields.value;if(!sortedAdd(rt,self,key,item)&&extraKind==='sortedDictionary')fail('ArgumentException','An item with the same key has already been added.'); }return done();
   }
   if(self?.$extraView) {
+    if(name==='Contains'){if(self.$viewField==='key')return done(i4(findIndex(rt,self.$extraView,args[0]).found));for(const value of sequenceItems(rt,self))if(equals(rt,value,args[0]))return done(i4(1));return done(i4(0));}
+    if(['Add','Remove','Clear'].includes(name))fail('NotSupportedException','Collection is read-only.');
     if(name==='get_IsReadOnly')return done(i4(1));
     if(name==='get_Count')return done(i4(count(rt,self.$extraView)));
     if(name==='GetEnumerator')return done(enumeration(rt,self,ref.returnType));
   }
   if(!self?.$extraKind){if(name==='get_Count'){if(self?.$array)return done(i4(self.items.length));if(self?.$items)return done(i4(self.$items.length));if(self?.$table)return done(i4(self.$count));if(self?.$collection?.$table)return done(i4(self.$collection.$count));}if(name==='get_IsReadOnly'&&(self?.$array||self?.$items||self?.$table||self?.$collection))return done(i4(!!(self.$array||self.$collection)));return {handled:false};}
+  if(type===G+'ICollection`1'&&self.$extraKind==='sortedDictionary'&&['Add','Contains','Remove'].includes(name)){
+    const pair=args[0]?.$box?args[0].value:args[0],key=pair.fields.key,value=pair.fields.value;required(key,'key');
+    if(name==='Add'){if(!sortedAdd(rt,self,key,value))fail('ArgumentException','An item with the same key has already been added.');return done();}
+    const found=findIndex(rt,self,key),matches=found.found&&equals(rt,state(self).$data[found.index].value,value);if(name==='Remove'&&matches)sortedRemove(rt,self,key);return done(i4(matches));
+  }
+  if(type===G+'ICollection`1'&&self.$extraKind==='linked'&&name==='Add'){insertNode(rt,self,makeNode(self,args[0]),null);return done();}
   if(name==='get_Count')return done(i4(count(rt,self)));
   if(name==='get_IsReadOnly')return done(i4(0));
   if(name==='GetEnumerator')return done(enumeration(rt,self,ref.returnType));
@@ -259,7 +309,7 @@ export function invokeCollectionsBuiltin(rt,ref,args,self,kind) {
     if(name==='Reverse')return done({$type:ref.returnType,$enumerable:()=>values(rt,self,true)});
     if(name==='GetViewBetween'){if(compare(rt,self.$comparer,args[0],args[1])>0)fail('ArgumentException','lowerValue is greater than upperValue.');if(self.$root&&(!inside(rt,self,args[0])||!inside(rt,self,args[1])))fail('ArgumentOutOfRangeException','Range exceeds the current view.');return done(attach(rt,{$type:self.$type,fields:{},$extraKind:'sortedSet',$root:owner,$keyType:self.$keyType,$elementType:self.$keyType,$comparer:self.$comparer,$lower:copyValue(args[0]),$upper:copyValue(args[1])}));}
     if(name==='RemoveWhere'){required(args[0],'match');let removed=0;for(const value of [...sequenceItems(rt,self)])if(raw(rt.invokeDelegate(args[0],[value]))&&sortedRemove(rt,self,value))removed++;return done(i4(removed));}
-    if(set){required(args[0],'other');const other=attach(rt,{$extraKind:'sortedSet',$data:[],$version:0,$keyType:self.$keyType,$comparer:self.$comparer});for(const value of sequenceItems(rt,args[0]))sortedAdd(rt,other,value,value);const left=[...sequenceItems(rt,self)],right=[...sequenceItems(rt,other)],common=left.filter(value=>findIndex(rt,other,value).found).length;
+    if(set){required(args[0],'other');const other=attach(rt,{$extraKind:'sortedSet',$data:[],$version:0,$keyType:self.$keyType,$comparer:self.$comparer});for(const value of sequenceItems(rt,args[0],self.$elementType))sortedAdd(rt,other,value,value);const left=[...sequenceItems(rt,self)],right=[...sequenceItems(rt,other)],common=left.filter(value=>findIndex(rt,other,value).found).length;
       if(name==='UnionWith'){for(const value of right)sortedAdd(rt,self,value,value);return done();}
       if(name==='IntersectWith'||name==='ExceptWith'){for(const value of left)if(findIndex(rt,other,value).found===(name==='ExceptWith'))sortedRemove(rt,self,value);return done();}
       if(name==='SymmetricExceptWith'){for(const value of right)if(!sortedRemove(rt,self,value))sortedAdd(rt,self,value,value);return done();}
@@ -268,3 +318,6 @@ export function invokeCollectionsBuiltin(rt,ref,args,self,kind) {
   }
   return {handled:false};
 }
+
+/** Shared comparer dispatch for finite collection services. */
+export function compareCollectionValues(rt,comparer,left,right,type) { return compare(rt,comparer,left,right,type); }

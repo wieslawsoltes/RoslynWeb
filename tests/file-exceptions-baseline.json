@@ -1,0 +1,87 @@
+{
+  "nativeRuntime": "10.0.0",
+  "managedRuntime": "10.0.0",
+  "sourceSha256": "42d6ee1cdd724b6a0c8b18f39c82a6091b39adf172fcdb0c7ca7f3e666c9f23f",
+  "managed": {
+    "ExplicitMetadata": [
+      "a.dxf|message||True|True|True",
+      "a.dxf|message|inner|True|True|True",
+      "||inner|True|True|True",
+      "|message|inner|True|True|True",
+      "b.dxf|message||True|True|True",
+      "b.dxf|message|inner|True|True|True",
+      "||inner|True|True|True",
+      "|message|inner|True|True|True"
+    ],
+    "DefaultMessages": [
+      "IO_FileNotFound",
+      null,
+      "",
+      null,
+      "",
+      "IO_FileLoad",
+      "",
+      "",
+      "",
+      ""
+    ],
+    "ToStrings": [
+      "System.IO.FileNotFoundException: message\nIO_FileName_Name, a.dxf",
+      "System.IO.FileNotFoundException: message\nIO_FileName_Name, a.dxf\n ---> System.InvalidOperationException: inner",
+      "System.IO.FileNotFoundException: \n ---> System.InvalidOperationException: inner",
+      "System.IO.FileLoadException: message\nIO_FileName_Name, b.dxf",
+      "System.IO.FileLoadException: message\nIO_FileName_Name, b.dxf\n ---> System.InvalidOperationException: inner",
+      "System.IO.FileLoadException: \n ---> System.InvalidOperationException: inner"
+    ],
+    "CatchHierarchy": "True|document.dxf|Could not read|inner",
+    "CustomFields": [
+      "0|0|True|0|15",
+      "15|document.dxf|custom",
+      "0|True|plain"
+    ],
+    "Characters": 2147450880
+  },
+  "expected": {
+    "CatchHierarchy": "True|document.dxf|Could not read|inner",
+    "Characters": 2147450880,
+    "CustomFields": [
+      "0|0|True|0|15",
+      "15|document.dxf|custom",
+      "0|True|plain"
+    ],
+    "DefaultMessages": [
+      "Unable to find the specified file.",
+      null,
+      "Could not load file or assembly 'a.dxf'. The system cannot find the file specified.\n",
+      null,
+      "Could not load file or assembly ''. The system cannot find the file specified.\n",
+      "Could not load the specified file.",
+      "Could not load file or assembly ''. Could not find or load a specific file. (0x80131621)",
+      "Could not load file or assembly 'a.dxf'. Could not find or load a specific file. (0x80131621)",
+      "Could not load file or assembly ''. Could not find or load a specific file. (0x80131621)",
+      "Could not load file or assembly ''. Could not find or load a specific file. (0x80131621)"
+    ],
+    "ExplicitMetadata": [
+      "a.dxf|message||True|True|True",
+      "a.dxf|message|inner|True|True|True",
+      "||inner|True|True|True",
+      "|message|inner|True|True|True",
+      "b.dxf|message||True|True|True",
+      "b.dxf|message|inner|True|True|True",
+      "||inner|True|True|True",
+      "|message|inner|True|True|True"
+    ],
+    "ToStrings": [
+      "System.IO.FileNotFoundException: message\nFile name: 'a.dxf'",
+      "System.IO.FileNotFoundException: message\nFile name: 'a.dxf'\n ---> System.InvalidOperationException: inner",
+      "System.IO.FileNotFoundException: \n ---> System.InvalidOperationException: inner",
+      "System.IO.FileLoadException: message\nFile name: 'b.dxf'",
+      "System.IO.FileLoadException: message\nFile name: 'b.dxf'\n ---> System.InvalidOperationException: inner",
+      "System.IO.FileLoadException: \n ---> System.InvalidOperationException: inner"
+    ]
+  },
+  "managedDifferences": [
+    "DefaultMessages",
+    "ToStrings"
+  ]
+}

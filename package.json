@@ -94,7 +94,9 @@
     "test:cad-bcl": "node tests/cad-bcl-integration.mjs",
     "test:cad-format": "node tests/cad-format-integration.mjs",
     "test:netdxf-entities": "node tests/netdxf-entities.mjs",
-    "test:compiler-services": "node tests/utf16-integration.mjs && node tests/rva-enums-integration.mjs && node tests/delegate-generics-integration.mjs && node tests/collection-copy-integration.mjs && node tests/enumerable-inheritance-integration.mjs && node tests/spans-integration.mjs && node tests/cad-culture-integration.mjs && node tests/cad-parse-integration.mjs"
+    "test:compiler-services": "node tests/utf16-integration.mjs && node tests/rva-enums-integration.mjs && node tests/delegate-generics-integration.mjs && node tests/member-owner-generics-integration.mjs && node tests/collection-copy-integration.mjs && node tests/enumerable-inheritance-integration.mjs && node tests/spans-integration.mjs && node tests/cad-culture-integration.mjs && node tests/cad-parse-integration.mjs && node tests/cad-float-binary-integration.mjs && node tests/cad-time-integration.mjs && node tests/cad-strings-integration.mjs && node tests/cad-collections-integration.mjs && node tests/io-cad-integration.mjs && node tests/regex-integration.mjs && node tests/custom-attributes-integration.mjs && node tests/file-exceptions-integration.mjs && node tests/custom-attributes-materialization-integration.mjs && node tests/unsigned-collections-integration.mjs && node tests/runtime-type-integration.mjs && node tests/linked-attributes-integration.mjs && node tests/extra-enumerator-interfaces-integration.mjs && node tests/sequence-dispatch-integration.mjs",
+    "test:compiler-services-native": "node tests/cad-float-binary-verify-native.mjs && node tests/cad-time-verify-native.mjs && node tests/cad-strings-verify-native.mjs && node tests/custom-attributes-verify-native.mjs && node tests/file-exceptions-verify-native.mjs && node tests/verify-ordinal-native.mjs",
+    "test:netdxf-document": "node tests/netdxf-document-integration.mjs"
   },
   "engines": {
     "node": ">=22"

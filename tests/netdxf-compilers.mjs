@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {readFile,writeFile} from 'node:fs/promises';
 import {createRoslyn} from '../src/node/index.js';
 import {createNetDxfKernel,netDxfKernelMethods} from '../src/dxf/kernel.js';
+import {loadWasm} from '../src/wasm/index.js';
 
 const root=new URL('../',import.meta.url),checks=[];
 const provenance=JSON.parse(await readFile(new URL('vendor/netDxf/provenance.json',root)));
@@ -13,8 +14,14 @@ const report={testedAt:new Date().toISOString(),upstream:{repository:provenance.
 let compiler;
 const requireSuccess=result=>{assert.equal(result.success,true,JSON.stringify(result.error??result.diagnostics));return result;};
 async function check(name,action){const start=performance.now();try{const evidence=await action();checks.push({name,passed:true,milliseconds:performance.now()-start,evidence});console.log('PASS',name);return evidence;}catch(error){checks.push({name,passed:false,milliseconds:performance.now()-start,error:{message:error.message,stack:error.stack}});throw error;}}
-function diagnosticSummary(error){const diagnostics=error.diagnostics??error.details?.diagnostics??[];const codes={},dependencies={};for(const d of diagnostics){codes[d.code]=(codes[d.code]??0)+1;const quoted=d.message.match(/'([^']+)'/);if(quoted){const key=quoted[1].split('::')[0];dependencies[key]=(dependencies[key]??0)+1;}}return {supported:false,diagnosticCount:diagnostics.length,codes,dependencies:Object.fromEntries(Object.entries(dependencies).sort((a,b)=>b[1]-a[1])),examples:diagnostics.slice(0,20),message:error.message};}
-async function probe(assembly,backend,options={}){try{const artifact=await compiler[backend==='javascript'?'emitJavaScript':'emitWasm'](assembly,options);return {supported:true,diagnosticCount:artifact.analysis?.diagnostics?.length??0,compiledMethods:artifact.analysis?.methodCount??artifact.analysis?.methods};}catch(error){return diagnosticSummary(error);}}
+async function emitVerified(assembly,backend,options={}) {
+ const artifact=await compiler[backend==='javascript'?'emitJavaScript':'emitWasm'](assembly,{...options,strict:true});
+ assert.equal(artifact.analysis?.supported,true,`${backend}: assembly preflight must succeed`);
+ assert.deepEqual(artifact.analysis.diagnostics,[],`${backend}: emission must have zero diagnostics`);
+ const compiledMethods=artifact.analysis.methodCount??artifact.analysis.methods;
+ assert(Number.isInteger(compiledMethods)&&compiledMethods>0,`${backend}: emitted method count must be recorded`);
+ return {artifact,evidence:{supported:true,emitted:true,executed:false,diagnosticCount:0,compiledMethods}};
+}
 const ioSource=`using System; using System.IO; using System.Linq; using System.Text; using netDxf; using netDxf.Entities;
 public static class NetDxfIoProbe {
  public static int RoundTrip(bool binary) {
@@ -43,12 +50,12 @@ try{
   await compiler.addDll('netDxf.netstandard.dll',assembly.pe);
   return {sources:sources.length,diagnostics:assembly.diagnostics.length,peBytes:assembly.pe.length,sha256:createHash('sha256').update(assembly.pe).digest('hex')};
  });
- await check('Full-library compiler probes preserve explicit unsupported diagnostics',async()=>{
-  report.fullLibrarySupport.javascript=await probe(assembly,'javascript');
-  report.fullLibrarySupport.nativeWasm=await probe(assembly,'native-wasm');
-  report.fullLibrarySupport.nativeWasm.selection='Default native exports: public closed static methods plus their reachable method closure.';
-  for(const result of Object.values(report.fullLibrarySupport)) if(!result.supported)assert(result.diagnosticCount>0,'unsupported emission must provide actionable diagnostics');
-  return Object.fromEntries(Object.entries(report.fullLibrarySupport).map(([backend,result])=>[backend,{supported:result.supported,diagnostics:result.diagnosticCount,codes:result.codes}]));
+ await check('Full-library default JavaScript and native Wasm emission require zero diagnostics',async()=>{
+  for(const [key,backend]of [['javascript','javascript'],['nativeWasm','native-wasm']]){
+   const {evidence}=await emitVerified(assembly,backend);
+   report.fullLibrarySupport[key]={...evidence,selection:backend==='javascript'?'Complete inspected library method set.':'Default native exports: public closed static methods plus their reachable method closure.'};
+  }
+  return report.fullLibrarySupport;
  });
  const source=await readFile(new URL('src/dxf/NetDxfKernel.cs',root),'utf8');
  const cases=[['Distance2',[0,0,3,4]],['Distance3',[0,0,0,2,3,6]],['RotateX',[1,0,Math.PI/2]],['RotateY',[1,0,Math.PI/2]],['CrossZ',[2,0,0,4]],['NormalizeAngle',[-30]],['CubicBezierCoordinate',[0,10,10,0,0.5]],['LineLength',[0,0,0,2,3,6]],['CircleArea',[5]],['ArcSweep',[-30,45]],['TrueColorArgb',[12,34,56]]];
@@ -83,11 +90,31 @@ try{
   finally{for(const kernel of programs)kernel.dispose();}
   return {caseCount:invalid.length,backends:3,exception:'System.ArgumentOutOfRangeException'};
  });
- await check('The full managed library round-trips ASCII and binary DXF documents',async()=>{
+ await check('Managed, generated JavaScript and native Wasm execute ASCII and binary DXF round-trips',async()=>{
   const io=requireSuccess(await compiler.compile(ioSource,{assemblyName:'NetDxfIoProbe',outputKind:'library',optimization:'release',emitPdb:false}));
-  for(const binary of [false,true])assert.equal(requireSuccess(await compiler.invoke(io.assemblyId,'NetDxfIoProbe','RoundTrip',[binary])).result,101);
-  report.documentIo={managed:{supported:true,formats:['ASCII','binary'],entities:['LINE','CIRCLE']},
-   javascript:await probe(io,'javascript',{exports:['NetDxfIoProbe.RoundTrip'],strict:true}),nativeWasm:await probe(io,'native-wasm',{exports:['NetDxfIoProbe.RoundTrip']})};
-  return Object.fromEntries(Object.entries(report.documentIo).map(([backend,result])=>[backend,{supported:result.supported,diagnostics:result.diagnosticCount,codes:result.codes}]));
+  const common={formats:['ASCII','binary'],entities:['LINE','CIRCLE'],expectedResult:101};
+  report.documentIo={managed:{...common,supported:false,executed:false,roundTrips:[]}};
+  for(const binary of [false,true]){
+   const result=requireSuccess(await compiler.invoke(io.assemblyId,'NetDxfIoProbe','RoundTrip',[binary])).result;
+   assert.equal(result,101,`managed ${binary?'binary':'ASCII'} RoundTrip`);
+   report.documentIo.managed.roundTrips.push({format:binary?'binary':'ASCII',result});
+  }
+  Object.assign(report.documentIo.managed,{supported:true,executed:true});
+  for(const [key,backend]of [['javascript','javascript'],['nativeWasm','native-wasm']]){
+   const {artifact,evidence}=await emitVerified(io,backend,{exports:['NetDxfIoProbe.RoundTrip'],optimize:true,runtimeImport:new URL('../src/il/runtime.mjs',import.meta.url).href});
+   const entry=report.documentIo[key]={...common,...evidence,supported:false,roundTrips:[]};
+   const program=backend==='javascript'
+    ? (await import('data:text/javascript;base64,'+Buffer.from(artifact.source).toString('base64'))).createAssembly()
+    : await loadWasm(artifact.bytes);
+   try{
+    for(const binary of [false,true]){
+     const started=performance.now(),result=program.invoke('NetDxfIoProbe::RoundTrip',[binary]);
+     assert.equal(result,101,`${backend} ${binary?'binary':'ASCII'} RoundTrip`);
+     entry.roundTrips.push({format:binary?'binary':'ASCII',result,milliseconds:performance.now()-started});
+    }
+    Object.assign(entry,{supported:true,executed:true});
+   }finally{program.dispose?.();}
+  }
+  return report.documentIo;
  });
-}catch(error){console.error(error.message);process.exitCode=1;}finally{await compiler?.close();report.passed=checks.every(item=>item.passed);report.note='Passing verification confirms the explicitly tested geometry exports and managed DXF I/O. It does not claim complete netDxf support in the JavaScript or native-Wasm backends.';await writeFile(new URL('docs/netdxf-backends-verification.json',root),JSON.stringify(report,null,2)+'\n');console.log(`${checks.filter(item=>item.passed).length}/${checks.length} netDxf backend checks passed.`);}
+}catch(error){console.error(error.message);process.exitCode=1;}finally{await compiler?.close();report.passed=process.exitCode!==1&&checks.every(item=>item.passed);report.note='Full-library support entries require strict zero-diagnostic emission for each stated method selection; they do not assert execution of every method. Document I/O entries require actual LINE/CIRCLE Save/Load execution in both ASCII and binary formats on each backend, with RoundTrip=101. Broader document fidelity is verified separately by netdxf-document-verification.json.';await writeFile(new URL('docs/netdxf-backends-verification.json',root),JSON.stringify(report,null,2)+'\n');console.log(`${checks.filter(item=>item.passed).length}/${checks.length} netDxf backend checks passed.`);}

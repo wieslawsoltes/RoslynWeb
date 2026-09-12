@@ -19,6 +19,8 @@ export interface JavaScriptRuntimeOptions {
   maxInstructions?: number; maxCallDepth?: number; maxArrayLength?: number;
   maxVirtualFileBytes?: number; virtualFiles?: Record<string,string|Uint8Array|number[]>;
   virtualFileSystem?: VirtualFileSystem;
+  /** Virtual managed environment identity. UserName defaults to "Browser"; no host OS identity is read. */
+  environment?: {userName?: string};
   externals?: Record<string,ILExternal>|Map<string,ILExternal>;
   output?: (text:string,metadata?:{newline?:boolean})=>void;
   [key:string]: unknown;

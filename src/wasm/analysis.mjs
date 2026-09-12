@@ -1,3 +1,5 @@
+import {isTemporalValueType,isTemporalField} from '../il/cad-time.mjs';
+import {isPlatformField} from '../il/platform-fields.mjs';
 import {isSpanType} from '../il/spans.mjs';
 import { isEventField, isEventHandlerType } from '../il/events.mjs';
 import { isBuiltinCandidate } from '../il/compiler.mjs';
@@ -12,7 +14,7 @@ const primitiveKinds = new Map([
   ['System.Int64','i64'], ['System.UInt64','i64'], ['System.Single','f32'], ['System.Double','f64'],
   ['int','i32'], ['uint','i32'], ['long','i64'], ['ulong','i64'], ['float','f32'], ['double','f64'], ['bool','i32'],
 ]);
-export const nativeFrameworkEnums = new Map([['System.MidpointRounding','System.Int32'],['System.Globalization.NumberStyles','System.Int32'],['System.StringComparison','System.Int32']]);
+export const nativeFrameworkEnums = new Map([['System.MidpointRounding','System.Int32'],['System.Globalization.NumberStyles','System.Int32'],['System.StringComparison','System.Int32'],...['System.DateTimeKind','System.DayOfWeek','System.IO.FileMode','System.IO.FileAccess','System.IO.FileShare','System.IO.SeekOrigin','System.IO.SearchOption','System.StringSplitOptions'].map(name=>[name,'System.Int32'])]);
 const unsupportedValueTypes = /^System\.(?:Decimal|DateTime|DateTimeOffset|TimeSpan|DateOnly|TimeOnly|Guid|Nullable`1|ValueTuple(?:`\d+)?|Collections\.Generic\.KeyValuePair`2)(?:<|$)/;
 const forbiddenReferences = /(?:System\.(?:Memory|ReadOnlyMemory)`1|methodptr\(|\*)/;
 const numericKinds = new Set(['i32','i64','f32','f64']);
@@ -41,6 +43,7 @@ export function wasmType(type, context = {}) {
   if (nativeFrameworkEnums.has(type)) return primitiveKinds.get(nativeFrameworkEnums.get(type));
   if (/\[[,]*\]$/.test(type)) { const element = type.replace(/\[[,]*\]$/, ''); if(isSpanType(element))throw new TypeError(`A managed span cannot be stored in array '${type}'.`); if (!context.validatingTypes?.has(element)) wasmType(element, context); return 'externref'; }
   if (isSpanType(type)) { const element=splitTypeArguments(type)[0];if(isSpanType(element)||element.endsWith('&'))throw new TypeError(`Span element type '${element}' has unsupported byref-like storage.`);wasmType(element,context);return 'externref'; }
+  if (isTemporalValueType(type)) return 'externref';
   if (type === 'System.Drawing.Color') return 'externref';
   if (type === 'System.Runtime.CompilerServices.DefaultInterpolatedStringHandler') return 'externref';
   if (isStandardValueType(type)) { for (const argument of splitTypeArguments(type)) wasmType(argument,context); return 'externref'; }
@@ -168,11 +171,20 @@ export function analyzeWasmAssembly(model, options = {}) {
     if (matches[0]) checkLinkedIdentity(matches[0].assemblyName,caller);
     return matches[0] ?? null;
   };
+  // The definition, closed owner and method arguments fully determine a method
+  // instantiation. Avoid cloning its IL again for every call or dispatch refresh.
+  const methodInstances=new WeakMap();
+  const instanceKey=reference=>JSON.stringify([reference.declaringType,reference.genericArguments??[]]);
   const enqueue = (definition, reference = definition) => {
+    let instances=methodInstances.get(definition);
+    const specialization=instanceKey(reference);
+    if(instances?.has(specialization))return instances.get(specialization);
+    if(!instances){instances=new Map();methodInstances.set(definition,instances);}
     const method = instantiateMethod(definition, reference);
     const key = `${definition.assemblyName}|${methodSignature(method)}`;
-    if (selected.has(key)) return selected.get(key);
+    if (selected.has(key)) {const existing=selected.get(key);instances.set(specialization,existing);return existing;}
     const descriptor = { id:methods.length, key, assemblyName:definition.assemblyName, method, definition, type:definition.$type, paramTypes:[], resultType:null, localTypes:[], blocks:[], stackBefore:new Map(), stackAfter:new Map(), addressTakenLocals:new Set(), addressTakenArgs:new Set(), initializers:[], instructions:method.body };
+    instances.set(specialization,descriptor);
     selected.set(key, descriptor); methods.push(descriptor); pending.push(descriptor);
     descriptor.paramTypes = [...(!method.isStatic ? [kind(`${method.declaringType}${definition.$type.isValueType ? '&' : ''}`, descriptor)] : []), ...(method.parameters ?? []).map(p => kind(typeName(p), descriptor))];
     descriptor.resultType = kind(method.returnType, descriptor, undefined, true);
@@ -186,7 +198,14 @@ export function analyzeWasmAssembly(model, options = {}) {
   const serviceCallbacks = new Map(), serviceTypes = new Map(), serviceRetained = new Set();
   const virtualRefreshers = new Set();
   const virtualPlans = new Map();
+  let retainedServiceTypeCount=-1,retainedServiceCallbackCount=-1;
   const retainServiceCallbacks = () => {
+    // Types and callback signatures only accumulate during one analysis; an
+    // existing key is never reclassified. Repeated imports cannot discover a new
+    // callback target until either set grows. Keep the same conservative walk
+    // when that happens, including inherited implementations and closed owners.
+    if(retainedServiceTypeCount===serviceTypes.size&&retainedServiceCallbackCount===serviceCallbacks.size)return;
+    retainedServiceTypeCount=serviceTypes.size;retainedServiceCallbackCount=serviceCallbacks.size;
     for (const {closedType, assemblyName} of serviceTypes.values()) {
       let type = typesByAssembly.get(`${assemblyName}|${genericDefinitionName(closedType)}`) ?? types.get(genericDefinitionName(closedType));
       let actual = closedType;
@@ -218,12 +237,12 @@ export function analyzeWasmAssembly(model, options = {}) {
     if (typesByAssembly.has(`${assemblyName}|${genericDefinitionName(type)}`) || types.has(genericDefinitionName(type))) serviceTypes.set(`${assemblyName}|${type}`, {closedType:type,assemblyName});
     for (const argument of splitTypeArguments(type)) noteServiceType(argument, assemblyName);
   };
-  const noteServiceCall = ref => {
+  const noteServiceCall = (ref, descriptor) => {
     const type = String(ref.declaringType ?? ''), name = ref.name;
     if(/^System\.(?:Console|String|Object|Text\.StringBuilder|ValueTuple(?:`\d+)?(?:<.*>)?)$/.test(type)&&/^(?:Write|WriteLine|Concat|Format|Append|AppendLine|Join|ToString)$/.test(name)) {
       serviceCallbacks.set('ToString|0',{name:'ToString',count:0});serviceCallbacks.set('ToString|2',{name:'ToString',count:2,format:true});retainServiceCallbacks();
     }
-    if((type.startsWith('System.Collections.')||type.startsWith('System.Linq.'))&&(ref.parameters??[]).some(p=>/^System\.Collections\.(?:Generic\.)?IEnumerable/.test(typeName(p)))) {
+    if((type.startsWith('System.Collections.')||type.startsWith('System.Linq.'))&&(ref.parameters??[]).some(p=>/^System\.Collections\.(?:Generic\.)?(?:IEnumerable|IDictionary)/.test(typeName(p)))) {
       for(const callbackName of ['GetEnumerator','MoveNext','get_Current','Dispose','Reset'])serviceCallbacks.set(`${callbackName}|0`,{name:callbackName,count:0});retainServiceCallbacks();
     }
     if(type==='System.ICloneable'&&name==='Clone') { serviceCallbacks.set('Clone|0',{name:'Clone',count:0});retainServiceCallbacks();return; }
@@ -233,11 +252,18 @@ export function analyzeWasmAssembly(model, options = {}) {
       retainServiceCallbacks();
       return;
     }
-    if (['System.Collections.Generic.Dictionary`2','System.Collections.Generic.HashSet`1'].includes(genericDefinitionName(type))) {
-      const keyType=splitTypeArguments(type)[0];
+    if (['System.Collections.Generic.Dictionary`2','System.Collections.Generic.HashSet`1','System.Collections.Hashtable','System.Collections.Generic.ICollection`1'].includes(genericDefinitionName(type))) {
+      const keyType=splitTypeArguments(type)[0]??'System.Object';
       for(const callback of [{name:'Equals',count:2,comparer:true,keyType},{name:'GetHashCode',count:1,comparer:true,keyType},{name:'Equals',count:1},{name:'GetHashCode',count:0}]) serviceCallbacks.set(`${callback.name}|${callback.count}|${keyType}`,callback);
       retainServiceCallbacks();
     }
+    if (['System.Collections.Generic.List`1','System.Collections.Generic.SortedSet`1','System.Collections.Generic.SortedDictionary`2','System.Collections.Generic.IComparer`1'].includes(genericDefinitionName(type))) {
+      const keyType=splitTypeArguments(type)[0];
+      serviceCallbacks.set(`Compare|2|${keyType}`,{name:'Compare',count:2,comparer:true,keyType});
+      serviceCallbacks.set('CompareTo|1',{name:'CompareTo',count:1});
+      retainServiceCallbacks();
+    }
+    if (['System.Type','System.Reflection.MemberInfo','System.Reflection.MethodInfo','System.Reflection.FieldInfo','System.Reflection.PropertyInfo','System.Attribute'].includes(type) && name === 'GetCustomAttributes') retainAttributeConstructors(descriptor);
     const structural = ['System.Collections.IStructuralEquatable','System.Collections.IStructuralComparable','System.Collections.IEqualityComparer','System.Collections.IComparer'].includes(type);
     if (!structural && !isStandardValueType(type) && !['System.IComparable','System.IComparable`1','System.IEquatable`1'].includes(genericDefinitionName(type))) return;
     const callback = name === 'CompareTo' || name === 'Compare' ? {name:'Compare',count:2} : name === 'Equals' ? {name:'Equals',count:2} : name === 'GetHashCode' ? {name:'GetHashCode',count:1} : null;
@@ -270,6 +296,42 @@ export function analyzeWasmAssembly(model, options = {}) {
     if (!owner.initializers.includes(target.id) && owner.id !== target.id) owner.initializers.push(target.id);
     if (instruction) instruction.initializer = target.id;
     return target.id;
+  };
+  // Reflection materializes attributes by invoking their actual linked constructors
+  // and named property setters. Metadata alone cannot keep those bodies reachable.
+  let attributesRetained = false;
+  const retainAttributeConstructors = () => {
+    if (attributesRetained) return;
+    attributesRetained = true;
+    for (const assembly of assemblies) for (const type of assembly.types ?? []) {
+      for (const member of [type,...(type.methods??[]),...(type.fields??[]),...(type.properties??[])]) {
+        for (const attribute of member.customAttributes ?? []) {
+          const definition = findDefinition(attribute.constructor,{assemblyName:assembly.name});
+          if (!definition || definition.isAbstract || definition.isPInvoke || definition.isExternal || definition.isRuntime) continue;
+          const target=enqueue(definition,attribute.constructor);
+          noteServiceType(attribute.type,definition.assemblyName);
+          ensureInitializer(attribute.type,definition.assemblyName,target);
+          for (const argument of attribute.namedArguments ?? []) {
+            if (argument.kind !== 'Property') continue;
+            let actual=attribute.type;
+            let declaring=typesByAssembly.get(`${definition.assemblyName}|${genericDefinitionName(actual)}`)??types.get(genericDefinitionName(actual));
+            const seen=new Set();
+            while(declaring&&!seen.has(declaring.name)) {
+              seen.add(declaring.name);
+              const property=declaring.properties?.find(p=>p.name===argument.name);
+              if(property) {
+                const reference=property.setter&&instantiateReference({...property.setter,declaringType:actual},splitTypeArguments(actual),[]);
+                const setter=findDefinition(reference,{assemblyName:declaring.assemblyName});
+                if(setter&&!setter.isAbstract&&!setter.isPInvoke&&!setter.isExternal&&!setter.isRuntime)enqueue(setter,reference);
+                break;
+              }
+              actual=substituteType(declaring.baseType,splitTypeArguments(actual));
+              declaring=typesByAssembly.get(`${declaring.assemblyName}|${genericDefinitionName(actual)}`)??types.get(genericDefinitionName(actual));
+            }
+          }
+        }
+      }
+    }
   };
   const resolveCall = (ref, descriptor, instruction) => {
     const constrainedType = instruction.constrainedType;
@@ -349,7 +411,7 @@ export function analyzeWasmAssembly(model, options = {}) {
       if (resolvedRef.isStatic || opcodeOf(instruction) === 'newobj') ensureInitializer(resolvedRef.declaringType, target.assemblyName, descriptor, instruction);
       calls.set(target.key, call); return call;
     }
-    if (isNativeWasmBuiltin(resolvedRef,contextFor(descriptor.assemblyName)) || isDelegate && !isEventHandlerType(resolvedRef.declaringType) && ['.ctor','Invoke'].includes(resolvedRef.name)) { noteServiceCall(resolvedRef); const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
+    if (isNativeWasmBuiltin(resolvedRef,contextFor(descriptor.assemblyName)) || isDelegate && !isEventHandlerType(resolvedRef.declaringType) && ['.ctor','Invoke'].includes(resolvedRef.name)) { noteServiceCall(resolvedRef, descriptor); const call = { kind:'import', ref:resolvedRef, params, result }; calls.set(methodSignature(resolvedRef), call); return call; }
     report(definition?.isPInvoke ? 'WASM_PINVOKE' : definition?.isAbstract ? 'WASM_ABSTRACT_DISPATCH' : 'WASM_UNRESOLVED_CALL', `No native WebAssembly implementation or supported runtime service for '${methodSignature(resolvedRef)}'.`, descriptor, instruction);
     return { kind:'unresolved', ref:resolvedRef, params, result };
   };
@@ -456,7 +518,7 @@ export function analyzeWasmAssembly(model, options = {}) {
         const fieldType = kind(operand?.type, descriptor, instruction), declaring = typesByAssembly.get(`${operand?.assemblyName ?? descriptor.assemblyName}|${genericDefinitionName(operand?.declaringType)}`) ?? types.get(genericDefinitionName(operand?.declaringType));
         const known = declaring?.fields?.some(f => f.name === operand?.name);
         if (declaring) checkLinkedIdentity(declaring.assemblyName,descriptor);
-        if (!known && !(op === 'ldsfld' && isEventField(operand)) && !isStandardValueField(operand) && !(op === 'ldsfld' && ['System.String::Empty','System.Type::EmptyTypes','System.IntPtr::Zero','System.UIntPtr::Zero'].includes(`${operand?.declaringType}::${operand?.name}`))) report('WASM_UNRESOLVED_FIELD', `No linked storage for '${operand?.declaringType}::${operand?.name}'.`, descriptor, instruction);
+        if (!known && !(op === 'ldsfld' && isEventField(operand)) && !isStandardValueField(operand) && !(op === 'ldsfld' && isPlatformField(operand)) && !((op === 'ldsfld' || op === 'ldsflda') && isTemporalField(operand)) && !(op === 'ldsfld' && ['System.String::Empty','System.Type::EmptyTypes','System.IntPtr::Zero','System.UIntPtr::Zero'].includes(`${operand?.declaringType}::${operand?.name}`))) report('WASM_UNRESOLVED_FIELD', `No linked storage for '${operand?.declaringType}::${operand?.name}'.`, descriptor, instruction);
         if (op.startsWith('st')) pop(fieldType); if (!op.includes('sf')) pop('externref'); if (op.startsWith('ld')) push(op.endsWith('a') ? 'externref' : fieldType);
         if (op.includes('sf')) ensureInitializer(operand?.declaringType, operand?.assemblyName ?? declaring?.assemblyName, descriptor, instruction);
       } else if (/^(?:ldind|stind)\.(?:i1|u1|i2|u2|i4|u4|i8|i|r4|r8|ref)$/.test(op)) {
@@ -506,7 +568,14 @@ export function analyzeWasmAssembly(model, options = {}) {
   }
   const entryPoint = methods.find(m => m.assemblyName === model.name && m.method.token === model.entryPoint) ?? null;
   const result = { assembly:model.name, supported:diagnostics.length === 0, executable:diagnostics.length === 0, diagnostics, methods, exports:exports.map(m => ({ id:m.id,key:m.key,name:m.method.name,declaringType:m.method.declaringType,parameters:m.paramTypes,result:m.resultType })), entryPoint:entryPoint?.id ?? null, types:[...typesByAssembly.values()], assemblies, dependencies:[...calls.values()], totalInstructions:methods.reduce((sum,m) => sum + m.stackBefore.size,0), methodCount:methods.length };
-  result.resolveMethod = (ref,caller) => { const definition = findDefinition(ref,caller); if (!definition) return null; const method = instantiateMethod(definition,ref); return selected.get(`${definition.assemblyName}|${methodSignature(method)}`) ?? null; };
+  result.resolveMethod = (ref,caller) => {
+    const definition=findDefinition(ref,caller);if(!definition)return null;
+    const existing=methodInstances.get(definition)?.get(instanceKey(ref));if(existing)return existing;
+    // Resolution only needs the closed signature; unused bodies need no copying.
+    const method=instantiateReference(definition,splitTypeArguments(ref.declaringType),ref.genericArguments??[]);
+    method.declaringType=ref.declaringType;method.genericArguments=ref.genericArguments??[];
+    return selected.get(`${definition.assemblyName}|${methodSignature(method)}`)??null;
+  };
   return result;
 }
 

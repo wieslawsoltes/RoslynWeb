@@ -1,3 +1,4 @@
+import {ordinalIgnoreCaseKey, compareOrdinalIgnoreCase, ordinalIgnoreCaseEqualsAt, indexOfOrdinalIgnoreCase} from './ordinal.mjs';
 /** Finite, signature-checked CAD framework adapters. Culture-sensitive operations
  * remain explicit runtime limitations; no current-culture operation is ordinalized.
  */
@@ -7,6 +8,8 @@ import {reflectionType} from './reflection.mjs';
 import {isCadFormatBuiltin,invokeCadFormatBuiltin,cadProviderInfo,formatCadNumeric} from './cad-format.mjs';
 import {isCadCultureBuiltin,invokeCadCultureBuiltin} from './cad-culture.mjs';
 import {isCadParseBuiltin,invokeCadParseBuiltin} from './cad-parse.mjs';
+import {isCadFloatParseBuiltin,invokeCadFloatParseBuiltin} from './cad-float-parse.mjs';
+import {isCadBinaryBuiltin,invokeCadBinaryBuiltin} from './cad-binary.mjs';
 
 const ptypes = ref => (ref.parameters ?? []).map(p => p.type ?? p);
 const raw = v => v?.$byref ? raw(v.get()) : v?.$box ? raw(v.value) : v instanceof Numeric ? v.value : typeof v?.$int64==='string' ? BigInt(v.$int64) : v;
@@ -50,7 +53,7 @@ for(const type of ['System.StringComparer','System.Collections.Generic.IEquality
 }
 
 export function isCadBuiltin(ref) {
-  if(isCadParseBuiltin(ref)||isCadCultureBuiltin(ref)||isCadFormatBuiltin(ref))return true;
+  if(isCadBinaryBuiltin(ref)||isCadFloatParseBuiltin(ref)||isCadParseBuiltin(ref)||isCadCultureBuiltin(ref)||isCadFormatBuiltin(ref))return true;
   if (!ref || (ref.genericParameterCount ?? 0) || ref.genericArguments?.length) return false;
   return signatures.get(`${ref.declaringType}|${ref.name}|${ref.isStatic}|${ref.returnType}`)?.has(ptypes(ref).join('|')) ?? false;
 }
@@ -106,16 +109,13 @@ export function formatCadValue(rt,value,format,typeHint) {
   return undefined;
 }
 
-// JavaScript uppercasing has expansion and Unicode-version differences from CLR
-// ordinal casing. Admit the exact ASCII subset and explicitly reject other text.
+// Canonical keys use pinned CLR ordinal casing, including supplementary planes.
 export function cadOrdinalKey(value, ignoreCase) {
-  if (!ignoreCase || value == null) return value;
-  if (/[^\x00-\x7f]/.test(value)) limit('OrdinalIgnoreCase currently supports ASCII text; non-ASCII ordinal casing requires CLR Unicode tables.');
-  return value.replace(/[a-z]/g,c=>String.fromCharCode(c.charCodeAt(0)-32));
+  return !ignoreCase || value == null ? value : ordinalIgnoreCaseKey(value);
 }
 function compare(a,b,ignoreCase=false) {
   if(a===b)return 0;if(a==null)return -1;if(b==null)return 1;
-  a=cadOrdinalKey(a,ignoreCase);b=cadOrdinalKey(b,ignoreCase);
+  if(ignoreCase)return compareOrdinalIgnoreCase(a,b);
   for(let i=0;i<Math.min(a.length,b.length);i++)if(a.charCodeAt(i)!==b.charCodeAt(i))return a.charCodeAt(i)-b.charCodeAt(i);
   return a.length-b.length;
 }
@@ -128,6 +128,8 @@ export function defaultCadValue(type) {return type===COLOR?color(0,null,true):un
 function channel(value,name) {value=Number(raw(value));if(value<0||value>255)fail('ArgumentException',`Value of '${value}' is not valid for '${name}'. '${name}' should be greater than or equal to 0 and less than or equal to 255.`);return value;}
 
 export function invokeCadBuiltin(rt,ref,args,self) {
+  const binary=invokeCadBinaryBuiltin(rt,ref,args);if(binary.handled)return binary;
+  const floating=invokeCadFloatParseBuiltin(rt,ref,args);if(floating.handled)return floating;
   const parsed=invokeCadParseBuiltin(rt,ref,args);
   if(parsed.handled)return parsed;
   const culture=invokeCadCultureBuiltin(rt,ref,args,self);
@@ -190,8 +192,8 @@ export function invokeCadBuiltin(rt,ref,args,self) {
     if(self==null)fail('NullReferenceException','Object reference not set to an instance of an object.');
     if(name==='Replace')return done(self.split(String.fromCharCode(a[0])).join(String.fromCharCode(a[1])));
     if(name==='Contains'&&p[0]===C)return done(i4(self.includes(String.fromCharCode(a[0]))));
-    if(['Contains','StartsWith','EndsWith'].includes(name)){const ignore=ordinalMode(args.at(-1)),needle=cadOrdinalKey(nonnull(a[0],'value'),ignore),text=cadOrdinalKey(self,ignore);return done(i4(name==='Contains'?text.includes(needle):name==='StartsWith'?text.startsWith(needle):text.endsWith(needle)));}
-    if(name==='IndexOf'){let start=0,count=self.length,ignore=false,needle;if(p[0]===C){needle=String.fromCharCode(a[0]);if(args.length>1)start=a[1];count=args.length>2?a[2]:self.length-start;}else{ignore=ordinalMode(args.at(-1));needle=nonnull(a[0],'value');if(args.length>2)start=a[1];count=args.length>3?a[2]:self.length-start;}range(self,start,count);const at=cadOrdinalKey(self.slice(start,start+count),ignore).indexOf(cadOrdinalKey(needle,ignore));return done(i4(at<0?-1:start+at));}
+    if(['Contains','StartsWith','EndsWith'].includes(name)){const ignore=ordinalMode(args.at(-1)),needle=nonnull(a[0],'value');return done(i4(ignore?(name==='Contains'?indexOfOrdinalIgnoreCase(self,needle)>=0:ordinalIgnoreCaseEqualsAt(self,needle,name==='EndsWith'?self.length-needle.length:0)):(name==='Contains'?self.includes(needle):name==='StartsWith'?self.startsWith(needle):self.endsWith(needle))));}
+    if(name==='IndexOf'){let start=0,count=self.length,ignore=false,needle;if(p[0]===C){needle=String.fromCharCode(a[0]);if(args.length>1)start=a[1];count=args.length>2?a[2]:self.length-start;}else{ignore=ordinalMode(args.at(-1));needle=nonnull(a[0],'value');if(args.length>2)start=a[1];count=args.length>3?a[2]:self.length-start;}range(self,start,count);if(ignore)return done(i4(indexOfOrdinalIgnoreCase(self,needle,start,count)));const at=self.slice(start,start+count).indexOf(needle);return done(i4(at<0?-1:start+at));}
     if(name==='LastIndexOf'){if(self.length===0)return done(i4(-1));const start=args.length>1?a[1]:self.length-1,count=args.length>2?a[2]:start+1;if(start<0||start>=self.length)fail('ArgumentOutOfRangeException','startIndex');if(count<0||count>start+1)fail('ArgumentOutOfRangeException','count');const at=self.slice(start-count+1,start+1).lastIndexOf(String.fromCharCode(a[0]));return done(i4(at<0?-1:start-count+1+at));}
     if(name==='IndexOfAny'){const characters=nonnull(args[0],'anyOf').items,start=args.length>1?a[1]:0,count=args.length>2?a[2]:self.length-start;range(self,start,count);const set=new Set(characters.map(v=>Number(raw(v))));for(let i=start;i<start+count;i++)if(set.has(self.charCodeAt(i)))return done(i4(i));return done(i4(-1));}
     if(name.startsWith('Trim')) {const chars=p[0]===C?[String.fromCharCode(a[0])]:args[0]?.items?.map(v=>String.fromCharCode(raw(v)))??[];const ws=c=>/^[\u0009-\u000d\u0020\u0085\u00a0\u1680\u2000-\u200a\u2028\u2029\u202f\u205f\u3000]$/.test(c),match=c=>chars.length?chars.includes(c):ws(c);let start=0,end=self.length;if(name!=='TrimEnd')while(start<end&&match(self[start]))start++;if(name!=='TrimStart')while(end>start&&match(self[end-1]))end--;return done(self.slice(start,end));}

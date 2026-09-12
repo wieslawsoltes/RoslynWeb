@@ -20,7 +20,7 @@ public static class IlInspector
         using var pe = new PEReader(new MemoryStream(image));
         if (!pe.HasMetadata) throw new BadImageFormatException("The PE image has no managed metadata.");
         var reader = pe.GetMetadataReader();
-        var provider = new TypeNames();
+        var provider = new TypeNames(reader);
         var assemblyName = reader.IsAssembly ? reader.GetString(reader.GetAssemblyDefinition().Name) : reader.GetString(reader.GetModuleDefinition().Name);
         var identity = reader.IsAssembly ? DescribeAssemblyIdentity(reader) : new AssemblyName(assemblyName);
         var types = reader.TypeDefinitions.Select(handle =>
@@ -35,6 +35,7 @@ public static class IlInspector
                 isEnum = !type.BaseType.IsNil && provider.GetTypeName(reader, type.BaseType) == "System.Enum",
                 isFlagsEnum = !type.BaseType.IsNil && provider.GetTypeName(reader, type.BaseType) == "System.Enum" && type.GetCustomAttributes().Any(h => CustomAttributeTypeName(reader, provider, h) == "System.FlagsAttribute"),
                 inlineArrayLength = InlineArrayLength(reader, provider, type),
+                customAttributes = DescribeCustomAttributes(pe, reader, provider, type.GetCustomAttributes()),
                 isByRefLike = type.GetCustomAttributes().Any(h => CustomAttributeTypeName(reader, provider, h) == "System.Runtime.CompilerServices.IsByRefLikeAttribute"),
                 genericParameters = type.GetGenericParameters().Select(p => reader.GetString(reader.GetGenericParameter(p).Name)).ToArray(),
                 interfaces = type.GetInterfaceImplementations().Select(i => provider.GetTypeName(reader, reader.GetInterfaceImplementation(i).Interface)).ToArray(),
@@ -111,6 +112,41 @@ public static class IlInspector
         };
     }
 
+    private static object[] DescribeCustomAttributes(PEReader pe, MetadataReader reader, TypeNames provider, CustomAttributeHandleCollection handles)
+    {
+        return handles.Select(handle =>
+        {
+            var attribute = reader.GetCustomAttribute(handle);
+            var type = CustomAttributeTypeName(reader, provider, handle);
+            var constructor = DescribeToken(pe, reader, provider, MetadataTokens.GetToken(attribute.Constructor));
+            try
+            {
+                var decoded = attribute.DecodeValue(provider);
+                return (object)new
+                {
+                    type, constructor,
+                    fixedArguments = decoded.FixedArguments.Select(AttributeArgument).ToArray(),
+                    namedArguments = decoded.NamedArguments.Select(a => new { name = a.Name, kind = a.Kind.ToString(), type = a.Type, value = AttributeValue(a.Value) }).ToArray()
+                };
+            }
+            catch (Exception error) when (error is BadImageFormatException or NotSupportedException or ArgumentException or InvalidOperationException)
+            {
+                // Preserve the presence and failure of undecodable attributes.
+                // Do not load or execute external assemblies to guess enum widths.
+                return new { type, constructor, decodeError = error.Message };
+            }
+        }).ToArray();
+    }
+
+    private static object AttributeArgument(CustomAttributeTypedArgument<string> argument)
+        => new { type = argument.Type, value = AttributeValue(argument.Value) };
+
+    private static object? AttributeValue(object? value)
+        => value is CustomAttributeTypedArgument<string> boxed ? AttributeArgument(boxed)
+            : value is ImmutableArray<CustomAttributeTypedArgument<string>> array
+                ? array.IsDefault ? null : array.Select(AttributeArgument).ToArray()
+                : value;
+
     private static object DescribeProperty(PEReader pe, MetadataReader reader, TypeNames provider, PropertyDefinitionHandle handle, string declaringType)
     {
         var property = reader.GetPropertyDefinition(handle);
@@ -120,6 +156,7 @@ public static class IlInspector
         {
             token = MetadataTokens.GetToken(handle), name = reader.GetString(property.Name), declaringType,
             assemblyName = reader.IsAssembly ? reader.GetString(reader.GetAssemblyDefinition().Name) : null,
+            customAttributes = DescribeCustomAttributes(pe, reader, provider, property.GetCustomAttributes()),
             attributes = property.Attributes.ToString(), type = signature.ReturnType, isStatic = !signature.Header.IsInstance,
             parameters = signature.ParameterTypes.Select((type, i) => new { name = "arg" + i, type }).ToArray(),
             getter = accessors.Getter.IsNil ? null : DescribeToken(pe, reader, provider, MetadataTokens.GetToken(accessors.Getter)),
@@ -153,6 +190,7 @@ public static class IlInspector
             declaringType = provider.GetTypeFromDefinition(reader, field.GetDeclaringType(), 0),
             type = field.DecodeSignature(provider, (object?)null), isStatic = (field.Attributes & FieldAttributes.Static) != 0,
             attributes = field.Attributes.ToString(), constant,
+            customAttributes = DescribeCustomAttributes(pe, reader, provider, field.GetCustomAttributes()),
             assemblyName = reader.IsAssembly ? reader.GetString(reader.GetAssemblyDefinition().Name) : null,
             initialData = ReadFieldData(pe, reader, provider, field)
         };
@@ -214,6 +252,7 @@ public static class IlInspector
             pinvoke = (method.Attributes & MethodAttributes.PinvokeImpl) != 0 ? DescribeImport(reader, method) : null,
             assemblyName = reader.IsAssembly ? reader.GetString(reader.GetAssemblyDefinition().Name) : null,
             returnType = signature.ReturnType, parameters, locals, body, exceptionHandlers,
+            customAttributes = DescribeCustomAttributes(pe, reader, provider, method.GetCustomAttributes()),
             maxStack, initLocals, attributes = method.Attributes.ToString(), implementationAttributes = method.ImplAttributes.ToString(),
             genericParameters = method.GetGenericParameters().Select(p => reader.GetString(reader.GetGenericParameter(p).Name)).ToArray(),
             decodeError
@@ -359,8 +398,51 @@ public static class IlInspector
         }
     }
 
-    private sealed class TypeNames : ISignatureTypeProvider<string, object?>
+    private sealed class TypeNames(MetadataReader metadata) : ISignatureTypeProvider<string, object?>, ICustomAttributeTypeProvider<string>
     {
+        public string GetSystemType() => "System.Type";
+        public bool IsSystemType(string type) => type == "System.Type";
+        public string GetTypeFromSerializedName(string name) => name;
+        public PrimitiveTypeCode GetUnderlyingEnumType(string type)
+        {
+            var separator = type.IndexOf(',');
+            var name = (separator < 0 ? type : type[..separator]).Trim();
+            var localAssembly = metadata.GetAssemblyDefinition();
+            var localName = metadata.GetString(localAssembly.Name);
+            var requestedAssembly = separator < 0 ? null : new System.Reflection.AssemblyName(type[(separator + 1)..].Trim());
+            var localIdentity = requestedAssembly == null || requestedAssembly.Name == localName
+                && (requestedAssembly.Version == null || requestedAssembly.Version == localAssembly.Version);
+            var externalSameName = metadata.TypeReferences.Any(handle => GetTypeFromReference(metadata, handle, 0) == name);
+            if (requestedAssembly == null && externalSameName && metadata.TypeDefinitions.Any(handle => GetTypeFromDefinition(metadata, handle, 0) == name))
+                throw new NotSupportedException($"Attribute enum '{name}' has ambiguous local and external metadata.");
+            foreach (var handle in metadata.TypeDefinitions)
+            {
+                if (!localIdentity || GetTypeFromDefinition(metadata, handle, 0) != name) continue;
+                var definition = metadata.GetTypeDefinition(handle);
+                if (definition.BaseType.IsNil || GetTypeName(metadata, definition.BaseType) != "System.Enum")
+                    throw new BadImageFormatException($"Attribute enum '{name}' is not an enum.");
+                foreach (var fieldHandle in definition.GetFields())
+                {
+                    var field = metadata.GetFieldDefinition(fieldHandle);
+                    if (metadata.GetString(field.Name) != "value__") continue;
+                    var underlying = field.DecodeSignature(this, (object?)null);
+                    if (Enum.TryParse<PrimitiveTypeCode>(underlying.Replace("System.", "", StringComparison.Ordinal), out var code)
+                        && code is PrimitiveTypeCode.SByte or PrimitiveTypeCode.Byte or PrimitiveTypeCode.Int16 or PrimitiveTypeCode.UInt16 or PrimitiveTypeCode.Int32 or PrimitiveTypeCode.UInt32 or PrimitiveTypeCode.Int64 or PrimitiveTypeCode.UInt64) return code;
+                    throw new BadImageFormatException($"Invalid underlying type for attribute enum '{name}'.");
+                }
+            }
+            if (requestedAssembly != null && requestedAssembly.Name is not ("System.Private.CoreLib" or "mscorlib" or "System.Runtime" or "System" or "netstandard" or "System.ComponentModel.Primitives"))
+                throw new NotSupportedException($"Attribute enum '{type}' requires external enum metadata.");
+            if (name is "System.AttributeTargets" or "System.Diagnostics.DebuggableAttribute+DebuggingModes"
+                or "System.Runtime.InteropServices.CharSet" or "System.Runtime.InteropServices.CallingConvention"
+                or "System.Runtime.InteropServices.LayoutKind" or "System.Runtime.InteropServices.UnmanagedType"
+                or "System.Runtime.CompilerServices.MethodImplOptions" or "System.Runtime.CompilerServices.MethodCodeType"
+                or "System.Runtime.CompilerServices.CompilationRelaxations" or "System.ComponentModel.EditorBrowsableState"
+                or "System.Diagnostics.DebuggerBrowsableState" or "System.Reflection.AssemblyNameFlags"
+                or "System.Configuration.Assemblies.AssemblyHashAlgorithm" or "System.Security.SecurityRuleSet")
+                return name == "System.Security.SecurityRuleSet" ? PrimitiveTypeCode.Byte : PrimitiveTypeCode.Int32;
+            throw new NotSupportedException($"Attribute enum '{name}' requires external enum metadata.");
+        }
         public HashSet<string> ValueTypeNames { get; } = [];
         public string GetArrayType(string elementType, ArrayShape shape) => elementType + "[" + new string(',', shape.Rank - 1) + "]";
         public string GetByReferenceType(string elementType) => elementType + "&";

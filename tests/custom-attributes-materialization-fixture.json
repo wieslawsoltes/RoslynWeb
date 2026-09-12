@@ -1,0 +1,4785 @@
+{
+  "success": true,
+  "schemaVersion": 1,
+  "name": "AttributeMaterialization",
+  "entryPoint": null,
+  "assemblyIdentity": "AttributeMaterialization, Version=0.0.0.0, Culture=neutral",
+  "version": "0.0.0.0",
+  "culture": "",
+  "publicKeyToken": "null",
+  "moduleVersionId": "47e3c4a7-29cd-450e-962b-d9b84fb3c83b",
+  "references": [
+    {
+      "name": "System.Runtime",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    },
+    {
+      "name": "System.Collections",
+      "version": "10.0.0.0",
+      "culture": "",
+      "publicKeyToken": "b03f5f7f11d50a3a",
+      "assemblyIdentity": "System.Collections, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+    }
+  ],
+  "valueTypes": [
+    "E64",
+    "System.AttributeTargets",
+    "System.RuntimeTypeHandle"
+  ],
+  "types": [
+    {
+      "token": 33554433,
+      "name": "<Module>",
+      "attributes": "NotPublic",
+      "baseType": null,
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554434,
+      "name": "ObjAttribute",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Attribute",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "System.Runtime.CompilerServices.NullableContextAttribute",
+          "constructor": {
+            "token": 167772165,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableContextAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 1
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.Runtime.CompilerServices.NullableAttribute",
+          "constructor": {
+            "token": 167772166,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 0
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.AttributeUsageAttribute",
+          "constructor": {
+            "token": 167772167,
+            "name": ".ctor",
+            "declaringType": "System.AttributeUsageAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.AttributeTargets"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.AttributeTargets",
+              "value": 32767
+            }
+          ],
+          "namedArguments": [
+            {
+              "name": "AllowMultiple",
+              "kind": "Property",
+              "type": "System.Boolean",
+              "value": true
+            }
+          ]
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108865,
+          "name": "X",
+          "declaringType": "ObjAttribute",
+          "type": "System.Object",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "customAttributes": [],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        },
+        {
+          "token": 67108866,
+          "name": "<Y>k__BackingField",
+          "declaringType": "ObjAttribute",
+          "type": "System.Object",
+          "isStatic": false,
+          "attributes": "Private",
+          "constant": null,
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        },
+        {
+          "token": 67108867,
+          "name": "Z",
+          "declaringType": "ObjAttribute",
+          "type": "System.Object",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.NullableAttribute",
+              "constructor": {
+                "token": 167772166,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Byte"
+                  }
+                ],
+                "isStatic": false
+              },
+              "fixedArguments": [
+                {
+                  "type": "System.Byte",
+                  "value": 2
+                }
+              ],
+              "namedArguments": []
+            }
+          ],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        }
+      ],
+      "properties": [
+        {
+          "token": 385875969,
+          "name": "Y",
+          "declaringType": "ObjAttribute",
+          "assemblyName": "AttributeMaterialization",
+          "customAttributes": [],
+          "attributes": "None",
+          "type": "System.Object",
+          "isStatic": false,
+          "parameters": [],
+          "getter": {
+            "token": 100663297,
+            "name": "get_Y",
+            "declaringType": "ObjAttribute",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Object",
+            "parameters": [],
+            "isStatic": false
+          },
+          "setter": {
+            "token": 100663298,
+            "name": "set_Y",
+            "declaringType": "ObjAttribute",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Object"
+              }
+            ],
+            "isStatic": false
+          }
+        }
+      ],
+      "methods": [
+        {
+          "token": 100663297,
+          "name": "get_Y",
+          "declaringType": "ObjAttribute",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Object",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108866,
+                "name": "<Y>k__BackingField",
+                "declaringType": "ObjAttribute",
+                "type": "System.Object",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "customAttributes": [
+                  {
+                    "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                    "constructor": {
+                      "token": 167772168,
+                      "name": ".ctor",
+                      "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                      "assemblyName": "System.Runtime",
+                      "genericParameterCount": 0,
+                      "returnType": "System.Void",
+                      "parameters": [],
+                      "isStatic": false
+                    },
+                    "fixedArguments": [],
+                    "namedArguments": []
+                  }
+                ],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663298,
+          "name": "set_Y",
+          "declaringType": "ObjAttribute",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "value",
+              "type": "System.Object"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108866,
+                "name": "<Y>k__BackingField",
+                "declaringType": "ObjAttribute",
+                "type": "System.Object",
+                "isStatic": false,
+                "attributes": "Private",
+                "constant": null,
+                "customAttributes": [
+                  {
+                    "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                    "constructor": {
+                      "token": 167772168,
+                      "name": ".ctor",
+                      "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                      "assemblyName": "System.Runtime",
+                      "genericParameterCount": 0,
+                      "returnType": "System.Void",
+                      "parameters": [],
+                      "isStatic": false
+                    },
+                    "fixedArguments": [],
+                    "namedArguments": []
+                  }
+                ],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663299,
+          "name": ".ctor",
+          "declaringType": "ObjAttribute",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "x",
+              "type": "System.Object"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Attribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108865,
+                "name": "X",
+                "declaringType": "ObjAttribute",
+                "type": "System.Object",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 13,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 14,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": {
+                "token": 100663298,
+                "name": "set_Y",
+                "declaringType": "ObjAttribute",
+                "assemblyName": "AttributeMaterialization",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Object"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 20,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554435,
+      "name": "TypeAttribute",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Attribute",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "System.Runtime.CompilerServices.NullableContextAttribute",
+          "constructor": {
+            "token": 167772165,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableContextAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 1
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.Runtime.CompilerServices.NullableAttribute",
+          "constructor": {
+            "token": 167772166,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 0
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.AttributeUsageAttribute",
+          "constructor": {
+            "token": 167772167,
+            "name": ".ctor",
+            "declaringType": "System.AttributeUsageAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.AttributeTargets"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.AttributeTargets",
+              "value": 32767
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108868,
+          "name": "X",
+          "declaringType": "TypeAttribute",
+          "type": "System.Type",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "customAttributes": [],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663300,
+          "name": ".ctor",
+          "declaringType": "TypeAttribute",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "x",
+              "type": "System.Type"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Attribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108868,
+                "name": "X",
+                "declaringType": "TypeAttribute",
+                "type": "System.Type",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 13,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554436,
+      "name": "E64",
+      "attributes": "Public, Sealed",
+      "baseType": "System.Enum",
+      "isValueType": true,
+      "isEnum": true,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108869,
+          "name": "value__",
+          "declaringType": "E64",
+          "type": "System.UInt64",
+          "isStatic": false,
+          "attributes": "Public, SpecialName, RTSpecialName",
+          "constant": null,
+          "customAttributes": [],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        },
+        {
+          "token": 67108870,
+          "name": "High",
+          "declaringType": "E64",
+          "type": "E64",
+          "isStatic": true,
+          "attributes": "Public, Static, Literal, HasDefault",
+          "constant": {
+            "$int64": "18446744073709551615"
+          },
+          "customAttributes": [],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": []
+    },
+    {
+      "token": 33554437,
+      "name": "LongAttribute",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Attribute",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "System.AttributeUsageAttribute",
+          "constructor": {
+            "token": 167772167,
+            "name": ".ctor",
+            "declaringType": "System.AttributeUsageAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.AttributeTargets"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.AttributeTargets",
+              "value": 32767
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108871,
+          "name": "E",
+          "declaringType": "LongAttribute",
+          "type": "E64",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "customAttributes": [],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        },
+        {
+          "token": 67108872,
+          "name": "X",
+          "declaringType": "LongAttribute",
+          "type": "System.UInt64",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "customAttributes": [],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663301,
+          "name": ".ctor",
+          "declaringType": "LongAttribute",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "x",
+              "type": "System.UInt64"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Attribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 8,
+              "opcode": "stfld",
+              "operand": {
+                "token": 67108872,
+                "name": "X",
+                "declaringType": "LongAttribute",
+                "type": "System.UInt64",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 13,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554438,
+      "name": "BoxSubject",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "ObjAttribute",
+          "constructor": {
+            "token": 100663299,
+            "name": ".ctor",
+            "declaringType": "ObjAttribute",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Object"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Int32",
+              "value": 42
+            }
+          ],
+          "namedArguments": [
+            {
+              "name": "Y",
+              "kind": "Property",
+              "type": "System.Int32",
+              "value": 43
+            },
+            {
+              "name": "Z",
+              "kind": "Field",
+              "type": "System.Int64",
+              "value": {
+                "$int64": "44"
+              }
+            }
+          ]
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663302,
+          "name": ".ctor",
+          "declaringType": "BoxSubject",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554439,
+      "name": "ArraySubject",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "ObjAttribute",
+          "constructor": {
+            "token": 100663299,
+            "name": ".ctor",
+            "declaringType": "ObjAttribute",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Object"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Object[]",
+              "value": [
+                {
+                  "type": "System.Int32",
+                  "value": 42
+                },
+                {
+                  "type": "System.Int64",
+                  "value": {
+                    "$int64": "44"
+                  }
+                },
+                {
+                  "type": "System.String",
+                  "value": "text"
+                }
+              ]
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663303,
+          "name": ".ctor",
+          "declaringType": "ArraySubject",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554440,
+      "name": "TypeSubject",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "TypeAttribute",
+          "constructor": {
+            "token": 100663300,
+            "name": ".ctor",
+            "declaringType": "TypeAttribute",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Type"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Type",
+              "value": "System.Collections.Generic.Dictionary`2[[System.String, System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a],[System.Collections.Generic.List`1[[System.Int32[,], System.Runtime, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a]], System.Collections, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a]][], System.Collections, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a"
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663304,
+          "name": ".ctor",
+          "declaringType": "TypeSubject",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554441,
+      "name": "LongSubject",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "LongAttribute",
+          "constructor": {
+            "token": 100663301,
+            "name": ".ctor",
+            "declaringType": "LongAttribute",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.UInt64"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.UInt64",
+              "value": {
+                "$int64": "18446744073709551615"
+              }
+            }
+          ],
+          "namedArguments": [
+            {
+              "name": "E",
+              "kind": "Field",
+              "type": "E64",
+              "value": {
+                "$int64": "18446744073709551615"
+              }
+            }
+          ]
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663305,
+          "name": ".ctor",
+          "declaringType": "LongSubject",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554442,
+      "name": "GenericSubject",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "GenericAttribute`1<System.Int32>",
+          "constructor": {
+            "token": 167772169,
+            "name": ".ctor",
+            "declaringType": "GenericAttribute`1<System.Int32>",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [],
+            "isStatic": false
+          },
+          "fixedArguments": [],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663306,
+          "name": ".ctor",
+          "declaringType": "GenericSubject",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554443,
+      "name": "GenericAttribute`1",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Attribute",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [
+        "T"
+      ],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108873,
+          "name": "Target",
+          "declaringType": "GenericAttribute`1",
+          "type": "System.Type",
+          "isStatic": false,
+          "attributes": "Public",
+          "constant": null,
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.NullableAttribute",
+              "constructor": {
+                "token": 167772166,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Byte"
+                  }
+                ],
+                "isStatic": false
+              },
+              "fixedArguments": [
+                {
+                  "type": "System.Byte",
+                  "value": 1
+                }
+              ],
+              "namedArguments": []
+            }
+          ],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        }
+      ],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663307,
+          "name": ".ctor",
+          "declaringType": "GenericAttribute`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Attribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 7,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 452984836,
+                "name": "!0"
+              },
+              "size": 5
+            },
+            {
+              "offset": 12,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 17,
+              "opcode": "stfld",
+              "operand": {
+                "token": 167772174,
+                "name": "Target",
+                "declaringType": "GenericAttribute`1<!0>",
+                "assemblyName": "AttributeMaterialization",
+                "type": "System.Type"
+              },
+              "size": 5
+            },
+            {
+              "offset": 22,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554444,
+      "name": "Probe",
+      "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "System.Runtime.CompilerServices.NullableContextAttribute",
+          "constructor": {
+            "token": 167772165,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableContextAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 1
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.Runtime.CompilerServices.NullableAttribute",
+          "constructor": {
+            "token": 167772166,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 0
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663308,
+          "name": "Generic",
+          "declaringType": "Probe",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554442,
+                "name": "GenericSubject"
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 452984833,
+                "name": "GenericAttribute`1<System.Int32>"
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "GetCustomAttributes",
+                "declaringType": "System.Reflection.MemberInfo",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Boolean"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "castclass",
+              "operand": {
+                "token": 452984833,
+                "name": "GenericAttribute`1<System.Int32>"
+              },
+              "size": 5
+            },
+            {
+              "offset": 33,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 167772176,
+                "name": "Target",
+                "declaringType": "GenericAttribute`1<System.Int32>",
+                "assemblyName": "AttributeMaterialization",
+                "type": "System.Type"
+              },
+              "size": 5
+            },
+            {
+              "offset": 38,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 16777235,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 43,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 48,
+              "opcode": "call",
+              "operand": {
+                "token": 167772177,
+                "name": "op_Equality",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Type"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 53,
+              "opcode": "brtrue.s",
+              "operand": 61,
+              "size": 2
+            },
+            {
+              "offset": 55,
+              "opcode": "ldstr",
+              "operand": "different",
+              "size": 5
+            },
+            {
+              "offset": 60,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "ldstr",
+              "operand": "same",
+              "size": 5
+            },
+            {
+              "offset": 66,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 3,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663309,
+          "name": "Boxed",
+          "declaringType": "Probe",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "ObjAttribute",
+            "System.Int32",
+            "System.Int64"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554438,
+                "name": "BoxSubject"
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554434,
+                "name": "ObjAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "GetCustomAttributes",
+                "declaringType": "System.Reflection.MemberInfo",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Boolean"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "castclass",
+              "operand": {
+                "token": 33554434,
+                "name": "ObjAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 33,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 34,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 35,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777236,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 40,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 41,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 42,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 43,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108865,
+                "name": "X",
+                "declaringType": "ObjAttribute",
+                "type": "System.Object",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 48,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772178,
+                "name": "GetType",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 53,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772179,
+                "name": "get_FullName",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 58,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 59,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 66,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 67,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 68,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 69,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 70,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108865,
+                "name": "X",
+                "declaringType": "ObjAttribute",
+                "type": "System.Object",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 75,
+              "opcode": "unbox.any",
+              "operand": {
+                "token": 16777235,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 80,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 81,
+              "opcode": "ldloca.s",
+              "operand": 1,
+              "size": 2
+            },
+            {
+              "offset": 83,
+              "opcode": "call",
+              "operand": {
+                "token": 167772180,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 88,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 89,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 90,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 91,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 96,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 97,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 98,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 99,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 100,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 100663297,
+                "name": "get_Y",
+                "declaringType": "ObjAttribute",
+                "assemblyName": "AttributeMaterialization",
+                "genericParameterCount": 0,
+                "returnType": "System.Object",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 105,
+              "opcode": "unbox.any",
+              "operand": {
+                "token": 16777235,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 110,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 111,
+              "opcode": "ldloca.s",
+              "operand": 1,
+              "size": 2
+            },
+            {
+              "offset": 113,
+              "opcode": "call",
+              "operand": {
+                "token": 167772180,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 118,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 119,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 120,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 121,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 126,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 127,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 128,
+              "opcode": "ldc.i4.6",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 129,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 130,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108867,
+                "name": "Z",
+                "declaringType": "ObjAttribute",
+                "type": "System.Object",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [
+                  {
+                    "type": "System.Runtime.CompilerServices.NullableAttribute",
+                    "constructor": {
+                      "token": 167772166,
+                      "name": ".ctor",
+                      "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+                      "assemblyName": "System.Runtime",
+                      "genericParameterCount": 0,
+                      "returnType": "System.Void",
+                      "parameters": [
+                        {
+                          "name": "arg0",
+                          "type": "System.Byte"
+                        }
+                      ],
+                      "isStatic": false
+                    },
+                    "fixedArguments": [
+                      {
+                        "type": "System.Byte",
+                        "value": 2
+                      }
+                    ],
+                    "namedArguments": []
+                  }
+                ],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 135,
+              "opcode": "unbox.any",
+              "operand": {
+                "token": 16777237,
+                "name": "System.Int64"
+              },
+              "size": 5
+            },
+            {
+              "offset": 140,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 141,
+              "opcode": "ldloca.s",
+              "operand": 2,
+              "size": 2
+            },
+            {
+              "offset": 143,
+              "opcode": "call",
+              "operand": {
+                "token": 167772181,
+                "name": "ToString",
+                "declaringType": "System.Int64",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 148,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 149,
+              "opcode": "call",
+              "operand": {
+                "token": 167772182,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 154,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663310,
+          "name": "Array",
+          "declaringType": "Probe",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "System.Object[]",
+            "System.Int32",
+            "System.Int64"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554439,
+                "name": "ArraySubject"
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554434,
+                "name": "ObjAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "GetCustomAttributes",
+                "declaringType": "System.Reflection.MemberInfo",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Boolean"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "castclass",
+              "operand": {
+                "token": 33554434,
+                "name": "ObjAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 33,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108865,
+                "name": "X",
+                "declaringType": "ObjAttribute",
+                "type": "System.Object",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 38,
+              "opcode": "castclass",
+              "operand": {
+                "token": 452984838,
+                "name": "System.Object[]"
+              },
+              "size": 5
+            },
+            {
+              "offset": 43,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 44,
+              "opcode": "ldc.i4.7",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 45,
+              "opcode": "newarr",
+              "operand": {
+                "token": 16777236,
+                "name": "System.String"
+              },
+              "size": 5
+            },
+            {
+              "offset": 50,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 51,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 52,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 55,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772178,
+                "name": "GetType",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 60,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772179,
+                "name": "get_FullName",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 65,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 66,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 67,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 68,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 73,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 74,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 75,
+              "opcode": "ldc.i4.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 76,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 77,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 78,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 79,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772178,
+                "name": "GetType",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 84,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772179,
+                "name": "get_FullName",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 89,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 90,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 91,
+              "opcode": "ldc.i4.3",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 92,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 97,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 98,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 99,
+              "opcode": "ldc.i4.4",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 100,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 101,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 102,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 103,
+              "opcode": "unbox.any",
+              "operand": {
+                "token": 16777235,
+                "name": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 108,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 109,
+              "opcode": "ldloca.s",
+              "operand": 1,
+              "size": 2
+            },
+            {
+              "offset": 111,
+              "opcode": "call",
+              "operand": {
+                "token": 167772180,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 116,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 117,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 118,
+              "opcode": "ldc.i4.5",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 119,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 124,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 125,
+              "opcode": "dup",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 126,
+              "opcode": "ldc.i4.6",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 127,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 128,
+              "opcode": "ldc.i4.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 129,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 130,
+              "opcode": "unbox.any",
+              "operand": {
+                "token": 16777237,
+                "name": "System.Int64"
+              },
+              "size": 5
+            },
+            {
+              "offset": 135,
+              "opcode": "stloc.2",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 136,
+              "opcode": "ldloca.s",
+              "operand": 2,
+              "size": 2
+            },
+            {
+              "offset": 138,
+              "opcode": "call",
+              "operand": {
+                "token": 167772181,
+                "name": "ToString",
+                "declaringType": "System.Int64",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 143,
+              "opcode": "stelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 144,
+              "opcode": "call",
+              "operand": {
+                "token": 167772182,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String[]"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 149,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 5,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663311,
+          "name": "TypeArg",
+          "declaringType": "Probe",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554440,
+                "name": "TypeSubject"
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554435,
+                "name": "TypeAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "GetCustomAttributes",
+                "declaringType": "System.Reflection.MemberInfo",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Boolean"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "castclass",
+              "operand": {
+                "token": 33554435,
+                "name": "TypeAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 33,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 67108868,
+                "name": "X",
+                "declaringType": "TypeAttribute",
+                "type": "System.Type",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 38,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 452984839,
+                "name": "System.Collections.Generic.Dictionary`2<System.String,System.Collections.Generic.List`1<System.Int32[,]>>[]"
+              },
+              "size": 5
+            },
+            {
+              "offset": 43,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 48,
+              "opcode": "call",
+              "operand": {
+                "token": 167772177,
+                "name": "op_Equality",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Boolean",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Type"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 53,
+              "opcode": "brtrue.s",
+              "operand": 61,
+              "size": 2
+            },
+            {
+              "offset": 55,
+              "opcode": "ldstr",
+              "operand": "different",
+              "size": 5
+            },
+            {
+              "offset": 60,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "ldstr",
+              "operand": "same",
+              "size": 5
+            },
+            {
+              "offset": 66,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 3,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663312,
+          "name": "LongArg",
+          "declaringType": "Probe",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554441,
+                "name": "LongSubject"
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554437,
+                "name": "LongAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "GetCustomAttributes",
+                "declaringType": "System.Reflection.MemberInfo",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Boolean"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "castclass",
+              "operand": {
+                "token": 33554437,
+                "name": "LongAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 33,
+              "opcode": "ldflda",
+              "operand": {
+                "token": 67108872,
+                "name": "X",
+                "declaringType": "LongAttribute",
+                "type": "System.UInt64",
+                "isStatic": false,
+                "attributes": "Public",
+                "constant": null,
+                "customAttributes": [],
+                "assemblyName": "AttributeMaterialization",
+                "initialData": null
+              },
+              "size": 5
+            },
+            {
+              "offset": 38,
+              "opcode": "call",
+              "operand": {
+                "token": 167772183,
+                "name": "ToString",
+                "declaringType": "System.UInt64",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 43,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554445,
+      "name": "AttributeBase`1",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Attribute",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "System.Runtime.CompilerServices.NullableContextAttribute",
+          "constructor": {
+            "token": 167772165,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableContextAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 1
+            }
+          ],
+          "namedArguments": []
+        },
+        {
+          "type": "System.Runtime.CompilerServices.NullableAttribute",
+          "constructor": {
+            "token": 167772166,
+            "name": ".ctor",
+            "declaringType": "System.Runtime.CompilerServices.NullableAttribute",
+            "assemblyName": "System.Runtime",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Byte"
+              }
+            ],
+            "isStatic": false
+          },
+          "fixedArguments": [
+            {
+              "type": "System.Byte",
+              "value": 0
+            }
+          ],
+          "namedArguments": []
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [
+        "T"
+      ],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108874,
+          "name": "<Value>k__BackingField",
+          "declaringType": "AttributeBase`1",
+          "type": "!0",
+          "isStatic": false,
+          "attributes": "Private",
+          "constant": null,
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        }
+      ],
+      "properties": [
+        {
+          "token": 385875970,
+          "name": "Value",
+          "declaringType": "AttributeBase`1",
+          "assemblyName": "AttributeMaterialization",
+          "customAttributes": [],
+          "attributes": "None",
+          "type": "!0",
+          "isStatic": false,
+          "parameters": [],
+          "getter": {
+            "token": 100663313,
+            "name": "get_Value",
+            "declaringType": "AttributeBase`1",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "!0",
+            "parameters": [],
+            "isStatic": false
+          },
+          "setter": {
+            "token": 100663314,
+            "name": "set_Value",
+            "declaringType": "AttributeBase`1",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "!0"
+              }
+            ],
+            "isStatic": false
+          }
+        }
+      ],
+      "methods": [
+        {
+          "token": 100663313,
+          "name": "get_Value",
+          "declaringType": "AttributeBase`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "!0",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 167772184,
+                "name": "<Value>k__BackingField",
+                "declaringType": "AttributeBase`1<!0>",
+                "assemblyName": "AttributeMaterialization",
+                "type": "!0"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663314,
+          "name": "set_Value",
+          "declaringType": "AttributeBase`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "value",
+              "type": "!0"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "stfld",
+              "operand": {
+                "token": 167772184,
+                "name": "<Value>k__BackingField",
+                "declaringType": "AttributeBase`1<!0>",
+                "assemblyName": "AttributeMaterialization",
+                "type": "!0"
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663315,
+          "name": ".ctor",
+          "declaringType": "AttributeBase`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Attribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554446,
+      "name": "InheritedMarkAttribute",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "AttributeBase`1<System.Int32>",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663316,
+          "name": ".ctor",
+          "declaringType": "InheritedMarkAttribute",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772185,
+                "name": ".ctor",
+                "declaringType": "AttributeBase`1<System.Int32>",
+                "assemblyName": "AttributeMaterialization",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554447,
+      "name": "NamedGenericAttribute`1",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Attribute",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [
+        "T"
+      ],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [
+        {
+          "token": 67108875,
+          "name": "<Value>k__BackingField",
+          "declaringType": "NamedGenericAttribute`1",
+          "type": "System.Int32",
+          "isStatic": false,
+          "attributes": "Private",
+          "constant": null,
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "assemblyName": "AttributeMaterialization",
+          "initialData": null
+        }
+      ],
+      "properties": [
+        {
+          "token": 385875971,
+          "name": "Value",
+          "declaringType": "NamedGenericAttribute`1",
+          "assemblyName": "AttributeMaterialization",
+          "customAttributes": [],
+          "attributes": "None",
+          "type": "System.Int32",
+          "isStatic": false,
+          "parameters": [],
+          "getter": {
+            "token": 100663317,
+            "name": "get_Value",
+            "declaringType": "NamedGenericAttribute`1",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Int32",
+            "parameters": [],
+            "isStatic": false
+          },
+          "setter": {
+            "token": 100663318,
+            "name": "set_Value",
+            "declaringType": "NamedGenericAttribute`1",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [
+              {
+                "name": "arg0",
+                "type": "System.Int32"
+              }
+            ],
+            "isStatic": false
+          }
+        }
+      ],
+      "methods": [
+        {
+          "token": 100663317,
+          "name": "get_Value",
+          "declaringType": "NamedGenericAttribute`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Int32",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldfld",
+              "operand": {
+                "token": 167772186,
+                "name": "<Value>k__BackingField",
+                "declaringType": "NamedGenericAttribute`1<!0>",
+                "assemblyName": "AttributeMaterialization",
+                "type": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663318,
+          "name": "set_Value",
+          "declaringType": "NamedGenericAttribute`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [
+            {
+              "name": "value",
+              "type": "System.Int32"
+            }
+          ],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "ldarg.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 2,
+              "opcode": "stfld",
+              "operand": {
+                "token": 167772186,
+                "name": "<Value>k__BackingField",
+                "declaringType": "NamedGenericAttribute`1<!0>",
+                "assemblyName": "AttributeMaterialization",
+                "type": "System.Int32"
+              },
+              "size": 5
+            },
+            {
+              "offset": 7,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+              "constructor": {
+                "token": 167772168,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.CompilerGeneratedAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "fixedArguments": [],
+              "namedArguments": []
+            }
+          ],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        },
+        {
+          "token": 100663319,
+          "name": ".ctor",
+          "declaringType": "NamedGenericAttribute`1",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772171,
+                "name": ".ctor",
+                "declaringType": "System.Attribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554448,
+      "name": "InheritedNamedSubject",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "InheritedMarkAttribute",
+          "constructor": {
+            "token": 100663316,
+            "name": ".ctor",
+            "declaringType": "InheritedMarkAttribute",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [],
+            "isStatic": false
+          },
+          "fixedArguments": [],
+          "namedArguments": [
+            {
+              "name": "Value",
+              "kind": "Property",
+              "type": "System.Int32",
+              "value": 7
+            }
+          ]
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663320,
+          "name": ".ctor",
+          "declaringType": "InheritedNamedSubject",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554449,
+      "name": "GenericNamedSubject",
+      "attributes": "Public, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [
+        {
+          "type": "NamedGenericAttribute`1<System.Int32>",
+          "constructor": {
+            "token": 167772170,
+            "name": ".ctor",
+            "declaringType": "NamedGenericAttribute`1<System.Int32>",
+            "assemblyName": "AttributeMaterialization",
+            "genericParameterCount": 0,
+            "returnType": "System.Void",
+            "parameters": [],
+            "isStatic": false
+          },
+          "fixedArguments": [],
+          "namedArguments": [
+            {
+              "name": "Value",
+              "kind": "Property",
+              "type": "System.Int32",
+              "value": 9
+            }
+          ]
+        }
+      ],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663321,
+          "name": ".ctor",
+          "declaringType": "GenericNamedSubject",
+          "isStatic": false,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.Void",
+          "parameters": [],
+          "locals": [],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldarg.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 1,
+              "opcode": "call",
+              "operand": {
+                "token": 167772172,
+                "name": ".ctor",
+                "declaringType": "System.Object",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 6,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [],
+          "maxStack": 8,
+          "initLocals": false,
+          "attributes": "Public, HideBySig, SpecialName, RTSpecialName",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    },
+    {
+      "token": 33554450,
+      "name": "GenericNamedProbe",
+      "attributes": "Public, Abstract, Sealed, BeforeFieldInit",
+      "baseType": "System.Object",
+      "isValueType": false,
+      "isEnum": false,
+      "isFlagsEnum": false,
+      "inlineArrayLength": null,
+      "customAttributes": [],
+      "isByRefLike": false,
+      "genericParameters": [],
+      "interfaces": [],
+      "methodOverrides": [],
+      "fields": [],
+      "properties": [],
+      "methods": [
+        {
+          "token": 100663322,
+          "name": "Named",
+          "declaringType": "GenericNamedProbe",
+          "isStatic": true,
+          "isAbstract": false,
+          "isPInvoke": false,
+          "isRuntime": false,
+          "isExternal": false,
+          "pinvoke": null,
+          "assemblyName": "AttributeMaterialization",
+          "returnType": "System.String",
+          "parameters": [],
+          "locals": [
+            "NamedGenericAttribute`1<System.Int32>",
+            "System.Int32"
+          ],
+          "body": [
+            {
+              "offset": 0,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554448,
+                "name": "InheritedNamedSubject"
+              },
+              "size": 5
+            },
+            {
+              "offset": 5,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 10,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554446,
+                "name": "InheritedMarkAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 15,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 20,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 21,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "GetCustomAttributes",
+                "declaringType": "System.Reflection.MemberInfo",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Boolean"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 26,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 27,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 28,
+              "opcode": "castclass",
+              "operand": {
+                "token": 33554446,
+                "name": "InheritedMarkAttribute"
+              },
+              "size": 5
+            },
+            {
+              "offset": 33,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 33554449,
+                "name": "GenericNamedSubject"
+              },
+              "size": 5
+            },
+            {
+              "offset": 38,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 43,
+              "opcode": "ldtoken",
+              "operand": {
+                "token": 452984835,
+                "name": "NamedGenericAttribute`1<System.Int32>"
+              },
+              "size": 5
+            },
+            {
+              "offset": 48,
+              "opcode": "call",
+              "operand": {
+                "token": 167772173,
+                "name": "GetTypeFromHandle",
+                "declaringType": "System.Type",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Type",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.RuntimeTypeHandle"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 53,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 54,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772175,
+                "name": "GetCustomAttributes",
+                "declaringType": "System.Reflection.MemberInfo",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Object[]",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Type"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.Boolean"
+                  }
+                ],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 59,
+              "opcode": "ldc.i4.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 60,
+              "opcode": "ldelem.ref",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 61,
+              "opcode": "castclass",
+              "operand": {
+                "token": 452984835,
+                "name": "NamedGenericAttribute`1<System.Int32>"
+              },
+              "size": 5
+            },
+            {
+              "offset": 66,
+              "opcode": "stloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 67,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772187,
+                "name": "get_Value",
+                "declaringType": "AttributeBase`1<System.Int32>",
+                "assemblyName": "AttributeMaterialization",
+                "genericParameterCount": 0,
+                "returnType": "!0",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 72,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 73,
+              "opcode": "ldloca.s",
+              "operand": 1,
+              "size": 2
+            },
+            {
+              "offset": 75,
+              "opcode": "call",
+              "operand": {
+                "token": 167772180,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 80,
+              "opcode": "ldstr",
+              "operand": ":",
+              "size": 5
+            },
+            {
+              "offset": 85,
+              "opcode": "ldloc.0",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 86,
+              "opcode": "callvirt",
+              "operand": {
+                "token": 167772188,
+                "name": "get_Value",
+                "declaringType": "NamedGenericAttribute`1<System.Int32>",
+                "assemblyName": "AttributeMaterialization",
+                "genericParameterCount": 0,
+                "returnType": "System.Int32",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 91,
+              "opcode": "stloc.1",
+              "operand": null,
+              "size": 1
+            },
+            {
+              "offset": 92,
+              "opcode": "ldloca.s",
+              "operand": 1,
+              "size": 2
+            },
+            {
+              "offset": 94,
+              "opcode": "call",
+              "operand": {
+                "token": 167772180,
+                "name": "ToString",
+                "declaringType": "System.Int32",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [],
+                "isStatic": false
+              },
+              "size": 5
+            },
+            {
+              "offset": 99,
+              "opcode": "call",
+              "operand": {
+                "token": 167772189,
+                "name": "Concat",
+                "declaringType": "System.String",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.String",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg1",
+                    "type": "System.String"
+                  },
+                  {
+                    "name": "arg2",
+                    "type": "System.String"
+                  }
+                ],
+                "isStatic": true
+              },
+              "size": 5
+            },
+            {
+              "offset": 104,
+              "opcode": "ret",
+              "operand": null,
+              "size": 1
+            }
+          ],
+          "exceptionHandlers": [],
+          "customAttributes": [
+            {
+              "type": "System.Runtime.CompilerServices.NullableContextAttribute",
+              "constructor": {
+                "token": 167772165,
+                "name": ".ctor",
+                "declaringType": "System.Runtime.CompilerServices.NullableContextAttribute",
+                "assemblyName": "System.Runtime",
+                "genericParameterCount": 0,
+                "returnType": "System.Void",
+                "parameters": [
+                  {
+                    "name": "arg0",
+                    "type": "System.Byte"
+                  }
+                ],
+                "isStatic": false
+              },
+              "fixedArguments": [
+                {
+                  "type": "System.Byte",
+                  "value": 1
+                }
+              ],
+              "namedArguments": []
+            }
+          ],
+          "maxStack": 4,
+          "initLocals": true,
+          "attributes": "Public, Static, HideBySig",
+          "implementationAttributes": "IL",
+          "genericParameters": [],
+          "decodeError": null
+        }
+      ]
+    }
+  ]
+}

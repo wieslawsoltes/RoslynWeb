@@ -1,5 +1,5 @@
 {
-  "testedAt": "2026-09-12T08:52:05.233Z",
+  "testedAt": "2026-09-12T10:31:11.690Z",
   "scope": "Selected constructors, properties, entity mutations, event accessors and independent Circle/layer cloning in the actual pinned netDxf assembly. Complete DXF document reading and writing are not claimed for generated backends.",
   "checks": [
     {
@@ -11,7 +11,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 202,
-      "compileMilliseconds": 5237.900411,
+      "compileMilliseconds": 6238.763806999999,
       "results": [
         {
           "args": [
@@ -215,8 +215,8 @@
       "passed": true,
       "cases": 16,
       "diagnosticCount": 0,
-      "selectedMethods": 98,
-      "compileMilliseconds": 4363.584545,
+      "selectedMethods": 100,
+      "compileMilliseconds": 5095.058068999999,
       "results": [
         {
           "args": [
@@ -421,7 +421,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 196,
-      "compileMilliseconds": 629.2012799999993,
+      "compileMilliseconds": 653.4466790000006,
       "results": [
         {
           "args": [
@@ -545,8 +545,8 @@
       "passed": true,
       "cases": 16,
       "diagnosticCount": 0,
-      "selectedMethods": 92,
-      "compileMilliseconds": 769.7927209999998,
+      "selectedMethods": 94,
+      "compileMilliseconds": 1099.4097860000002,
       "results": [
         {
           "args": [
@@ -671,7 +671,7 @@
       "cases": 16,
       "diagnosticCount": 0,
       "selectedMethods": 198,
-      "compileMilliseconds": 555.0220439999994,
+      "compileMilliseconds": 792.8414019999982,
       "results": [
         {
           "args": [
@@ -811,8 +811,8 @@
       "passed": true,
       "cases": 16,
       "diagnosticCount": 0,
-      "selectedMethods": 95,
-      "compileMilliseconds": 752.5407240000022,
+      "selectedMethods": 97,
+      "compileMilliseconds": 1104.1478279999974,
       "results": [
         {
           "args": [
@@ -953,7 +953,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 8,
-      "compileMilliseconds": 427.08096099999966,
+      "compileMilliseconds": 467.5157760000002,
       "results": [
         {
           "args": [
@@ -1002,7 +1002,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 6,
-      "compileMilliseconds": 667.005247000001,
+      "compileMilliseconds": 1128.461288999999,
       "results": [
         {
           "args": [
@@ -1051,7 +1051,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 7,
-      "compileMilliseconds": 394.1798140000028,
+      "compileMilliseconds": 507.74331099999836,
       "results": [
         {
           "args": [
@@ -1092,7 +1092,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 5,
-      "compileMilliseconds": 698.1229649999987,
+      "compileMilliseconds": 924.7059899999986,
       "results": [
         {
           "args": [
@@ -1133,7 +1133,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 209,
-      "compileMilliseconds": 919.8422360000004,
+      "compileMilliseconds": 614.1056649999991,
       "results": [
         {
           "args": [],
@@ -1150,8 +1150,8 @@
       "passed": true,
       "cases": 1,
       "diagnosticCount": 0,
-      "selectedMethods": 115,
-      "compileMilliseconds": 1411.0354449999977,
+      "selectedMethods": 117,
+      "compileMilliseconds": 877.5560939999996,
       "results": [
         {
           "args": [],
@@ -1169,7 +1169,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 205,
-      "compileMilliseconds": 803.4823260000012,
+      "compileMilliseconds": 503.61871800000154,
       "results": [
         {
           "args": [],
@@ -1186,8 +1186,8 @@
       "passed": true,
       "cases": 1,
       "diagnosticCount": 0,
-      "selectedMethods": 102,
-      "compileMilliseconds": 1203.188807999999,
+      "selectedMethods": 104,
+      "compileMilliseconds": 729.259618,
       "results": [
         {
           "args": [],
@@ -1205,7 +1205,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 211,
-      "compileMilliseconds": 651.5412099999994,
+      "compileMilliseconds": 724.0053919999991,
       "results": [
         {
           "args": [],
@@ -1222,8 +1222,8 @@
       "passed": true,
       "cases": 1,
       "diagnosticCount": 0,
-      "selectedMethods": 102,
-      "compileMilliseconds": 760.7208129999999,
+      "selectedMethods": 104,
+      "compileMilliseconds": 956.3321649999998,
       "results": [
         {
           "args": [],
@@ -1241,7 +1241,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 1567,
-      "compileMilliseconds": 3847.1744980000003,
+      "compileMilliseconds": 3790.8108009999996,
       "results": [
         {
           "args": [],
@@ -1258,8 +1258,8 @@
       "passed": true,
       "cases": 1,
       "diagnosticCount": 0,
-      "selectedMethods": 1472,
-      "compileMilliseconds": 9767.274906999999,
+      "selectedMethods": 1476,
+      "compileMilliseconds": 6716.146869999997,
       "results": [
         {
           "args": [],
@@ -1277,7 +1277,7 @@
       "cases": 2,
       "diagnosticCount": 0,
       "selectedMethods": 195,
-      "compileMilliseconds": 556.6584719999955,
+      "compileMilliseconds": 612.4505009999993,
       "results": [
         {
           "args": [
@@ -1303,8 +1303,8 @@
       "passed": true,
       "cases": 2,
       "diagnosticCount": 0,
-      "selectedMethods": 91,
-      "compileMilliseconds": 774.2465650000013,
+      "selectedMethods": 93,
+      "compileMilliseconds": 1215.5787469999996,
       "results": [
         {
           "args": [
@@ -1331,7 +1331,7 @@
       "cases": 2,
       "diagnosticCount": 0,
       "selectedMethods": 198,
-      "compileMilliseconds": 540.0267810000005,
+      "compileMilliseconds": 519.5802620000031,
       "results": [
         {
           "args": [
@@ -1357,8 +1357,8 @@
       "passed": true,
       "cases": 2,
       "diagnosticCount": 0,
-      "selectedMethods": 94,
-      "compileMilliseconds": 756.5486119999987,
+      "selectedMethods": 96,
+      "compileMilliseconds": 795.0519350000031,
       "results": [
         {
           "args": [
@@ -1385,7 +1385,7 @@
       "cases": 4,
       "diagnosticCount": 0,
       "selectedMethods": 183,
-      "compileMilliseconds": 528.790700000005,
+      "compileMilliseconds": 489.26475100000243,
       "results": [
         {
           "args": [
@@ -1425,8 +1425,8 @@
       "passed": true,
       "cases": 4,
       "diagnosticCount": 0,
-      "selectedMethods": 68,
-      "compileMilliseconds": 694.0855880000017,
+      "selectedMethods": 70,
+      "compileMilliseconds": 1023.9436910000004,
       "results": [
         {
           "args": [
@@ -1467,7 +1467,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 199,
-      "compileMilliseconds": 524.0675129999945,
+      "compileMilliseconds": 627.6546229999949,
       "results": [
         {
           "args": [],
@@ -1484,8 +1484,8 @@
       "passed": true,
       "cases": 1,
       "diagnosticCount": 0,
-      "selectedMethods": 96,
-      "compileMilliseconds": 717.4932110000009,
+      "selectedMethods": 98,
+      "compileMilliseconds": 740.4596380000003,
       "results": [
         {
           "args": [],
@@ -1503,7 +1503,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 197,
-      "compileMilliseconds": 515.6257079999996,
+      "compileMilliseconds": 537.7749909999984,
       "results": [
         {
           "args": [],
@@ -1520,8 +1520,8 @@
       "passed": true,
       "cases": 1,
       "diagnosticCount": 0,
-      "selectedMethods": 93,
-      "compileMilliseconds": 668.5700179999985,
+      "selectedMethods": 95,
+      "compileMilliseconds": 839.8212740000017,
       "results": [
         {
           "args": [],
@@ -1539,7 +1539,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 8,
-      "compileMilliseconds": 322.802334,
+      "compileMilliseconds": 309.43814700000075,
       "results": [
         {
           "args": [
@@ -1559,7 +1559,7 @@
       "cases": 1,
       "diagnosticCount": 0,
       "selectedMethods": 8,
-      "compileMilliseconds": 604.6286620000028,
+      "compileMilliseconds": 683.5561039999957,
       "results": [
         {
           "args": [
